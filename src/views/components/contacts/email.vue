@@ -1,7 +1,6 @@
 <template>
     <v-layout row>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
-            <h2>EMAILS</h2>
             <h3>June 2019</h3>
             <v-hover>
                 <v-card slot-scope="{ hover }" class="pb-3 mt-3">
