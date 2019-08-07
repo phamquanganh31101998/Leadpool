@@ -21,7 +21,7 @@
                     <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on" class="mt-2 ml-5">
-                                Associated with 1 record
+                                Associated with 1 record adsdassadsasad
                             </a>
                         </template>
                         <v-card>
