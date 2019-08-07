@@ -119,6 +119,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createNote = false">Save Note</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createNote = false">Close</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -178,6 +180,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createEmail = false">Sent</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createEmail = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -232,6 +236,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createLogCall = false">Log active</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createLogCall = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -247,6 +253,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createLogMail = false">Log active</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createLogMail = false">Cancek</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -261,6 +269,8 @@
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
+                                                                    @click="createLogMeet = false">Log active</v-btn>
+                                                                <v-btn color="red" small flat
                                                                     @click="createLogMeet = false">Log active</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
@@ -291,6 +301,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createTask = false">Save Task</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createTask = false">Save Task</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -320,6 +332,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createMeet = false">Save</v-btn>
+                                                                <v-btn color="blue darken-1" small flat
+                                                                    @click="createMeet = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>

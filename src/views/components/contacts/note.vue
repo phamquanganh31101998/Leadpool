@@ -65,7 +65,10 @@
                     </v-card-title>
                     <v-layout row wrap>
                         <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                            <p>hello</p>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta sed, 
+                                deleniti possimus repudiandae repellendus beatae quisquam ipsa fuga, 
+                                amet odit, voluptates accusamus sint vero odio nihil maxime? Velit, nobis veniam.
+                            </p>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-layout row>
@@ -76,11 +79,11 @@
                                                 <v-icon>person</v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>join middeware</span>
+                                        <span>Quang Anh</span>
                                     </v-tooltip>
                                 </v-flex>
                                 <v-flex xs8 sm9 md9 lg10 xl10>
-                                    <p class="mt-2 pt-1"><strong>join ichigo </strong> left a
+                                    <p class="mt-2 pt-1"><strong>QA </strong> left a
                                         note</p>
                                 </v-flex>
                             </v-layout>
