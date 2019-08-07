@@ -1,6 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3">
+            <h2>TASKS</h2>
             <h3>June 2019</h3>
             <v-card class="pb-3 mt-3">
                 <v-card-title>
