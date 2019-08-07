@@ -17,33 +17,33 @@
                                             <v-menu offset-y left>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn small flat color="primary" left dark v-on="on">
-                                                        option <v-icon>keyboard_arrow_down</v-icon>
+                                                        Option <v-icon>keyboard_arrow_down</v-icon>
                                                     </v-btn>
                                                 </template>
                                                 <v-list>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>unfollow</v-list-tile-title>
+                                                        <v-list-tile-title>Unfollow</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-divider :divider="divider"></v-divider>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>view all properties</v-list-tile-title>
+                                                        <v-list-tile-title>View all properties</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>view properties history</v-list-tile-title>
-                                                    </v-list-tile>
-                                                    <v-divider :divider="divider"></v-divider>
-                                                    <v-list-tile>
-                                                        <v-list-tile-title>search in Google</v-list-tile-title>
-                                                    </v-list-tile>
-                                                    <v-list-tile>
-                                                        <v-list-tile-title>opt out of email</v-list-tile-title>
+                                                        <v-list-tile-title>View properties history</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-divider :divider="divider"></v-divider>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>merge</v-list-tile-title>
+                                                        <v-list-tile-title>Search in Google</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>delete</v-list-tile-title>
+                                                        <v-list-tile-title>Opt out of email</v-list-tile-title>
+                                                    </v-list-tile>
+                                                    <v-divider :divider="divider"></v-divider>
+                                                    <v-list-tile>
+                                                        <v-list-tile-title>Merge</v-list-tile-title>
+                                                    </v-list-tile>
+                                                    <v-list-tile>
+                                                        <v-list-tile-title>Delete</v-list-tile-title>
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
