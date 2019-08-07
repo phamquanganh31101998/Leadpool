@@ -312,13 +312,6 @@
           this.pages = result.response.totalPage
         })
       },
-      // takeContact(idContact){
-      //   if(this.$store.state.user.token && this.$store.state.user.user){
-      //   let idUser = JSON.parse(this.$store.state.user.user)
-      //   this.$router.go(`/contacts/${idUser.accountId}/contact/${idContact}`)
-      //   // nghiên cứu phần chuyển link bằng cách ấn
-      // }
-      //},
       covertime(time) {
         if (_.isNull(time)) return '';
         return moment(time).format('DD/MM/YYYY hh:mm:ss')
