@@ -118,8 +118,7 @@
                             </v-tooltip>
                         </v-flex>
                         <v-flex xs8 sm9 md9 lg10 xl10>
-                            <p class="mt-2 pt-2"><strong>join ichigo </strong> left a
-                                note</p>
+                            <p class="mt-2 pt-2"><strong>join ichigo </strong> left a call</p>
                         </v-flex>
                     </v-layout>
                 </v-card>

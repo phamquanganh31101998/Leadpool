@@ -74,7 +74,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-btn color="primary" flat @click="createContacts">Create</v-btn>
-                  <v-btn color="warning" flat @click="checkInfo == false">Close</v-btn>
+                  <v-btn color="warning" flat @click="checkInfo = false">Close</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>

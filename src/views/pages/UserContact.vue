@@ -113,15 +113,9 @@
                                                                 <span class="headline">Note</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newNote />
+                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idUser="this.idUser" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createNote = false">Save Note</v-btn>
-                                                                <v-btn color="red" small flat
-                                                                    @click="createNote = false">Close</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
@@ -505,7 +499,7 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout>
-                            <note class="mt-3" />
+                            <note class="mt-3" :idUser="this.idUser" :idContact="this.idContact"/>
                             <email class="mt-3" />
                             <task class="mt-3" />
                             <call class="mt-3" />
@@ -517,7 +511,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <note />
+                            <note :idUser="this.idUser" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-3">
                             <v-layout row>
