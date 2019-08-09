@@ -46,6 +46,7 @@
     </v-container>
 </template>
 <script>
+    import {eventBus} from '../../../main'
     import noteService from '../../../services/note.service'
     export default {
         props: {
@@ -70,10 +71,11 @@
                         "contactId": this.idContact,
                         "note": this.note
                     }
-                    // noteService.createNote(this.idUser, this.idContact, note);
-                    noteService.getNotes(this.idUser, this.idContact).then(result => {
-                        console.log(result.response);
-                    })
+                noteService.createNote(this.idUser, this.idContact, note).then(result => {
+                    console.log(result);
+                    this.note = '';
+                    eventBus.updateNoteList();
+                });
                 this.$emit('closeCreateNoteDialog');
             },
             closeCreateNoteDialog(){

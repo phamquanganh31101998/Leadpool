@@ -9,6 +9,17 @@ import { store } from './stores'
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 
+export const eventBus = new Vue({
+  data: {
+
+  },
+  methods: {
+    updateNoteList(){
+      this.$emit('updateNoteList');
+    }
+  }
+})
+
 new Vue({
   router,
   store,

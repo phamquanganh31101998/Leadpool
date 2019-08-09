@@ -296,7 +296,7 @@
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createTask = false">Save Task</v-btn>
                                                                 <v-btn color="red" small flat
-                                                                    @click="createTask = false">Save Task</v-btn>
+                                                                    @click="createTask = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -326,7 +326,7 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createMeet = false">Save</v-btn>
-                                                                <v-btn color="blue darken-1" small flat
+                                                                <v-btn color="red darken-1" small flat
                                                                     @click="createMeet = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
@@ -549,6 +549,7 @@
     </v-content>
 </template>
 <script>
+    import {eventBus} from '../../main'
     import note from '../components/contacts/note'
     import email from '../components/contacts/email'
     import task from '../components/contacts/task'
