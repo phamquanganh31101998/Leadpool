@@ -78,6 +78,16 @@
 </template>
 <script>
     export default {
+        props: {
+            idUser: {
+                type: String,
+                default: null,
+            },
+            idContact: {
+                type: String,
+                default: null,
+            }
+        },
         data: vm => ({
             divider: true,
             date: new Date().toISOString().substr(0, 10),

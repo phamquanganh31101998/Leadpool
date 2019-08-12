@@ -6,31 +6,31 @@ export default {
     getNotes, createNote, deleteNote
 }
 
-function getNotes(idUser, idContact){
+function getNotes(idAccount, idContact){
     let request = {
         method: 'GET',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idUser}/contact/${idContact}/notes`
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function createNote(idUser, idContact, note){
+function createNote(idAccount, idContact, note){
     let request = {
         method: 'POST',
         body: JSON.stringify(note),
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idUser}/contact/${idContact}/notes`
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function deleteNote(idUser, idContact, idNote){
+function deleteNote(idAccount, idContact, idNote){
     let request = {
         method: 'DELETE',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idUser}/contact/${idContact}/notes/${idNote}`
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes/${idNote}`
     console.log(endpoint);
     return responseService.fetchRetry(endpoint, request, 1)
 }

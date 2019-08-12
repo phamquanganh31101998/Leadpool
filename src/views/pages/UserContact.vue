@@ -113,7 +113,7 @@
                                                                 <span class="headline">Note</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idUser="this.idUser" :idContact="this.idContact"/>
+                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
@@ -224,7 +224,7 @@
                                                                 <span class="headline">Log call</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogCall />
+                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
@@ -241,14 +241,14 @@
                                                                 <span class="headline">Log email</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogEmail />
+                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createLogMail = false">Log active</v-btn>
                                                                 <v-btn color="red" small flat
-                                                                    @click="createLogMail = false">Cancek</v-btn>
+                                                                    @click="createLogMail = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -258,14 +258,14 @@
                                                                 <span class="headline">Log meet</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogMeet />
+                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createLogMeet = false">Log active</v-btn>
                                                                 <v-btn color="red" small flat
-                                                                    @click="createLogMeet = false">Log active</v-btn>
+                                                                    @click="createLogMeet = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -499,7 +499,7 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout>
-                            <note class="mt-3" :idUser="this.idUser" :idContact="this.idContact"/>
+                            <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <email class="mt-3" />
                             <task class="mt-3" />
                             <call class="mt-3" />
@@ -511,7 +511,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <note :idUser="this.idUser" :idContact="this.idContact"/>
+                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-3">
                             <v-layout row>
@@ -566,7 +566,7 @@
     import contact from '../../services/contacts.service'
     export default {
         props: {
-            idUser: {
+            idAccount: {
                 type: String,
                 default: null,
             },
@@ -680,7 +680,7 @@
         }),
         methods:{
             getDetail(){
-                contact.getdetailContact(this.idUser,this.idContact).then(result =>{
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
                     this.items = [{
                     title: 'Lifecycle stage',

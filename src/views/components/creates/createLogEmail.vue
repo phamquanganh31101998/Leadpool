@@ -83,6 +83,16 @@
             menu2: false,
             modal2: false,
         }),
+        props: {
+            idUser: {
+                type: String,
+                default: null,
+            },
+            idContact: {
+                type: String,
+                default: null,
+            }
+        },
         computed: {
             computedDateFormatted() {
                 return this.formatDate(this.date)

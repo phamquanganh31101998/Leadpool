@@ -3,7 +3,7 @@
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
             <template v-for="(note, index) in notes">
-                <v-hover >
+                <v-hover>
                     <v-card  slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
                             <v-layout row>
@@ -43,7 +43,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteNote(note.noteId, index)">Delete
+                                                            <a color="indigo" @click="deleteNote(note.noteId)">Delete
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -104,7 +104,7 @@ import noteService from '../../../services/note.service'
 import { eventBus } from '../../../main';
 export default {
     props: {
-        idUser: {
+        idAccount: {
             type: String,
             default: null,
         },
@@ -119,8 +119,8 @@ export default {
         }
     },
     methods: {
-        deleteNote(noteId, index){
-            noteService.deleteNote(this.idUser, this.idContact, noteId).then(result => {
+        deleteNote(noteId){
+            noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
                 console.log(result);
                 eventBus.updateNoteList();
             });
@@ -134,18 +134,24 @@ export default {
             return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
         },
         getNotesList(){
-            noteService.getNotes(this.idUser, this.idContact).then(result => {
-                console.log('Getting notes...');
+            noteService.getNotes(this.idAccount, this.idContact).then(result => {
+                console.log(result.response);
                 this.notes = result.response;
                 this.notes = [...this.notes];
             })
         },
+        
     },
     created(){
         eventBus.$on('updateNoteList', () => {
             this.getNotesList();
         })
         this.getNotesList();
+    },
+    destroyed(){
+        eventBus.$off('updateNoteList', () => {
+            this.getNotesList();
+        })
     }
 }
 </script>

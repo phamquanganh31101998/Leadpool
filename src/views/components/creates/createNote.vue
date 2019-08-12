@@ -50,7 +50,7 @@
     import noteService from '../../../services/note.service'
     export default {
         props: {
-            idUser: {
+            idAccount: {
                 type: String,
 				default: null,
             },
@@ -71,7 +71,7 @@
                         "contactId": this.idContact,
                         "note": this.note
                     }
-                noteService.createNote(this.idUser, this.idContact, note).then(result => {
+                noteService.createNote(this.idAccount, this.idContact, note).then(result => {
                     console.log(result);
                     this.note = '';
                     eventBus.updateNoteList();

@@ -84,6 +84,16 @@
             modal2: false,
             items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'left voicemail', 'connected']
         }),
+        props: {
+            idUser: {
+                type: String,
+                default: null,
+            },
+            idContact: {
+                type: String,
+                default: null,
+            }
+        },
         computed: {
             computedDateFormatted() {
                 return this.formatDate(this.date)
