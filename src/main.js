@@ -16,6 +16,12 @@ export const eventBus = new Vue({
   methods: {
     updateNoteList(){
       this.$emit('updateNoteList');
+    },
+    updateLogCallList(){
+      this.$emit('updateLogCallList');
+    },
+    updateLogEmailList(){
+      this.$emit('updateLogEmailList');
     }
   }
 })

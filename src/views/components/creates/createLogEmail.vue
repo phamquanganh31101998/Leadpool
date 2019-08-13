@@ -33,7 +33,7 @@
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
             <v-divider :divider="divider"></v-divider>
-            <v-textarea class="mt-2" name="input" label="Describe the email..." value=""></v-textarea>
+            <v-textarea class="mt-2" name="input" label="Describe the email..." v-model="log"></v-textarea>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
@@ -70,21 +70,22 @@
                 </v-flex>
             </v-layout>
         </v-flex>
+        <br>
+        <br>
+        <v-layout wrap>
+            <v-btn color="blue darken-1" small flat
+                @click="createLogEmail()">Save</v-btn>
+            <v-btn color="red" small flat
+                @click="closeCreateLogEmailDialog()">Close</v-btn>
+        </v-layout>
     </v-layout>
 </template>
 <script>
+    import logService from '../../../services/log.service'
+    import { eventBus } from '../../../main';
     export default {
-        data: vm => ({
-            divider: true,
-            date: new Date().toISOString().substr(0, 10),
-            dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-            menu1: false,
-            time: null,
-            menu2: false,
-            modal2: false,
-        }),
         props: {
-            idUser: {
+            idAccount: {
                 type: String,
                 default: null,
             },
@@ -93,6 +94,16 @@
                 default: null,
             }
         },
+        data: vm => ({
+            divider: true,
+            date: new Date().toISOString().substr(0, 10),
+            dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+            menu1: false,
+            time: '08:00',
+            menu2: false,
+            modal2: false,
+            log: ''
+        }),
         computed: {
             computedDateFormatted() {
                 return this.formatDate(this.date)
@@ -117,6 +128,23 @@
 
                 const [month, day, year] = date.split('/')
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            },
+            closeCreateLogEmailDialog(){
+                this.$emit('closeCreateLogEmailDialog');
+            },
+            createLogEmail(){
+                let data = {
+                    "contactId": this.idContact,
+                    "time":this.date + 'T' + this.time + ':00',
+                    "log": this.log,
+                    "type":"email",
+                }
+                logService.createLog(this.idAccount, this.idContact, data).then(result => {
+                    console.log(result);
+                    this.log = '';
+                    eventBus.updateLogEmailList();
+                });
+                this.$emit('closeCreateLogEmailDialog');
             }
         }
     }

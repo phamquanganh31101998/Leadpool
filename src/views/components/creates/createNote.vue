@@ -27,7 +27,7 @@
                         <v-card>
                             <v-card-title>
                                 <v-layout row>
-                                    <v-text-field append-icon="search" label="Search" single-line hide-details>
+                                    <v-text-field append-icon="search" label="Search" single-line hide-details required>
                                     </v-text-field>
                                 </v-layout>
                             </v-card-title>

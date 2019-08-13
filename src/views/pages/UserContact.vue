@@ -210,7 +210,7 @@
                                                             <v-list-tile @click="createLogCall = true">
                                                                 <v-list-tile-title>Log a call</v-list-tile-title>
                                                             </v-list-tile>
-                                                            <v-list-tile @click="createLogMail = true">
+                                                            <v-list-tile @click="createLogEmail = true">
                                                                 <v-list-tile-title>Log an email</v-list-tile-title>
                                                             </v-list-tile>
                                                             <v-list-tile @click="createLogMeet= true">
@@ -224,32 +224,18 @@
                                                                 <span class="headline">Log call</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact"/>
+                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogCall = false">Log active</v-btn>
-                                                                <v-btn color="red" small flat
-                                                                    @click="createLogCall = false">Cancel</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
-                                                    <v-dialog v-model="createLogMail" persistent max-width="700px">
+                                                    <v-dialog v-model="createLogEmail" persistent max-width="700px">
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Log email</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact"/>
+                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogMail = false">Log active</v-btn>
-                                                                <v-btn color="red" small flat
-                                                                    @click="createLogMail = false">Cancel</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                     <v-dialog v-model="createLogMeet" persistent max-width="700px">
@@ -500,9 +486,9 @@
                                 </v-menu>
                             </v-layout>
                             <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email class="mt-3" />
+                            <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task class="mt-3" />
-                            <call class="mt-3" />
+                            <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -516,12 +502,12 @@
                         <v-tab-item value="tab-3">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3">Log Email</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Log Email</v-btn>
                                     <v-btn dark depressed small color="#425b76" @click="createEmail= true">Create Email
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <email />
+                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-4">
                             <v-layout row>
@@ -531,7 +517,7 @@
                                         call</v-btn>
                                 </v-flex>
                             </v-layout>
-                            <call />
+                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-5">
                             <v-layout row>
@@ -583,7 +569,7 @@
             createTask: false,
             createMeet: false,
             createLogCall: false,
-            createLogMail: false,
+            createLogEmail: false,
             createLogMeet: false,
             items: [{
                     title: 'Lifecycle stage',

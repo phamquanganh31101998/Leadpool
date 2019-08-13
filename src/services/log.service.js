@@ -3,7 +3,7 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default {
-    getLogsByType, createLog
+    getLogsByType, createLog, deleteLog
 }
 
 function getLogsByType(idAccount, idContact, type){
@@ -15,6 +15,21 @@ function getLogsByType(idAccount, idContact, type){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function createLog(){
+function createLog(idAccount, idContact, log){
+    let request = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(log)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/logs`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
 
+function deleteLog(idAccount, idContact, idLog){
+    let request = {
+        method: 'DELETE',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/logs/${idLog}`
+    return responseService.fetchRetry(endpoint, request, 1)
 }

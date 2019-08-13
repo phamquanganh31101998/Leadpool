@@ -135,7 +135,6 @@ export default {
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
-                console.log(result.response);
                 this.notes = result.response;
                 this.notes = [...this.notes];
             })

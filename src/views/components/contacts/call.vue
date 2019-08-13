@@ -2,7 +2,7 @@
     <v-layout row>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
-            <template>
+            <template v-for="call in calls">
                 <v-hover>
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
@@ -44,7 +44,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Delete
+                                                            <a color="indigo" @click="deleteLogCall(call.logId)">Delete
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -54,17 +54,15 @@
                                         <v-flex xs5 sm5 lg4 xl4>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on }">
-                                                    <span v-on="on">18 Jun 2019 at 15:21
-                                                        GMT+7</span>
+                                                    <span v-on="on">{{coverTime(call.createdAt)}}</span>
                                                 </template>
-                                                <span small>Tuesday, 18 June 2019 at 15:21
-                                                    GMT+7</span>
+                                                <span small>{{coverTimeTooltip(call.createdAt)}}</span>
                                             </v-tooltip>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 sm12 lg12 xl12 class="mt-2">
-                                    <h3 class="pl-4 ml-2">hello</h3>
+                                    <h3 class="pl-4 ml-2">{{call.log}}</h3>
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
@@ -116,21 +114,38 @@
                                             <v-icon>person</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>join middeware</span>
+                                    <span>{{call.createdBy}}</span>
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs8 sm9 md9 lg10 xl10>
-                                <p class="mt-2 pt-2"><strong>join ichigo </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> left a call</p>
                             </v-flex>
                         </v-layout>
                     </v-card>
                 </v-hover>
             </template>
+            <br>
+            <br>
+            <br>
+            <br>
         </v-flex>
     </v-layout>
 </template>
 <script>
+    import moment from 'moment'
+    import logService from '../../../services/log.service'
+    import { eventBus } from '../../../main';
     export default {
+        props: {
+            idAccount: {
+                type: String,
+                default: null,
+            },
+            idContact: {
+                type: String,
+                default: null,
+            }
+        },
         data: vm => ({
             divider: true,
             date: new Date().toISOString().substr(0, 10),
@@ -139,7 +154,8 @@
             time: null,
             menu2: false,
             modal2: false,
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'left voicemail', 'connected']
+            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
+            calls: []
         }),
         computed: {
             computedDateFormatted() {
@@ -165,7 +181,34 @@
 
                 const [month, day, year] = date.split('/')
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-            }
+            },
+            getCallsList(){
+                let type = 'call';
+                logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
+                    console.log(result);
+                    this.calls = result.response;
+                    this.calls = [...this.calls];
+                })
+            },
+            deleteLogCall(idLog){
+                logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    eventBus.updateLogCallList();
+                })
+            },
+            coverTime(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('DD/MM/YYYY')
+            },
+            coverTimeTooltip(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
+            },
+        },
+        created(){
+            this.getCallsList();
+            eventBus.$on('updateLogCallList', ()=>{
+                this.getCallsList();
+            })
         }
     }
 </script>
