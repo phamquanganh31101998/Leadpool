@@ -237,11 +237,11 @@
                                             <v-icon>person</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>join middeware</span>
+                                    <span>{{emailLog.createdBy}}</span>
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs8 sm9 md9 lg10 xl10>
-                                <p class="mt-2 pt-2"><strong>join ichigo </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> left a call</p>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -260,7 +260,7 @@
 <script>
     import moment from 'moment'
     import logService from '../../../services/log.service'
-    import { eventBus } from '../../../main';
+    import { eventBus } from '../../../eventBus';
     export default {
         props: {
             idAccount: {

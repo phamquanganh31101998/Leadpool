@@ -2,16 +2,16 @@
     <v-layout row>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
-            <template v-for="call in calls">
+            <template v-for="meetLog in meetLogs">
                 <v-hover>
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
                             <v-layout row wrap>
                                 <v-flex xs4 sm4 md4 lg3 xl3>
                                     <v-icon small left>
-                                        phone
+                                        mail
                                     </v-icon>
-                                    <span class="">Logged call</span>
+                                    <span class="">Logged meet</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -44,7 +44,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLogCall(call.logId)">Delete
+                                                            <a color="indigo" >Delete
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -54,15 +54,15 @@
                                         <v-flex xs5 sm5 lg4 xl4>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on }">
-                                                    <span v-on="on">{{coverTime(call.createdAt)}}</span>
+                                                    <span v-on="on">{{coverTime(meetLog.createdAt)}}</span>
                                                 </template>
-                                                <span small>{{coverTimeTooltip(call.createdAt)}}</span>
+                                                <span small>{{coverTimeTooltip(meetLog.createdAt)}}</span>
                                             </v-tooltip>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 sm12 lg12 xl12 class="mt-2">
-                                    <h3 class="pl-4 ml-2">{{call.log}}</h3>
+                                    <h3 class="pl-4 ml-2">{{meetLog.log}}</h3>
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
@@ -70,35 +70,57 @@
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
+
+
+
+
+
+
+
+
+
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <p>Outcome</p>
-                                        <v-select :items="items" label="Select an outcome"></v-select>
-                                    </v-flex>
-                                    <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offseo-xl1>
                                         <p>Date</p>
-                                        <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false"
+                                        <v-menu ref="menu1" v-model="meetLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="dateFormatted" label="Date" persistent-hint
-                                                    prepend-icon="event" @blur="date = parseDate(dateFormatted)" v-on="on">
+                                                <v-text-field v-model="meetLog.dateLog" label="Date" persistent-hint
+                                                    prepend-icon="event" @blur="date = meetLog.dateToPut" v-on="on">
                                                 </v-text-field>
                                             </template>
-                                            <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                                            <v-date-picker v-model="meetLog.dateLog" no-title @input="meetLog.menu1Log = false"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
-                                    <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offseo-xl1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
                                         <p>Time</p>
-                                        <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent lazy
+                                        <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="time" label="Times"
+                                                <v-text-field v-model="meetLog.timeLog" label="Times"
                                                     prepend-icon="access_time" readonly v-on="on"></v-text-field>
                                             </template>
-                                            <v-time-picker v-if="modal2" v-model="time" full-width>
+                                            <v-time-picker v-if="meetLog.modal2Log" v-model="meetLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
-                                                <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
+                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Cancel</v-btn>
+                                                <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
+                                                <v-btn flat color="red" @click="meetLog.modal2Log = false">OK</v-btn>
                                             </v-time-picker>
                                         </v-dialog>
                                     </v-flex>
@@ -114,11 +136,11 @@
                                             <v-icon>person</v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{call.createdBy}}</span>
+                                    <span>{{meetLog.createdBy}}</span>
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs8 sm9 md9 lg10 xl10>
-                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> left a call</p>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -129,6 +151,8 @@
             <br>
             <br>
         </v-flex>
+        <br>
+        <br>
     </v-layout>
 </template>
 <script>
@@ -148,53 +172,52 @@
         },
         data: vm => ({
             divider: true,
-            date: new Date().toISOString().substr(0, 10),
-            dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-            menu1: false,
-            time: null,
-            menu2: false,
-            modal2: false,
-            calls: [],
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
-            item: 'No answer',
+            show: false,
+            dateLog: new Date().toISOString().substr(0, 10),
+            dateFormattedLog: vm.formatDate(new Date().toISOString().substr(0, 10)),
+            menu1Log: false,
+            timeLog: null,
+            menu2Log: false,
+            modal2Log: false,
+            meetLogs: []
         }),
         computed: {
             computedDateFormatted() {
-                return this.formatDate(this.date)
+                return this.formatDate(this.dateLog)
             }
         },
-
         watch: {
-            date(val) {
-                this.dateFormatted = this.formatDate(this.date)
+            dateLog(val) {
+                this.dateFormattedLog = this.formatDate(this.dateLog)
             }
         },
-
         methods: {
+            getMeetLogsList(){
+                let type = 'meeting';
+                logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
+                    console.log(result);
+                    for (let i = 0;i<result.response.length;i++){
+                        result.response[i].dateToPut = this.coverTime(result.response[i].time);
+                        result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
+                        result.response[i].menu1Log = false;
+                        result.response[i].modal2Log = false;
+                        result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
+                        result.response[i].timeLog = '08:00';
+                    }
+                    console.log(result.response);
+                    this.meetLogs = result.response;
+                    this.meetLogs = [...this.meetLogs];
+                })
+            },
             formatDate(date) {
                 if (!date) return null
-
                 const [year, month, day] = date.split('-')
                 return `${month}/${day}/${year}`
             },
             parseDate(date) {
                 if (!date) return null
-
                 const [month, day, year] = date.split('/')
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-            },
-            getCallsList(){
-                let type = 'call';
-                logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
-                    console.log(result);
-                    this.calls = result.response;
-                    this.calls = [...this.calls];
-                })
-            },
-            deleteLogCall(idLog){
-                logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
-                    eventBus.updateLogCallList();
-                })
             },
             coverTime(time){
                 if (_.isNull(time)) return '';
@@ -204,16 +227,20 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
             },
+            coverTimeHourOnly(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('hh:mm A')
+            }
         },
         created(){
-            this.getCallsList();
-            eventBus.$on('updateLogCallList', ()=>{
-                this.getCallsList();
+            this.getMeetLogsList();
+            eventBus.$on('updateLogMeetList', ()=>{
+                this.getMeetLogsList();
             })
         },
         destroyed(){
-            eventBus.$off('updateLogCallList', ()=>{
-                this.getCallsList();
+            eventBus.$off('updateLogMeetList', ()=>{
+                this.getMeetLogsList();
             })
         }
     }

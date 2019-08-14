@@ -46,7 +46,7 @@
     </v-container>
 </template>
 <script>
-    import {eventBus} from '../../../main'
+    import {eventBus} from '../../../eventBus'
     import noteService from '../../../services/note.service'
     export default {
         props: {

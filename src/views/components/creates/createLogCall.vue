@@ -86,7 +86,7 @@
 </template>
 <script>
     import logService from '../../../services/log.service'
-    import { eventBus } from '../../../main';
+    import { eventBus } from '../../../eventBus';
     export default {
         props: {
             idAccount: {

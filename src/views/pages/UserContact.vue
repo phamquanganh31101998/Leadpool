@@ -433,6 +433,9 @@
                         <v-tab href="#tab-5">
                             Tasks
                         </v-tab>
+                        <v-tab href="#tab-6">
+                            Meets
+                        </v-tab>
                         <v-tab-item value="tab-1">
                             <v-layout row>
                                 <span class="mt-2 ml-3">Filter by:</span>
@@ -528,6 +531,16 @@
                             </v-layout>
                             <task />
                         </v-tab-item>
+                        <v-tab-item value="tab-6">
+                            <v-layout row>
+                                <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
+                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Log Meet</v-btn>
+                                    <v-btn dark depressed small color="#425b76" @click="createMeet=true">Create Meet
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                        </v-tab-item>
                     </v-tabs>
                 </v-layout>
             </v-flex>
@@ -535,11 +548,12 @@
     </v-content>
 </template>
 <script>
-    import {eventBus} from '../../main'
+    import {eventBus} from '../../eventBus'
     import note from '../components/contacts/note'
     import email from '../components/contacts/email'
     import task from '../components/contacts/task'
     import call from '../components/contacts/call'
+    import meet from '../components/contacts/meet'
     import activity from '../components/contacts/activity'
     import logs from '../components/logs/history'
     import newNote from '../components/creates/createNote'
@@ -735,6 +749,7 @@
             task,
             activity,
             call,
+            meet,
             logs,
             newEmail,
             newNote,
@@ -742,7 +757,8 @@
             newTask,
             newLogEmail,
             newLogCall,
-            newLogMeet
+            newLogMeet,
+        
         }
     }
     // đã làm được phần lấy list thuộc tính

@@ -101,7 +101,7 @@
 <script>
 import moment from 'moment'
 import noteService from '../../../services/note.service'
-import { eventBus } from '../../../main';
+import { eventBus } from '../../../eventBus';
 export default {
     props: {
         idAccount: {
