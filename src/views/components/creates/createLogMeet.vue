@@ -33,7 +33,7 @@
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
             <v-divider :divider="divider"></v-divider>
-            <v-textarea class="mt-2" name="input" label="Describe the meeting..." value=""></v-textarea>
+            <v-textarea class="mt-2" name="input" label="Describe the meeting..." v-model="log"></v-textarea>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
@@ -70,9 +70,19 @@
                 </v-flex>
             </v-layout>
         </v-flex>
+        <br>
+        <br>
+        <v-layout wrap>
+            <v-btn color="blue darken-1" small flat
+                @click="createLogMeet()">Save</v-btn>
+            <v-btn color="red" small flat
+                @click="closeCreateLogMeetDialog()">Close</v-btn>
+        </v-layout>
     </v-layout>
 </template>
 <script>
+    import logService from '../../../services/log.service'
+    import { eventBus } from '../../../eventBus';
     export default {
         data: vm => ({
             divider: true,
@@ -82,10 +92,10 @@
             time: null,
             menu2: false,
             modal2: false,
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'left voicemail', 'connected']
+            log: ''
         }),
         props: {
-            idUser: {
+            idAccount: {
                 type: String,
                 default: null,
             },
@@ -118,6 +128,22 @@
 
                 const [month, day, year] = date.split('/')
                 return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            },
+            closeCreateLogMeetDialog(){
+                this.$emit('closeCreateLogMeetDialog');
+            },
+            createLogMeet(){
+                let data = {
+                    "contactId": this.idContact,
+                    "time":this.date + 'T' + this.time + ':00',
+                    "log": this.log,
+                    "type":"meeting",
+                }
+                logService.createLog(this.idAccount, this.idContact, data).then(result => {
+                    this.log = '';
+                    eventBus.updateLogMeetList();
+                });
+                this.$emit('closeCreateLogMeetDialog');
             }
         }
     }

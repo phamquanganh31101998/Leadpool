@@ -214,7 +214,7 @@
                                                                 <v-list-tile-title>Log an email</v-list-tile-title>
                                                             </v-list-tile>
                                                             <v-list-tile @click="createLogMeet= true">
-                                                                <v-list-tile-title>Log a metting</v-list-tile-title>
+                                                                <v-list-tile-title>Log a meeting</v-list-tile-title>
                                                             </v-list-tile>
                                                         </v-list>
                                                     </v-menu>
@@ -244,15 +244,8 @@
                                                                 <span class="headline">Log meet</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogMeet = false">Log active</v-btn>
-                                                                <v-btn color="red" small flat
-                                                                    @click="createLogMeet = false">Cancel</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>

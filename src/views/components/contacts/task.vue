@@ -15,7 +15,7 @@
                 </v-card-title>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                        <v-btn color="error" outline small class="ml-4">Overdure</v-btn>
+                        <v-btn color="error" outline small class="ml-4">Overdue</v-btn>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-3">
                         <v-layout row>

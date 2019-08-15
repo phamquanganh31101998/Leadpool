@@ -72,7 +72,6 @@
                         "note": this.note
                     }
                 noteService.createNote(this.idAccount, this.idContact, note).then(result => {
-                    console.log(result);
                     this.note = '';
                     eventBus.updateNoteList();
                 });

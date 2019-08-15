@@ -3,7 +3,7 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default {
-    getNotes, createNote, deleteNote
+    getNotes, createNote, deleteNote, updateNote
 }
 
 function getNotes(idAccount, idContact){
@@ -22,6 +22,16 @@ function createNote(idAccount, idContact, note){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function updateNote(idAccount, idContact, note, idNote){
+    let request = {
+        method: 'PUT',
+        body: JSON.stringify(note),
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes/${idNote}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 

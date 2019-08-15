@@ -17,7 +17,7 @@
                                     <v-layout row>
                                         <v-flex xs7 sm7 lg8 xl8>
                                             <v-expand-transition>
-                                                <div>
+                                                <div v-if="hover">
                                                     <v-layout row>
                                                         <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
@@ -64,7 +64,7 @@
                         </v-card-title>
                         <v-layout row wrap>
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <p>{{note.note}}</p>
+                                <v-text-field outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -78,9 +78,12 @@
                                             <span>{{note.createdBy}}</span>
                                         </v-tooltip>
                                     </v-flex>
-                                    <v-flex xs8 sm9 md9 lg10 xl10>
+                                    <v-flex xs7 sm8 md8 lg9 xl9>
                                         <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> left a
                                             note</p>
+                                    </v-flex>
+                                    <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-btn v-if="hover" @click="updateNote(note.note, note.noteId)" outlined :disabled="note.disableSaveButton">Save</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -121,7 +124,6 @@ export default {
     methods: {
         deleteNote(noteId){
             noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
-                console.log(result);
                 eventBus.updateNoteList();
             });
         },
@@ -135,11 +137,21 @@ export default {
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
+                for (let i = 0;i < result.response.length; i++){
+                        result.response[i].disableSaveButton = true;
+                    }
                 this.notes = result.response;
                 this.notes = [...this.notes];
             })
         },
-        
+        updateNote(note, noteId){
+            let body = {
+                "note": note
+            }
+            noteService.updateNote(this.idAccount, this.idContact, body, noteId).then(result => {
+                eventBus.updateNoteList();
+            });
+        }
     },
     created(){
         eventBus.$on('updateNoteList', () => {

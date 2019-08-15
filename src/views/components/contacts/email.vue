@@ -145,7 +145,7 @@
                                         <v-flex xs7 sm7 lg8 xl8>
                                             <v-expand-transition>
                                                 <!-- <div v-if="hover"> -->
-                                                <div>
+                                                <div v-if="hover">
                                                     <v-layout row>
                                                         <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
@@ -171,7 +171,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLogEmail(emailLog.logId)">Delete
+                                                            <a color="indigo" @click="deleteLog(emailLog.logId)">Delete
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -199,29 +199,30 @@
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
                                         <p>Date</p>
-                                        <v-menu ref="menu1" v-model="menu1Log" :close-on-content-click="false"
+                                        <v-menu ref="menu1" v-model="emailLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="dateFormattedLog" label="Date" persistent-hint
-                                                    prepend-icon="event" @blur="date = parseDate(dateFormattedLog)" v-on="on">
+                                                <v-text-field v-model="emailLog.dateLog" label="Date" persistent-hint
+                                                    prepend-icon="event" @blur="date = emailLog.dateToPut" v-on="on">
                                                 </v-text-field>
                                             </template>
-                                            <v-date-picker v-model="dateLog" no-title @input="menu1Log = false"></v-date-picker>
+                                            <v-date-picker v-model="emailLog.dateLog" no-title @input="emailLog.menu1Log = false"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
                                         <p>Time</p>
-                                        <v-dialog ref="dialog" v-model="modal2Log" :return-value.sync="timeLog" persistent lazy
+                                        <v-dialog ref="dialog" v-model="emailLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="timeLog" label="Times"
+                                                <v-text-field v-model="emailLog.timeLog" label="Times"
                                                     prepend-icon="access_time" readonly v-on="on"></v-text-field>
                                             </template>
-                                            <v-time-picker v-if="modal2Log" v-model="timeLog" full-width>
+                                            <v-time-picker v-if="emailLog.modal2Log" v-model="emailLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="modal2Log = false">Cancel</v-btn>
-                                                <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn>
+                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">Cancel</v-btn>
+                                                <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
+                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">OK</v-btn>
                                             </v-time-picker>
                                         </v-dialog>
                                     </v-flex>
@@ -240,8 +241,11 @@
                                     <span>{{emailLog.createdBy}}</span>
                                 </v-tooltip>
                             </v-flex>
-                            <v-flex xs8 sm9 md9 lg10 xl10>
+                            <v-flex xs7 sm8 md8 lg9 xl9>
                                 <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> left a call</p>
+                            </v-flex>
+                            <v-flex xs1 sm1 md1 lg1 xl1>
+                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Save</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -307,13 +311,31 @@
             getEmailLogsList(){
                 let type = 'email';
                 logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
-                    console.log(result);
+                    for (let i = 0;i < result.response.length; i++){
+                        result.response[i].dateToPut = this.coverTime(result.response[i].time);
+                        result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
+                        result.response[i].menu1Log = false;
+                        result.response[i].modal2Log = false;
+                        result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
+                        result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
+                    }
                     this.emailLogs = result.response;
+                    console.log(this.emailLogs);
                     this.emailLogs = [...this.emailLogs];
                 })
             },
-            deleteLogEmail(idLog){
+            deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    eventBus.updateLogEmailList();
+                })
+            },
+            updateLog(date, time, idLog){
+                let body = {
+                    "property": "time",
+                    "value": date + 'T' + time
+                }
+                logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
+                    console.log(result);
                     eventBus.updateLogEmailList();
                 })
             },
@@ -325,6 +347,10 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
             },
+            coverTimeHourOnly(time){
+                if (_.isNull(time)) return '';
+                return moment(time).add(-7, 'h').format('HH:mm')
+            }
         },
         created(){
             this.getEmailLogsList();

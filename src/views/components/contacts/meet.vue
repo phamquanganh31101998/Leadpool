@@ -18,7 +18,7 @@
                                         <v-flex xs7 sm7 lg8 xl8>
                                             <v-expand-transition>
                                                 <!-- <div v-if="hover"> -->
-                                                <div>
+                                                <div v-if="hover">
                                                     <v-layout row>
                                                         <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
@@ -44,7 +44,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" >Delete
+                                                            <a color="indigo" @click="deleteLog(meetLog.logId)">Delete
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -70,15 +70,6 @@
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
-
-
-
-
-
-
-
-
-
                                     <v-flex xs4 sm4 md4 lg3 xl3>
                                         <p>Date</p>
                                         <v-menu ref="menu1" v-model="meetLog.menu1Log" :close-on-content-click="false"
@@ -92,22 +83,6 @@
                                             <v-date-picker v-model="meetLog.dateLog" no-title @input="meetLog.menu1Log = false"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
                                         <p>Time</p>
                                         <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" persistent lazy
@@ -139,8 +114,11 @@
                                     <span>{{meetLog.createdBy}}</span>
                                 </v-tooltip>
                             </v-flex>
-                            <v-flex xs8 sm9 md9 lg10 xl10>
+                            <v-flex xs7 sm8 md8 lg9 xl9>
                                 <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> left a call</p>
+                            </v-flex>
+                            <v-flex xs1 sm1 md1 lg1 xl1>
+                                <v-btn v-if="hover" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Save</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -151,6 +129,8 @@
             <br>
             <br>
         </v-flex>
+        <br>
+        <br>
         <br>
         <br>
     </v-layout>
@@ -192,19 +172,32 @@
             }
         },
         methods: {
+            updateLog(date, time, idLog){
+                let body = {
+                    "property": "time",
+                    "value": date + 'T' + time
+                }
+                logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
+                    console.log(result);
+                    eventBus.updateLogMeetList();
+                })
+            },
+            deleteLog(idLog){
+                logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    eventBus.updateLogMeetList();
+                })
+            },
             getMeetLogsList(){
                 let type = 'meeting';
                 logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
-                    console.log(result);
-                    for (let i = 0;i<result.response.length;i++){
+                    for (let i = 0;i < result.response.length; i++){
                         result.response[i].dateToPut = this.coverTime(result.response[i].time);
                         result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
                         result.response[i].menu1Log = false;
                         result.response[i].modal2Log = false;
                         result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
-                        result.response[i].timeLog = '08:00';
+                        result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
                     }
-                    console.log(result.response);
                     this.meetLogs = result.response;
                     this.meetLogs = [...this.meetLogs];
                 })
@@ -229,14 +222,14 @@
             },
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
-                return moment(time).format('hh:mm A')
+                return moment(time).add(-7, 'h').format('HH:mm')
             }
         },
         created(){
             this.getMeetLogsList();
             eventBus.$on('updateLogMeetList', ()=>{
                 this.getMeetLogsList();
-            })
+            });
         },
         destroyed(){
             eventBus.$off('updateLogMeetList', ()=>{

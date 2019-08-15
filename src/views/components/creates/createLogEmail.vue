@@ -140,7 +140,6 @@
                     "type":"email",
                 }
                 logService.createLog(this.idAccount, this.idContact, data).then(result => {
-                    console.log(result);
                     this.log = '';
                     eventBus.updateLogEmailList();
                 });
