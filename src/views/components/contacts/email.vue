@@ -1,5 +1,5 @@
 <template>
-    <v-layout row>
+    <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
             <template>
@@ -128,6 +128,14 @@
             <br>
             <br>
             <br>
+            <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5 v-if="progressLog">
+                <v-progress-circular
+                    :size="70"
+                    :width="7"
+                    color="grey"
+                    indeterminate
+                ></v-progress-circular>
+            </v-flex>
             <h3>June 2019</h3>
             <template v-for="emailLog in emailLogs">
                 <v-hover>
@@ -285,7 +293,8 @@
             timeLog: null,
             menu2Log: false,
             modal2Log: false,
-            emailLogs: []
+            emailLogs: [],
+            progressLog: true
         }),
         computed: {
             computedDateFormatted() {
@@ -320,8 +329,8 @@
                         result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
                     }
                     this.emailLogs = result.response;
-                    console.log(this.emailLogs);
                     this.emailLogs = [...this.emailLogs];
+                    this.progressLog = false;
                 })
             },
             deleteLog(idLog){
@@ -335,7 +344,6 @@
                     "value": date + 'T' + time
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
-                    console.log(result);
                     eventBus.updateLogEmailList();
                 })
             },

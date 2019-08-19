@@ -20,7 +20,7 @@ const router = new Router({
         component: HomeA,
         props: true,
       }, {
-        path: '/acount/:idUser',
+        path: '/contacts/:idUser',
         name: 'contacts',
         component: Contacts,
         props(route) {

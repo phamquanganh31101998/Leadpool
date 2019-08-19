@@ -1,5 +1,13 @@
 <template>
-    <v-layout row>
+    <v-layout row wrap>
+        <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5 v-if="progressLog">
+            <v-progress-circular
+                :size="70"
+                :width="7"
+                color="grey"
+                indeterminate
+            ></v-progress-circular>
+        </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
             <template v-for="meetLog in meetLogs">
@@ -159,7 +167,8 @@
             timeLog: null,
             menu2Log: false,
             modal2Log: false,
-            meetLogs: []
+            meetLogs: [],
+            progressLog: true
         }),
         computed: {
             computedDateFormatted() {
@@ -200,6 +209,7 @@
                     }
                     this.meetLogs = result.response;
                     this.meetLogs = [...this.meetLogs];
+                    this.progressLog = false;
                 })
             },
             formatDate(date) {

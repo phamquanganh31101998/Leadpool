@@ -485,6 +485,7 @@
                             <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task class="mt-3" />
                             <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>

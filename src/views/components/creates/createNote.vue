@@ -39,7 +39,7 @@
         <br>
         <v-layout wrap>
             <v-btn color="blue darken-1" small flat
-                @click="createNote()">Save</v-btn>
+                @click="createNote()" :disabled="disableSaveButton">Save</v-btn>
             <v-btn color="red" small flat
                 @click="closeCreateNoteDialog">Close</v-btn>
         </v-layout>
@@ -61,8 +61,18 @@
         },
         data(){
             return{
-                note:''
+                note:'',
             }
+        },
+        computed: {
+            disableSaveButton(){
+                if (this.note == ''){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
         },
         methods:{
             createNote(){

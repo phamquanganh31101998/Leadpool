@@ -1,5 +1,13 @@
 <template>
-    <v-layout row>
+    <v-layout row wrap>
+         <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5 v-if="progress">
+            <v-progress-circular
+                :size="70"
+                :width="7"
+                color="grey"
+                indeterminate
+            ></v-progress-circular>
+        </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
             <h3>June 2019</h3>
             <template v-for="call in calls">
@@ -158,6 +166,7 @@
             calls: [],
             items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
             item: 'No answer',
+            progress: true
         }),
         computed: {
             computedDateFormatted() {
@@ -197,6 +206,7 @@
                     }
                     this.calls = result.response;
                     this.calls = [...this.calls];
+                    this.progress = false;
                 })
             },
             deleteLog(idLog){

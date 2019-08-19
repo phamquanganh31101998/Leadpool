@@ -73,7 +73,7 @@
         <br>
         <br>
         <v-layout wrap>
-            <v-btn color="blue darken-1" small flat
+            <v-btn color="blue darken-1" small flat :disabled="disableSaveButton"
                 @click="createLogMeet()">Save</v-btn>
             <v-btn color="red" small flat
                 @click="closeCreateLogMeetDialog()">Close</v-btn>
@@ -107,6 +107,14 @@
         computed: {
             computedDateFormatted() {
                 return this.formatDate(this.date)
+            },
+            disableSaveButton(){
+                if (this.log == ''){
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
         },
 
