@@ -146,11 +146,15 @@ export default {
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
+                console.log(result);
                 for (let i = 0;i < result.response.length; i++){
                         result.response[i].disableSaveButton = true;
                     }
-                this.notes = result.response;
+                this.notes = result.response.reverse();
                 this.notes = [...this.notes];
+                this.progress = false;
+            }).catch (error => {
+                console.log(error);
                 this.progress = false;
             })
         },

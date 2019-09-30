@@ -41,6 +41,5 @@ function deleteNote(idAccount, idContact, idNote){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/notes/${idNote}`
-    console.log(endpoint);
     return responseService.fetchRetry(endpoint, request, 1)
 }

@@ -328,8 +328,11 @@
                         result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
                         result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
                     }
-                    this.emailLogs = result.response;
+                    this.emailLogs = result.response.reverse();
                     this.emailLogs = [...this.emailLogs];
+                    this.progressLog = false;
+                }).catch(error => {
+                    console.log(error);
                     this.progressLog = false;
                 })
             },

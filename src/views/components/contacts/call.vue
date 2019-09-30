@@ -204,8 +204,11 @@
                         result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
                         result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
                     }
-                    this.calls = result.response;
+                    this.calls = result.response.reverse();
                     this.calls = [...this.calls];
+                    this.progress = false;
+                }).catch(error => {
+                    console.log(error);
                     this.progress = false;
                 })
             },
