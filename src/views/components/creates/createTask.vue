@@ -157,7 +157,7 @@
             time: null,
             menu2: false,
             modal2: false,
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'left voicemail', 'connected'],
+            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
             types: ['Email', 'Todo', 'Call'],
             type: 'Todo',
             days: ['The day of','The day before','The week before','Custom Date','No remider'],
