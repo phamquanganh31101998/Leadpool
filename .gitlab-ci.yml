@@ -1,0 +1,25 @@
+image: docker:git
+    
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:dind
+
+stages:
+  - docker-build
+
+docker-build:
+    stage: docker-build
+    before_script:
+        - 'if test "$CI_BUILD_REF_NAME" = "develop"; then cat $DEV_ENV >> $CI_PROJECT_DIR/.env; elif test "$CI_BUILD_REF_NAME" = "release"; then cat $STAG_ENV >> $CI_PROJECT_DIR/.env; else cat $PROD_ENV >> $CI_PROJECT_DIR/.env; fi'
+        - 'ls $CI_PROJECT_DIR'
+    script:
+        - 'docker build -t $REGISTRY_HOST/$IMAGE_NAME:$CI_BUILD_REF_NAME .'
+        - 'docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_HOST'
+        - 'docker push $REGISTRY_HOST/$IMAGE_NAME:$CI_BUILD_REF_NAME'
+    only:
+        refs:
+            - develop
+            - release
+            - master
