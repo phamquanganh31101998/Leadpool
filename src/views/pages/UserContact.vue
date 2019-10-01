@@ -17,33 +17,33 @@
                                             <v-menu offset-y left>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn small flat color="primary" left dark v-on="on">
-                                                        option <v-icon>keyboard_arrow_down</v-icon>
+                                                        Option <v-icon>keyboard_arrow_down</v-icon>
                                                     </v-btn>
                                                 </template>
                                                 <v-list>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>unfollow</v-list-tile-title>
+                                                        <v-list-tile-title>Unfollow</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-divider :divider="divider"></v-divider>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>view all properties</v-list-tile-title>
+                                                        <v-list-tile-title>View all properties</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>view properties history</v-list-tile-title>
-                                                    </v-list-tile>
-                                                    <v-divider :divider="divider"></v-divider>
-                                                    <v-list-tile>
-                                                        <v-list-tile-title>search in Google</v-list-tile-title>
-                                                    </v-list-tile>
-                                                    <v-list-tile>
-                                                        <v-list-tile-title>opt out of email</v-list-tile-title>
+                                                        <v-list-tile-title>View properties history</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-divider :divider="divider"></v-divider>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>merge</v-list-tile-title>
+                                                        <v-list-tile-title>Search in Google</v-list-tile-title>
                                                     </v-list-tile>
                                                     <v-list-tile>
-                                                        <v-list-tile-title>delete</v-list-tile-title>
+                                                        <v-list-tile-title>Opt out of email</v-list-tile-title>
+                                                    </v-list-tile>
+                                                    <v-divider :divider="divider"></v-divider>
+                                                    <v-list-tile>
+                                                        <v-list-tile-title>Merge</v-list-tile-title>
+                                                    </v-list-tile>
+                                                    <v-list-tile>
+                                                        <v-list-tile-title>Delete</v-list-tile-title>
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
@@ -113,13 +113,9 @@
                                                                 <span class="headline">Note</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newNote />
+                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createNote = false">Save Note</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
@@ -178,6 +174,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createEmail = false">Sent</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createEmail = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -212,11 +210,11 @@
                                                             <v-list-tile @click="createLogCall = true">
                                                                 <v-list-tile-title>Log a call</v-list-tile-title>
                                                             </v-list-tile>
-                                                            <v-list-tile @click="createLogMail = true">
+                                                            <v-list-tile @click="createLogEmail = true">
                                                                 <v-list-tile-title>Log an email</v-list-tile-title>
                                                             </v-list-tile>
                                                             <v-list-tile @click="createLogMeet= true">
-                                                                <v-list-tile-title>Log a metting</v-list-tile-title>
+                                                                <v-list-tile-title>Log a meeting</v-list-tile-title>
                                                             </v-list-tile>
                                                         </v-list>
                                                     </v-menu>
@@ -226,28 +224,18 @@
                                                                 <span class="headline">Log call</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogCall />
+                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogCall = false">Log active</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
-                                                    <v-dialog v-model="createLogMail" persistent max-width="700px">
+                                                    <v-dialog v-model="createLogEmail" persistent max-width="700px">
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Log email</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogEmail />
+                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogMail = false">Log active</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                     <v-dialog v-model="createLogMeet" persistent max-width="700px">
@@ -256,13 +244,8 @@
                                                                 <span class="headline">Log meet</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogMeet />
+                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createLogMeet = false">Log active</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
@@ -291,6 +274,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createTask = false">Save Task</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createTask = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -320,6 +305,8 @@
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createMeet = false">Save</v-btn>
+                                                                <v-btn color="red darken-1" small flat
+                                                                    @click="createMeet = false">Cancel</v-btn>
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
@@ -439,6 +426,9 @@
                         <v-tab href="#tab-5">
                             Tasks
                         </v-tab>
+                        <v-tab href="#tab-6">
+                            Meets
+                        </v-tab>
                         <v-tab-item value="tab-1">
                             <v-layout row>
                                 <span class="mt-2 ml-3">Filter by:</span>
@@ -491,10 +481,11 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout>
-                            <note class="mt-3" />
-                            <email class="mt-3" />
+                            <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task class="mt-3" />
-                            <call class="mt-3" />
+                            <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -503,17 +494,17 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <note />
+                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-3">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3">Log Email</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Log Email</v-btn>
                                     <v-btn dark depressed small color="#425b76" @click="createEmail= true">Create Email
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <email />
+                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-4">
                             <v-layout row>
@@ -523,7 +514,7 @@
                                         call</v-btn>
                                 </v-flex>
                             </v-layout>
-                            <call />
+                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-5">
                             <v-layout row>
@@ -534,6 +525,16 @@
                             </v-layout>
                             <task />
                         </v-tab-item>
+                        <v-tab-item value="tab-6">
+                            <v-layout row>
+                                <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
+                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Log Meet</v-btn>
+                                    <v-btn dark depressed small color="#425b76" @click="createMeet=true">Create Meet
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                        </v-tab-item>
                     </v-tabs>
                 </v-layout>
             </v-flex>
@@ -541,10 +542,12 @@
     </v-content>
 </template>
 <script>
+    import {eventBus} from '../../eventBus'
     import note from '../components/contacts/note'
     import email from '../components/contacts/email'
     import task from '../components/contacts/task'
     import call from '../components/contacts/call'
+    import meet from '../components/contacts/meet'
     import activity from '../components/contacts/activity'
     import logs from '../components/logs/history'
     import newNote from '../components/creates/createNote'
@@ -557,7 +560,7 @@
     import contact from '../../services/contacts.service'
     export default {
         props: {
-            idUser: {
+            idAccount: {
                 type: String,
                 default: null,
             },
@@ -574,7 +577,7 @@
             createTask: false,
             createMeet: false,
             createLogCall: false,
-            createLogMail: false,
+            createLogEmail: false,
             createLogMeet: false,
             items: [{
                     title: 'Lifecycle stage',
@@ -671,7 +674,7 @@
         }),
         methods:{
             getDetail(){
-                contact.getdetailContact(this.idUser,this.idContact).then(result =>{
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
                     this.items = [{
                     title: 'Lifecycle stage',
@@ -740,6 +743,7 @@
             task,
             activity,
             call,
+            meet,
             logs,
             newEmail,
             newNote,
@@ -747,7 +751,8 @@
             newTask,
             newLogEmail,
             newLogCall,
-            newLogMeet
+            newLogMeet,
+        
         }
     }
     // đã làm được phần lấy list thuộc tính

@@ -20,7 +20,7 @@ const router = new Router({
         component: HomeA,
         props: true,
       }, {
-        path: '/acount/:idUser',
+        path: '/contacts/:idUser',
         name: 'contacts',
         component: Contacts,
         props(route) {
@@ -31,14 +31,14 @@ const router = new Router({
           return props
       },
       }, {
-        path: '/contacts/:idUser/contact/:idContact',
+        path: '/contacts/:idAccount/contact/:idContact',
         name: 'contact',
         component: UserContacts,
         props(route) {
           const props = {
               ...route.params
           }
-          props.idUser
+          props.idAccount
           props.idContact
           return props
       },

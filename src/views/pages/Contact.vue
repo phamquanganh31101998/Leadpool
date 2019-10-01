@@ -53,7 +53,7 @@
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
-                          <v-text-field v-model="phone" label="Phone number" required>
+                          <v-text-field v-model="phone" label="Phone number" required :rules="phoneRules">
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
@@ -74,7 +74,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-btn color="primary" flat @click="createContacts">Create</v-btn>
-                  <v-btn color="warning" flat @click="checkInfo == false">Close</v-btn>
+                  <v-btn color="warning" flat @click="checkInfo = false">Close</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -90,7 +90,7 @@
             <v-list-tile-title>My Contacts</v-list-tile-title>
           </v-list-tile>
           <v-list-tile @click="dialog = true">
-            <v-list-tile-title>All seve filter<v-icon>keyboard_arrow_right</v-icon>
+            <v-list-tile-title>All saved filter<v-icon>keyboard_arrow_right</v-icon>
             </v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
@@ -114,7 +114,7 @@
           </v-list-tile>
           <v-list-tile @click="">
             <v-list-tile-title>
-              <v-icon>add</v-icon> Add filler
+              <v-icon>add</v-icon> Add filter
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -129,6 +129,10 @@
               <td class="text-xs-center">{{ props.item.phone }}</td>
               <td class="text-xs-center">{{ props.item.leadStatus }}</td>
               <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
+              <td class="text-xs-right text-md-right text-lg-right">
+                <v-btn class="red dark" dark @click="deleteContact(props.item.contactId)">Delete</v-btn>
+                
+              </td>
             </tr>
            
           </template>
@@ -171,6 +175,7 @@
 <script>
   import moment from 'moment'
   import contacts from '../../services/contacts.service'
+import contactsService from '../../services/contacts.service';
   export default {
     props: {
 			idUser: {
@@ -204,10 +209,10 @@
         v => !!v || 'Chưa nhập E-mail',
         v => /.+@.+/.test(v) || 'E-mail không đúng định dạng',
       ],
-      lifecycleStage: null,
+      lifecycleStage: 'Lead',
       lifecycleStages: [
         'Lead',
-        'Sybcriber',
+        'Subcriber',
         'Marketing qualified lead',
         'Sales qualified lead',
         'Opportunity',
@@ -223,6 +228,10 @@
       notifications: false,
       sound: true,
       phone: '',
+      phoneRules: [
+        v => !!v || 'Chưa nhập số điện thoại',
+        v => /^\d{1,}$/.test(v) || 'Không đúng cú pháp'
+      ],
       widgets: false,
       pagination: {
         sortBy: 'name'
@@ -239,7 +248,7 @@
           value: 'calories'
         },
         {
-          text: 'Phone Number)',
+          text: 'Phone Number',
           align: 'center',
           value: 'fat'
         },
@@ -252,11 +261,17 @@
           text: 'Create Date(GMT +7)',
           align: 'center',
           value: 'protein'
+        },
+        {
+          text: 'Delete',
+          align: 'center',
+          value: 'delete'
         }
       ],
       contacts: [],
       page: 1,
       pages: 0,
+      deleteDialog: false
     }),
     methods: {
       createContacts() {
@@ -295,18 +310,21 @@
             "value": this.bussiness
           }
         ]
-        contacts.createContact(this.idUser, contact)
-        this.checkInfo = false
-        this.email = ''
-        this.firstname = ''
-        this.lastname = ''
-        this.phone = ''
-        this.lifecycleStage = ''
-        this.city = ''
-        this.bussiness = ''
-        this.getAllContact()
+        contacts.createContact(this.idUser, contact).then(result => {
+          this.$router.push(this.takeLink(result.response.contactId))
+          this.checkInfo = false
+          this.email = ''
+          this.firstname = ''
+          this.lastname = ''
+          this.phone = ''
+          this.lifecycleStage = ''
+          this.city = ''
+          this.bussiness = ''
+          this.getAllContact()
+        })
       },
       getAllContact() {
+        this.contacts = []
         contacts.getAllContact(this.idUser, this.page).then(result => {
           this.contacts = result.response.results
           this.pages = result.response.totalPage
@@ -318,6 +336,12 @@
       },
       takeLink(idContact){
         return `/contacts/${this.idUser}/contact/${idContact}`;
+      },
+      deleteContact(idContact){
+        contacts.deleteContact(this.idUser, idContact).then(result => {
+          console.log(result);
+          this.getAllContact();
+        })
       }
     },
     computed: {},
