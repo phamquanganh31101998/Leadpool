@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout text-xs-center wrap>
-      <h1>Đây là trang home - chưa có ý tưởng</h1>
+      <h1>Đây là trang home - chưa có ý tưởng gì cả :(</h1>
     </v-layout>
   </v-container>
 </template>
