@@ -38,7 +38,7 @@ export default {
       if(this.token) this.handleSubmit()
       if(this.$store.state.user.token && this.$store.state.user.user){
         let idUser = JSON.parse(this.$store.state.user.user)
-        this.$router.push(`/acount/${idUser.accountId}`)
+        this.$router.push(`/contacts/${idUser.accountId}`)
       }
     },
     computed:{
