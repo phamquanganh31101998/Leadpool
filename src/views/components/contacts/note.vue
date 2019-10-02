@@ -146,7 +146,6 @@ export default {
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
-                console.log(result);
                 for (let i = 0;i < result.response.length; i++){
                         result.response[i].disableSaveButton = true;
                     }
