@@ -91,7 +91,7 @@
                 </v-flex>
                 <v-flex>
                     <p>Assigned to</p>
-                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
+                    <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{chosenName}}
@@ -99,7 +99,7 @@
                         </template>
                         <v-card>
                             <v-card-title>
-                                <v-layout row>
+                                <v-layout row wrap>
                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail"></v-text-field>
                                     </v-flex>
@@ -139,9 +139,30 @@
                                     </a>
                                 </template>
                                 <v-list>
-                                    <v-list-tile v-for="(item, index) in days" :key="index" @click="choiseD(item)">
-                                        <v-list-tile-title>{{ item }}</v-list-tile-title>
+                                    <v-list-tile @click="day = 'The day of'">
+                                        <v-list-tile-title>The day of</v-list-tile-title>
                                     </v-list-tile>
+                                    <v-list-tile @click="day = 'The day before'">
+                                        <v-list-tile-title>The day before</v-list-tile-title>
+                                    </v-list-tile>
+                                    <v-list-tile @click="day = 'The week before'">
+                                        <v-list-tile-title>The week before</v-list-tile-title>
+                                    </v-list-tile>
+                                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="emailReminder.dateMenu">
+                                        <template v-slot:activator="{ on }">
+                                            <v-list-tile @click="day = 'Custom Date'" v-on="on">
+                                                <v-list-tile-title>Custom Date</v-list-tile-title>
+                                            </v-list-tile>
+                                        </template>
+                                        <v-date-picker v-model="emailReminder.date" no-title @input="emailReminder.dateMenu = false"></v-date-picker>
+                                    </v-menu>
+                                    
+                                    <v-list-tile @click="day = 'No reminder'">
+                                        <v-list-tile-title>No reminder</v-list-tile-title>
+                                    </v-list-tile>
+                                    <!-- <v-list-tile v-for="(item, index) in days" :key="index" @click="choiseD(item)">
+                                        <v-list-tile-title>No reminder</v-list-tile-title>
+                                    </v-list-tile> -->
                                 </v-list>
                             </v-menu>
                             <v-dialog ref="emailReminderDialog" v-model="emailReminder.modal2" :return-value.sync="emailReminder.time" persistent lazy full-width
@@ -194,15 +215,10 @@
                     @click="closeCreateTaskDialog()">Close</v-btn>
             </v-layout>
         </v-flex>
-        <v-menu ref="emailReminderMenu1" v-model="emailReminder.dateMenu" :close-on-content-click="false" :nudge-right="40" lazy
+        <!-- <v-menu ref="emailReminderMenu1" v-model="emailReminder.dateMenu" :close-on-content-click="false" :nudge-right="40" lazy
             transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-            <!-- <template v-slot:activator="{ on }">
-                <v-text-field v-model="dateFormatted" label="Due Date" persistent-hint prepend-icon="event"
-                    @blur="date = parseDate(dateFormatted)" v-on="on">
-                </v-text-field>
-            </template> -->
             <v-date-picker v-model="emailReminder.date" no-title @input="emailReminder.dateMenu = false"></v-date-picker>
-        </v-menu>
+        </v-menu> -->
     </v-layout>
 </template>
 <script>
@@ -296,7 +312,7 @@
                 if (!date) return null
 
                 const [year, month, day] = date.split('-')
-                return `${month}/${day}/${year}`
+                return `${day}/${month}/${year}`
             },
             parseDate(date) {
                 if (!date) return null

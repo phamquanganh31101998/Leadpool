@@ -34,12 +34,12 @@ function getTask(idAccount, idContact){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function updateTask(idAccount, idTask, body){
+function updateTask(idAccount, idContact, idTask, body){
     let request = {
         method: 'PUT',
         body: JSON.stringify(body),
         headers: authHeader()
     };
-    let endpoint = `${config.apiContact}/${idAccount}/tasks/${idTask}`
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/tasks/${idTask}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

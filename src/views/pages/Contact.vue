@@ -130,8 +130,7 @@
               <td class="text-xs-center">{{ props.item.leadStatus }}</td>
               <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
               <td class="text-xs-right text-md-right text-lg-right">
-                <v-btn class="red dark" dark @click="deleteContact(props.item.contactId)">Delete</v-btn>
-                
+                <v-btn class="red" outlined  dark @click="deleteContact(props.item.contactId)">Delete</v-btn>
               </td>
             </tr>
            

@@ -14,12 +14,14 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
-      children: [{
+      children: [
+        {
         path: '/',
         name: 'homeA',
         component: HomeA,
         props: true,
-      }, {
+        }, 
+        {
         path: '/contacts/:idUser',
         name: 'contacts',
         component: Contacts,
@@ -29,8 +31,9 @@ const router = new Router({
           }
           props.idUser
           return props
-      },
-      }, {
+          },
+        }, 
+        {
         path: '/contacts/:idAccount/contact/:idContact',
         name: 'contact',
         component: UserContacts,
@@ -41,7 +44,7 @@ const router = new Router({
           props.idAccount
           props.idContact
           return props
-      },
+         },
       }],
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
