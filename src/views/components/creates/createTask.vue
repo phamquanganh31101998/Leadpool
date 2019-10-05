@@ -10,14 +10,14 @@
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="dateFormatted" label="Due Date" persistent-hint prepend-icon="event"
-                                @blur="date = parseDate(dateFormatted)" v-on="on">
+                                v-on="on">
                             </v-text-field>
                         </template>
                         <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
                     </v-menu>
                 </v-flex>
                 <v-flex xs4 sm3 md2 lg2 xl2>
-                    <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent lazy full-width
+                    <!-- <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent lazy full-width
                         width="290px">
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="time" label="Times" prepend-icon="access_time" readonly v-on="on">
@@ -28,7 +28,8 @@
                             <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
                             <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
                         </v-time-picker>
-                    </v-dialog>
+                    </v-dialog> -->
+                    <v-select v-model="time" :items="timeToChoose"></v-select>
                 </v-flex>
                 
             </v-layout>
@@ -134,9 +135,12 @@
                         <v-flex>
                             <v-menu :close-on-content-click="false" :nudge-width="100" top offset-y>
                                 <template v-slot:activator="{ on }">
-                                    <a color="indigo" v-on="on">
-                                        {{day}}
-                                    </a>
+                                    <span>
+                                        <a color="indigo" v-on="on">
+                                            {{day}}
+                                        </a>
+                                    </span>
+                                    
                                 </template>
                                 <v-list>
                                     <v-list-tile @click="day = 'The day of'">
@@ -165,21 +169,55 @@
                                     </v-list-tile> -->
                                 </v-list>
                             </v-menu>
-                            <v-dialog ref="emailReminderDialog" v-model="emailReminder.modal2" :return-value.sync="emailReminder.time" persistent lazy full-width
-                                width="290px" v-if="!(day == 'No reminder')">
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field v-model="emailReminder.time" prepend-icon="access_time" readonly v-on="on">
-                                    </v-text-field>
-                                </template>
-                                <v-time-picker v-if="emailReminder.modal2 " v-model="emailReminder.time" full-width>
-                                    <v-spacer></v-spacer>
-                                    <v-btn flat color="primary" @click="emailReminder.modal2 = false">Cancel</v-btn>
-                                    <v-btn flat color="primary" @click="$refs.emailReminderDialog.save(emailReminder.time)">OK</v-btn>
-                                </v-time-picker>
-                            </v-dialog>
+                            
                         </v-flex>
                     </v-layout>
                    
+                </v-flex>
+                <v-flex v-if="day!='No reminder'">
+                    <p>Time</p>
+                    <v-menu :close-on-content-click="false" :nudge-right="40" lazy
+                        transition="scale-transition" offset-y full-width >
+                        <template v-slot:activator="{ on }">
+                            <!-- <v-text-field v-model="emailReminder.time" prepend-icon="access_time" readonly v-on="on">
+                            </v-text-field> -->
+                            <span>
+                                <a color="indigo" v-on="on">
+                                    {{emailReminder.time}}
+                                </a>
+                            </span>
+                        </template>
+                        <v-select v-model="emailReminder.time" :items="timeToChoose" style="backgroundColor: white; padding: 10px; width: 80px;"></v-select>
+                    </v-menu>
+                    <!-- <v-dialog ref="emailReminderDialog" :return-value.sync="emailReminder.time" lazy full-width
+                        width="290px" v-if="!(day == 'No reminder')">
+                        <template v-slot:activator="{ on }"> -->
+                            <!-- <v-text-field v-model="emailReminder.time" prepend-icon="access_time" readonly v-on="on">
+                            </v-text-field> -->
+                            <!-- <span>
+                                <a color="indigo" v-on="on">
+                                    {{emailReminder.time}}
+                                </a>
+                            </span>
+                        </template>
+                        <v-select v-model="emailReminder.time" :items="timeToChoose"></v-select> -->
+                        <!-- <v-time-picker v-if="emailReminder.modal2 " v-model="emailReminder.time" full-width>
+                            <v-spacer></v-spacer>
+                            <v-btn flat color="primary" @click="emailReminder.modal2 = false">Cancel</v-btn>
+                            <v-btn flat color="primary" @click="$refs.emailReminderDialog.save(emailReminder.time)">OK</v-btn>
+                        </v-time-picker> -->
+                    <!-- </v-dialog> -->
+                    <!-- <v-menu :close-on-content-click="false" :nudge-right="40" lazy
+                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                        <template>
+                            <span>
+                                <a color="indigo" v-on="on">
+                                    {{emailReminder.time}}
+                                </a>
+                            </span>
+                        </template>
+                        
+                    </v-menu> -->
                 </v-flex>
                 <v-flex>
                     <p>Queue</p>
@@ -256,6 +294,20 @@
             chosenEmail: '',
             chosenName: '',
             searchEmail: '',
+            timeToChoose: [
+                '00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', 
+                '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45',
+                '04:00', '04:15', '04:30', '04:45', '05:00', '05:15', '05:30', '05:45',
+                '06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45',
+                '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45',
+                '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '11:45',
+                '12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30', '13:45',
+                '14:00', '14:15', '14:30', '14:45', '15:00', '15:15', '15:30', '15:45',
+                '16:00', '16:15', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45',
+                '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45',
+                '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
+                '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
+                ],
             emailReminder: {
                 date: '',
                 dateMenu: false,

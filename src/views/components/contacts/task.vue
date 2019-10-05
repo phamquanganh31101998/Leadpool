@@ -145,6 +145,9 @@
                                                         <!-- <v-flex v-if="task.emailReminder != null" xs2 sm2 md2 lg2 xl2>
                                                             <span>Time</span>
                                                         </v-flex> -->
+                                                        <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                            <span>Time</span>
+                                                        </v-flex>
                                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <span>Queue</span>
                                                         </v-flex>
@@ -194,13 +197,14 @@
                                                                             </a>
                                                                         </template>
                                                                         <v-list>
-                                                                            <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="task.date2">
+                                                                            <v-menu :close-on-content-click="false" offset-y v-model="task.date2" full-width max-width="290px" min-width="290px">
                                                                                 <template v-slot:activator="{ on }">
                                                                                     <v-list-tile v-on="on">
                                                                                         <v-list-tile-title>Custom Date</v-list-tile-title>
                                                                                     </v-list-tile>
                                                                                 </template>
                                                                                 <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')" ></v-date-picker>
+                                                                                   
                                                                             </v-menu>
                                                                             
                                                                             <v-list-tile @click="updateTask(task.taskId, 'emailReminder', '')">
@@ -220,7 +224,24 @@
                                                                 </v-flex> -->
                                                             </v-layout>
                                                             
-                                                            
+                                                        
+                                                        </v-flex>
+                                                        <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                            <span>
+                                                                <v-menu :close-on-content-click="false" offset-y>
+                                                                    <template v-slot:activator="{ on }">
+                                                                        <a color="indigo" v-on="on" >
+                                                                            {{task.emailReminderTime}}
+                                                                        </a>
+                                                                    </template>
+                                                                    <v-select
+                                                                        style="backgroundColor: white; padding: 10px; width: 100px;"
+                                                                        v-model="task.emailReminderTime"
+                                                                        :items="timeToChoose"
+                                                                        @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
+                                                                    ></v-select>
+                                                                </v-menu>
+                                                            </span>
                                                         </v-flex>
                                                         <!-- <v-flex v-if="task.emailReminder != null" xs2 sm2 md2 lg2 xl2>
                                                             <span>
@@ -307,9 +328,14 @@
                                                             <span>Assigned to</span>
                                                         </v-layout>
                                                     </v-flex>
-                                                    <v-flex xs6 sm6 md6 lg9 xl8>
+                                                    <v-flex xs3 sm3 md3 lg4 xl4>
                                                         <v-layout row>
                                                             <span>Due date</span>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <v-flex xs3 sm3 md3 lg5 xl4>
+                                                        <v-layout row>
+                                                            <span>Due date's time</span>
                                                         </v-layout>
                                                     </v-flex>
                                                 </v-layout>
@@ -335,7 +361,7 @@
                                         <v-list-tile-content >
                                             <v-list-tile-title>
                                                 <v-layout row>
-                                                    <v-flex xs6 sm6 lg2 xl2>
+                                                    <v-flex xs6 sm6 md6 lg3 xl4>
                                                         <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
                                                             <template v-slot:activator="{ on }">
                                                                 <a color="indigo" v-on="on" style="margin-top: 16px;">
@@ -357,7 +383,7 @@
                                                             </v-card>
                                                         </v-menu>
                                                     </v-flex>
-                                                    <v-flex xs6 sm6 lg10 xl10 class="pl-3">
+                                                    <v-flex xs3 sm3 md3 lg4 xl4 class="pl-3">
                                                         <v-menu v-model="task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
                                                             transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                                             <template v-slot:activator="{ on }">
@@ -367,27 +393,29 @@
                                                             </template>
                                                             <v-date-picker v-model="task.dueDateDate" no-title @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"></v-date-picker>
                                                         </v-menu>
-                                                        <br>
-                                                        <v-menu :close-on-content-click="false" :nudge-right="40" lazy
-                                                            transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                            <template v-slot:activator="{ on }">
-                                                                <a color="indigo" v-on="on">
-                                                                    {{task.dueDateTime}}
-                                                                </a>
-                                                            </template>
-                                                            <v-select
-                                                                style=" width: 20px;"
-                                                                v-model="task.dueDateTime"
-                                                                :items="timeToChoose"
-                                                                @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
-                                                            ></v-select>
-                                                        </v-menu>
+                                                        
                                                         <!-- <v-select
                                                             style=" width: 20px;"
                                                             v-model="task.dueDateTime"
                                                             :items="timeToChoose"
                                                             @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
                                                         ></v-select> -->
+                                                    </v-flex>
+                                                    <v-flex xs3 sm3 md3 lg5 xl4>
+                                                        <v-menu :close-on-content-click="false" :nudge-right="40" lazy
+                                                            transition="scale-transition" offset-y full-width>
+                                                            <template v-slot:activator="{ on }">
+                                                                <a color="indigo" v-on="on">
+                                                                    {{task.dueDateTime}}
+                                                                </a>
+                                                            </template>
+                                                            <v-select
+                                                                style=" width: 80px; padding: 10px 15px;"
+                                                                v-model="task.dueDateTime"
+                                                                :items="timeToChoose"
+                                                                @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
+                                                            ></v-select>
+                                                        </v-menu>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-list-tile-title>
@@ -416,16 +444,19 @@
                                                 <v-layout row>
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Type</span>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Reminder</span>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                                <span>Time</span>
+                                                            </v-flex>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Queue</span>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs4 sm4 md4 lg4 xl4>
                                                                 <span>Created by</span>
                                                             </v-flex>
                                                         </v-layout>
@@ -436,7 +467,7 @@
                                                 <v-layout row>
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>
                                                                     <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                         <template v-slot:activator="{ on }">
@@ -458,7 +489,7 @@
                                                                     </v-menu>
                                                                 </span>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                                                         <v-menu :close-on-content-click="false" :nudge-width="200" top offset-y>
@@ -471,7 +502,7 @@
                                                                                 </a>
                                                                             </template>
                                                                             <v-list>
-                                                                                <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="task.date2">
+                                                                                <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="task.date2" full-width max-width="290px" min-width="290px">
                                                                                     <template v-slot:activator="{ on }">
                                                                                         <v-list-tile v-on="on">
                                                                                             <v-list-tile-title>Custom Date</v-list-tile-title>
@@ -497,10 +528,27 @@
                                                                     </v-flex> -->
                                                                 </v-layout>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                                <span>
+                                                                    <v-menu :close-on-content-click="false" offset-y>
+                                                                        <template v-slot:activator="{ on }">
+                                                                            <a color="indigo" v-on="on" >
+                                                                                {{task.emailReminderTime}}
+                                                                            </a>
+                                                                        </template>
+                                                                        <v-select
+                                                                            style="backgroundColor: white; padding: 10px; width: 100px;"
+                                                                            v-model="task.emailReminderTime"
+                                                                            :items="timeToChoose"
+                                                                            @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
+                                                                        ></v-select>
+                                                                    </v-menu>
+                                                                </span>
+                                                            </v-flex>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>None</span>
                                                             </v-flex>
-                                                            <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-flex xs4 sm4 md4 lg4 xl4>
                                                                 <span>{{task.createdByUser}}</span>
                                                             </v-flex>
                                                         </v-layout>

@@ -168,15 +168,15 @@
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-text>
-                                                                <newEmail />
+                                                                <newEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
+                                                            <!-- <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createEmail = false">Sent</v-btn>
                                                                 <v-btn color="red" small flat
                                                                     @click="createEmail = false">Cancel</v-btn>
-                                                            </v-card-actions>
+                                                            </v-card-actions> -->
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
