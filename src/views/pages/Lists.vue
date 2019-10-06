@@ -34,19 +34,16 @@
         </v-layout>
         
         <v-divider class="mt-4" :divider="divider"></v-divider>
+        <br>
+        <br>
         <v-data-table
             :headers="headersLists"
             :items="lists"
             :search="search"
             :hide-headers="true"
-            class="elevation-1"
+            class="elevation-1 mt-6"
             v-if="!listDetail"
             >
-            <template v-slot:header>
-                <td :colspan="headersLists.length">
-                    <strong>This is an extra footer</strong>
-                </td>
-            </template>
             <template v-slot:items="props">
                 <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)" style="font-size: 20px;">{{ props.item.name }}</a></td>
             </template>
@@ -78,16 +75,7 @@ export default {
                     value: 'name'
                 },
             ],
-            lists: [
-                {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0,
-                    iron: '1%'
-                },
-            ],
+            lists: [],
             listDetail: false,
             currentUser: null
         }

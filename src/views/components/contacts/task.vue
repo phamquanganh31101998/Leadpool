@@ -335,7 +335,7 @@
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg5 xl4>
                                                         <v-layout row>
-                                                            <span>Due date's time</span>
+                                                            <span>Time</span>
                                                         </v-layout>
                                                     </v-flex>
                                                 </v-layout>
