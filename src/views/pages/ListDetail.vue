@@ -161,6 +161,7 @@ export default {
     },
     data(){
         return {
+            currentUser: null,
             divider: true,
             search: '',
             allContacts: [
@@ -501,10 +502,16 @@ export default {
         }
     },
     methods: {
-        getContacts(){
-            listService.findContactByCondition(this.idAccount, this.list.conditions).then(result => {
-                console.log(result);
-            })
+        getAllContacts(){
+            // listService.findContactByCondition(this.idAccount, this.list.conditions).then(result => {
+            //     console.log(result);
+            // })
+            let email = this.currentUser.username;
+            for (let i = 0; i < this.result.response.length;i++){
+                if(this.result.response[i].email == email){
+                    this.allContacts.push(this.result.response[i]);
+                }
+            }
         },
         getThisList(){
             listService.getList(this.idAccount).then(result => {
@@ -587,11 +594,15 @@ export default {
         goToContactPage(idContact){
             let link = `/contacts/${this.idAccount}/contact/${idContact}`;
             this.$router.push(link);
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
         }
     },
     created(){
         // this.getThisList();
         // this.appendSomething();
+        this.getCurrentUser();
     }
 }
 </script>

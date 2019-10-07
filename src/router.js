@@ -7,6 +7,8 @@ import Contacts from './views/pages/Contact.vue'
 import UserContacts from './views/pages/UserContact.vue'
 import Lists from './views/pages/Lists.vue'
 import ListDetail from './views/pages/ListDetail.vue'
+import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
+import Setting from './views/pages/settings/SettingNavBar.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -70,6 +72,18 @@ const router = new Router({
                 }
                 props.idAccount
                 props.idList
+                return props
+            },
+          },
+          {
+            path: '/settings/:idAccount/users',
+            name: 'usersandteamssetting',
+            component: UsersAndTeamsSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
                 return props
             },
           },
