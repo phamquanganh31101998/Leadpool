@@ -28,7 +28,7 @@ function upgradeToAdmin(idAccount, idUser){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function removeAdminPermission(){
+function removeAdminPermission(idAccount, idUser){
     let request = {
         method: 'DELETE',
         headers: authHeader(),

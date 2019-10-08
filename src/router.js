@@ -7,6 +7,7 @@ import Contacts from './views/pages/Contact.vue'
 import UserContacts from './views/pages/UserContact.vue'
 import Lists from './views/pages/Lists.vue'
 import ListDetail from './views/pages/ListDetail.vue'
+import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
 Vue.use(Router)
@@ -76,9 +77,21 @@ const router = new Router({
             },
           },
           {
-            path: '/settings/:idAccount/users',
-            name: 'usersandteamssetting',
+            path: '/settings/:idAccount',
+            name: 'settings',
             component: UsersAndTeamsSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/myTask',
+            name: 'MyTask',
+            component: MyTask,
             props(route) {
                 const props = {
                     ...route.params

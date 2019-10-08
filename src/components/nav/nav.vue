@@ -67,7 +67,7 @@
           <v-list-tile>
             <v-list-tile-title>Deals</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToMyTaskPage()">
             <v-list-tile-title>Tasks</v-list-tile-title>
           </v-list-tile>
           <v-divider :divider="divider"></v-divider>
@@ -153,6 +153,10 @@
       },
       goToListsPage(){
         let link = `/contacts/${this.currentUser.accountId}/lists`;
+        this.$router.push(link);
+      },
+      goToMyTaskPage(){
+        let link = `/contacts/${this.currentUser.accountId}/myTask`;
         this.$router.push(link);
       }
     },

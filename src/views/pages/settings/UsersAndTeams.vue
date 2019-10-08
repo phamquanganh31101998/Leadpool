@@ -40,15 +40,15 @@
                 </v-layout>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="permissionsDialog" width="50%" persistent transition="dialog-bottom-transition">
+        <v-dialog v-model="permissionsDialog" width="550" persistent transition="dialog-bottom-transition">
             <v-card>
-                <v-card-title>
+                <!-- <v-card-title>
                     <h1>{{openUser.displayName}}</h1>
                 </v-card-title>
-                <v-divider :divider="divider"></v-divider>
+                <v-divider :divider="divider"></v-divider> -->
                 <v-card-text>
                     <v-container>
-                        <v-layout row wrap>
+                        <v-layout row>
                             <v-flex xs2 sm2 md2 lg2 xl2>
                                 <v-avatar
                                     size="80"
@@ -57,12 +57,13 @@
                                     <img :src="openUser.userAvatar" alt="avatar">
                                 </v-avatar>
                             </v-flex>
-                            <v-flex xs10 sm10 md10 lg10 xl10>
-                                <p>{{openUser.displayName}}</p>
+                            <v-flex xs10 sm10 md10 lg10 xl10 class="ml-5">
+                                <h4>{{openUser.displayName}}</h4>
                                 <p>{{openUser.userEmail}}</p>
-                                <p>{{openUser.role}}</p>
+                                <br>
                             </v-flex>
                         </v-layout>
+                        <br>        
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
@@ -71,90 +72,96 @@
                                     <v-tab href="#tab1">Contacts</v-tab>
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
+                                        <br>
                                         <h3>Contacts Access</h3>
                                         <p>All users have a basic level of access. The permissions below apply to contacts, companies, and tasks.</p>
-                                        <v-container>
-                                            <div style="border: 1px solid #E0E0E0">
-                                                <v-layout row wrap>
-                                                    <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                        View
-                                                    </v-flex>
-                                                    <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                        <v-select v-model="contactAccessLevelEx1" style="width: 100%" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', contactAccessLevelEx1)"></v-select>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </div>
-                                            <div style="border: 1px solid #E0E0E0">
-                                                <v-layout row wrap>
-                                                    <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                        Communicate
-                                                    </v-flex>
-                                                    <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                        <v-select style="width: 100%" v-model="contactAccessLevelEx2" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', contactAccessLevelEx2)"></v-select>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </div>
-                                            <div style="border: 1px solid #E0E0E0">
-                                                <v-layout row wrap>
-                                                    <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                        Edit
-                                                    </v-flex>
-                                                    <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
-                                                        <v-select style="width: 100%" v-model="contactAccessLevelEx3" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', contactAccessLevelEx3)"></v-select>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </div>
-                                        </v-container>
+                                        <div style="border: 1px solid #E0E0E0">
+                                            <v-layout row wrap>
+                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                    View
+                                                </v-flex>
+                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                    <v-select :disabled="!enableSetting" v-model="contactAccessLevelEx1" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', contactAccessLevelEx1)"></v-select>
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
+                                        <div style="border: 1px solid #E0E0E0">
+                                            <v-layout row wrap>
+                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                    Communicate
+                                                </v-flex>
+                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="contactAccessLevelEx2" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', contactAccessLevelEx2)"></v-select>
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
+                                        <div style="border: 1px solid #E0E0E0">
+                                            <v-layout row wrap>
+                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                    Edit
+                                                </v-flex>
+                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
+                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="contactAccessLevelEx3" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', contactAccessLevelEx3)"></v-select>
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
                                         
                                     </v-tab-item>
                                     <v-tab-item value="tab2">
-                                        <span>
-                                            <h4>Admin Access</h4>
-                                            <v-switch v-model="isAdmin" @change="changeAdminAccessLevel(openUser.userId, isAdmin)"></v-switch>
-                                        </span>
+                                        <div>
+                                            <v-layout row wrap>
+                                                <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
+                                                    <h3>Admin Access</h3>
+                                                    <p>Set access to account configuration and user management.</p>
+                                                </v-flex>
+                                                <v-flex xs2 sm2 md2 lg2 xl2>
+                                                    <v-switch :disabled="!enableSetting" v-model="isAdmin" @change="changeAdminAccessLevel(openUser.userId, isAdmin)"></v-switch>
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
                                         
-                                        <v-container v-if="isAdmin">
+                                        <template v-if="isAdmin">
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
-                                                    <v-flex xs10 sm10 md10 lg10 xl10>
+                                                    <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
                                                         Add & Edit Users
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch v-model="AddAndEditUsers"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', AddAndEditUsers)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
-                                                    <v-flex xs10 sm10 md10 lg10 xl10>
+                                                    <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
                                                         Add & Edit Teams
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch v-model="AddAndEditTeams"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="AddAndEditTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', AddAndEditTeams)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
-                                                    <v-flex xs10 sm10 md10 lg10 xl10>
+                                                    <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
                                                         Partition By Teams
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch v-model="PartitionByTeams"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', PartitionByTeams)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
-                                                    <v-flex xs10 sm10 md10 lg10 xl10>
+                                                    <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
                                                         Edit Account Defaults
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch v-model="EditAccountDefaults"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', EditAccountDefaults)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
-                                        </v-container>
+                                        </template>
                                     </v-tab-item>
                                 </v-tabs>
                             </v-flex>
@@ -163,7 +170,7 @@
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <v-btn @click="permissionsDialog = false">Close</v-btn>
+                    <v-btn @click="closePermissionDialog()" flat style="color: red;">Close</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -234,17 +241,19 @@ export default {
             contactAccessLevelEx1: 'Everything',
             contactAccessLevelEx2: 'Everything',
             contactAccessLevelEx3: 'Everything',
-            isAdmin: true,
-            AddAndEditUsers: true,
-            AddAndEditTeams: true,
-            PartitionByTeams: true,
-            EditAccountDefaults: true
+            isAdmin: false,
+            AddAndEditUsers: false,
+            AddAndEditTeams: false,
+            PartitionByTeams: false,
+            EditAccountDefaults: false,
+            currentUser: null,
+            enableSetting: false
         }
     },
     methods: {
         findUserByAccount(){
             permissionsService.findUserByAccount(this.idAccount).then(result => {
-                console.log(result);
+                // console.log(result);
                 for (let i = 0; i<result.response.length;i++){
                     
                 result.response[i].number = i;
@@ -292,23 +301,81 @@ export default {
             if(value == true){
                 permissionsService.upgradeToAdmin(this.idAccount, userId).then(result => {
                     console.log(result);
-                }).then(error => {
+                }).catch(error => {
                     console.log(error)
                 })
             }
             else{
                 permissionsService.removeAdminPermission(this.idAccount, userId).then(result => {
                     console.log(result);
-                }).then(error => {
+                }).catch(error => {
                     console.log(error)
                 })
             }
         },
         updateAdminAccessLevel(userId, permissionId, value){
-
+            let accessLevel = 'None';
+            if (value == true){
+                accessLevel = 'Accept'
+            }
+            else{
+                accessLevel = 'None';
+            }
+            let body = {
+                "permissionId": permissionId,
+                "accessLevel": accessLevel
+            }
+            permissionsService.updateAccessLevel(this.idAccount, userId, body).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            console.log(this.currentUser)
+            for(let i = 0; i < this.currentUser.authorities.length;i++){
+                if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT'){
+                    this.enableSetting = true;
+                }
+            }
+        },
+        closePermissionDialog(){
+            const tempArray = [];
+            permissionsService.findUserByAccount(this.idAccount).then(result => {
+                for (let i = 0; i<result.response.length;i++){
+                    result.response[i].number = i;
+                    var role = '';
+                    var obj = result.response[i];
+                    if (obj.groupPermission == null){
+                        role = 'null'
+                    }
+                    else {
+                        for (let k = 0; k < obj.groupPermission.length; k++){
+                            role = role + ' ' + obj.groupPermission[k].name + ' | '
+                        }
+                    }
+                    result.response[i].role = role;
+                }
+                for(let i = 0; i<result.response.length;i++){
+                    if(result.response[i].role != 'null'){
+                        tempArray.push(result.response[i]);
+                    }
+                }
+                for (let i = 0; i<tempArray.length;i++){
+                    if(this.users[i] != tempArray[i]){
+                        this.users[i] = tempArray[i];
+                    }
+                }
+                this.users = [...this.users];
+            }).catch(error => {
+                console.log(error)
+            })
+            this.permissionsDialog = false;
         }
     },
     created(){
+        this.getCurrentUser();
         this.findUserByAccount()
     }
 }

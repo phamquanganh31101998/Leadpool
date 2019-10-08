@@ -33,6 +33,7 @@
                                 <v-btn small fab dark color="grey lighten-1" @click="updateTask(task.taskId, 'status', 'COMPLETED')"><v-icon>done</v-icon></v-btn>
                                 <strong class="mt-3" style="width: 100%">
                                     <v-text-field
+                                        style="fontSize: 18px;"
                                         v-model="task.title"
                                         solo
                                         flat
@@ -43,7 +44,7 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-3">
                             <v-layout row>
-                                <v-flex xs6 sm5 md4 lg3 xl2 class="pl-4">
+                                <v-flex xs7 sm6 md5 lg4 xl3 class="pl-4">
                                     <v-layout row>
                                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                             <span>Assigned to</span>
@@ -85,7 +86,7 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
-                                <v-flex xs6 sm7 md8 lg9 xl10>
+                                <v-flex xs5 sm6 md7 lg8 xl9>
                                     <v-layout row>
                                         <span>Due date</span>
                                     </v-layout>
@@ -93,19 +94,37 @@
                                         <v-menu v-model="task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
                                             transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="task.dueDateDate" 
+                                                <!-- <v-text-field v-model="task.dueDateDate" 
                                                 persistent-hint prepend-icon="event" @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
                                                 v-on="on" style="width: 10px;">
-                                                </v-text-field>
+                                                
+                                                </v-text-field> -->
+                                                <a color="indigo" v-on="on" style="margin-top: 20px; fontSize: 16px;">
+                                                    {{task.dueDateDate}}
+                                                </a>
                                             </template>
                                             <v-date-picker v-model="task.dueDateDate" no-title @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"></v-date-picker>
                                         </v-menu>
-                                        <v-select
-                                            style="margin-left: 20px; width: 20px;"
-                                            v-model="task.dueDateTime"
-                                            :items="timeToChoose"
-                                            @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
-                                        ></v-select>
+                                        <v-menu v-model="task.time1" :close-on-content-click="false" :nudge-right="40" lazy
+                                            transition="scale-transition" offset-y full-width max-width="100px" min-width="100px">
+                                            <template v-slot:activator="{ on }">
+                                                <!-- <v-text-field v-model="task.dueDateDate" 
+                                                persistent-hint prepend-icon="event" @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
+                                                v-on="on" style="width: 10px;">
+                                                
+                                                </v-text-field> -->
+                                                <a color="indigo" v-on="on" style="margin: 20px; fontSize: 16px;">
+                                                    {{task.dueDateTime}}
+                                                </a>
+                                            </template>
+                                            <v-select
+                                                style="margin-left: 10px; width: 70%;"
+                                                v-model="task.dueDateTime"
+                                                :items="timeToChoose"
+                                                @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
+                                            ></v-select>
+                                        </v-menu>
+                                        
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -330,12 +349,12 @@
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg4 xl4>
                                                         <v-layout row>
-                                                            <span>Due date</span>
+                                                            <span class="pl-5">Due date</span>
                                                         </v-layout>
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg5 xl4>
                                                         <v-layout row>
-                                                            <span>Time</span>
+                                                            <span class="pl-4">Time</span>
                                                         </v-layout>
                                                     </v-flex>
                                                 </v-layout>
@@ -425,17 +444,18 @@
                                     <br>
                                     <v-list-tile>
                                         <v-list-tile-content>
-                                                <v-layout row>
-                                                    <v-flex xs12 sm12 md12 lg12 xl12 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                                                        <br>
-                                                        <v-text-field
-                                                            v-model="task.note"
-                                                            solo
-                                                            flat
-                                                            @change="updateTask(task.taskId, 'note', task.note)"
-                                                        ></v-text-field>
-                                                    </v-flex>
-                                                </v-layout>
+                                            <v-layout row style="width: 100%">
+                                                <v-flex xs12 sm12 md12 lg12 xl12 style="width: 100%">
+                                                    <br>
+                                                    <v-text-field
+                                                        v-model="task.note"
+                                                        solo
+                                                        flat
+                                                        @change="updateTask(task.taskId, 'note', task.note)"
+                                                        style="width: 100%"
+                                                    ></v-text-field>
+                                                </v-flex>
+                                            </v-layout>
                                         </v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile class="mt-3">
