@@ -5,8 +5,9 @@ import login from './views/login.vue'
 import HomeA from './views/pages/HomeA.vue'
 import Contacts from './views/pages/Contact.vue'
 import UserContacts from './views/pages/UserContact.vue'
-import Lists from './views/pages/Lists.vue'
-import ListDetail from './views/pages/ListDetail.vue'
+import Lists from './views/pages/lists/Lists.vue'
+import NewList from './views/pages/lists/NewList.vue'
+import ListDetail from './views/pages/lists/ListDetail.vue'
 import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
@@ -55,6 +56,18 @@ const router = new Router({
             path: '/contacts/:idAccount/lists',
             name: 'lists',
             component: Lists,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/lists/newList',
+            name: 'newlist',
+            component: NewList,
             props(route) {
                 const props = {
                     ...route.params

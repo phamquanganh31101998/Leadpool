@@ -2,7 +2,7 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">List Detail</h1>
+                <h1 class="ml-3">Create New List</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -40,9 +40,9 @@
                 <div class="conditions">
                     <v-card>
                         <v-card-text>
-                            <template v-for="(orCondition, orIndex) in conditionsExample">
+                            <template v-for="(orCondition, orIndex) in conditions">
                                 <v-card>
-                                    <v-card-text >
+                                    <v-card-text>
                                         <template v-for="(andCondition, andIndex) in orCondition">
                                             <v-card>
                                                 <v-card-text>
@@ -62,7 +62,11 @@
                                             <br>
                                             <p>AND</p>
                                         </template>
-                                        <!-- <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex)">AND</v-btn> -->
+                                        
+                                        
+                                        
+                                    </v-card-text>
+                                    <v-card-actions>
                                         <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                                             <template v-slot:activator="{ on }">
                                                 <v-btn class="blue" outline round style="color: blue;" v-on="on">AND</v-btn>
@@ -79,31 +83,28 @@
                                                         </v-flex>
                                                         <br>
                                                         <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
-                                                            <template v-for="(val, chipIndex) in newCondition.vchipValue">
-                                                                <v-chip close @input="deleteChip(chipIndex)">{{val}}</v-chip>
-                                                            </template>
-                                                            <v-text-field v-model="newCondition.vchipTextField" @keyup.enter="addNewChip()" placeholder="Nhập rồi nhấn Enter"></v-text-field>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.vchipValue)">AND</v-btn>
+                                                            <v-text-field v-model="newCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
+                                                            
+                                                            <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.vchipTextField)">AND</v-btn>
                                                         </v-flex>
                                                         <v-flex xs12 sm12 md12 lg12 xl12 v-else>
                                                             <v-text-field v-model="newCondition.value" label="Value"></v-text-field>
                                                             <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)">AND</v-btn>
                                                         </v-flex>
                                                     </v-layout>
-                                                    <!-- <v-layout>
-                                                        <v-btn class="blue" outline round style="color: blue;" v-on="on" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value, newCondition.vchipValue)">AND</v-btn>
-                                                    </v-layout> -->
                                                 </v-card-text>
                                             </v-card>
                                         </v-menu>
                                         <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn>
-                                    </v-card-text>
+                                    </v-card-actions>
                                 </v-card>
                                 <br>
                                 <p>OR</p>
                             </template>
-                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()">OR</v-btn>
                         </v-card-text>
+                        <v-card-actions>
+                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()">OR</v-btn>
+                        </v-card-actions>
                     </v-card>
                 </div>
                 
@@ -136,7 +137,7 @@
 </template>
 <script>
 
-import listService from '../../services/list.services'
+import listService from '../../../services/list.services'
 export default {
     props: {
         idAccount: {
@@ -432,10 +433,6 @@ export default {
                         text: 'Lifecycle Stage',
                         value: 'lifecycle_stage'
                     },
-                    // {
-                    //     text: 'Lead Status',
-                    //     value: 'lead_status'
-                    // },
                     {
                         text: 'Contact Owner',
                         value: 'contact_owner'
@@ -468,44 +465,40 @@ export default {
                 newConditionMenu: false
             },
             
-            conditionsExample: 
-            [
+            conditions: 
                 [
-                    {
-                        "conditionId": null,
-                        "object": "Contact",
-                        "property": "city",
-                        "condition": "EQUAL",
-                        "value": "Hà Nội"
-                    },
-                    {
-                        "conditionId": null,
-                        "object": "Contact",
-                        "property": "bussiness",
-                        "condition": "IN",
-                        "value": [
-                            "Hải Hà", "công ty", "bốc họ"
-                        ]
-                    }
-                ],
-                [
-                    {
-                        "conditionId": null,
-                        "object": "Contact",
-                        "property": "lifecycle_stage",
-                        "condition": "LIKE",
-                        "value": "Lead"
-                    }
+                    [
+                        {
+                            "conditionId": null,
+                            "object": "Contact",
+                            "property": "city",
+                            "condition": "EQUAL",
+                            "value": "Hà Nội"
+                        },
+                        {
+                            "conditionId": null,
+                            "object": "Contact",
+                            "property": "bussiness",
+                            "condition": "IN",
+                            "value": [
+                                "Hải Hà", "công ty", "bốc họ"
+                            ]
+                        }
+                    ],
+                    [
+                        {
+                            "conditionId": null,
+                            "object": "Contact",
+                            "property": "lifecycle_stage",
+                            "condition": "LIKE",
+                            "value": "Lead"
+                        }
+                    ]
                 ]
-            ],
-            
         }
     },
     methods: {
         getAllContacts(){
-            // listService.findContactByCondition(this.idAccount, this.list.conditions).then(result => {
-            //     console.log(result);
-            // })
             let email = this.currentUser.username;
             for (let i = 0; i < this.result.response.length;i++){
                 if(this.result.response[i].email == email){
@@ -526,11 +519,11 @@ export default {
             })
         },
         deleteOrCondition(orIndex){
-            this.conditionsExample.splice(orIndex, 1);
+            this.conditions.splice(orIndex, 1);
         },
         deleteAndCondition(orIndex, andIndex){
-            this.conditionsExample[orIndex].splice(andIndex, 1);
-            if(this.conditionsExample[orIndex].length == 0){
+            this.conditions[orIndex].splice(andIndex, 1);
+            if(this.conditions[orIndex].length == 0){
                 this.deleteOrCondition(orIndex);
             }
         },
@@ -554,42 +547,30 @@ export default {
                         ]
                     }
                 ]
-            this.conditionsExample.push(orConditionExample);
+            this.conditions.push(orConditionExample);
         },
         addAndCondition(orIndex, property, conditionConstant, value){
-            var conditionToAdd = {
-                conditionId: null,
-                object: "Contact",
-                property: property,
-                condition: conditionConstant,
-                value: value
+            if(conditionConstant == 'IN'){
+                var conditionToAdd = {
+                    conditionId: null,
+                    object: "Contact",
+                    property: property,
+                    condition: conditionConstant,
+                    value: value.split(",")
+                }
             }
-            this.conditionsExample[orIndex].push(conditionToAdd);
-            
-            // this.newCondition.vchipTextField = '';
-            // this.newCondition.vchipValue = [];
-            this.conditionsExample = [...this.conditionsExample];
-        },
-        addNewChip(){
-            console.log('adding chip');
-            this.newCondition.vchipValue.push(this.newCondition.vchipTextField);
+            else {
+                conditionToAdd = {
+                    conditionId: null,
+                    object: "Contact",
+                    property: property,
+                    condition: conditionConstant,
+                    value: value
+                }
+            }
+            this.conditions[orIndex].push(conditionToAdd);
             this.newCondition.vchipTextField = '';
-        },
-        deleteChip(index){
-            console.log('deleting chip');
-            this.newCondition.vchipValue.splice(index, 1);
-        },
-        appendSomething(){
-            try {
-                var el = document.createElement('html');
-                el.innerHTML = "<p style='color: red;'>abcxyz</p><br><p style='color: red;'>defghi</p>";
-                return el.innerText;
-                // var des = document.getElementById("div1");
-                // des.append("<html><head><title>titleTest</title></head><body><a href='test0'>test01</a><a href='test1'>test02</a><a href='test2'>test03</a></body></html>")
-                // console.log(document);
-            } catch (error) {
-                console.log(error);
-            }
+            this.conditions = [...this.conditions];
         },
         goToContactPage(idContact){
             let link = `/contacts/${this.idAccount}/contact/${idContact}`;
@@ -600,8 +581,6 @@ export default {
         }
     },
     created(){
-        // this.getThisList();
-        // this.appendSomething();
         this.getCurrentUser();
     }
 }
