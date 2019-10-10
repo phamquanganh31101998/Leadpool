@@ -2,32 +2,15 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Create New List</h1>
+                <v-text-field v-model="newListName" placeholder="your list name here..." class="fontSize: 20px;"></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
                         <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
                     </v-flex>
-                
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-dialog max-width="600px">
-                            <template v-slot:activator="{ on }">
-                                <v-btn dark color="warning" v-on="on">Create List</v-btn>
-                            </template>
-                            <v-card>
-                                <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Create contact</span>
-                                </v-card-title>
-                                <v-card-text>
-                                    
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="primary">Create</v-btn>
-                                    <v-btn color="warning">Close</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                        <v-btn dark color="warning" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Create List</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -36,35 +19,51 @@
         <br>
         <br>
         <v-layout row>
-            <v-flex xs12 sm12 md3 lg3 xl3>
+            <v-flex xs12 sm12 md4 lg4 xl4>
                 <div class="conditions">
                     <v-card>
                         <v-card-text>
                             <template v-for="(orCondition, orIndex) in conditions">
                                 <v-card>
+                                    <v-card-title>
+                                        <v-layout row wrap>
+                                            <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
+                                                <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
+                                                    Delete
+                                                </a>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-title>
                                     <v-card-text>
                                         <template v-for="(andCondition, andIndex) in orCondition">
                                             <v-card>
                                                 <v-card-text>
-                                                    <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
-                                                        <template v-for="val in andCondition.value">
-                                                            <v-chip>{{val}}</v-chip>
-                                                        </template>
-                                                    </p>
-                                                    <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                    <v-layout row>
+                                                        <v-flex xs9 sm9 md9 lg9 xl9>
+                                                            <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
+                                                                <template v-for="val in andCondition.value">
+                                                                    <v-chip>{{val}}</v-chip>
+                                                                </template>
+                                                            </p>
+                                                            <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
+                                                            <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                        </v-flex>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
+                                                            <v-tooltip right>
+                                                                <template v-slot:activator="{ on }">
+                                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on">
+                                                                        <v-icon style="color: red;" >clear</v-icon>
+                                                                    </v-btn>
+                                                                </template>
+                                                                <span>Delete this condition</span>
+                                                            </v-tooltip>
+                                                        </v-flex>
+                                                    </v-layout>
                                                 </v-card-text>
-                                                <v-card-actions>
-                                                    <div class="flex-grow-1"></div>
-                                                    <v-btn class="red" outline round style="color: red;" @click="deleteAndCondition(orIndex, andIndex)">Xóa</v-btn>
-                                                </v-card-actions>
                                             </v-card>
                                             <br>
                                             <p>AND</p>
                                         </template>
-                                        
-                                        
-                                        
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
@@ -95,7 +94,7 @@
                                                 </v-card-text>
                                             </v-card>
                                         </v-menu>
-                                        <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn>
+                                        <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
                                     </v-card-actions>
                                 </v-card>
                                 <br>
@@ -106,10 +105,12 @@
                             <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()">OR</v-btn>
                         </v-card-actions>
                     </v-card>
+                    <v-btn dark color="warning" @click="filter()">Filter</v-btn>
                 </div>
+                <br>
                 
             </v-flex>
-            <v-flex xs12 sm12 md9 lg9 xl9>
+            <v-flex xs12 sm12 md8 lg8 xl8>
                 <v-data-table
                     :headers="headersLists"
                     :items="contacts"
@@ -123,7 +124,6 @@
                         <td>{{ props.item.contactOwner }}</td>
                         <td>{{ props.item.city }}</td>
                         <td>{{ props.item.bussiness }}</td>
-                
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
@@ -149,6 +149,16 @@ export default {
             default: null,
         }
     },
+    computed: {
+        disableCreateButton(){
+            if(this.newListName == ''){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    },
     watch: {
         search(){
             this.contacts = [];
@@ -166,220 +176,220 @@ export default {
             divider: true,
             search: '',
             allContacts: [
-                {
-                    "contactId": "5d2d7f2d6c245a71aa021873",
-                    "accountId": "5d1dd258f0aa61074608b0e3",
-                    "teamId": null,
-                    "email": "custom@email.com",
-                    "firstName": "Pham",
-                    "lastName": "Huyen",
-                    "phone": "03124564756",
-                    "contactOwner": "ductbm@adsplus.vn",
-                    "lifecycleStage": "Lead",
-                    "leadStatus": null,
-                    "city": "Hà Nội",
-                    "bussiness": "Công ty kẹo bánh Hải Hà",
-                    "lastActivityDate": null,
-                    "lastContacted": null,
-                    "createdAt": "2019-07-16T07:39:25.951+0000",
-                    "updateAt": "2019-07-16T07:39:25.951+0000",
-                    "createdBy": "minhduc98kl@gmail.com",
-                    "updateBy": "minhduc98kl@gmail.com",
-                    "customValue": {
-                        "source_from_mar": {
-                            "attributeValueId": "5d2d7f2d6c245a71aa021871",
-                            "value": "Tự tìm",
-                            "attribute": {
-                                "attributeId": "5d2d510d6c245a4e7796525a",
-                                "accountId": "5d1dd258f0aa61074608b0e3",
-                                "object": "Contact",
-                                "name": "source_from_mar",
-                                "label": "Source from mar",
-                                "hidden": false,
-                                "description": "nguon khach hang",
-                                "fieldType": "checkbox",
-                                "options": [
-                                    {
-                                        "label": "Option A",
-                                        "value": "option_a"
-                                    },
-                                    {
-                                        "label": "Option B",
-                                        "value": "option_b"
-                                    },
-                                    {
-                                        "label": "Option C",
-                                        "value": "option_c"
-                                    },
-                                    {
-                                        "label": "Option D",
-                                        "value": "option_d"
-                                    }
-                                ],
-                                "dataType": "String",
-                                "displayOrder": 1,
-                                "defaultValue": null,
-                                "createdAt": "2019-07-16T04:22:37.022+0000",
-                                "updateAt": null,
-                                "createdBy": "ductbm@adsplus.vn",
-                                "updatedBy": null,
-                                "required": false
-                            }
-                        },
-                        "ngay_hen_ky": {
-                            "attributeValueId": "5d2d7f2d6c245a71aa021872",
-                            "value": "2019-07-18T17:00:00.000+0000",
-                            "attribute": {
-                                "attributeId": "5d2d51d96c245a4e7796525b",
-                                "accountId": "5d1dd258f0aa61074608b0e3",
-                                "object": "Contact",
-                                "name": "ngay_hen_ky",
-                                "label": "Ngày hẹn ký",
-                                "hidden": false,
-                                "description": "hẹn ký ",
-                                "fieldType": "date picker",
-                                "options": null,
-                                "dataType": "Date",
-                                "displayOrder": 1,
-                                "defaultValue": null,
-                                "createdAt": "2019-07-16T04:26:01.222+0000",
-                                "updateAt": null,
-                                "createdBy": "ductbm@adsplus.vn",
-                                "updatedBy": null,
-                                "required": false
-                            }
-                        }
-                    }
-                },
-                {
-                    "contactId": "5d8ecfe05908010001eef5a6",
-                    "accountId": "5d1dd258f0aa61074608b0e3",
-                    "teamId": null,
-                    "email": "anhpq.adsplus@gmail.com",
-                    "firstName": "Phạm",
-                    "lastName": "Quang Anh",
-                    "phone": "0852665998",
-                    "contactOwner": "anhpq.adsplus@gmail.com",
-                    "lifecycleStage": "Lead",
-                    "leadStatus": null,
-                    "city": "Hà Nội",
-                    "bussiness": "Thực tập sinh không lương",
-                    "lastActivityDate": null,
-                    "lastContacted": null,
-                    "createdAt": "2019-09-28T03:13:36.569+0000",
-                    "updateAt": "2019-09-28T03:13:36.569+0000",
-                    "createdBy": "anhpq.adsplus@gmail.com",
-                    "updateBy": "anhpq.adsplus@gmail.com",
-                    "customValue": {}
-                }
+                // {
+                //     "contactId": "5d2d7f2d6c245a71aa021873",
+                //     "accountId": "5d1dd258f0aa61074608b0e3",
+                //     "teamId": null,
+                //     "email": "custom@email.com",
+                //     "firstName": "Pham",
+                //     "lastName": "Huyen",
+                //     "phone": "03124564756",
+                //     "contactOwner": "ductbm@adsplus.vn",
+                //     "lifecycleStage": "Lead",
+                //     "leadStatus": null,
+                //     "city": "Hà Nội",
+                //     "bussiness": "Công ty kẹo bánh Hải Hà",
+                //     "lastActivityDate": null,
+                //     "lastContacted": null,
+                //     "createdAt": "2019-07-16T07:39:25.951+0000",
+                //     "updateAt": "2019-07-16T07:39:25.951+0000",
+                //     "createdBy": "minhduc98kl@gmail.com",
+                //     "updateBy": "minhduc98kl@gmail.com",
+                //     "customValue": {
+                //         "source_from_mar": {
+                //             "attributeValueId": "5d2d7f2d6c245a71aa021871",
+                //             "value": "Tự tìm",
+                //             "attribute": {
+                //                 "attributeId": "5d2d510d6c245a4e7796525a",
+                //                 "accountId": "5d1dd258f0aa61074608b0e3",
+                //                 "object": "Contact",
+                //                 "name": "source_from_mar",
+                //                 "label": "Source from mar",
+                //                 "hidden": false,
+                //                 "description": "nguon khach hang",
+                //                 "fieldType": "checkbox",
+                //                 "options": [
+                //                     {
+                //                         "label": "Option A",
+                //                         "value": "option_a"
+                //                     },
+                //                     {
+                //                         "label": "Option B",
+                //                         "value": "option_b"
+                //                     },
+                //                     {
+                //                         "label": "Option C",
+                //                         "value": "option_c"
+                //                     },
+                //                     {
+                //                         "label": "Option D",
+                //                         "value": "option_d"
+                //                     }
+                //                 ],
+                //                 "dataType": "String",
+                //                 "displayOrder": 1,
+                //                 "defaultValue": null,
+                //                 "createdAt": "2019-07-16T04:22:37.022+0000",
+                //                 "updateAt": null,
+                //                 "createdBy": "ductbm@adsplus.vn",
+                //                 "updatedBy": null,
+                //                 "required": false
+                //             }
+                //         },
+                //         "ngay_hen_ky": {
+                //             "attributeValueId": "5d2d7f2d6c245a71aa021872",
+                //             "value": "2019-07-18T17:00:00.000+0000",
+                //             "attribute": {
+                //                 "attributeId": "5d2d51d96c245a4e7796525b",
+                //                 "accountId": "5d1dd258f0aa61074608b0e3",
+                //                 "object": "Contact",
+                //                 "name": "ngay_hen_ky",
+                //                 "label": "Ngày hẹn ký",
+                //                 "hidden": false,
+                //                 "description": "hẹn ký ",
+                //                 "fieldType": "date picker",
+                //                 "options": null,
+                //                 "dataType": "Date",
+                //                 "displayOrder": 1,
+                //                 "defaultValue": null,
+                //                 "createdAt": "2019-07-16T04:26:01.222+0000",
+                //                 "updateAt": null,
+                //                 "createdBy": "ductbm@adsplus.vn",
+                //                 "updatedBy": null,
+                //                 "required": false
+                //             }
+                //         }
+                //     }
+                // },
+                // {
+                //     "contactId": "5d8ecfe05908010001eef5a6",
+                //     "accountId": "5d1dd258f0aa61074608b0e3",
+                //     "teamId": null,
+                //     "email": "anhpq.adsplus@gmail.com",
+                //     "firstName": "Phạm",
+                //     "lastName": "Quang Anh",
+                //     "phone": "0852665998",
+                //     "contactOwner": "anhpq.adsplus@gmail.com",
+                //     "lifecycleStage": "Lead",
+                //     "leadStatus": null,
+                //     "city": "Hà Nội",
+                //     "bussiness": "Thực tập sinh không lương",
+                //     "lastActivityDate": null,
+                //     "lastContacted": null,
+                //     "createdAt": "2019-09-28T03:13:36.569+0000",
+                //     "updateAt": "2019-09-28T03:13:36.569+0000",
+                //     "createdBy": "anhpq.adsplus@gmail.com",
+                //     "updateBy": "anhpq.adsplus@gmail.com",
+                //     "customValue": {}
+                // }
             ],
             contacts: [
-                {
-                    "contactId": "5d2d7f2d6c245a71aa021873",
-                    "accountId": "5d1dd258f0aa61074608b0e3",
-                    "teamId": null,
-                    "email": "custom@email.com",
-                    "firstName": "Pham",
-                    "lastName": "Huyen",
-                    "phone": "03124564756",
-                    "contactOwner": "ductbm@adsplus.vn",
-                    "lifecycleStage": "Lead",
-                    "leadStatus": null,
-                    "city": "Hà Nội",
-                    "bussiness": "Công ty kẹo bánh Hải Hà",
-                    "lastActivityDate": null,
-                    "lastContacted": null,
-                    "createdAt": "2019-07-16T07:39:25.951+0000",
-                    "updateAt": "2019-07-16T07:39:25.951+0000",
-                    "createdBy": "minhduc98kl@gmail.com",
-                    "updateBy": "minhduc98kl@gmail.com",
-                    "customValue": {
-                        "source_from_mar": {
-                            "attributeValueId": "5d2d7f2d6c245a71aa021871",
-                            "value": "Tự tìm",
-                            "attribute": {
-                                "attributeId": "5d2d510d6c245a4e7796525a",
-                                "accountId": "5d1dd258f0aa61074608b0e3",
-                                "object": "Contact",
-                                "name": "source_from_mar",
-                                "label": "Source from mar",
-                                "hidden": false,
-                                "description": "nguon khach hang",
-                                "fieldType": "checkbox",
-                                "options": [
-                                    {
-                                        "label": "Option A",
-                                        "value": "option_a"
-                                    },
-                                    {
-                                        "label": "Option B",
-                                        "value": "option_b"
-                                    },
-                                    {
-                                        "label": "Option C",
-                                        "value": "option_c"
-                                    },
-                                    {
-                                        "label": "Option D",
-                                        "value": "option_d"
-                                    }
-                                ],
-                                "dataType": "String",
-                                "displayOrder": 1,
-                                "defaultValue": null,
-                                "createdAt": "2019-07-16T04:22:37.022+0000",
-                                "updateAt": null,
-                                "createdBy": "ductbm@adsplus.vn",
-                                "updatedBy": null,
-                                "required": false
-                            }
-                        },
-                        "ngay_hen_ky": {
-                            "attributeValueId": "5d2d7f2d6c245a71aa021872",
-                            "value": "2019-07-18T17:00:00.000+0000",
-                            "attribute": {
-                                "attributeId": "5d2d51d96c245a4e7796525b",
-                                "accountId": "5d1dd258f0aa61074608b0e3",
-                                "object": "Contact",
-                                "name": "ngay_hen_ky",
-                                "label": "Ngày hẹn ký",
-                                "hidden": false,
-                                "description": "hẹn ký ",
-                                "fieldType": "date picker",
-                                "options": null,
-                                "dataType": "Date",
-                                "displayOrder": 1,
-                                "defaultValue": null,
-                                "createdAt": "2019-07-16T04:26:01.222+0000",
-                                "updateAt": null,
-                                "createdBy": "ductbm@adsplus.vn",
-                                "updatedBy": null,
-                                "required": false
-                            }
-                        }
-                    }
-                },
-                {
-                    "contactId": "5d8ecfe05908010001eef5a6",
-                    "accountId": "5d1dd258f0aa61074608b0e3",
-                    "teamId": null,
-                    "email": "anhpq.adsplus@gmail.com",
-                    "firstName": "Phạm",
-                    "lastName": "Quang Anh",
-                    "phone": "0852665998",
-                    "contactOwner": "anhpq.adsplus@gmail.com",
-                    "lifecycleStage": "Lead",
-                    "leadStatus": null,
-                    "city": "Hà Nội",
-                    "bussiness": "Thực tập sinh không lương",
-                    "lastActivityDate": null,
-                    "lastContacted": null,
-                    "createdAt": "2019-09-28T03:13:36.569+0000",
-                    "updateAt": "2019-09-28T03:13:36.569+0000",
-                    "createdBy": "anhpq.adsplus@gmail.com",
-                    "updateBy": "anhpq.adsplus@gmail.com",
-                    "customValue": {}
-                }
+                // {
+                //     "contactId": "5d2d7f2d6c245a71aa021873",
+                //     "accountId": "5d1dd258f0aa61074608b0e3",
+                //     "teamId": null,
+                //     "email": "custom@email.com",
+                //     "firstName": "Pham",
+                //     "lastName": "Huyen",
+                //     "phone": "03124564756",
+                //     "contactOwner": "ductbm@adsplus.vn",
+                //     "lifecycleStage": "Lead",
+                //     "leadStatus": null,
+                //     "city": "Hà Nội",
+                //     "bussiness": "Công ty kẹo bánh Hải Hà",
+                //     "lastActivityDate": null,
+                //     "lastContacted": null,
+                //     "createdAt": "2019-07-16T07:39:25.951+0000",
+                //     "updateAt": "2019-07-16T07:39:25.951+0000",
+                //     "createdBy": "minhduc98kl@gmail.com",
+                //     "updateBy": "minhduc98kl@gmail.com",
+                //     "customValue": {
+                //         "source_from_mar": {
+                //             "attributeValueId": "5d2d7f2d6c245a71aa021871",
+                //             "value": "Tự tìm",
+                //             "attribute": {
+                //                 "attributeId": "5d2d510d6c245a4e7796525a",
+                //                 "accountId": "5d1dd258f0aa61074608b0e3",
+                //                 "object": "Contact",
+                //                 "name": "source_from_mar",
+                //                 "label": "Source from mar",
+                //                 "hidden": false,
+                //                 "description": "nguon khach hang",
+                //                 "fieldType": "checkbox",
+                //                 "options": [
+                //                     {
+                //                         "label": "Option A",
+                //                         "value": "option_a"
+                //                     },
+                //                     {
+                //                         "label": "Option B",
+                //                         "value": "option_b"
+                //                     },
+                //                     {
+                //                         "label": "Option C",
+                //                         "value": "option_c"
+                //                     },
+                //                     {
+                //                         "label": "Option D",
+                //                         "value": "option_d"
+                //                     }
+                //                 ],
+                //                 "dataType": "String",
+                //                 "displayOrder": 1,
+                //                 "defaultValue": null,
+                //                 "createdAt": "2019-07-16T04:22:37.022+0000",
+                //                 "updateAt": null,
+                //                 "createdBy": "ductbm@adsplus.vn",
+                //                 "updatedBy": null,
+                //                 "required": false
+                //             }
+                //         },
+                //         "ngay_hen_ky": {
+                //             "attributeValueId": "5d2d7f2d6c245a71aa021872",
+                //             "value": "2019-07-18T17:00:00.000+0000",
+                //             "attribute": {
+                //                 "attributeId": "5d2d51d96c245a4e7796525b",
+                //                 "accountId": "5d1dd258f0aa61074608b0e3",
+                //                 "object": "Contact",
+                //                 "name": "ngay_hen_ky",
+                //                 "label": "Ngày hẹn ký",
+                //                 "hidden": false,
+                //                 "description": "hẹn ký ",
+                //                 "fieldType": "date picker",
+                //                 "options": null,
+                //                 "dataType": "Date",
+                //                 "displayOrder": 1,
+                //                 "defaultValue": null,
+                //                 "createdAt": "2019-07-16T04:26:01.222+0000",
+                //                 "updateAt": null,
+                //                 "createdBy": "ductbm@adsplus.vn",
+                //                 "updatedBy": null,
+                //                 "required": false
+                //             }
+                //         }
+                //     }
+                // },
+                // {
+                //     "contactId": "5d8ecfe05908010001eef5a6",
+                //     "accountId": "5d1dd258f0aa61074608b0e3",
+                //     "teamId": null,
+                //     "email": "anhpq.adsplus@gmail.com",
+                //     "firstName": "Phạm",
+                //     "lastName": "Quang Anh",
+                //     "phone": "0852665998",
+                //     "contactOwner": "anhpq.adsplus@gmail.com",
+                //     "lifecycleStage": "Lead",
+                //     "leadStatus": null,
+                //     "city": "Hà Nội",
+                //     "bussiness": "Thực tập sinh không lương",
+                //     "lastActivityDate": null,
+                //     "lastContacted": null,
+                //     "createdAt": "2019-09-28T03:13:36.569+0000",
+                //     "updateAt": "2019-09-28T03:13:36.569+0000",
+                //     "createdBy": "anhpq.adsplus@gmail.com",
+                //     "updateBy": "anhpq.adsplus@gmail.com",
+                //     "customValue": {}
+                // }
             ],
             headersLists: [
                 {
@@ -426,7 +436,6 @@ export default {
                 },
             ],
             list: null,
-            stringEx: '<p style="color: red;">Hello</p>',
             newCondition: {
                 contactProperties: [
                     {
@@ -464,37 +473,8 @@ export default {
                 vchipValue: [],
                 newConditionMenu: false
             },
-            
-            conditions: 
-                [
-                    [
-                        {
-                            "conditionId": null,
-                            "object": "Contact",
-                            "property": "city",
-                            "condition": "EQUAL",
-                            "value": "Hà Nội"
-                        },
-                        {
-                            "conditionId": null,
-                            "object": "Contact",
-                            "property": "bussiness",
-                            "condition": "IN",
-                            "value": [
-                                "Hải Hà", "công ty", "bốc họ"
-                            ]
-                        }
-                    ],
-                    [
-                        {
-                            "conditionId": null,
-                            "object": "Contact",
-                            "property": "lifecycle_stage",
-                            "condition": "LIKE",
-                            "value": "Lead"
-                        }
-                    ]
-                ]
+            conditions: [],
+            newListName: ''
         }
     },
     methods: {
@@ -528,26 +508,9 @@ export default {
             }
         },
         addOrCondition(){
-            let orConditionExample = 
-                [
-                    {
-                        "conditionId": null,
-                        "object": "Contact",
-                        "property": "city",
-                        "condition": "EQUAL",
-                        "value": "Hà Nội"
-                    },
-                    {
-                        "conditionId": null,
-                        "object": "Contact",
-                        "property": "bussiness",
-                        "condition": "IN",
-                        "value": [
-                            "Hải Hà", "công ty", "bốc họ"
-                        ]
-                    }
-                ]
+            let orConditionExample = []
             this.conditions.push(orConditionExample);
+            this.conditions = [...this.conditions];
         },
         addAndCondition(orIndex, property, conditionConstant, value){
             if(conditionConstant == 'IN'){
@@ -572,12 +535,33 @@ export default {
             this.newCondition.vchipTextField = '';
             this.conditions = [...this.conditions];
         },
+        createNewList(name, conditions){
+            let body = {
+                "name": name,
+                "conditions": conditions
+            }
+            listService.createNewList(this.idAccount, body).then(result => {
+                console.log(result);
+                this.newListName = '';
+                this.conditions = [];
+                this.goToListPage();
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         goToContactPage(idContact){
             let link = `/contacts/${this.idAccount}/contact/${idContact}`;
             this.$router.push(link);
         },
+        goToListPage(){
+            let link = `/contacts/${this.idAccount}/lists`;
+            this.$router.push(link);
+        },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
+        },
+        filter(){
+            console.log(this.conditions);
         }
     },
     created(){

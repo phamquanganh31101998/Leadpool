@@ -711,7 +711,6 @@
                 return result;
             },
             updateTask(taskId, property, value){
-                console.log(property + '------' + value)
                 let body = {
                     "property": property,
                     "value": value,
