@@ -22,6 +22,9 @@ export const eventBus = new Vue({
       },
       updateLogMeetList(){
         this.$emit('updateLogMeetList');
+      },
+      updateTaskList(){
+        this.$emit('updateTaskList');
       }
     }
   })

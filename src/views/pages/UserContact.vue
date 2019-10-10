@@ -9,7 +9,7 @@
                                 <v-card-text>
                                     <v-layout row>
                                         <v-flex xs7 sm7 md7 lg9 xl10>
-                                            <v-btn outline color="indigo">
+                                            <v-btn outline color="indigo" @click="$router.push('../')">
                                                 <v-icon>keyboard_arrow_left</v-icon>Contacts<v-icon>person</v-icon>
                                             </v-btn>
                                         </v-flex>
@@ -168,15 +168,15 @@
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                             <v-card-text>
-                                                                <newEmail />
+                                                                <newEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
+                                                            <!-- <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createEmail = false">Sent</v-btn>
                                                                 <v-btn color="red" small flat
                                                                     @click="createEmail = false">Cancel</v-btn>
-                                                            </v-card-actions>
+                                                            </v-card-actions> -->
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
@@ -268,15 +268,15 @@
                                                                 <span class="headline">Task</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newTask />
+                                                                <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
                                                             </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
+                                                            <!-- <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
                                                                     @click="createTask = false">Save Task</v-btn>
                                                                 <v-btn color="red" small flat
                                                                     @click="createTask = false">Cancel</v-btn>
-                                                            </v-card-actions>
+                                                            </v-card-actions> -->
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
@@ -483,7 +483,7 @@
                             </v-layout>
                             <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <task class="mt-3" />
+                            <task class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
@@ -523,7 +523,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <task />
+                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-6">
                             <v-layout row>

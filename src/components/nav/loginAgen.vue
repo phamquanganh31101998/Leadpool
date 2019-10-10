@@ -1,10 +1,10 @@
 <template>
   <div>
     <template v-if="$vuetify.breakpoint.smAndUp">
-      <v-btn icon>
+      <v-btn icon >
         <v-icon>search</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn icon @click="goToSettingsPage()">
         <v-icon>build</v-icon>
       </v-btn>
       <v-btn icon>
@@ -15,6 +15,22 @@
 </template>
 <script>
   export default {
-    name: 'loginAgen'
+    name: 'loginAgen',
+    data(){
+      currentUser: null
+    },
+    methods: {
+      goToSettingsPage(){
+        let link = `/settings/${this.currentUser.accountId}`;
+        this.$router.push(link);
+      },
+      getCurrentUser(){
+        this.currentUser = JSON.parse(localStorage.getItem('user'));
+      },
+    },
+    created(){
+      this.getCurrentUser();
+    }
   }
+
 </script>

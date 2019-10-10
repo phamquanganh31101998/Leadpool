@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
-            <h3>June 2019</h3>
+            <!-- <h3>June 2019</h3> -->
             <template>
                 <v-hover>
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
@@ -136,7 +136,6 @@
                     indeterminate
                 ></v-progress-circular>
             </v-flex>
-            <h3>June 2019</h3>
             <template v-for="emailLog in emailLogs">
                 <v-hover>
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
@@ -229,7 +228,6 @@
                                             <v-time-picker v-if="emailLog.modal2Log" v-model="emailLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
                                                 <v-btn flat color="primary" @click="emailLog.modal2Log = false">Cancel</v-btn>
-                                                <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
                                                 <v-btn flat color="primary" @click="emailLog.modal2Log = false">OK</v-btn>
                                             </v-time-picker>
                                         </v-dialog>

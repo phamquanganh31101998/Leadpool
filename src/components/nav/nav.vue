@@ -8,7 +8,7 @@
           </v-btn>
         </template>
         <v-list dark style="background-color:#253342">
-          <v-list-tile>
+          <v-list-tile @click="goToContactsPage()">
             <v-list-tile-title>Contacts</v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
@@ -18,7 +18,7 @@
           <v-list-tile>
             <v-list-tile-title>Activity Feed</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToListsPage()">
             <v-list-tile-title>Lists</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -67,7 +67,7 @@
           <v-list-tile>
             <v-list-tile-title>Deals</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="goToMyTaskPage()">
             <v-list-tile-title>Tasks</v-list-tile-title>
           </v-list-tile>
           <v-divider :divider="divider"></v-divider>
@@ -136,11 +136,32 @@
   import user from './user'
   export default {
     data: () => ({
-      divider: true
+      divider: true,
+      currentUser: null
     }),
     components: {
       loginAgen,
       user
+    },
+    methods:{
+      getCurrentUser(){
+        this.currentUser = JSON.parse(localStorage.getItem('user'));
+      },
+      goToContactsPage(){
+        let link = `/contacts/${this.currentUser.accountId}`
+        this.$router.push(link);
+      },
+      goToListsPage(){
+        let link = `/contacts/${this.currentUser.accountId}/lists`;
+        this.$router.push(link);
+      },
+      goToMyTaskPage(){
+        let link = `/contacts/${this.currentUser.accountId}/myTask`;
+        this.$router.push(link);
+      }
+    },
+    created(){
+      this.getCurrentUser();
     }
   }
 </script>

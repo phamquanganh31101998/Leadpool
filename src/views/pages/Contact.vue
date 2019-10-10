@@ -122,7 +122,6 @@
       <v-flex xs6 sm8 md8 lg9 xl9>
         <v-data-table :headers="headers" :items="contacts" :search="search" hide-actions class="elevation-1">
           <template v-slot:items="props">
-           
               <tr>
               <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
               <td class="text-xs-center">{{ props.item.email }}</td>
@@ -130,11 +129,9 @@
               <td class="text-xs-center">{{ props.item.leadStatus }}</td>
               <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
               <td class="text-xs-right text-md-right text-lg-right">
-                <v-btn class="red dark" dark @click="deleteContact(props.item.contactId)">Delete</v-btn>
-                
+                <v-btn class="red" outline round style="color: red;" @click="deleteContact(props.item.contactId)">Delete</v-btn>
               </td>
             </tr>
-           
           </template>
         </v-data-table>
         <div class="text-xs-center pt-2">
@@ -175,7 +172,7 @@
 <script>
   import moment from 'moment'
   import contacts from '../../services/contacts.service'
-import contactsService from '../../services/contacts.service';
+  import contactsService from '../../services/contacts.service';
   export default {
     props: {
 			idUser: {
