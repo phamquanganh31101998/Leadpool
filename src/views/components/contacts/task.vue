@@ -118,7 +118,7 @@
                                                 </a>
                                             </template>
                                             <v-select
-                                                style="margin-left: 10px; width: 70%;"
+                                                style="padding: 0px 10px;"
                                                 v-model="task.dueDateTime"
                                                 :items="timeToChoose"
                                                 @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
@@ -254,7 +254,7 @@
                                                                         </a>
                                                                     </template>
                                                                     <v-select
-                                                                        style="backgroundColor: white; padding: 10px; width: 100px;"
+                                                                        style="backgroundColor: white; padding: 0px 10px; width: 100px;"
                                                                         v-model="task.emailReminderTime"
                                                                         :items="timeToChoose"
                                                                         @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
@@ -429,7 +429,7 @@
                                                                 </a>
                                                             </template>
                                                             <v-select
-                                                                style=" width: 80px; padding: 10px 15px;"
+                                                                style=" width: 100px; padding: 0px 10px;"
                                                                 v-model="task.dueDateTime"
                                                                 :items="timeToChoose"
                                                                 @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
@@ -557,7 +557,7 @@
                                                                             </a>
                                                                         </template>
                                                                         <v-select
-                                                                            style="backgroundColor: white; padding: 10px; width: 100px;"
+                                                                            style="backgroundColor: white; padding: 0px 10px; width: 100px;"
                                                                             v-model="task.emailReminderTime"
                                                                             :items="timeToChoose"
                                                                             @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
