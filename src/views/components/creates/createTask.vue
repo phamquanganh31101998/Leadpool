@@ -187,7 +187,7 @@
                                 </a>
                             </span>
                         </template>
-                        <v-select v-model="emailReminder.time" :items="timeToChoose" style="backgroundColor: white; padding: 10px; width: 80px;"></v-select>
+                        <v-select v-model="emailReminder.time" :items="timeToChoose" style="backgroundColor: white; padding: 0px 10px; width: 100px;"></v-select>
                     </v-menu>
                     <!-- <v-dialog ref="emailReminderDialog" :return-value.sync="emailReminder.time" lazy full-width
                         width="290px" v-if="!(day == 'No reminder')">

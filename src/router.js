@@ -11,6 +11,7 @@ import ListDetail from './views/pages/lists/ListDetail.vue'
 import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
+import createEmailTemplate from './views/components/creates/createEmailTemplate'
 Vue.use(Router)
 
 const router = new Router({
@@ -105,6 +106,18 @@ const router = new Router({
             path: '/contacts/:idAccount/myTask',
             name: 'MyTask',
             component: MyTask,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/createEmailTemplate',
+            name: 'createemailtemplate',
+            component: createEmailTemplate,
             props(route) {
                 const props = {
                     ...route.params

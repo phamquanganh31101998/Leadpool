@@ -39,7 +39,7 @@
                                             <v-card>
                                                 <v-card-text>
                                                     <v-layout row>
-                                                        <v-flex xs9 sm9 md9 lg9 xl9>
+                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
                                                             <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
                                                                 <template v-for="val in andCondition.value">
                                                                     <v-chip>{{val}}</v-chip>
@@ -47,11 +47,13 @@
                                                             </p>
                                                             <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
                                                             <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                            <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                            <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
                                                         </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg3 xl3>
+                                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <v-tooltip right>
                                                                 <template v-slot:activator="{ on }">
-                                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on">
+                                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
                                                                         <v-icon style="color: red;" >clear</v-icon>
                                                                     </v-btn>
                                                                 </template>
@@ -464,7 +466,26 @@ export default {
                     }
                 ],
                 conditionConstants: [
-                    'EQUAL', 'IN', 'LIKE'
+                    {
+                        text: 'Great than',
+                        value: 'GREAT_THAN'
+                    },
+                    {
+                        text: 'Less than',
+                        value: 'LESS_THAN'
+                    },
+                    {
+                        text: 'Equal to',
+                        value: 'EQUAL'
+                    },
+                    {
+                        text: 'Like',
+                        value: 'LIKE'
+                    },
+                    {
+                        text: 'In',
+                        value: 'IN'
+                    },
                 ],
                 chosenProperty: 'lifecycle_stage',
                 chosenConstant: 'EQUAL',

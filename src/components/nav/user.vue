@@ -14,9 +14,9 @@
                         <v-list-tile-sub-title>
                             <p>{{email}}</p>
                         </v-list-tile-sub-title>
-                        <v-list-title-sub-title>
+                        <!-- <v-list-title-sub-title>
                             <a href="#">Profile & Preferences</a>
-                        </v-list-title-sub-title>
+                        </v-list-title-sub-title> -->
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-divider class="mt-2"></v-divider>
@@ -29,32 +29,31 @@
                 <v-divider></v-divider>
             </v-list>
             <v-list class="pl-3 pr-3">
-                <v-list-tile>
+                <!-- <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>ACCOUNT & BILLING</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
+                </v-list-tile> -->
+                <!-- <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>INTERGRATIONs</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
+                </v-list-tile> -->
+                <!-- <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>LEARNING CENTER</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
+                </v-list-tile> -->
+                <!-- <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>PRICING & FEATURES</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
+                </v-list-tile> -->
+                <!-- <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>TRAINING & SERVICES</v-list-tile-title>
                     </v-list-tile-content>
-                </v-list-tile>
-                <v-divider></v-divider>
+                </v-list-tile> -->
                 <v-list-tile-action>
                     <v-layout row class="mt-2">
                         <v-flex>

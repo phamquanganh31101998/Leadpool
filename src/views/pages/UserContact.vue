@@ -330,7 +330,7 @@
                                                 <v-hover>
                                                     <v-layout row slot-scope="{ hover }">
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
-                                                            <v-text-field :label="item.title" :placeholder="item.value">
+                                                            <v-text-field :label="item.title" v-model="item.value">
                                                             </v-text-field>
                                                         </v-flex>
                                                         <v-flex xs5 sm5 md5 lg4 xl4>
