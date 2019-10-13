@@ -3,7 +3,7 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default {
-    sendEmail
+    sendEmail, createEmailTemplate, getEmailTemplate, sendEmailViaTemplate
 }
 
 function sendEmail(idAccount, idContact, body){
@@ -26,11 +26,21 @@ function createEmailTemplate(idAccount, body){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getEmailTemplate(idAccount, body){
+function getEmailTemplate(idAccount){
     let request = {
         method: 'GET',
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/emailTemplates`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function sendEmailViaTemplate(idAccount, idTemplate, body){
+    let request = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/send-template-email/${idTemplate}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

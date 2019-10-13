@@ -137,39 +137,13 @@
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Email</span>
                                                             </v-card-title>
-                                                            <v-card-text>
-                                                                <v-layout row>
-                                                                    <v-flex>
-                                                                        <a href="#">
-                                                                            Templates
-                                                                        </a>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <a href="#">
-                                                                            Sequences
-                                                                        </a>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <a href="#">
-                                                                            Documents
-                                                                        </a>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <a href="#">
-                                                                            Meeting
-                                                                        </a>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <a href="#">
-                                                                            Quotes
-                                                                        </a>
-                                                                    </v-flex>
-                                                                </v-layout>
-                                                            </v-card-text>
-                                                            <v-divider :divider="divider"></v-divider>
-                                                            <v-card-text>
+                                                            <!-- <v-card-text>
+                                                                
+                                                            </v-card-text> -->
+                                                            <!-- <v-divider :divider="divider"></v-divider> -->
+                                                            <!-- <v-card-text> -->
                                                                 <newEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
-                                                            </v-card-text>
+                                                            <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
                                                                 <v-btn color="blue darken-1" small flat
