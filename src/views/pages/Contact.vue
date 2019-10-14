@@ -86,14 +86,17 @@
     <v-layout row wrap class="mt-3">
       <v-flex xs6 sm4 md4 lg3 xl3>
         <v-list>
-          <v-list-tile>
+          <v-list-tile @click="getAllContact()">
+            <v-list-tile-title>All Contacts</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="getMyContact()">
             <v-list-tile-title>My Contacts</v-list-tile-title>
           </v-list-tile>
           <v-list-tile @click="dialog = true">
             <v-list-tile-title>All saved filter<v-icon>keyboard_arrow_right</v-icon>
             </v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <!-- <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>My Contacts</v-list-tile-title>
               <v-list-tile-sub-title><small>1 contact</small>
@@ -111,7 +114,7 @@
                 </v-menu>
               </v-list-tile-sub-title>
             </v-list-tile-content>
-          </v-list-tile>
+          </v-list-tile> -->
         </v-list>
         <v-divider divider="true" class="mr-3"></v-divider>
         <!-- <v-card width="100%">
@@ -267,7 +270,7 @@
         <br>
         <v-layout row wrap>
           <v-flex>
-            <v-btn style="backgroundColor: #425B76" dark>Filter</v-btn>
+            <v-btn style="backgroundColor: #425B76" dark @click="filter()">Filter</v-btn>
           </v-flex>
           <v-flex>
             <v-btn @click="resetFilter()">Reset</v-btn>
@@ -287,19 +290,19 @@
                 style="backgroundColor: #1E88E5; color: white"
                 primary-title
               >
-                Create a new save filter
+                Lưu lại danh sách
               </v-card-title>
 
               <v-card-text>
                 <v-layout row wrap>
-                  <p>Name *</p>
+                  <p>Tên *</p>
                   <v-text-field style="width: 100%; padding-top: 0px" v-model="saveFilter.name"></v-text-field>
-                  <p>Share with *</p>
+                  <!-- <p>Share with *</p>
                   <v-radio-group v-model="saveFilter.shareWith">
                     <v-radio label="Private" value="private"></v-radio>
                     <v-radio label="My Team" value="myteam"></v-radio>
                     <v-radio label="Everyone" value="everyone"></v-radio>
-                  </v-radio-group>
+                  </v-radio-group> -->
                 </v-layout>
               </v-card-text>
 
@@ -308,7 +311,7 @@
               <v-card-actions>
                 <v-layout row wrap>
                   <v-flex>
-                    <v-btn flat color="green" @click="saveFilter.dialog = false" :disabled="disableSaveFilterButton">Save</v-btn>
+                    <v-btn flat color="green" @click="createFilter(saveFilter.name, conditions)" :disabled="disableSaveFilterButton">Save</v-btn>
                     <v-btn flat color="red" @click="saveFilter.dialog = false">Cancel</v-btn>
                   </v-flex>
                 </v-layout>
@@ -324,7 +327,7 @@
         <br>
       </v-flex>
       <v-flex xs6 sm8 md8 lg9 xl9>
-        <v-data-table :headers="headers" :items="contacts" :search="search" hide-actions class="elevation-1">
+        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1">
           <template v-slot:items="props">
               <tr>
               <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
@@ -348,21 +351,29 @@
         <br>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
+    <v-dialog v-model="dialog" hide-overlay transition="dialog-bottom-transition" scrollable width="60%">
       <v-card tile>
         <v-toolbar card dark color="primary">
-          <v-btn icon dark @click="dialog = false">
+          <!-- <v-btn icon dark @click="dialog = false">
             <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>All contact saved filters (10)</v-toolbar-title>
+          </v-btn> -->
+          <v-toolbar-title>Các danh sách đã lưu</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-toolbar-items>
+          <!-- <v-toolbar-items>
             <v-btn dark flat @click="dialog = false">Save</v-btn>
-          </v-toolbar-items>
+          </v-toolbar-items> -->
         </v-toolbar>
+        <!-- <v-card-title dark color="primary">
+          Chọn danh sách
+        </v-card-title> -->
         <v-card-text>
           <v-layout row>
-            <v-flex>
+            <template v-for="(list, index) in lists">
+              <br>
+              <a @click.stop="setChosenList(index)" style="fontSize: 18px;">{{list.name}}</a>
+              <br>
+            </template>
+            <!-- <v-flex>
               <h3>Standard</h3>
             </v-flex>
             <v-flex>
@@ -370,7 +381,7 @@
             </v-flex>
             <v-flex>
               <h3>Created by others</h3>
-            </v-flex>
+            </v-flex> -->
           </v-layout>
         </v-card-text>
         <div style="flex: 1 1 auto;"></div>
@@ -382,12 +393,14 @@
   import moment from 'moment'
   import contacts from '../../services/contacts.service'
   import contactsService from '../../services/contacts.service';
+  import listService from '../../services/list.services'
   export default {
     props: {
 			idUser: {
 				type: String,
 				default: null,
-			},},
+      },
+    },
     data: () => ({
       items: [{
           title: 'Edit columns'
@@ -475,6 +488,7 @@
         }
       ],
       contacts: [],
+      allContacts: [],
       page: 1,
       pages: 0,
       deleteDialog: false,
@@ -539,7 +553,9 @@
         dialog: false,
         name: '',
         shareWith: 'private'
-      }
+      },
+      lists: [],
+      chosenList: null
     }),
     computed: {
       disableSaveFilterButton(){
@@ -603,8 +619,25 @@
       },
       getAllContact() {
         this.contacts = []
+        this.allContacts = [];
         contacts.getAllContact(this.idUser, this.page).then(result => {
-          this.contacts = result.response.results
+          this.allContacts = result.response.results;
+          this.contacts = this.allContacts;
+          this.pages = result.response.totalPage
+        })
+      },
+      getMyContact(){
+        this.contacts = []
+        this.allContacts = [];
+        contacts.getAllContact(this.idUser, this.page).then(result => {
+          const res = result.response.results;
+          const email = JSON.parse(localStorage.getItem("user")).username;
+          for(let i = 0; i<res.length;i++){
+            if(res[i].createdBy == email){
+              this.allContacts.push(res[i]);
+            }
+          }
+          this.contacts = this.allContacts;
           this.pages = result.response.totalPage
         })
       },
@@ -658,36 +691,71 @@
           this.newCondition.vchipTextField = '';
           this.conditions = [...this.conditions];
       },
-      addFilter(property, conditionConstant, value){
-        if(conditionConstant == 'IN'){
-          var conditionToAdd = {
-              conditionId: null,
-              object: "Contact",
-              property: property,
-              condition: conditionConstant,
-              value: value.trim().split(",")
-          }
-        }
-        else {
-          conditionToAdd = {
-              conditionId: null,
-              object: "Contact",
-              property: property,
-              condition: conditionConstant,
-              value: value.trim()
-          }
-        }
-        this.conditions[0].push(conditionToAdd);
-        this.newCondition.vchipTextField = '';
+      getList(){
+        listService.getList(this.idUser).then(result => {
+          this.lists = result.response;
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      setChosenList(index){
+        this.conditions = [];
+        this.conditions = this.lists[index].conditions;
         this.conditions = [...this.conditions];
       },
-      deleteFilter(index){
-        this.conditions[0].splice(index, 1);
-        this.conditions = [...this.conditions];
-      },
+      // addFilter(property, conditionConstant, value){
+      //   if(conditionConstant == 'IN'){
+      //     var conditionToAdd = {
+      //         conditionId: null,
+      //         object: "Contact",
+      //         property: property,
+      //         condition: conditionConstant,
+      //         value: value.trim().split(",")
+      //     }
+      //   }
+      //   else {
+      //     conditionToAdd = {
+      //         conditionId: null,
+      //         object: "Contact",
+      //         property: property,
+      //         condition: conditionConstant,
+      //         value: value.trim()
+      //     }
+      //   }
+      //   this.conditions[0].push(conditionToAdd);
+      //   this.newCondition.vchipTextField = '';
+      //   this.conditions = [...this.conditions];
+      // },
+      // deleteFilter(index){
+      //   this.conditions[0].splice(index, 1);
+      //   this.conditions = [...this.conditions];
+      // },
       resetFilter(){
         this.conditions = [];
         this.conditions = [...this.conditions]
+      },
+      filter(){
+        listService.findContactByCondition(this.idUser, this.conditions).then(result => {
+          this.allContacts = result.response;
+          this.contacts = this.allContacts;
+          this.page = 1;
+          this.pages = 1;
+        }).catch(error => {
+          console.log(error);
+        })
+      },
+      createFilter(name, conditions){
+        let body = {
+          name: name,
+          conditions: conditions
+        }
+        listService.createNewList(this.idUser, body).then(result => {
+          this.getList();
+          this.saveFilter.name = '';
+          this.saveFilter.dialog = false;
+        }).catch(error => {
+          console.log(error);
+        })
       }
     },
     computed: {},
@@ -695,9 +763,19 @@
       page(){
         this.contacts = []
         this.getAllContact()
+      },
+      search(){
+        this.contacts = [];
+        for (let i = 0; i < this.allContacts.length; i++){
+          const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
+          if(name.toLowerCase().includes(this.search.toLowerCase())){
+            this.contacts.push(this.allContacts[i]);
+          }
+        }
       }
     },
     created() {
+      this.getList();
       this.getAllContact()
     }
   }

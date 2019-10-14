@@ -33,9 +33,14 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row>
-                    <span class="mt-2"><strong>Choose Template</strong></span>
-                    <span class="ml-4" style="width: 50px;"><v-select :items="templateSelect" v-model="templateId" @blur="logging()" @change="setChosenTemplate()"></v-select></span>
-                    <span><a @click.stop="createEmailTemplate.dialog = true">Create new template</a></span>
+                    <v-flex xs5 sm5 md5 lg5 xl5>
+                        <span class="mt-2"><strong>Choose Template</strong></span>
+                        <span class="ml-4" style="width: 50px;"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
+                    </v-flex>
+                    <v-flex xs7 sm7 md7 lg7 xl7>
+                        <span><a @click.stop="createNewTemplateSection()">Create new template</a></span>
+                    </v-flex>
+                    
                 </v-layout>
                 <br>
                 <v-divider :divider="divider"></v-divider>
@@ -73,9 +78,9 @@
                         <v-text-field v-model="createEmailTemplate.title" label="Template name" placeholder="name here..."></v-text-field>
                     </v-flex>
                 </v-layout>
-                <v-layout>
+                <v-layout row wrap>
                     <v-flex xs12 sm12 md6 lg6 xl6>
-                        <v-textarea v-model="createEmailTemplate.htmlText"  label="Write your html here">
+                        <v-textarea v-model="createEmailTemplate.htmlText" rows="27">
 
                         </v-textarea>
                         <v-btn @click="clickTranslate()">Translate</v-btn>
@@ -149,6 +154,10 @@ export default {
         }
     },
     methods: {
+        createNewTemplateSection(){
+            document.getElementById("templateBody").innerHTML = '';
+            this.createEmailTemplate.dialog = true
+        },
         setChosenTemplate(){
             let obj = null;
             for (let i = 0; i < this.templates.length; i++){
@@ -159,7 +168,9 @@ export default {
             let regex = /\\\"/gi
             this.htmlText = this.chosenTemplate.content;
             console.log(this.htmlText.replace(regex, "\""))
+            // console.log(this.htmlText)
             document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+            document.getElementById("call").innerHTML = '';
         },
         logging(){
             console.log(this.templates)
@@ -216,8 +227,9 @@ export default {
         },
         createTemplate(){
             var regex = /\"/gi;
-            console.log(this.createEmailTemplate.htmlText.replace(regex, "\\\""));
+            // console.log(this.createEmailTemplate.htmlText.replace(regex, "\\\""));
             let content = this.createEmailTemplate.htmlText.replace(regex, "\\\"");
+            // console.log(content);
             let body = {
                 title: this.createEmailTemplate.title,
                 content: content,

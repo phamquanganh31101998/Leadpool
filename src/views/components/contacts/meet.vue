@@ -19,7 +19,7 @@
                                     <v-icon small left>
                                         mail
                                     </v-icon>
-                                    <span class="">Logged meet</span>
+                                    <span class="">Thông tin cuộc họp được lưu lại</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -48,11 +48,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(meetLog.logId)">Delete
+                                                            <a color="indigo" @click="deleteLog(meetLog.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -79,7 +79,7 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <p>Date</p>
+                                        <p>Ngày</p>
                                         <v-menu ref="menu1" v-model="meetLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
@@ -92,7 +92,7 @@
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
-                                        <p>Time</p>
+                                        <p>Giờ</p>
                                         <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
@@ -101,7 +101,7 @@
                                             </template>
                                             <v-time-picker v-if="meetLog.modal2Log" v-model="meetLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Cancel</v-btn>
+                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Hủy bỏ</v-btn>
                                                 <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
                                                 <v-btn flat color="red" @click="meetLog.modal2Log = false">OK</v-btn>
                                             </v-time-picker>
@@ -123,10 +123,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> đã lưu lại cuộc họp</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Save</v-btn>
+                                <v-btn v-if="hover" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Lưu</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>

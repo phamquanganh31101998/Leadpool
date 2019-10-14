@@ -39,11 +39,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Delete
+                                                            <a color="indigo">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -145,7 +145,7 @@
                                     <v-icon small left>
                                         mail
                                     </v-icon>
-                                    <span class="">Logged email</span>
+                                    <span class="">Thông tin email được lưu</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -174,11 +174,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(emailLog.logId)">Delete
+                                                            <a color="indigo" @click="deleteLog(emailLog.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -205,7 +205,7 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <p>Date</p>
+                                        <p>Ngày</p>
                                         <v-menu ref="menu1" v-model="emailLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
@@ -218,7 +218,7 @@
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
-                                        <p>Time</p>
+                                        <p>Giờ</p>
                                         <v-dialog ref="dialog" v-model="emailLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
@@ -248,10 +248,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã gửi email</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Save</v-btn>
+                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Lưu</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>

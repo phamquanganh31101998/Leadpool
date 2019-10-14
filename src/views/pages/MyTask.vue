@@ -9,9 +9,9 @@
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
                         <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
                     </v-flex>
-                    <v-flex xs2 md2 lg2 xl2>
+                    <!-- <v-flex xs2 md2 lg2 xl2>
                         <v-btn dark color="warning" @click="createTask = true">Create Task</v-btn>
-                    </v-flex>
+                    </v-flex> -->
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -42,7 +42,7 @@
             <v-flex xs10 sm10 md10 lg10 xl10>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="displayTasks">
+                        <v-data-table :headers="headers" :items="displayTasks" hide-actions>
                             <template v-slot:items="props">
                                 <td v-if="props.item.status == 'NOTCOMPLETED'">
                                     <v-tooltip top>
@@ -78,7 +78,7 @@
                 </v-layout>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="createTask" persistent max-width="700px">
+        <!-- <v-dialog v-model="createTask" persistent max-width="700px">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
                     <span class="headline">Create Task</span>
@@ -87,7 +87,7 @@
                     <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="closeCreateTaskDialog()"/>
                 </v-card-text>
             </v-card>
-        </v-dialog>
+        </v-dialog> -->
         <!-- <v-dialog v-model="viewTask.dialog" persistent max-width="700">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">

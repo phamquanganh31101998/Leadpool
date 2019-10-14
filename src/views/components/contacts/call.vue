@@ -19,7 +19,7 @@
                                     <v-icon small left>
                                         phone
                                     </v-icon>
-                                    <span class="">Logged call</span>
+                                    <span class="">Thông tin cuộc gọi được lưu</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -48,11 +48,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(call.logId)">Delete
+                                                            <a color="indigo" @click="deleteLog(call.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -102,7 +102,7 @@
                                             </template>
                                             <v-time-picker v-if="call.modal2Log" v-model="call.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="call.modal2Log = false">Cancel</v-btn>
+                                                <v-btn flat color="primary" @click="call.modal2Log = false">Quay lại</v-btn>
                                                 <!-- <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn> -->
                                                 <v-btn flat color="primary" @click="call.modal2Log = false">OK</v-btn>
                                             </v-time-picker>
@@ -124,10 +124,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> đã gọi</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(call.dateLog, call.timeLog, call.logId)" outlined>Save</v-btn>
+                                <v-btn v-if="hover" @click="updateLog(call.dateLog, call.timeLog, call.logId)" outlined>Lưu</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>

@@ -4,12 +4,12 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
-            Contacts <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+            Liên lạc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
           </v-btn>
         </template>
         <v-list dark style="background-color:#253342">
           <v-list-tile @click="goToContactsPage()">
-            <v-list-tile-title>Contacts</v-list-tile-title>
+            <v-list-tile-title>Các liên lạc</v-list-tile-title>
           </v-list-tile>
           <!-- <v-list-tile>
             <v-list-tile-title>Companies</v-list-tile-title>
@@ -19,7 +19,7 @@
             <v-list-tile-title>Activity Feed</v-list-tile-title>
           </v-list-tile> -->
           <v-list-tile @click="goToListsPage()">
-            <v-list-tile-title>Lists</v-list-tile-title>
+            <v-list-tile-title>Danh sách</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -68,7 +68,7 @@
             <v-list-tile-title>Deals</v-list-tile-title>
           </v-list-tile> -->
           <v-list-tile @click="goToMyTaskPage()">
-            <v-list-tile-title>Tasks</v-list-tile-title>
+            <v-list-tile-title>Công việc</v-list-tile-title>
           </v-list-tile>
           <v-divider :divider="divider"></v-divider>
           <!-- <v-list-tile>

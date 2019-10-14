@@ -310,7 +310,7 @@
                                 <v-icon small left>
                                     calendar_today
                                 </v-icon>
-                                <span class="">Task</span>
+                                <span class="">Công việc</span>
                             </v-flex>
                         </v-layout>
                     </v-card-title>
@@ -334,7 +334,7 @@
                             <v-list-group sub-group no-action>
                                 <template v-slot:activator>
                                     <v-list-tile>
-                                        <v-list-tile-title><span>Details</span></v-list-tile-title>
+                                        <v-list-tile-title><span>Chi tiết</span></v-list-tile-title>
                                     </v-list-tile>
                                 </template>
                                 <v-list>
@@ -344,17 +344,17 @@
                                                 <v-layout row>
                                                     <v-flex xs6 sm6 md6 lg3 xl4>
                                                         <v-layout row>
-                                                            <span>Assigned to</span>
+                                                            <span>Được giao cho</span>
                                                         </v-layout>
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg4 xl4>
                                                         <v-layout row>
-                                                            <span class="pl-5">Due date</span>
+                                                            <span class="pl-5">Hạn cuối</span>
                                                         </v-layout>
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg5 xl4>
                                                         <v-layout row>
-                                                            <span class="pl-4">Time</span>
+                                                            <span class="pl-4">Giờ</span>
                                                         </v-layout>
                                                     </v-flex>
                                                 </v-layout>
@@ -465,10 +465,10 @@
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
-                                                                <span>Type</span>
+                                                                <span>Loại</span>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
-                                                                <span>Reminder</span>
+                                                                <span>Nhắc nhở</span>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
                                                                 <span>Time</span>
@@ -583,7 +583,6 @@
                     </v-layout>
                 </v-card>
             </template>
-            
         </v-flex>
     </v-layout>
 </template>
