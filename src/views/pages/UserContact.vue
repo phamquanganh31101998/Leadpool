@@ -64,7 +64,7 @@
                                                 <h3 class="mt-2">{{detail.lastName}} {{detail.firstName}}</h3>
                                             </v-flex>
                                             <v-flex xs4 sm4 md5 lg5 xl5 class="text-xs-right">
-                                                <v-menu :close-on-content-click="false" :width="100" offset-x>
+                                                <v-menu :close-on-content-click="false" :width="100" offset-x v-model="basicInfoDialog">
                                                     <template v-slot:activator="{ on }">
                                                         <v-btn flat color="indigo" dark v-on="on">
                                                             <v-icon>edit</v-icon>
@@ -73,21 +73,21 @@
                                                     <v-card class="pa-3">
                                                         <v-layout row>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="First Name" outline v-model="detail.firstName"></v-text-field>
+                                                                <v-text-field label="Họ" outline v-model="detail.firstName"></v-text-field>
                                                             </v-flex>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="Last Name" outline v-model="detail.lastName"></v-text-field>
+                                                                <v-text-field label="Tên" outline v-model="detail.lastName"></v-text-field>
                                                             </v-flex>
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field label="Lifecycle Stage" outline v-model="detail.lifecycleStage"></v-text-field>
+                                                            <v-text-field label="Email" outline v-model="detail.email"></v-text-field>
                                                         </v-layout>
 
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
-                                                            <v-btn flat>Cancel</v-btn>
-                                                            <v-btn color="primary" flat>Save</v-btn>
+                                                            <v-btn flat @click="basicInfoDialog = false">Cancel</v-btn>
+                                                            <v-btn color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Save</v-btn>
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
@@ -647,7 +647,8 @@
                 }
             ],
             detail:[],
-            expandDetail: true
+            expandDetail: true,
+            basicInfoDialog: false
         }),
         methods:{
             getDetail(){
@@ -728,6 +729,30 @@
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
+            updateBasicInfoContactDetail(firstName, lastName, email){
+                let body = {
+                    properties: [
+                        {
+                            property: 'firstName',
+                            value: firstName
+                        },
+                        {
+                            property: 'lastName',
+                            value: lastName
+                        },
+                        {
+                            property: 'email',
+                            value: email
+                        },
+                    ]
+                }
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                    this.basicInfoDialog = false;
                 }).catch(error => {
                     console.log(error);
                 })
