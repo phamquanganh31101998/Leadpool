@@ -73,15 +73,15 @@
                                                     <v-card class="pa-3">
                                                         <v-layout row>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="First Name" outline></v-text-field>
+                                                                <v-text-field label="First Name" outline v-model="detail.firstName"></v-text-field>
                                                             </v-flex>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="Last Name" outline></v-text-field>
+                                                                <v-text-field label="Last Name" outline v-model="detail.lastName"></v-text-field>
                                                             </v-flex>
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field label="Job title" outline></v-text-field>
+                                                            <v-text-field label="Lifecycle Stage" outline v-model="detail.lifecycleStage"></v-text-field>
                                                         </v-layout>
 
                                                         <v-card-actions>

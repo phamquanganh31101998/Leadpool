@@ -1,67 +1,42 @@
 <template>
     <v-card v-if="!createEmailTemplate.dialog">
         <v-card-title style="background-color:#1E88E5;color:#fff; padding: 16px;">
-            <span class="headline">Send email via template</span>
+            <span class="headline">Gửi email theo mẫu</span>
         </v-card-title>
         <v-card-text style="padding: 20px">
-            <v-container>
-                <v-layout wrap>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-form v-model="valid">
-                            <v-layout row>
-                                <span class="mt-2"><strong>To</strong></span>
-                                <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
-                            </v-layout>
-                            <v-layout row>
-                                <v-flex>
-                                    <span><strong>From</strong></span>
-                                    <span class="ml-4">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span>
-                                </v-flex>
-                            </v-layout>
-                        </v-form>
-                    </v-flex>
-                </v-layout>
-                <br>
-                <v-divider :divider="divider"></v-divider>
-                <br>
-                <v-layout>
-                    <v-flex>
+            <v-layout row wrap >
+                <v-flex xs12 sm12 md3 lg3 xl3> 
+                    <v-form v-model="valid">
                         <v-layout row>
-                            <span class="mt-2"><strong>Subject</strong></span>
-                            <v-text-field class="ml-4" v-model="subject" placeholder="your subject..."></v-text-field>
+                            <span class="mt-2"><strong>Đến</strong></span>
+                            <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
                         </v-layout>
-                    </v-flex>
-                </v-layout>
-                <v-layout row>
-                    <v-flex xs4 sm4 md4 lg4 xl4>
-                        <span class="mt-2"><strong>Choose Template</strong></span>
-                        <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
-                        <span><a @click.stop="createNewTemplateSection()">Create new template</a></span>
-                    </v-flex>
-                    <v-flex xs7 sm7 md7 lg7 xl7 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <div id="templateBody" style="width: 100%; overflow-y: scroll; height: 380px;"></div>
-                    </v-flex>
-                    
-                </v-layout>
-                <br>
-                <!-- <v-divider :divider="divider"></v-divider>
-                <br>
-                <v-divider :divider="divider"></v-divider>
-                <v-layout row wrap>
-                    >
-                </v-layout> -->
-                <!-- <v-layout>
-                    <v-flex>
-                        <v-textarea v-model="htmlText"  label="Write your html here">
-
-                        </v-textarea>
-                        <v-btn @click="clickTranslate()">Translate</v-btn>
-                    </v-flex>
-                    <v-flex>
-                        <div id="call"></div>
-                    </v-flex>
-                </v-layout> -->
-            </v-container>
+                        <br>
+                        <v-layout row>
+                            <v-flex>
+                                <span><strong>Từ</strong></span>
+                                <span class="ml-4">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span>
+                            </v-flex>
+                        </v-layout>
+                        <br>
+                    </v-form>
+                    <br>
+                    <v-layout row>
+                        <span class="mt-2"><strong>Chủ đề</strong></span>
+                        <v-text-field class="ml-4" v-model="subject" placeholder="your subject..."></v-text-field>
+                    </v-layout>
+                    <br>
+                    <v-divider :divider="divider"></v-divider>
+                    <br>
+                    <span class="mt-2"><strong>Chọn mẫu</strong></span>
+                    <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
+                    <span><a @click.stop="createNewTemplateSection()">Tạo mẫu mới</a></span>
+                </v-flex>
+                <v-flex xs12 sm12 md9 lg9 xl9> 
+                    <h4>Mẫu email</h4>
+                    <div id="templateBody" style="width: 100%; overflow-y: scroll; height: 500px; margin: 10px; border: 1px solid #DDDDDD"></div>
+                </v-flex>
+            </v-layout>
         </v-card-text>
         <v-card-actions>
             <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId, currentContact.email, to, subject)" :disabled="disableSendButton">Send</v-btn>
@@ -70,34 +45,37 @@
     </v-card>
     <v-card v-else width="100%">
         <v-card-title style="background-color:#1E88E5;color:#fff; padding: 16px;">
-            <span class="headline">Create template</span>
+            <span class="headline">Tạo mẫu email</span>
         </v-card-title>
         <v-card-text style="padding: 20px; width: 100%" width="100%">
+            <br>
             <v-container>
-                <v-layout>
-                    <v-flex>
-                        <v-text-field v-model="createEmailTemplate.title" label="Template name" placeholder="name here..." ></v-text-field>
-                    </v-flex>
-                </v-layout>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md2 lg2 xl2>
-
+                        <h3>Tên mẫu</h3>
+                        <v-text-field v-model="createEmailTemplate.title" placeholder="name here..." ></v-text-field>
+                        <br>
+                        <br>
+                        <h4>Thêm thuộc tính của liên lạc: chọn rồi copy đoạn text sang ô tạo mẫu bên cạnh</h4>
+                        <br>
+                        <v-select style="width: 100%" box label="Thuộc tính" :items="createEmailTemplate.properties" v-model="createEmailTemplate.property"></v-select>
+                        <v-text-field readonly solo v-model="createEmailTemplate.property"></v-text-field>
                     </v-flex>
-                    <v-flex xs12 sm12 md5 lg5 xl5>
-                        <v-textarea v-model="createEmailTemplate.htmlText" rows="27">
-
+                    <v-flex xs12 sm12 md4 lg4 xl4>
+                        <h3 style="padding-right: 10px;">Tạo mẫu email tại đây, nhấn Kết quả để xem</h3>
+                        <v-textarea autofocus v-model="createEmailTemplate.htmlText" rows="22" box style="margin: 10px;">
                         </v-textarea>
-                        <v-btn @click="clickTranslate()">Translate</v-btn>
+                        <v-btn @click="clickTranslate()" block color="success" class="mr-2 ml-2">Kết quả</v-btn>
                     </v-flex>
-                    <v-flex xs12 sm12 md5 lg5 xl5 style="padding: 20px; width: 100%">
+                    <v-flex xs12 sm12 md6 lg6 xl6>
                         <div id="call"></div>
                     </v-flex>
                 </v-layout>
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="createTemplate()">Send</v-btn>
-            <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Back</v-btn>
+            <v-btn flat color="green" @click="createTemplate()">Tạo mẫu</v-btn>
+            <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Quay lại</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -153,7 +131,46 @@ export default {
             createEmailTemplate: {
                 dialog: false,
                 htmlText: '',
-                title: ''
+                title: '',
+                properties: [
+                    {
+                        text: 'Họ',
+                        value: '{{Contacts.firstName}}',
+                    },
+                    {
+                        text: 'Tên',
+                        value: '{{Contacts.lastName}}',
+                    },
+                    {
+                        text: 'Email',
+                        value: '{{Contacts.email}}',
+                    },
+                    {
+                        text: 'Số điện thoại',
+                        value: '{{Contacts.phone}}',
+                    },
+                    {
+                        text: 'Tài khoản sở hữu',
+                        value: '{{Contacts.contactOwner}}',
+                    },
+                    {
+                        text: 'Lifecycle Stage',
+                        value: '{{Contacts.lifecycleStage}}',
+                    },
+                    {
+                        text: 'Lead Status',
+                        value: '{{Contacts.leadStatus}}',
+                    },
+                    {
+                        text: 'Thành phố',
+                        value: '{{Contacts.city}}',
+                    },
+                    {
+                        text: 'Ngành nghề',
+                        value: '{{Contacts.bussiness}}',
+                    }
+                ],
+                property: ''
             }
         }
     },
@@ -224,7 +241,8 @@ export default {
             }
 
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
-                console.log(result)
+                console.log(result);
+                this.closeEmailTemplateDialog();
             }).catch(error => {
                 console.log(error);
             })
@@ -315,7 +333,9 @@ export default {
 }
 
 #call{
-    height: 500px;
+    border: 1px solid #CCCCCC;
+    margin: 30px;
+    height: 430px;
     width: 100%;
     overflow-y: scroll
 }
