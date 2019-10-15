@@ -4,7 +4,7 @@ import { responseService } from './response.service'
 const qs = require('qs');
 
 export default {
-    getAllEmail, createTask, getTask, updateTask, getMyTask
+    getAllEmail, createTask, getTask, updateTask, getMyTask, getTaskById
 }
 
 function getAllEmail(idAccount){
@@ -57,5 +57,14 @@ function getMyTask(idAccount, page, status, type){
     }
     let _qs = qs.stringify(a);
     let endpoint = `${config.apiContact}/${idAccount}/tasks/mytask?${_qs}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getTaskById(idAccount, idTask){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/tasks/${idTask}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

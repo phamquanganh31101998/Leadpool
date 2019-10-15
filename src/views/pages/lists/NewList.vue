@@ -117,6 +117,7 @@
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
+                    hide-actions
                     >
                     <template v-slot:items="props">
                         <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.firstName }} {{props.item.lastName}}</a></td>
@@ -177,222 +178,8 @@ export default {
             currentUser: null,
             divider: true,
             search: '',
-            allContacts: [
-                // {
-                //     "contactId": "5d2d7f2d6c245a71aa021873",
-                //     "accountId": "5d1dd258f0aa61074608b0e3",
-                //     "teamId": null,
-                //     "email": "custom@email.com",
-                //     "firstName": "Pham",
-                //     "lastName": "Huyen",
-                //     "phone": "03124564756",
-                //     "contactOwner": "ductbm@adsplus.vn",
-                //     "lifecycleStage": "Lead",
-                //     "leadStatus": null,
-                //     "city": "Hà Nội",
-                //     "bussiness": "Công ty kẹo bánh Hải Hà",
-                //     "lastActivityDate": null,
-                //     "lastContacted": null,
-                //     "createdAt": "2019-07-16T07:39:25.951+0000",
-                //     "updateAt": "2019-07-16T07:39:25.951+0000",
-                //     "createdBy": "minhduc98kl@gmail.com",
-                //     "updateBy": "minhduc98kl@gmail.com",
-                //     "customValue": {
-                //         "source_from_mar": {
-                //             "attributeValueId": "5d2d7f2d6c245a71aa021871",
-                //             "value": "Tự tìm",
-                //             "attribute": {
-                //                 "attributeId": "5d2d510d6c245a4e7796525a",
-                //                 "accountId": "5d1dd258f0aa61074608b0e3",
-                //                 "object": "Contact",
-                //                 "name": "source_from_mar",
-                //                 "label": "Source from mar",
-                //                 "hidden": false,
-                //                 "description": "nguon khach hang",
-                //                 "fieldType": "checkbox",
-                //                 "options": [
-                //                     {
-                //                         "label": "Option A",
-                //                         "value": "option_a"
-                //                     },
-                //                     {
-                //                         "label": "Option B",
-                //                         "value": "option_b"
-                //                     },
-                //                     {
-                //                         "label": "Option C",
-                //                         "value": "option_c"
-                //                     },
-                //                     {
-                //                         "label": "Option D",
-                //                         "value": "option_d"
-                //                     }
-                //                 ],
-                //                 "dataType": "String",
-                //                 "displayOrder": 1,
-                //                 "defaultValue": null,
-                //                 "createdAt": "2019-07-16T04:22:37.022+0000",
-                //                 "updateAt": null,
-                //                 "createdBy": "ductbm@adsplus.vn",
-                //                 "updatedBy": null,
-                //                 "required": false
-                //             }
-                //         },
-                //         "ngay_hen_ky": {
-                //             "attributeValueId": "5d2d7f2d6c245a71aa021872",
-                //             "value": "2019-07-18T17:00:00.000+0000",
-                //             "attribute": {
-                //                 "attributeId": "5d2d51d96c245a4e7796525b",
-                //                 "accountId": "5d1dd258f0aa61074608b0e3",
-                //                 "object": "Contact",
-                //                 "name": "ngay_hen_ky",
-                //                 "label": "Ngày hẹn ký",
-                //                 "hidden": false,
-                //                 "description": "hẹn ký ",
-                //                 "fieldType": "date picker",
-                //                 "options": null,
-                //                 "dataType": "Date",
-                //                 "displayOrder": 1,
-                //                 "defaultValue": null,
-                //                 "createdAt": "2019-07-16T04:26:01.222+0000",
-                //                 "updateAt": null,
-                //                 "createdBy": "ductbm@adsplus.vn",
-                //                 "updatedBy": null,
-                //                 "required": false
-                //             }
-                //         }
-                //     }
-                // },
-                // {
-                //     "contactId": "5d8ecfe05908010001eef5a6",
-                //     "accountId": "5d1dd258f0aa61074608b0e3",
-                //     "teamId": null,
-                //     "email": "anhpq.adsplus@gmail.com",
-                //     "firstName": "Phạm",
-                //     "lastName": "Quang Anh",
-                //     "phone": "0852665998",
-                //     "contactOwner": "anhpq.adsplus@gmail.com",
-                //     "lifecycleStage": "Lead",
-                //     "leadStatus": null,
-                //     "city": "Hà Nội",
-                //     "bussiness": "Thực tập sinh không lương",
-                //     "lastActivityDate": null,
-                //     "lastContacted": null,
-                //     "createdAt": "2019-09-28T03:13:36.569+0000",
-                //     "updateAt": "2019-09-28T03:13:36.569+0000",
-                //     "createdBy": "anhpq.adsplus@gmail.com",
-                //     "updateBy": "anhpq.adsplus@gmail.com",
-                //     "customValue": {}
-                // }
-            ],
-            contacts: [
-                // {
-                //     "contactId": "5d2d7f2d6c245a71aa021873",
-                //     "accountId": "5d1dd258f0aa61074608b0e3",
-                //     "teamId": null,
-                //     "email": "custom@email.com",
-                //     "firstName": "Pham",
-                //     "lastName": "Huyen",
-                //     "phone": "03124564756",
-                //     "contactOwner": "ductbm@adsplus.vn",
-                //     "lifecycleStage": "Lead",
-                //     "leadStatus": null,
-                //     "city": "Hà Nội",
-                //     "bussiness": "Công ty kẹo bánh Hải Hà",
-                //     "lastActivityDate": null,
-                //     "lastContacted": null,
-                //     "createdAt": "2019-07-16T07:39:25.951+0000",
-                //     "updateAt": "2019-07-16T07:39:25.951+0000",
-                //     "createdBy": "minhduc98kl@gmail.com",
-                //     "updateBy": "minhduc98kl@gmail.com",
-                //     "customValue": {
-                //         "source_from_mar": {
-                //             "attributeValueId": "5d2d7f2d6c245a71aa021871",
-                //             "value": "Tự tìm",
-                //             "attribute": {
-                //                 "attributeId": "5d2d510d6c245a4e7796525a",
-                //                 "accountId": "5d1dd258f0aa61074608b0e3",
-                //                 "object": "Contact",
-                //                 "name": "source_from_mar",
-                //                 "label": "Source from mar",
-                //                 "hidden": false,
-                //                 "description": "nguon khach hang",
-                //                 "fieldType": "checkbox",
-                //                 "options": [
-                //                     {
-                //                         "label": "Option A",
-                //                         "value": "option_a"
-                //                     },
-                //                     {
-                //                         "label": "Option B",
-                //                         "value": "option_b"
-                //                     },
-                //                     {
-                //                         "label": "Option C",
-                //                         "value": "option_c"
-                //                     },
-                //                     {
-                //                         "label": "Option D",
-                //                         "value": "option_d"
-                //                     }
-                //                 ],
-                //                 "dataType": "String",
-                //                 "displayOrder": 1,
-                //                 "defaultValue": null,
-                //                 "createdAt": "2019-07-16T04:22:37.022+0000",
-                //                 "updateAt": null,
-                //                 "createdBy": "ductbm@adsplus.vn",
-                //                 "updatedBy": null,
-                //                 "required": false
-                //             }
-                //         },
-                //         "ngay_hen_ky": {
-                //             "attributeValueId": "5d2d7f2d6c245a71aa021872",
-                //             "value": "2019-07-18T17:00:00.000+0000",
-                //             "attribute": {
-                //                 "attributeId": "5d2d51d96c245a4e7796525b",
-                //                 "accountId": "5d1dd258f0aa61074608b0e3",
-                //                 "object": "Contact",
-                //                 "name": "ngay_hen_ky",
-                //                 "label": "Ngày hẹn ký",
-                //                 "hidden": false,
-                //                 "description": "hẹn ký ",
-                //                 "fieldType": "date picker",
-                //                 "options": null,
-                //                 "dataType": "Date",
-                //                 "displayOrder": 1,
-                //                 "defaultValue": null,
-                //                 "createdAt": "2019-07-16T04:26:01.222+0000",
-                //                 "updateAt": null,
-                //                 "createdBy": "ductbm@adsplus.vn",
-                //                 "updatedBy": null,
-                //                 "required": false
-                //             }
-                //         }
-                //     }
-                // },
-                // {
-                //     "contactId": "5d8ecfe05908010001eef5a6",
-                //     "accountId": "5d1dd258f0aa61074608b0e3",
-                //     "teamId": null,
-                //     "email": "anhpq.adsplus@gmail.com",
-                //     "firstName": "Phạm",
-                //     "lastName": "Quang Anh",
-                //     "phone": "0852665998",
-                //     "contactOwner": "anhpq.adsplus@gmail.com",
-                //     "lifecycleStage": "Lead",
-                //     "leadStatus": null,
-                //     "city": "Hà Nội",
-                //     "bussiness": "Thực tập sinh không lương",
-                //     "lastActivityDate": null,
-                //     "lastContacted": null,
-                //     "createdAt": "2019-09-28T03:13:36.569+0000",
-                //     "updateAt": "2019-09-28T03:13:36.569+0000",
-                //     "createdBy": "anhpq.adsplus@gmail.com",
-                //     "updateBy": "anhpq.adsplus@gmail.com",
-                //     "customValue": {}
-                // }
-            ],
+            allContacts: [],
+            contacts: [],
             headersLists: [
                 {
                     text: 'NAME',
@@ -500,12 +287,12 @@ export default {
     },
     methods: {
         getAllContacts(){
-            let email = this.currentUser.username;
-            for (let i = 0; i < this.result.response.length;i++){
-                if(this.result.response[i].email == email){
-                    this.allContacts.push(this.result.response[i]);
-                }
-            }
+            // let email = this.currentUser.username;
+            // for (let i = 0; i < this.result.response.length;i++){
+            //     if(this.result.response[i].email == email){
+            //         this.allContacts.push(this.result.response[i]);
+            //     }
+            // }
         },
         getThisList(){
             listService.getList(this.idAccount).then(result => {
@@ -582,7 +369,15 @@ export default {
             this.currentUser = JSON.parse(localStorage.getItem('user'));
         },
         filter(){
-            console.log(this.conditions);
+            this.allContacts = [];
+            this.contacts = [];
+            listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
+                console.log(result);
+                this.allContacts = result.response;
+                this.contacts = this.allContacts;
+            }).catch(error => {
+                console.log(error);
+            })
         }
     },
     created(){

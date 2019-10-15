@@ -19,7 +19,7 @@
                                     <v-icon small left>
                                         library_books
                                     </v-icon>
-                                    <span class="">Note</span>
+                                    <span class="">Ghi chú</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -47,11 +47,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteNote(note.noteId)">Delete
+                                                            <a color="indigo" @click="deleteNote(note.noteId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -87,8 +87,7 @@
                                         </v-tooltip>
                                     </v-flex>
                                     <v-flex xs7 sm8 md8 lg9 xl9>
-                                        <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> left a
-                                            note</p>
+                                        <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> đã tạo 1 ghi chú</p>
                                     </v-flex>
                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                         <v-btn v-if="hover" @click="updateNote(note.note, note.noteId)" outlined :disabled="note.disableSaveButton">Save</v-btn>

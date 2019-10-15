@@ -25,6 +25,9 @@ export const eventBus = new Vue({
       },
       updateTaskList(){
         this.$emit('updateTaskList');
+      },
+      updateEmailList(){
+        this.$emit('updateEmailList');
       }
     }
   })

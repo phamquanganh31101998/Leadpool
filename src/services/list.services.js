@@ -17,7 +17,7 @@ function getList(idAccount) {
 
 function findContactByCondition(idAccount, condition){
     let request = {
-        method: 'GET',
+        method: 'POST',
         headers: authHeader(),
         body: JSON.stringify(condition)
     }

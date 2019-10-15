@@ -57,10 +57,10 @@
                 <v-list-tile-action>
                     <v-layout row class="mt-2">
                         <v-flex>
-                            <a href="#" color="success">Profile</a>
+                            <a href="#" color="success">Thông tin</a>
                         </v-flex>
                         <v-flex class="text-xs-right">
-                            <a @click="logout()" color="error">Logout</a>
+                            <a @click="logout()" color="error">Đăng xuất</a>
                         </v-flex>
                     </v-layout>
                 </v-list-tile-action>

@@ -1,9 +1,8 @@
 <template>
     <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
-            <!-- <h3>June 2019</h3> -->
             <template>
-                <v-hover>
+                <v-hover v-for="email in emails">
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
                             <v-layout row wrap>
@@ -39,11 +38,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Delete
+                                                            <a color="indigo">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -53,37 +52,35 @@
                                         <v-flex xs5 sm5 lg4 xl4>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on }">
-                                                    <span v-on="on">18 Jun 2019 at 15:21
-                                                        GMT+7</span>
+                                                    <span v-on="on">{{coverTime(email.createdAt)}}</span>
                                                 </template>
-                                                <span small>Tuesday, 18 June 2019 at 15:21
-                                                    GMT+7</span>
+                                                <span small>{{coverTimeTooltip(email.createdAt)}}</span>
                                             </v-tooltip>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 sm12 lg12 xl12 class="mt-2">
-                                    <h3 class="pl-4 ml-2">hello</h3>
+                                    <h3 class="pl-4 ml-2">{{email.subject}}</h3>
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                <v-btn outline small color="primary" class="ml-4">opened</v-btn>
-                                <span class="ml-4">Opened: <strong>1</strong></span>
-                                <span class="ml-4">Click: <strong>0</strong></span>
-                                <v-btn outline dark small color="grey" @click="show =!show">Detail</v-btn>
+                                <v-btn outline small color="primary" class="ml-4">Đã gửi</v-btn>
+                                <span class="ml-4">Opened: <strong>{{email.open}}</strong></span>
+                                <span class="ml-4">Click: <strong>{{email.click}}</strong></span>
+                                <v-btn outline dark small color="grey" @click="email.showDetail =!email.showDetail">Detail</v-btn>
                             </v-flex>
                         </v-layout>
                         <v-divider :divider="divider" class="mt-2"></v-divider>
-                        <v-layout row v-show="show">
+                        <v-layout row v-show="email.showDetail">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-timeline dense class="ml-4">
                                     <v-timeline-item color="grey" small>
                                         <v-layout row wrap>
                                             <v-flex>
-                                                <p>Opened</p>
+                                                <p>Đã mở</p>
                                                 <p>12 Jul 2019 at 23:28 GMT+7</p>
                                             </v-flex>
                                         </v-layout>
@@ -91,8 +88,8 @@
                                     <v-timeline-item color="grey" small>
                                         <v-layout row wrap>
                                             <v-flex>
-                                                <p>Sent</p>
-                                                <p>12 Jul 2019 at 23:28 GMT+7</p>
+                                                <p>Đã gửi</p>
+                                                <p>{{coverTimeTooltip(email.createdAt)}}</p>
                                             </v-flex>
                                         </v-layout>
                                     </v-timeline-item>
@@ -112,11 +109,11 @@
                                                     <v-icon>person</v-icon>
                                                 </v-btn>
                                             </template>
-                                            <span>join middeware</span>
+                                            <span>{{email.from}}</span>
                                         </v-tooltip>
                                     </v-flex>
                                     <v-flex xs8 sm9 md9 lg10 xl10>
-                                        <p class="mt-2 pt-1"><strong>join ichigo </strong> left a email</p>
+                                        <p class="mt-2 pt-1"><strong>{{email.from}} </strong> đã gửi 1 email cho {{email.to}}</p>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -145,7 +142,7 @@
                                     <v-icon small left>
                                         mail
                                     </v-icon>
-                                    <span class="">Logged email</span>
+                                    <span class="">Thông tin email được lưu</span>
                                 </v-flex>
                                 <v-flex xs8 sm8 lg9 xl9>
                                     <v-layout row>
@@ -174,11 +171,11 @@
                                                             </v-menu>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo">Pin
+                                                            <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(emailLog.logId)">Delete
+                                                            <a color="indigo" @click="deleteLog(emailLog.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -205,7 +202,7 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <p>Date</p>
+                                        <p>Ngày</p>
                                         <v-menu ref="menu1" v-model="emailLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
@@ -218,7 +215,7 @@
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
-                                        <p>Time</p>
+                                        <p>Giờ</p>
                                         <v-dialog ref="dialog" v-model="emailLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
@@ -248,10 +245,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> left a call</p>
+                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã gửi email</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Save</v-btn>
+                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Lưu</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -271,6 +268,7 @@
     import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
+import emailService from '../../../services/email.service';
     export default {
         props: {
             idAccount: {
@@ -292,7 +290,8 @@
             menu2Log: false,
             modal2Log: false,
             emailLogs: [],
-            progressLog: true
+            progressLog: true,
+            emails: []
         }),
         computed: {
             computedDateFormatted() {
@@ -359,9 +358,25 @@
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
                 return moment(time).add(-7, 'h').format('HH:mm')
+            },
+            getEmail(){
+                emailService.getEmailHistory(this.idAccount, this.idContact).then(result => {
+                    // console.log(result);
+                    for(let i = 0; i < result.response.length; i++){
+                        result.response[i].showDetail = false;
+                    }
+                    this.emails = result.response.reverse();
+                    console.log(this.emails);
+                }).catch(error => {
+                    console.log(error);
+                })
             }
         },
         created(){
+            this.getEmail();
+            eventBus.$on('updateEmailList', ()=>{
+                this.getEmail();
+            })
             this.getEmailLogsList();
             eventBus.$on('updateLogEmailList', ()=>{
                 this.getEmailLogsList();
