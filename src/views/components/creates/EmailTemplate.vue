@@ -33,22 +33,23 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row>
-                    <v-flex xs5 sm5 md5 lg5 xl5>
+                    <v-flex xs4 sm4 md4 lg4 xl4>
                         <span class="mt-2"><strong>Choose Template</strong></span>
-                        <span class="ml-4" style="width: 50px;"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
-                    </v-flex>
-                    <v-flex xs7 sm7 md7 lg7 xl7>
+                        <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
                         <span><a @click.stop="createNewTemplateSection()">Create new template</a></span>
+                    </v-flex>
+                    <v-flex xs7 sm7 md7 lg7 xl7 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <div id="templateBody" style="width: 100%; overflow-y: scroll; height: 380px;"></div>
                     </v-flex>
                     
                 </v-layout>
                 <br>
-                <v-divider :divider="divider"></v-divider>
+                <!-- <v-divider :divider="divider"></v-divider>
                 <br>
                 <v-divider :divider="divider"></v-divider>
                 <v-layout row wrap>
-                    <div id="templateBody"></div>
-                </v-layout>
+                    >
+                </v-layout> -->
                 <!-- <v-layout>
                     <v-flex>
                         <v-textarea v-model="htmlText"  label="Write your html here">
@@ -63,29 +64,32 @@
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, templateId, currentContact.email, to, subject)" :disabled="disableSendButton">Send</v-btn>
+            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId, currentContact.email, to, subject)" :disabled="disableSendButton">Send</v-btn>
             <v-btn flat color="red" @click="closeEmailTemplateDialog()">Cancel</v-btn>
         </v-card-actions>
     </v-card>
-    <v-card v-else>
+    <v-card v-else width="100%">
         <v-card-title style="background-color:#1E88E5;color:#fff; padding: 16px;">
             <span class="headline">Create template</span>
         </v-card-title>
-        <v-card-text style="padding: 20px">
+        <v-card-text style="padding: 20px; width: 100%" width="100%">
             <v-container>
                 <v-layout>
                     <v-flex>
-                        <v-text-field v-model="createEmailTemplate.title" label="Template name" placeholder="name here..."></v-text-field>
+                        <v-text-field v-model="createEmailTemplate.title" label="Template name" placeholder="name here..." ></v-text-field>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex xs12 sm12 md6 lg6 xl6>
+                    <v-flex xs12 sm12 md2 lg2 xl2>
+
+                    </v-flex>
+                    <v-flex xs12 sm12 md5 lg5 xl5>
                         <v-textarea v-model="createEmailTemplate.htmlText" rows="27">
 
                         </v-textarea>
                         <v-btn @click="clickTranslate()">Translate</v-btn>
                     </v-flex>
-                    <v-flex xs12 sm12 md6 lg6 xl6>
+                    <v-flex xs12 sm12 md5 lg5 xl5 style="padding: 20px; width: 100%">
                         <div id="call"></div>
                     </v-flex>
                 </v-layout>
@@ -212,14 +216,14 @@ export default {
             }
             return result;
         },
-        sendEmailViaTemplate(idAccount, templateId, from, to, subject){
+        sendEmailViaTemplate(idAccount, idContact, templateId, from, to, subject){
             let body = {
                 from: from, 
                 to: to, 
                 subject: subject
             }
 
-            emailServices.sendEmailViaTemplate(idAccount, templateId, body).then(result => {
+            emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
                 console.log(result)
             }).catch(error => {
                 console.log(error);
@@ -228,8 +232,9 @@ export default {
         createTemplate(){
             var regex = /\"/gi;
             // console.log(this.createEmailTemplate.htmlText.replace(regex, "\\\""));
-            let content = this.createEmailTemplate.htmlText.replace(regex, "\\\"");
-            // console.log(content);
+            // let content = this.createEmailTemplate.htmlText.replace(regex, "\\\"");
+            let content = this.createEmailTemplate.htmlText;
+            console.log(content);
             let body = {
                 title: this.createEmailTemplate.title,
                 content: content,
@@ -307,5 +312,11 @@ export default {
   box-shadow: 0 1px 1px rgb(22, 22, 22);
   padding: 0.4rem;
   height: 90vh;
+}
+
+#call{
+    height: 500px;
+    width: 100%;
+    overflow-y: scroll
 }
 </style>

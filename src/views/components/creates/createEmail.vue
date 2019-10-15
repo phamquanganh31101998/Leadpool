@@ -103,7 +103,7 @@
                 <v-btn color="red" small flat
                     @click="closeCreateEmailDialog()">Cancel</v-btn>
             </v-flex>
-            <v-dialog v-model="emailTemplateDialog" full-screen>
+            <v-dialog v-model="emailTemplateDialog" width="90%">
                 <emailTemplate @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
             </v-dialog>
         </v-layout>

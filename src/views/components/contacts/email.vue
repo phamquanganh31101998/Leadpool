@@ -1,9 +1,8 @@
 <template>
     <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
-            <!-- <h3>June 2019</h3> -->
             <template>
-                <v-hover>
+                <v-hover v-for="email in emails">
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
                             <v-layout row wrap>
@@ -53,37 +52,35 @@
                                         <v-flex xs5 sm5 lg4 xl4>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on }">
-                                                    <span v-on="on">18 Jun 2019 at 15:21
-                                                        GMT+7</span>
+                                                    <span v-on="on">{{coverTime(email.createdAt)}}</span>
                                                 </template>
-                                                <span small>Tuesday, 18 June 2019 at 15:21
-                                                    GMT+7</span>
+                                                <span small>{{coverTimeTooltip(email.createdAt)}}</span>
                                             </v-tooltip>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
                                 <v-flex xs12 sm12 lg12 xl12 class="mt-2">
-                                    <h3 class="pl-4 ml-2">hello</h3>
+                                    <h3 class="pl-4 ml-2">{{email.subject}}</h3>
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                <v-btn outline small color="primary" class="ml-4">opened</v-btn>
-                                <span class="ml-4">Opened: <strong>1</strong></span>
-                                <span class="ml-4">Click: <strong>0</strong></span>
-                                <v-btn outline dark small color="grey" @click="show =!show">Detail</v-btn>
+                                <v-btn outline small color="primary" class="ml-4">Đã gửi</v-btn>
+                                <span class="ml-4">Opened: <strong>{{email.open}}</strong></span>
+                                <span class="ml-4">Click: <strong>{{email.click}}</strong></span>
+                                <v-btn outline dark small color="grey" @click="email.showDetail =!email.showDetail">Detail</v-btn>
                             </v-flex>
                         </v-layout>
                         <v-divider :divider="divider" class="mt-2"></v-divider>
-                        <v-layout row v-show="show">
+                        <v-layout row v-show="email.showDetail">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-timeline dense class="ml-4">
                                     <v-timeline-item color="grey" small>
                                         <v-layout row wrap>
                                             <v-flex>
-                                                <p>Opened</p>
+                                                <p>Đã mở</p>
                                                 <p>12 Jul 2019 at 23:28 GMT+7</p>
                                             </v-flex>
                                         </v-layout>
@@ -91,8 +88,8 @@
                                     <v-timeline-item color="grey" small>
                                         <v-layout row wrap>
                                             <v-flex>
-                                                <p>Sent</p>
-                                                <p>12 Jul 2019 at 23:28 GMT+7</p>
+                                                <p>Đã gửi</p>
+                                                <p>{{coverTimeTooltip(email.createdAt)}}</p>
                                             </v-flex>
                                         </v-layout>
                                     </v-timeline-item>
@@ -112,11 +109,11 @@
                                                     <v-icon>person</v-icon>
                                                 </v-btn>
                                             </template>
-                                            <span>join middeware</span>
+                                            <span>{{email.from}}</span>
                                         </v-tooltip>
                                     </v-flex>
                                     <v-flex xs8 sm9 md9 lg10 xl10>
-                                        <p class="mt-2 pt-1"><strong>join ichigo </strong> left a email</p>
+                                        <p class="mt-2 pt-1"><strong>{{email.from}} </strong> đã gửi 1 email cho {{email.to}}</p>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -271,6 +268,7 @@
     import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
+import emailService from '../../../services/email.service';
     export default {
         props: {
             idAccount: {
@@ -292,7 +290,8 @@
             menu2Log: false,
             modal2Log: false,
             emailLogs: [],
-            progressLog: true
+            progressLog: true,
+            emails: []
         }),
         computed: {
             computedDateFormatted() {
@@ -359,9 +358,25 @@
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
                 return moment(time).add(-7, 'h').format('HH:mm')
+            },
+            getEmail(){
+                emailService.getEmailHistory(this.idAccount, this.idContact).then(result => {
+                    // console.log(result);
+                    for(let i = 0; i < result.response.length; i++){
+                        result.response[i].showDetail = false;
+                    }
+                    this.emails = result.response.reverse();
+                    console.log(this.emails);
+                }).catch(error => {
+                    console.log(error);
+                })
             }
         },
         created(){
+            this.getEmail();
+            eventBus.$on('updateEmailList', ()=>{
+                this.getEmail();
+            })
             this.getEmailLogsList();
             eventBus.$on('updateLogEmailList', ()=>{
                 this.getEmailLogsList();

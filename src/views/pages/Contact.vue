@@ -431,7 +431,7 @@
       lifecycleStage: 'Lead',
       lifecycleStages: [
         'Lead',
-        'Subcriber',
+        'Subscriber',
         'Marketing qualified lead',
         'Sales qualified lead',
         'Opportunity',
