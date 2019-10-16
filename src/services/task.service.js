@@ -41,21 +41,21 @@ function updateTask(idAccount, idContact, idTask, body){
         body: JSON.stringify(body),
         headers: authHeader()
     };
-    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/tasks/${idTask}`
+    let endpoint = `${config.apiContact}/${idAccount}/tasks/${idTask}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getMyTask(idAccount, page, status, type){
-    let a = {
-        page: page,
-        status: status,
-        type: type
-    }
+function getMyTask(idAccount, param){
+    // let a = {
+    //     page: page,
+    //     status: status,
+    //     type: type
+    // }
     let request = {
         method: 'GET',
         headers: authHeader()
     }
-    let _qs = qs.stringify(a);
+    let _qs = qs.stringify(param);
     let endpoint = `${config.apiContact}/${idAccount}/tasks/mytask?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

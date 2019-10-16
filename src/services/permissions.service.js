@@ -3,7 +3,7 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default{
-    findUserByAccount, upgradeToAdmin, getAllGroupPermissions, updateAccessLevel, removeAdminPermission
+    findUserByAccount, upgradeToAdmin, getAllGroupPermissions, updateAccessLevel, removeAdminPermission, getUserInfo
 }
 
 function findUserByAccount(idAccount){
@@ -53,5 +53,14 @@ function updateAccessLevel(idAccount, idUser, body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiContact}/${idAccount}/user/${idUser}/accessLevel`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getUserInfo(idAccount, idUser){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/user/${idUser}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

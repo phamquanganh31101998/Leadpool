@@ -92,10 +92,10 @@
           <v-list-tile @click="getMyContact()">
             <v-list-tile-title>Các liên lạc của tôi</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="dialog = true">
+          <!-- <v-list-tile @click="dialog = true">
             <v-list-tile-title>Các bộ lọc đã lưu<v-icon>keyboard_arrow_right</v-icon>
             </v-list-tile-title>
-          </v-list-tile>
+          </v-list-tile> -->
           <!-- <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>My Contacts</v-list-tile-title>
@@ -264,12 +264,12 @@
                         </v-card-actions>
                     </v-card>
                     <br>
-                    <p>hoặc</p>
+                    <!-- <p>hoặc</p> -->
                 </template>
             </v-card-text>
-            <v-card-actions>
+            <!-- <v-card-actions>
                 <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()"><v-icon>add</v-icon>điều kiện hoặc</v-btn>
-            </v-card-actions>
+            </v-card-actions> -->
           </v-card>
           <br>
           <v-layout row wrap>
@@ -279,7 +279,7 @@
             <v-flex>
               <v-btn @click="resetFilter()">Xóa</v-btn>
             </v-flex>
-            <v-dialog
+            <!-- <v-dialog
               width="500"
               v-model="saveFilter.dialog"
               >
@@ -301,12 +301,12 @@
                   <v-layout row wrap>
                     <p>Tên *</p>
                     <v-text-field style="width: 100%; padding-top: 0px" v-model="saveFilter.name"></v-text-field>
-                    <!-- <p>Share with *</p>
+                    <p>Share with *</p>
                     <v-radio-group v-model="saveFilter.shareWith">
                       <v-radio label="Private" value="private"></v-radio>
                       <v-radio label="My Team" value="myteam"></v-radio>
                       <v-radio label="Everyone" value="everyone"></v-radio>
-                    </v-radio-group> -->
+                    </v-radio-group>
                   </v-layout>
                 </v-card-text>
                 <v-divider></v-divider>
@@ -319,7 +319,7 @@
                   </v-layout>
                 </v-card-actions>
               </v-card>
-            </v-dialog>
+            </v-dialog> -->
           </v-layout>
           <br>
           <br>
@@ -785,7 +785,6 @@
                 value: value
             }
         }
-        console.log(this.conditions);
         let firstOrArray = [];
         firstOrArray.push(conditionToAdd);
         this.conditions.push(firstOrArray);

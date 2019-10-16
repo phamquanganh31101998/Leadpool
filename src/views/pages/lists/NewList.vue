@@ -2,15 +2,15 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <v-text-field v-model="newListName" placeholder="your list name here..." class="fontSize: 20px;"></v-text-field>
+                <v-text-field v-model="newListName" label="Tên danh sách" class="fontSize: 20px;"></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
+                        <v-text-field append-icon="search" v-model="search" label="Tìm contact theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="warning" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Create List</v-btn>
+                        <v-btn dark color="warning" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Tạo danh sách</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -20,97 +20,130 @@
         <br>
         <v-layout row>
             <v-flex xs12 sm12 md4 lg4 xl4>
-                <div class="conditions">
-                    <v-card>
-                        <v-card-text>
-                            <template v-for="(orCondition, orIndex) in conditions">
-                                <v-card>
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
-                                                <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
-                                                    Delete
-                                                </a>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <template v-for="(andCondition, andIndex) in orCondition">
-                                            <v-card>
-                                                <v-card-text>
-                                                    <v-layout row>
-                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                            <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
-                                                                <template v-for="val in andCondition.value">
-                                                                    <v-chip>{{val}}</v-chip>
-                                                                </template>
-                                                            </p>
-                                                            <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                                                            <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                                                            <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                                                            <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                                                        </v-flex>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
-                                                            <v-tooltip right>
-                                                                <template v-slot:activator="{ on }">
-                                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
-                                                                        <v-icon style="color: red;" >clear</v-icon>
-                                                                    </v-btn>
-                                                                </template>
-                                                                <span>Delete this condition</span>
-                                                            </v-tooltip>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                            <br>
-                                            <p>AND</p>
-                                        </template>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn class="blue" outline round style="color: blue;" v-on="on">AND</v-btn>
+                <template v-if="!firstConditionMenu">
+                    <div class="conditions">
+                        <v-card>
+                            <v-card-text>
+                                <template v-for="(orCondition, orIndex) in conditions">
+                                    <v-card>
+                                        <v-card-title>
+                                            <v-layout row wrap>
+                                                <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
+                                                    <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
+                                                        Delete
+                                                    </a>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <template v-for="(andCondition, andIndex) in orCondition">
+                                                <v-card>
+                                                    <v-card-text>
+                                                        <v-layout row>
+                                                            <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
+                                                                <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
+                                                                    <template v-for="val in andCondition.value">
+                                                                        <v-chip>{{val}}</v-chip>
+                                                                    </template>
+                                                                </p>
+                                                                <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                            </v-flex>
+                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                                <v-tooltip right>
+                                                                    <template v-slot:activator="{ on }">
+                                                                        <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
+                                                                            <v-icon style="color: red;" >clear</v-icon>
+                                                                        </v-btn>
+                                                                    </template>
+                                                                    <span>Delete this condition</span>
+                                                                </v-tooltip>
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </v-card-text>
+                                                </v-card>
+                                                <br>
+                                                <p>AND</p>
                                             </template>
-                                            <v-card style="width: 100%;">
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="newCondition.contactProperties" label="Choose Contact Property" v-model="newCondition.chosenProperty"></v-select>
-                                                        </v-flex>
-                                                        <br>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="newCondition.conditionConstants" label="Choose constant" v-model="newCondition.chosenConstant"></v-select>
-                                                        </v-flex>
-                                                        <br>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
-                                                            <v-text-field v-model="newCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
-                                                            
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.vchipTextField)">AND</v-btn>
-                                                        </v-flex>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12 v-else>
-                                                            <v-text-field v-model="newCondition.value" label="Value"></v-text-field>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)">AND</v-btn>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-menu>
-                                        <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
-                                    </v-card-actions>
-                                </v-card>
-                                <br>
-                                <p>OR</p>
-                            </template>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()">OR</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                    <v-btn dark color="warning" @click="filter()">Filter</v-btn>
-                </div>
-                <br>
-                
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn class="blue" outline round style="color: blue;" v-on="on">AND</v-btn>
+                                                </template>
+                                                <v-card style="width: 100%;">
+                                                    <v-card-text>
+                                                        <v-layout row wrap>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-select :items="newCondition.contactProperties" label="Choose Contact Property" v-model="newCondition.chosenProperty"></v-select>
+                                                            </v-flex>
+                                                            <br>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-select :items="newCondition.conditionConstants" label="Choose constant" v-model="newCondition.chosenConstant"></v-select>
+                                                            </v-flex>
+                                                            <br>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
+                                                                <v-text-field v-model="newCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
+                                                                
+                                                                <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.vchipTextField)">AND</v-btn>
+                                                            </v-flex>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12 v-else>
+                                                                <v-text-field v-model="newCondition.value" label="Value"></v-text-field>
+                                                                <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)">AND</v-btn>
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-menu>
+                                            <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
+                                        </v-card-actions>
+                                    </v-card>
+                                    <br>
+                                    <p>OR</p>
+                                </template>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()">OR</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                        <v-btn dark color="warning" @click="filter()">Lọc</v-btn>
+                    </div>
+                    <br>
+                </template>
+                <template v-else>
+                    <br>
+                    <br>
+                    <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
+                        <template v-slot:activator="{ on }">
+                            <a v-on="on"><v-icon>add</v-icon> Thêm điều kiện mới</a>
+                        </template>
+                        <v-card style="width: 100%;">
+                            <v-card-text>
+                                <v-layout row wrap>
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty"></v-select>
+                                    </v-flex>
+                                    <br>
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <v-select :items="createFirstCondition.conditionConstants" label="Chọn điều kiện" v-model="createFirstCondition.chosenConstant"></v-select>
+                                    </v-flex>
+                                    <br>
+                                    <v-flex xs12 sm12 md12 lg12 xl12 v-if="createFirstCondition.chosenConstant == 'IN'">
+                                        <v-text-field v-model="createFirstCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
+                                        
+                                        <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, 'IN', createFirstCondition.vchipTextField)"><v-icon>add</v-icon>Thêm</v-btn>
+                                    </v-flex>
+                                    <v-flex xs12 sm12 md12 lg12 xl12 v-else>
+                                        <v-text-field v-model="createFirstCondition.value" label="Nhập từ khóa" ></v-text-field>
+                                        <v-btn class="blue" outline round style="color: blue;"  @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value)"><v-icon>add</v-icon>Thêm</v-btn>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card-text>
+                        </v-card>
+                    </v-menu>
+                </template>
             </v-flex>
             <v-flex xs12 sm12 md8 lg8 xl8>
                 <v-data-table
@@ -182,7 +215,7 @@ export default {
             contacts: [],
             headersLists: [
                 {
-                    text: 'NAME',
+                    text: 'TÊN',
                     align: 'left',
                     sortable: true,
                     value: 'name'
@@ -194,7 +227,7 @@ export default {
                     value: 'email'
                 },
                 {
-                    text: 'PHONE',
+                    text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
                     sortable: true,
                     value: 'phone'
@@ -206,19 +239,19 @@ export default {
                     value: 'lifecycleStage'
                 },
                 {
-                    text: 'CONTACT OWNER',
+                    text: 'THUỘC SỞ HỮU',
                     align: 'left',
                     sortable: true,
                     value: 'contactOwner'
                 },
                 {
-                    text: 'CITY',
+                    text: 'THÀNH PHÓ',
                     align: 'left',
                     sortable: true,
                     value: 'city'
                 },
                 {
-                    text: 'BUSINESS',
+                    text: 'NGÀNH NGHỀ',
                     align: 'left',
                     sortable: true,
                     value: 'bussiness'
@@ -232,11 +265,11 @@ export default {
                         value: 'lifecycle_stage'
                     },
                     {
-                        text: 'Contact Owner',
+                        text: 'Người dùng sở hữu',
                         value: 'contact_owner'
                     },
                     {
-                        text: 'Phone Number',
+                        text: 'Số điện thoại',
                         value: 'phone_number'
                     },
                     {
@@ -244,33 +277,33 @@ export default {
                         value: 'email'
                     },
                     {
-                        text: 'City',
+                        text: 'Thành phố',
                         value: 'city'
                     },
                     {
-                        text: 'Business',
+                        text: 'Ngành nghề',
                         value: 'bussiness'
                     }
                 ],
                 conditionConstants: [
                     {
-                        text: 'Great than',
+                        text: 'lớn hơn',
                         value: 'GREAT_THAN'
                     },
                     {
-                        text: 'Less than',
+                        text: 'nhỏ hơn',
                         value: 'LESS_THAN'
                     },
                     {
-                        text: 'Equal to',
+                        text: 'bằng',
                         value: 'EQUAL'
                     },
                     {
-                        text: 'Like',
+                        text: 'chứa',
                         value: 'LIKE'
                     },
                     {
-                        text: 'In',
+                        text: 'có trong',
                         value: 'IN'
                     },
                 ],
@@ -282,7 +315,64 @@ export default {
                 newConditionMenu: false
             },
             conditions: [],
-            newListName: ''
+            newListName: '',
+            createFirstCondition: {
+                contactProperties: [
+                    {
+                        text: 'Lifecycle Stage',
+                        value: 'lifecycle_stage'
+                    },
+                    {
+                        text: 'Tài khoản sở hữu',
+                        value: 'contact_owner'
+                    },
+                    {
+                        text: 'Số điện thoại',
+                        value: 'phone_number'
+                    },
+                    {
+                        text: 'Email',
+                        value: 'email'
+                    },
+                    {
+                        text: 'Thành phố',
+                        value: 'city'
+                    },
+                    {
+                        text: 'Ngành nghề',
+                        value: 'bussiness'
+                    }
+                ],
+                conditionConstants: [
+                    {
+                        text: 'lớn hơn',
+                        value: 'GREAT_THAN'
+                    },
+                    {
+                        text: 'nhỏ hơn',
+                        value: 'LESS_THAN'
+                    },
+                    {
+                        text: 'là',
+                        value: 'EQUAL'
+                    },
+                    {
+                        text: 'chứa',
+                        value: 'LIKE'
+                    },
+                    {
+                        text: 'có trong',
+                        value: 'IN'
+                    },
+                ],
+                chosenProperty: 'lifecycle_stage',
+                chosenConstant: 'EQUAL',
+                value: '',
+                vchipTextField: '',
+                vchipValue: [],
+                firstConditionMenu: false
+            },
+            firstConditionMenu: true,
         }
     },
     methods: {
@@ -308,6 +398,9 @@ export default {
         },
         deleteOrCondition(orIndex){
             this.conditions.splice(orIndex, 1);
+            if(this.conditions.length == 0){
+                this.firstConditionMenu = true;
+            }
         },
         deleteAndCondition(orIndex, andIndex){
             this.conditions[orIndex].splice(andIndex, 1);
@@ -343,6 +436,37 @@ export default {
             this.newCondition.vchipTextField = '';
             this.conditions = [...this.conditions];
         },
+        addFirstCondition(property, conditionConstant, value){
+            if(conditionConstant == 'IN'){
+                var conditionToAdd = {
+                    conditionId: null,
+                    object: "Contact",
+                    property: property,
+                    condition: conditionConstant,
+                    value: value.split(",")
+                }
+            }
+            else {
+                conditionToAdd = {
+                    conditionId: null,
+                    object: "Contact",
+                    property: property,
+                    condition: conditionConstant,
+                    value: value
+                }
+            }
+            let firstOrArray = [];
+            firstOrArray.push(conditionToAdd);
+            this.conditions.push(firstOrArray);
+            this.conditions = [...this.conditions];
+            this.createFirstCondition.firstConditionMenu = false;
+            this.firstConditionMenu = false;
+        },
+        resetFilter(){
+            this.conditions = [];
+            this.conditions = [...this.conditions];
+            this.firstConditionMenu = true;
+        },
         createNewList(name, conditions){
             let body = {
                 "name": name,
@@ -372,7 +496,6 @@ export default {
             this.allContacts = [];
             this.contacts = [];
             listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
-                console.log(result);
                 this.allContacts = result.response;
                 this.contacts = this.allContacts;
             }).catch(error => {

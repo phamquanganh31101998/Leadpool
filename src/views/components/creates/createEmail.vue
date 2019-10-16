@@ -3,7 +3,7 @@
         <v-layout row>
             <v-flex>
                 <a @click.stop="emailTemplateDialog = true">
-                    Templates
+                    Mẫu email
                 </a>
             </v-flex>
             <v-flex>
@@ -49,7 +49,7 @@
                         </v-flex> -->
                     </v-layout>
                     <v-layout row>
-                        <span class="mt-4"><strong>Type</strong></span>
+                        <span class="mt-4"><strong>Định dạng</strong></span>
                         <span class="ml-4" style="width: 50px;"><v-select :items="types" v-model="type"></v-select></span>
                     </v-layout>
                 </v-form>
@@ -57,8 +57,8 @@
             <v-flex xs12 sm12 md12 lg12 xl12 class="mt-3">
                 <v-divider :divider="divider"></v-divider>
                 <v-layout row>
-                    <span class="mt-4"><strong>Subject</strong></span>
-                    <v-text-field class="ml-4" v-model="subject" placeholder="your subject..."></v-text-field>
+                    <span class="mt-4"><strong>Chủ đề</strong></span>
+                    <v-text-field class="ml-4" v-model="subject" label="chủ đề..."></v-text-field>
                 </v-layout>
                 <v-divider :divider="divider"></v-divider>
             </v-flex>
@@ -164,7 +164,6 @@
                 }
                 emailServices.sendEmail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
-                    alert('Success');
                     this.closeCreateEmailDialog();
                 }).catch(error => {
                     console.log(error);
