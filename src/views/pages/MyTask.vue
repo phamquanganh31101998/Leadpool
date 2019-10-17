@@ -105,7 +105,7 @@
                                     <v-text-field label="Tên" v-model="viewTask.task.title" @change="updateTask(viewTask.task.taskId, 'a', 'title', viewTask.task.title)"></v-text-field>
                                 </v-flex>
                                 <v-flex xs4 sm4 md4 lg4 xl4>
-                                    <v-menu ref="menu1" v-model="viewTask.task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
+                                    <v-menu ref="menu1" v-model="viewTask.task.menu1" :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                         <template v-slot:activator="{ on }">
                                             <v-text-field v-model="viewTask.task.dueDateDate" label="Hạn cuối" persistent-hint prepend-icon="event"
@@ -122,11 +122,10 @@
                                         @change="updateTask(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate + 'T' + viewTask.task.dueDateTime + ':00')"
                                         ></v-select>
                                 </v-flex>
-                                
                             </v-layout>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
-                            <v-textarea class="mt-2" name="input" label="Ghi chú..." v-model="viewTask.task.note"></v-textarea>
+                            <v-textarea class="mt-2" name="input" label="Ghi chú..." v-model="viewTask.task.note" @change="updateTask(viewTask.task.taskId, 'a', 'note', viewTask.task.note)"></v-textarea>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-layout row>
@@ -151,22 +150,28 @@
                             <v-layout row class="mt-2">
                                 <v-flex>
                                     <p>Kiểu</p>
-                                    <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
+                                    <v-menu :close-on-content-click="false" top offset-y>
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
                                                 {{viewTask.task.type}}
                                             </a>
                                         </template>
                                         <v-list>
-                                            <v-list-tile v-for="(item, index) in viewTask.types" :key="index" @click="viewTask.task.type = item">
-                                                <v-list-tile-title>{{ item }}</v-list-tile-title>
+                                            <v-list-tile @click="changeType(viewTask.task.taskId, 'To-do')" style="backgroundColor: white;">
+                                                <v-list-tile-title>To-do</v-list-tile-title>
+                                            </v-list-tile>
+                                            <v-list-tile @click="changeType(viewTask.task.taskId, 'Email')" style="backgroundColor: white;">
+                                                <v-list-tile-title>Email</v-list-tile-title>
+                                            </v-list-tile>
+                                            <v-list-tile @click="changeType(viewTask.task.taskId, 'Call')" style="backgroundColor: white;">
+                                                <v-list-tile-title>Call</v-list-tile-title>
                                             </v-list-tile>
                                         </v-list>
                                     </v-menu>
                                 </v-flex>
                                 <v-flex>
                                     <p>Giao cho</p>
-                                    <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
+                                    <v-menu :close-on-content-click="false" offset-y max-width="300">
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
                                                 {{getNameFromEmail(viewTask.task.assignedTo)}}
@@ -180,7 +185,7 @@
                                                     </v-flex>
                                                     <br>
                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo"></v-select>
+                                                        <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @change="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo)"></v-select>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card-title>
@@ -191,11 +196,18 @@
                                     <p>Email nhắc nhở</p>
                                     <v-layout row>
                                         <v-flex>
-                                            <v-menu :close-on-content-click="false" :nudge-width="100" top offset-y>
-                                                <template v-slot:activator="{ on }">
+                                            <v-menu :close-on-content-click="false" top offset-y>
+                                                <template v-slot:activator="{ on }" v-if="viewTask.task.emailReminderDate != ''">
                                                     <span>
                                                         <a color="indigo" v-on="on">
                                                             {{viewTask.task.emailReminderDate}}
+                                                        </a>
+                                                    </span>
+                                                </template>
+                                                <template v-slot:activator="{ on }" v-else>
+                                                    <span>
+                                                        <a color="indigo" v-on="on">
+                                                            {{viewTask.task.emailReminderChoice}}
                                                         </a>
                                                     </span>
                                                 </template>
@@ -215,11 +227,16 @@
                                                                 <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                             </v-list-tile>
                                                         </template>
-                                                        <v-date-picker v-model="viewTask.task.emailReminderDate" no-title @input="viewTask.task.menu2 = false"></v-date-picker>
+                                                        <v-date-picker 
+                                                            v-model="viewTask.task.emailReminderDate" 
+                                                            no-title 
+                                                            @change="updateTask(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate + 'T' + viewTask.task.emailReminderTime + ':00')"
+                                                            >
+                                                        </v-date-picker>
                                                     </v-menu>
                                                     
-                                                    <v-list-tile @click="viewTask.task.emailReminderChoice = 'No reminder'">
-                                                        <v-list-tile-title>Không nhắc</v-list-tile-title>
+                                                    <v-list-tile @click="setNoReminder(viewTask.task.taskId)">
+                                                        <v-list-tile-title>Không nhắc trước</v-list-tile-title>
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
@@ -227,9 +244,9 @@
                                     </v-layout>
                                 
                                 </v-flex>
-                                <v-flex v-if="viewTask.task.emailReminderChoice!='No reminder'">
+                                <v-flex v-if="viewTask.task.emailReminderChoice!= 'No reminder'">
                                     <p>Thời gian</p>
-                                    <v-menu :close-on-content-click="false" :nudge-right="40" lazy
+                                    <v-menu :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width >
                                         <template v-slot:activator="{ on }">
                                             <span>
@@ -238,12 +255,17 @@
                                                 </a>
                                             </span>
                                         </template>
-                                        <v-select v-model="viewTask.task.emailReminderTime" :items="viewTask.timeToChoose" style="backgroundColor: white; padding: 0px 10px; width: 100px;"></v-select>
+                                        <v-select 
+                                            v-model="viewTask.task.emailReminderTime" 
+                                                :items="viewTask.timeToChoose" 
+                                                style="backgroundColor: white; padding: 0px 10px; width: 100px;"
+                                                @change="updateTask(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate + 'T' + viewTask.task.emailReminderTime + ':00')"
+                                            ></v-select>
                                     </v-menu>
                                 </v-flex>
                                 <v-flex>
                                     <p>Thứ tự</p>
-                                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
+                                    <v-menu :close-on-content-click="false" offset-y>
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
                                                 Không
@@ -402,6 +424,10 @@ export default {
         }
     },
     methods: {
+        changeType(taskId, item){
+            this.viewTask.task.type = item;
+            this.updateTask(taskId, 'a', 'type', item);
+        },
         changePage(){
             if(this.status == 'COMPLETED'){
                 this.getMyTask(this.pagination.page, 'COMPLETED', this.type);
@@ -488,7 +514,7 @@ export default {
         },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('DD/MM/YYYY HH:mm')
+            return moment(time).subtract(7, 'hours').format('DD/MM/YYYY HH:mm')
         },
         updateTask(taskId, contactId, property, value){
             let body = {
@@ -507,6 +533,10 @@ export default {
             this.createTask = false;
             this.getMyTask(this.pagination.page, this.status, this.type);
         },
+        setNoReminder(id){
+            this.viewTask.task.emailReminderChoice = 'No reminder'
+            this.updateTask(id, 'a', 'emailReminder', '');
+        },
         getTaskById(id){
             taskService.getTaskById(this.idAccount, id).then(result => {
                 result.response.assignedToUser = this.getNameFromEmail(result.response.assignedTo);
@@ -514,7 +544,7 @@ export default {
                 result.response.menu1 = false;
                 result.response.time1 = false;
                 result.response.dueDateDate = result.response.dueDate.substring(0, 10);
-                result.response.dueDateTime = result.response.dueDate.substring(11, 16)
+                result.response.dueDateTime = result.response.dueDate.substring(11, 16);
                 result.response.menu2 = false;
                 result.response.time2 = false;
                 if(result.response.emailReminder != null){

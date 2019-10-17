@@ -6,7 +6,7 @@
                     <v-text-field placeholder="Tên công việc" v-model="title"></v-text-field>
                 </v-flex>
                 <v-flex xs4 sm4 md4 lg4 xl4>
-                    <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" :nudge-right="40" lazy
+                    <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" lazy
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="dateFormatted" label="Ngày hết hạn" persistent-hint prepend-icon="event"
@@ -77,7 +77,7 @@
             <v-layout row class="mt-2">
                 <v-flex>
                     <p>Kiểu</p>
-                    <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
+                    <v-menu :close-on-content-click="false" top offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{type}}
@@ -92,7 +92,7 @@
                 </v-flex>
                 <v-flex>
                     <p>Giao cho</p>
-                    <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
+                    <v-menu :close-on-content-click="false" offset-y max-width="300">
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{chosenName}}
@@ -133,7 +133,7 @@
                     <p>Email nhắc nhở</p>
                     <v-layout row>
                         <v-flex>
-                            <v-menu :close-on-content-click="false" :nudge-width="100" top offset-y>
+                            <v-menu :close-on-content-click="false" top offset-y>
                                 <template v-slot:activator="{ on }">
                                     <span>
                                         <a color="indigo" v-on="on">
@@ -152,7 +152,7 @@
                                     <v-list-tile @click="day = 'The week before'">
                                         <v-list-tile-title>Trước một tuần</v-list-tile-title>
                                     </v-list-tile>
-                                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="emailReminder.dateMenu">
+                                    <v-menu :close-on-content-click="false" offset-y v-model="emailReminder.dateMenu">
                                         <template v-slot:activator="{ on }">
                                             <v-list-tile @click="day = 'Custom Date'" v-on="on">
                                                 <v-list-tile-title>Chọn ngày</v-list-tile-title>
@@ -176,7 +176,7 @@
                 </v-flex>
                 <v-flex v-if="day!='No reminder'">
                     <p>Giờ</p>
-                    <v-menu :close-on-content-click="false" :nudge-right="40" lazy
+                    <v-menu :close-on-content-click="false" lazy
                         transition="scale-transition" offset-y full-width >
                         <template v-slot:activator="{ on }">
                             <!-- <v-text-field v-model="emailReminder.time" prepend-icon="access_time" readonly v-on="on">
@@ -221,7 +221,7 @@
                 </v-flex>
                 <v-flex>
                     <p>Thứ tự</p>
-                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
+                    <v-menu :close-on-content-click="false" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 None

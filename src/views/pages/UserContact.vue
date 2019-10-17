@@ -224,7 +224,7 @@
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Log</p>
+                                                    <p>Lưu lại</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>

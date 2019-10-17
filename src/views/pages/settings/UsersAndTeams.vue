@@ -73,7 +73,7 @@
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
                                         <br>
-                                        <h3>Quyền liên lạc</h3>
+                                        <h3>Quyền Contact</h3>
                                         <p>Tất cả các tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
@@ -238,11 +238,11 @@ export default {
             },
             contactAccessLevels: [
                 {
-                    text: 'Thuộc nhóm',
+                    text: 'Trong cùng nhóm',
                     value: 'TeamOnly'
                 },
                 {
-                    text: 'Thuộc cá nhân',
+                    text: 'Cá nhân',
                     value: 'OwnedOnly'
                 },
                 {

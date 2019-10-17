@@ -188,7 +188,7 @@
             </v-card-title>
             <v-card-text>
                 <template v-for="(orCondition, orIndex) in conditions">
-                    <v-card>
+                    <v-card flat style="border: 1px solid #CCCCCC">
                         <v-card-title>
                             <v-layout row wrap>
                                 <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
@@ -200,19 +200,19 @@
                         </v-card-title>
                         <v-card-text>
                             <template v-for="(andCondition, andIndex) in orCondition">
-                                <v-card>
+                                <v-card flat style="border: 1px solid #CCCCCC">
                                     <v-card-text>
                                         <v-layout row>
                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} có trong {{andCondition.condition}} 
+                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong {{andCondition.condition}} 
                                                     <template v-for="val in andCondition.value">
                                                         <v-chip>{{val}}</v-chip>
                                                     </template>
                                                 </p>
-                                                <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} là {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} chứa {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} lớn hơn {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} nhỏ hơn {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
                                             </v-flex>
                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                 <v-tooltip right>
@@ -228,7 +228,7 @@
                                     </v-card-text>
                                 </v-card>
                                 <br>
-                                <p>AND</p>
+                                <p>và</p>
                             </template>
                         </v-card-text>
                         <v-card-actions>
@@ -240,11 +240,11 @@
                                     <v-card-text>
                                         <v-layout row wrap>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-select :items="newCondition.contactProperties" label="Chọn thuộc tính" v-model="newCondition.chosenProperty"></v-select>
+                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty"></v-select>
                                             </v-flex>
                                             <br>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-select :items="newCondition.conditionConstants" label="Chọn điều kiện" v-model="newCondition.chosenConstant"></v-select>
+                                                <v-select :items="newCondition.conditionConstants" label="Điều kiện" v-model="newCondition.chosenConstant"></v-select>
                                             </v-flex>
                                             <br>
                                             <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
@@ -253,7 +253,7 @@
                                                 <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.vchipTextField)"><v-icon>add</v-icon>Thêm</v-btn>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12 v-else>
-                                                <v-text-field v-model="newCondition.value" label="Nhập từ khóa" ></v-text-field>
+                                                <v-text-field v-model="newCondition.value" label="Giá trị" ></v-text-field>
                                                 <v-btn class="blue" outline round style="color: blue;"  @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)"><v-icon>add</v-icon>Thêm</v-btn>
                                             </v-flex>
                                         </v-layout>
@@ -659,6 +659,15 @@
     },
 
     methods: {
+      getPropertyName(value){
+        let result = ''
+        for(let i = 0; i<this.createFirstCondition.contactProperties.length;i++){
+          if(value == this.createFirstCondition.contactProperties[i].value){
+            result = this.createFirstCondition.contactProperties[i].text;
+          }
+        }
+        return result;
+      },
       createContacts() {
         let userInfo = JSON.parse(localStorage.getItem('user'));
         let userName = userInfo.username;

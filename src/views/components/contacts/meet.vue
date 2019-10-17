@@ -52,7 +52,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(meetLog.logId)">Xóa
+                                                            <a color="indigo" @click="confirmDeleteLog(meetLog.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -141,6 +141,21 @@
         <br>
         <br>
         <br>
+        <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Xóa?</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn có chắc chắn muốn xóa?
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="deleteLog(deleteLogDialog.id)">Xóa</v-btn>
+                <v-btn flat color="primary" @click="deleteLogDialog.dialog = false">Quay lại</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-layout>
 </template>
 <script>
@@ -168,7 +183,11 @@
             menu2Log: false,
             modal2Log: false,
             meetLogs: [],
-            progressLog: true
+            progressLog: true,
+            deleteLogDialog: {
+                dialog: false,
+                id: ''
+            }
         }),
         computed: {
             computedDateFormatted() {
@@ -191,9 +210,15 @@
                     eventBus.updateLogMeetList();
                 })
             },
+            confirmDeleteLog(id){
+                this.deleteLogDialog.dialog = true;
+                this.deleteLogDialog.id = id;
+            },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
                     eventBus.updateLogMeetList();
+                    this.deleteLogDialog.id = '';
+                    this.deleteLogDialog.dialog = false;
                 })
             },
             getMeetLogsList(){

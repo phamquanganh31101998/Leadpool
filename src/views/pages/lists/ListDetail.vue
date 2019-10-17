@@ -32,20 +32,20 @@
                     <v-card>
                         <v-card-text>
                             <template v-for="(orCondition, orIndex) in list.conditions">
-                                <v-card>
+                                <v-card flat style="border: 1px solid #CCCCCC">
                                     <v-card-text>
                                         <template v-for="(andCondition, andIndex) in orCondition">
-                                            <v-card>
+                                            <v-card flat style="border: 1px solid #CCCCCC">
                                                 <v-card-text>
-                                                    <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} có trong {{andCondition.condition}} 
+                                                    <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong {{andCondition.condition}} 
                                                         <template v-for="val in andCondition.value">
                                                             <v-chip>{{val}}</v-chip>
                                                         </template>
                                                     </p>
-                                                    <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} là {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} chứa {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} lớn hơn {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} nhỏ hơn {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
                                                 </v-card-text>
                                                 <!-- <v-card-actions>
                                                     <div class="flex-grow-1"></div>
@@ -289,6 +289,15 @@ export default {
         }
     },
     methods: {
+        getPropertyName(value){
+            let result = ''
+            for(let i = 0; i<this.newCondition.contactProperties.length;i++){
+                if(value == this.newCondition.contactProperties[i].value){
+                    result = this.newCondition.contactProperties[i].text;
+                }
+            }
+            return result;
+        },
         getAllContacts(){
             listService.getContactByListId(this.idAccount, this.idList).then(result => {
                 this.allContacts = result.response;
