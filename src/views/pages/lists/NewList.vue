@@ -1,8 +1,13 @@
 <template>
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
-            <v-flex xs12 sm12 md5 lg6 xl6>
-                <v-text-field v-model="newListName" label="Tên danh sách" class="fontSize: 20px;"></v-text-field>
+            <v-flex xs12 sm12 md2 lg2 xl2>
+                <v-btn outline color="indigo" @click="$router.push(`/contacts/${idAccount}/lists`)">
+                    <v-icon>keyboard_arrow_left</v-icon>Danh sách
+                </v-btn>
+            </v-flex>
+            <v-flex xs12 sm12 md3 lg4 xl4>
+                <v-text-field v-model="newListName" label="Tên danh sách" class="fontSize: 20px; width: 100%"></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -41,15 +46,15 @@
                                                     <v-card-text>
                                                         <v-layout row>
                                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                                <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
+                                                                <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} có trong {{andCondition.condition}} 
                                                                     <template v-for="val in andCondition.value">
                                                                         <v-chip>{{val}}</v-chip>
                                                                     </template>
                                                                 </p>
-                                                                <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} là {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} chứa {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} lớn hơn {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} nhỏ hơn {{andCondition.value}}</p>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <v-tooltip right>

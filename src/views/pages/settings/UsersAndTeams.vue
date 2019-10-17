@@ -2,7 +2,7 @@
     <v-content>
         <v-layout row wrap class="mt-5 pl-5 pr-5">
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <h1 class="ml-3">Settings</h1>
+                <h1 class="ml-3">Cài đặt</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
@@ -15,16 +15,16 @@
                         </v-list-tile-content>
                     </v-list-tile> -->
                     <v-list-tile>
-                        <v-list-tile-content style="fontStyle: bold;">
-                            Users & Teams
+                        <v-list-tile-content style="font-weight: bold;">
+                            Người dùng và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs9 sm9 md9 lg9 xl9>
-                <h1>Users & Teams</h1>
+                <h1>Người dùng và nhóm</h1>
                 <br>
-                Create new users, customize user permissions, and remove users from your account.
+                Tạo, chỉnh sửa, xóa người dùng khỏi tài khoản của bạn
                 <br>
                 <br>
                 <v-layout row wrap>
@@ -73,12 +73,12 @@
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
                                         <br>
-                                        <h3>Contacts Access</h3>
-                                        <p>All users have a basic level of access. The permissions below apply to contacts, companies, and tasks.</p>
+                                        <h3>Quyền liên lạc</h3>
+                                        <p>Tất cả các tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                    View
+                                                    Xem
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
                                                     <v-select :disabled="!enableSetting" v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
@@ -98,7 +98,7 @@
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                    Edit
+                                                    Sửa
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
                                                     <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
@@ -111,8 +111,8 @@
                                         <div>
                                             <v-layout row wrap>
                                                 <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
-                                                    <h3>Admin Access</h3>
-                                                    <p>Set access to account configuration and user management.</p>
+                                                    <h3>Quyền Admin</h3>
+                                                    <p>Thiết lập quyền để tùy chỉnh tài khoản và quản lý người dùng</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
                                                     <v-switch :disabled="!enableSetting" v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
@@ -124,7 +124,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Add & Edit Users
+                                                        Thêm & tùy chỉnh người dùng
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
@@ -134,7 +134,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Add & Edit Teams
+                                                        Thêm & tùy chỉnh nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditTeam" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', openUser.adminPer.AddAndEditTeam)"></v-switch>
@@ -144,7 +144,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Partition By Teams
+                                                        Chia theo nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', openUser.adminPer.PartitionByTeams)"></v-switch>
@@ -154,7 +154,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Edit Account Defaults
+                                                        Chỉnh sửa tài khoản mặc định
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', openUser.adminPer.EditAccountDefaults)"></v-switch>
@@ -170,7 +170,7 @@
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <v-btn @click="closePermissionDialog()" flat style="color: red;">Close</v-btn>
+                    <v-btn @click="closePermissionDialog()" flat style="color: red;">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -191,7 +191,7 @@ export default {
             permissionsDialog: false,
             headers: [
                 {
-                    text: 'NAME',
+                    text: 'TÊN',
                     align: 'left',
                     sortable: true,
                     value: 'name'
@@ -203,7 +203,7 @@ export default {
                     value: 'email'
                 },
                 {
-                    text: 'ROLE',
+                    text: 'QUYỀN',
                     align: 'left',
                     sortable: true,
                     value: 'role'
@@ -225,10 +225,10 @@ export default {
                 "updateAt": "2019-07-10T09:43:24.331+0000",
                 "isAdmin": true,
                 "adminPer": {
-                    "AddAndEditUsers": "Accept",
-                    "AddAndEditTeam": "Accept",
-                    "PartitionsByTeams": "Accept",
-                    "EditAccountDefaults": "Accept"
+                    "AddAndEditUsers": "None",
+                    "AddAndEditTeam": "None",
+                    "PartitionsByTeams": "None",
+                    "EditAccountDefaults": "None"
                 },
                 "contactPer": {
                     "view": "Everything",
@@ -238,15 +238,15 @@ export default {
             },
             contactAccessLevels: [
                 {
-                    text: 'Team Only',
+                    text: 'Thuộc nhóm',
                     value: 'TeamOnly'
                 },
                 {
-                    text: 'Owned Only',
+                    text: 'Thuộc cá nhân',
                     value: 'OwnedOnly'
                 },
                 {
-                    text: 'Everything',
+                    text: 'Tất cả',
                     value: 'Everything'
                 }
             ],

@@ -79,12 +79,12 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <p>Ngày</p>
+                                        <!-- <p>Ngày</p> -->
                                         <v-menu ref="menu1" v-model="meetLog.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="meetLog.dateLog" label="Date" persistent-hint
+                                                <v-text-field v-model="meetLog.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = meetLog.dateToPut" v-on="on">
                                                 </v-text-field>
                                             </template>
@@ -92,11 +92,11 @@
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
-                                        <p>Giờ</p>
+                                        <!-- <p>Giờ</p> -->
                                         <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="meetLog.timeLog" label="Times"
+                                                <v-text-field v-model="meetLog.timeLog" label="Giờ"
                                                     prepend-icon="access_time" readonly v-on="on"></v-text-field>
                                             </template>
                                             <v-time-picker v-if="meetLog.modal2Log" v-model="meetLog.timeLog" full-width>

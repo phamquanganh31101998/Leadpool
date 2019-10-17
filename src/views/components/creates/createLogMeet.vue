@@ -3,11 +3,11 @@
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
                 <v-flex xs6 sm6 md6 lg6 xl6>
-                    <p>Date</p>
+                    <!-- <p>Date</p> -->
                     <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" :nudge-right="40" lazy
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="dateFormatted" label="Date" persistent-hint prepend-icon="event"
+                            <v-text-field v-model="dateFormatted" label="Ngày" persistent-hint prepend-icon="event"
                                 @blur="date = parseDate(dateFormatted)" v-on="on">
                             </v-text-field>
                         </template>
@@ -15,17 +15,17 @@
                     </v-menu>
                 </v-flex>
                 <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offseo-xl1>
-                    <p>Time</p>
+                    <!-- <p>Time</p> -->
                     <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent lazy full-width
                         width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="time" label="Times" prepend-icon="access_time" readonly v-on="on">
+                            <v-text-field v-model="time" label="Giờ" prepend-icon="access_time" readonly v-on="on">
                             </v-text-field>
                         </template>
                         <v-time-picker v-if="modal2" v-model="time" full-width>
                             <v-spacer></v-spacer>
-                            <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
-                            <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
+                            <v-btn flat color="primary" @click="modal2 = false">Đóng</v-btn>
+                            <v-btn flat color="primary" @click="$refs.dialog.save(time)">Chọn</v-btn>
                         </v-time-picker>
                     </v-dialog>
                 </v-flex>
@@ -33,7 +33,7 @@
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
             <v-divider :divider="divider"></v-divider>
-            <v-textarea class="mt-2" name="input" label="Describe the meeting..." v-model="log"></v-textarea>
+            <v-textarea class="mt-2" name="input" label="Mô tả cuộc họp..." v-model="log"></v-textarea>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
@@ -74,9 +74,9 @@
         <br>
         <v-layout wrap>
             <v-btn color="blue darken-1" small flat :disabled="disableSaveButton"
-                @click="createLogMeet()">Save</v-btn>
+                @click="createLogMeet()">Tạo</v-btn>
             <v-btn color="red" small flat
-                @click="closeCreateLogMeetDialog()">Close</v-btn>
+                @click="closeCreateLogMeetDialog()">Đóng</v-btn>
         </v-layout>
     </v-layout>
 </template>

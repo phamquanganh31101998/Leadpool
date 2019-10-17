@@ -46,11 +46,6 @@ function updateTask(idAccount, idContact, idTask, body){
 }
 
 function getMyTask(idAccount, param){
-    // let a = {
-    //     page: page,
-    //     status: status,
-    //     type: type
-    // }
     let request = {
         method: 'GET',
         headers: authHeader()

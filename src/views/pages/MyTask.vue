@@ -2,7 +2,7 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Tasks</h1>
+                <h1 class="ml-3">Công việc</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -19,24 +19,24 @@
         <v-layout row wrap>
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <v-list-tile @click="type = 'today'">
+                    <v-list-tile @click="changeStyleBeforeGetTask(0)">
                         <v-list-tile-content :style="fontWeight[0]">
-                            Due Today
+                            Hết hạn hôm nay
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="type = 'thisweek'">
+                    <v-list-tile @click="changeStyleBeforeGetTask(1)">
                         <v-list-tile-content :style="fontWeight[1]">
-                            Due this week
+                            Hết hạn trong tuần này
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="type = 'overdue'">
+                    <v-list-tile @click="type = changeStyleBeforeGetTask(2)">
                         <v-list-tile-content :style="fontWeight[2]">
-                            Overdue
+                            Quá hạn
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="status = 'COMPLETED'">
+                    <v-list-tile @click="status = changeStyleBeforeGetTask(3)">
                         <v-list-tile-content :style="fontWeight[3]">
-                            Completed
+                            Đã hoàn thành
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
@@ -54,7 +54,7 @@
                                         <template v-slot:activator="{ on }">
                                             <v-btn small fab dark color="grey lighten-1" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'COMPLETED')" v-on="on"><v-icon>done</v-icon></v-btn>
                                         </template>
-                                        <span>Mark as completed</span>
+                                        <span>Đánh dấu đã hoàn thành</span>
                                     </v-tooltip>
                                 </td>
                                 <td v-if="props.item.status == 'COMPLETED'">
@@ -62,9 +62,8 @@
                                         <template v-slot:activator="{ on }">
                                             <v-btn v-on="on" small fab dark color="success" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'NOTCOMPLETED')" ><v-icon>done</v-icon></v-btn>
                                         </template>
-                                        <span>Mark as incomplete</span>
+                                        <span>Đánh dấu chưa hoàn thành</span>
                                     </v-tooltip>
-                                    
                                 </td>
                                 <td><a @click.stop="getTaskById(props.item.taskId)">{{ props.item.title }}</a></td>
                                 <td>{{ props.item.type }}</td>
@@ -76,7 +75,7 @@
                 </v-layout>
                 <v-layout row wrap>
                     <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-pagination v-model="pagination.page" :length="length"></v-pagination>
+                        <v-pagination v-model="pagination.page" :length="length" @input="changePage()"></v-pagination>
                         <br>
                         <br>
                     </v-flex>
@@ -93,37 +92,41 @@
                 </v-card-text>
             </v-card>
         </v-dialog> -->
-        <v-dialog v-model="viewTask.dialog" persistent max-width="700" persistent>
+        <v-dialog v-model="viewTask.dialog" persistent max-width="700">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                    <span class="headline">Task</span>
+                    <span class="headline">Chi tiết công việc</span>
                 </v-card-title>
                 <v-card-text>
                     <v-layout wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-layout row>
                                 <v-flex xs4 sm5 md6 lg6 xl6>
-                                    <v-text-field placeholder="Enter your task" v-model="viewTask.task.title"></v-text-field>
+                                    <v-text-field label="Tên" v-model="viewTask.task.title" @change="updateTask(viewTask.task.taskId, 'a', 'title', viewTask.task.title)"></v-text-field>
                                 </v-flex>
                                 <v-flex xs4 sm4 md4 lg4 xl4>
                                     <v-menu ref="menu1" v-model="viewTask.task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
                                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                         <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Due Date" persistent-hint prepend-icon="event"
+                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Hạn cuối" persistent-hint prepend-icon="event"
                                                 v-on="on">
                                             </v-text-field>
                                         </template>
-                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @input="viewTask.task.menu1 = false"></v-date-picker>
+                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @change="updateTask(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate + 'T' + viewTask.task.dueDateTime + ':00')"></v-date-picker>
                                     </v-menu>
                                 </v-flex>
                                 <v-flex xs4 sm3 md2 lg2 xl2>
-                                    <v-select v-model="viewTask.task.dueDateTime" :items="viewTask.timeToChoose"></v-select>
+                                    <v-select 
+                                        v-model="viewTask.task.dueDateTime" 
+                                        :items="viewTask.timeToChoose"
+                                        @change="updateTask(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate + 'T' + viewTask.task.dueDateTime + ':00')"
+                                        ></v-select>
                                 </v-flex>
                                 
                             </v-layout>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
-                            <v-textarea class="mt-2" name="input" label="Notes..." v-model="viewTask.task.note"></v-textarea>
+                            <v-textarea class="mt-2" name="input" label="Ghi chú..." v-model="viewTask.task.note"></v-textarea>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-layout row>
@@ -147,7 +150,7 @@
                             <v-divider :divider="divider"></v-divider>
                             <v-layout row class="mt-2">
                                 <v-flex>
-                                    <p>Type</p>
+                                    <p>Kiểu</p>
                                     <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
@@ -162,7 +165,7 @@
                                     </v-menu>
                                 </v-flex>
                                 <v-flex>
-                                    <p>Assigned to</p>
+                                    <p>Giao cho</p>
                                     <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
@@ -177,7 +180,7 @@
                                                     </v-flex>
                                                     <br>
                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-select :items="viewTask.searchedEmail" v-model="viewTask.task.assignedTo"></v-select>
+                                                        <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo"></v-select>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card-title>
@@ -185,7 +188,7 @@
                                     </v-menu>
                                 </v-flex>
                                 <v-flex>
-                                    <p>Email reminder</p>
+                                    <p>Email nhắc nhở</p>
                                     <v-layout row>
                                         <v-flex>
                                             <v-menu :close-on-content-click="false" :nudge-width="100" top offset-y>
@@ -209,14 +212,14 @@
                                                     <v-menu :close-on-content-click="false" offset-y v-model="viewTask.task.menu2">
                                                         <template v-slot:activator="{ on }">
                                                             <v-list-tile v-on="on" @click="viewTask.task.emailReminderChoice = 'Custom Date'">
-                                                                <v-list-tile-title>Custom Date</v-list-tile-title>
+                                                                <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                             </v-list-tile>
                                                         </template>
                                                         <v-date-picker v-model="viewTask.task.emailReminderDate" no-title @input="viewTask.task.menu2 = false"></v-date-picker>
                                                     </v-menu>
                                                     
                                                     <v-list-tile @click="viewTask.task.emailReminderChoice = 'No reminder'">
-                                                        <v-list-tile-title>No reminder</v-list-tile-title>
+                                                        <v-list-tile-title>Không nhắc</v-list-tile-title>
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
@@ -225,7 +228,7 @@
                                 
                                 </v-flex>
                                 <v-flex v-if="viewTask.task.emailReminderChoice!='No reminder'">
-                                    <p>Time</p>
+                                    <p>Thời gian</p>
                                     <v-menu :close-on-content-click="false" :nudge-right="40" lazy
                                         transition="scale-transition" offset-y full-width >
                                         <template v-slot:activator="{ on }">
@@ -239,11 +242,11 @@
                                     </v-menu>
                                 </v-flex>
                                 <v-flex>
-                                    <p>Queue</p>
+                                    <p>Thứ tự</p>
                                     <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
-                                                None
+                                                Không
                                             </a>
                                         </template>
                                         <v-card>
@@ -291,44 +294,6 @@ export default {
         },
     },
     watch: {
-        type(){
-            // try {
-            //     console.log(this.status)
-            //     this.fontWeight[0] = '';
-            //     this.fontWeight[1] = '';
-            //     this.fontWeight[2] = '';
-            //     this.fontWeight[3] = '';
-            //     this.status = 'NOTCOMPLETED'
-            //     if(this.type == 'today'){
-            //         this.fontWeight[0] = 'font-weight: bold'
-            //     }
-            //     else if (this.type == 'thisweek'){
-            //         this.fontWeight[1] = 'font-weight: bold'
-            //     }
-            //     else {
-            //         this.fontWeight[2] = 'font-weight: bold'
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
-            this.status = 'NOTCOMPLETED'
-            this.getMyTask(this.pagination.page, this.status, this.type);
-            
-        },
-        status(){
-            // console.log(this.status)
-            // if(this.status = 'COMPLETED'){
-            //     this.fontWeight[0] = '';
-            //     this.fontWeight[1] = '';
-            //     this.fontWeight[2] = '';
-            //     this.fontWeight[3] = 'font-weight: bold'
-            //     this.pagination.page = 1;
-            //     this.getMyTask(this.pagination.page, this.status, this.type);
-            // }
-            if(this.status == 'COMPLETED'){
-                this.getMyTask(this.pagination.page, this.status, this.type);
-            }
-        },
         search(){
             this.displayTasks = [];
             for(let i = 0; i< this.tasks.length;i++){
@@ -337,9 +302,15 @@ export default {
                 }
             }
         },
-        'pagination.page'(){
-            this.getMyTask(this.pagination.page, this.status, this.type);
-        }
+        'viewTask.searchEmail'(){
+            this.viewTask.searchedEmail = [];
+            for (let i = 0; i < this.viewTask.allEmail.length;i++){
+                if(this.viewTask.allEmail[i].name.toLowerCase().includes(this.viewTask.searchEmail.toLowerCase())){
+                    this.viewTask.searchedEmail.push(this.viewTask.allEmail[i]);
+                }
+            }
+            this.viewTask.searchedEmail = [...this.viewTask.searchedEmail];
+        },
     },
     data(){
         return {
@@ -362,25 +333,25 @@ export default {
             status: 'NOTCOMPLETED',
             headers: [
                 {
-                    text: 'STATUS',
+                    text: 'TRẠNG THÁI',
                     align: 'left',
                     sortable: true,
                     value: 'status'
                 },
                 {
-                    text: 'TITLE',
+                    text: 'TÊN CÔNG VIỆC',
                     align: 'left',
                     sortable: true,
                     value: 'title'
                 },
                 {
-                    text: 'TYPE',
+                    text: 'KIỂU',
                     align: 'left',
                     sortable: true,
                     value: 'type'
                 },
                 {
-                    text: 'DUE DATE',
+                    text: 'HẠN CUỐI',
                     align: 'left',
                     sortable: true,
                     value: 'dueDate'
@@ -431,6 +402,38 @@ export default {
         }
     },
     methods: {
+        changePage(){
+            if(this.status == 'COMPLETED'){
+                this.getMyTask(this.pagination.page, 'COMPLETED', this.type);
+            }
+            else{
+                this.getMyTask(this.pagination.page, this.status, this.type);
+            }
+        },
+        changeStyleBeforeGetTask(value){
+            this.fontWeight = ['', '', '', ''];
+            this.fontWeight[value] = 'font-weight: bold';
+            switch(value){
+                case 0:
+                    this.status = 'NOTCOMPLETED';
+                    this.type = 'today';
+                    break;
+                case 1:
+                    this.status = 'NOTCOMPLETED';
+                    this.type = 'thisweek';
+                    break;
+                case 2:
+                    this.status = 'NOTCOMPLETED';
+                    this.type = 'overdue';
+                    break;
+                case 3:
+                    this.status = 'COMPLETED';
+                    this.type = 'today';
+                    break;
+            }
+            this.pagination.page = 1;
+            this.getMyTask(this.pagination.page, this.status, this.type);
+        },
         getAllEmail(){
             this.viewTask.allEmail = [];
             taskService.getAllEmail(this.idAccount).then(result => {
@@ -438,6 +441,7 @@ export default {
                     e.displayText = e.name + ' (' + e.email + ')'
                     this.viewTask.allEmail.push(e);
                     this.viewTask.searchedEmail.push(e);
+                    console.log(this.viewTask.searchedEmail);
                 });
             }).catch(error => {
                 console.log(error);
@@ -467,8 +471,11 @@ export default {
                     type: type
                 }
             }
-            console.log(params)
             taskService.getMyTask(this.idAccount, params).then(result => {
+               
+                this.type = type;
+                this.status = status;
+                this.page = page;
                 this.tasks = []
                 this.tasks = result.response.results
                 this.tasks = [...this.tasks]
@@ -526,11 +533,14 @@ export default {
             }).catch(error => {
                 console.log(error);
             })
-        }
+        },
     },
     created(){
         this.getAllEmail();
-        this.getMyTask(this.pagination.page, this.status, this.page);
+        this.getMyTask(this.pagination.page, this.status, this.type);
+        eventBus.$on('updateTaskList', () => {
+            this.getMyTask(this.pagination.page, this.status, this.type);
+        })
     }
 }
 </script>

@@ -3,22 +3,22 @@
         <v-layout row wrap>
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-btn outline color="indigo" @click="$router.push(`/contacts/${idAccount}/lists`)">
-                    <v-icon>keyboard_arrow_left</v-icon>Lists<v-icon>list</v-icon>
+                    <v-icon>keyboard_arrow_left</v-icon>Danh sách
                 </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">List Detail: {{list.name}}</h1>
+                <h1 class="ml-3">Chi tiết danh sách: {{list.name}}</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
+                        <v-text-field append-icon="search" v-model="search" label="Tìm kiếm liên lạc theo tên.." single-line hide-details></v-text-field>
                     </v-flex>
                 
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="warning" @click="goToNewListPage()">Create List</v-btn>
+                        <v-btn dark color="warning" @click="goToNewListPage()">Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -37,13 +37,15 @@
                                         <template v-for="(andCondition, andIndex) in orCondition">
                                             <v-card>
                                                 <v-card-text>
-                                                    <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
+                                                    <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} có trong {{andCondition.condition}} 
                                                         <template v-for="val in andCondition.value">
                                                             <v-chip>{{val}}</v-chip>
                                                         </template>
                                                     </p>
-                                                    <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} là {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} chứa {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} lớn hơn {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} nhỏ hơn {{andCondition.value}}</p>
                                                 </v-card-text>
                                                 <!-- <v-card-actions>
                                                     <div class="flex-grow-1"></div>
@@ -51,7 +53,7 @@
                                                 </v-card-actions> -->
                                             </v-card>
                                             <br>
-                                            <p v-if="andIndex < orCondition.length - 1">And</p>
+                                            <p v-if="andIndex < orCondition.length - 1">và</p>
                                         </template>
                                         <!-- <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex)">AND</v-btn> -->
                                     </v-card-text>
@@ -95,7 +97,7 @@
                                     </v-card-actions> -->
                                 </v-card>
                                 <br>
-                                <p v-if="orIndex < list.conditions.length - 1">Or</p>
+                                <p v-if="orIndex < list.conditions.length - 1">hoặc</p>
                             </template>
                         </v-card-text>
                         <v-card-actions>
@@ -168,7 +170,7 @@ export default {
             ],
             headersLists: [
                 {
-                    text: 'NAME',
+                    text: 'TÊn',
                     align: 'left',
                     sortable: true,
                     value: 'name'
@@ -180,7 +182,7 @@ export default {
                     value: 'email'
                 },
                 {
-                    text: 'PHONE',
+                    text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
                     sortable: true,
                     value: 'phone'
@@ -192,42 +194,41 @@ export default {
                     value: 'lifecycleStage'
                 },
                 {
-                    text: 'CONTACT OWNER',
+                    text: 'THUỘC SỞ HỮU',
                     align: 'left',
                     sortable: true,
                     value: 'contactOwner'
                 },
                 {
-                    text: 'CITY',
+                    text: 'THÀNH PHỐ',
                     align: 'left',
                     sortable: true,
                     value: 'city'
                 },
                 {
-                    text: 'BUSINESS',
+                    text: 'NGÀNH NGHỀ',
                     align: 'left',
                     sortable: true,
                     value: 'bussiness'
                 },
             ],
             list: null,
-            stringEx: '<p style="color: red;">Hello</p>',
             newCondition: {
                 contactProperties: [
                     {
                         text: 'Lifecycle Stage',
                         value: 'lifecycle_stage'
                     },
-                    // {
-                    //     text: 'Lead Status',
-                    //     value: 'lead_status'
-                    // },
                     {
-                        text: 'Contact Owner',
+                        text: 'Lead Status',
+                        value: 'lead_status'
+                    },
+                    {
+                        text: 'Thuộc sở hữu',
                         value: 'contact_owner'
                     },
                     {
-                        text: 'Phone Number',
+                        text: 'Số điện thoại',
                         value: 'phone_number'
                     },
                     {
@@ -235,11 +236,11 @@ export default {
                         value: 'email'
                     },
                     {
-                        text: 'City',
+                        text: 'Thành phố',
                         value: 'city'
                     },
                     {
-                        text: 'Business',
+                        text: 'Ngành nghề',
                         value: 'bussiness'
                     }
                 ],

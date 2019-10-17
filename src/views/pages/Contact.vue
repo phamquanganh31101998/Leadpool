@@ -2,7 +2,7 @@
   <v-content class="mt-5 pl-3 pr-3">
     <v-layout row wrap>
       <v-flex xs12 sm12 md5 lg6 xl6>
-        <h1 class="ml-3">Contact</h1>
+        <h1 class="ml-3">Liên lạc</h1>
       </v-flex>
       <v-flex xs12 sm12 md7 lg6 xl6>
         <v-layout row>
@@ -31,11 +31,11 @@
           <v-flex xs3 md3 lg3 xl3>
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                <v-btn dark color="warning" v-on="on">create contact</v-btn>
+                <v-btn dark color="warning" v-on="on">Tạo liên lạc mới</v-btn>
               </template>
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Create contact</span>
+                  <span class="headline">Tạo liên lạc mới</span>
                 </v-card-title>
                 <v-card-text>
                   <v-form v-model="valid">
@@ -45,15 +45,15 @@
                           <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
-                          <v-text-field v-model="firstname" :rules="nameRules" label="First name" required>
+                          <v-text-field v-model="firstname" :rules="nameRules" label="Họ" required>
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
-                          <v-text-field v-model="lastname" :rules="nameRules" label="Last name" required>
+                          <v-text-field v-model="lastname" :rules="nameRules" label="Tên" required>
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
-                          <v-text-field v-model="phone" label="Phone number" required :rules="phoneRules">
+                          <v-text-field v-model="phone" label="Số điện thoại" required :rules="phoneRules">
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12>
@@ -73,8 +73,8 @@
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" flat @click="createContacts">Create</v-btn>
-                  <v-btn color="warning" flat @click="checkInfo = false">Close</v-btn>
+                  <v-btn color="primary" flat @click="createContacts">Tạo</v-btn>
+                  <v-btn color="red" flat @click="checkInfo = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -234,7 +234,7 @@
                         <v-card-actions>
                             <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                                 <template v-slot:activator="{ on }">
-                                    <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>điều kiện và</v-btn>
+                                    <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện</v-btn>
                                 </template>
                                 <v-card style="width: 100%;">
                                     <v-card-text>
@@ -370,7 +370,7 @@
               <td class="text-xs-center">{{ props.item.leadStatus }}</td>
               <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
               <td class="text-xs-right text-md-right text-lg-right">
-                <v-btn class="red" outline round style="color: red;" @click="deleteContact(props.item.contactId)">Xóa</v-btn>
+                <v-btn class="red" outline round style="color: red;" @click="confirmDeleteContact(props.item.contactId)">Xóa</v-btn>
               </td>
             </tr>
           </template>
@@ -399,6 +399,21 @@
             </template>
         </v-card-text>
         <div style="flex: 1 1 auto;"></div>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="deleteContactDialog.dialog" @click:outside="deleteContactDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+      <v-card tile>
+        <v-toolbar card dark color="red">
+          <v-toolbar-title>Xóa?</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-card-text>
+            Bạn có chắc chắn muốn xóa liên lạc này?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn flat color="red" @click="deleteContact(deleteContactDialog.id)">Xóa</v-btn>
+          <v-btn flat color="primary" @click="deleteContactDialog.dialog = false">Quay lại</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-content>
@@ -471,7 +486,7 @@
       },
       selected: [],
       headers: [{
-          text: 'Name',
+          text: 'TÊN',
           align: 'left',
           value: 'name'
         },
@@ -481,7 +496,7 @@
           value: 'calories'
         },
         {
-          text: 'Phone Number',
+          text: 'SỐ ĐIỆN THOẠI',
           align: 'center',
           value: 'fat'
         },
@@ -491,12 +506,12 @@
           value: 'carbs'
         },
         {
-          text: 'Create Date(GMT +7)',
+          text: 'NGÀY TẠO',
           align: 'center',
           value: 'protein'
         },
         {
-          text: 'Delete',
+          text: 'XÓA',
           align: 'center',
           value: 'delete'
         }
@@ -626,7 +641,11 @@
         shareWith: 'private'
       },
       lists: [],
-      chosenList: null
+      chosenList: null,
+      deleteContactDialog: {
+        dialog: false,
+        id: ''
+      }
     }),
     computed: {
       disableSaveFilterButton(){
@@ -720,10 +739,16 @@
       takeLink(idContact){
         return `/contacts/${this.idUser}/contact/${idContact}`;
       },
+      confirmDeleteContact(idContact){
+        this.deleteContactDialog.dialog = true;
+        this.deleteContactDialog.id = idContact;
+      },
       deleteContact(idContact){
         contacts.deleteContact(this.idUser, idContact).then(result => {
           console.log(result);
           this.getAllContact();
+          this.deleteContactDialog.id = '';
+          this.deleteContactDialog.dialog = false;
         })
       },
       deleteOrCondition(orIndex){
@@ -809,6 +834,7 @@
         this.conditions = [];
         this.conditions = [...this.conditions];
         this.firstConditionMenu = true;
+        this.getAllContact();
       },
       filter(){
         listService.findContactByCondition(this.idUser, this.conditions).then(result => {

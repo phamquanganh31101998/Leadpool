@@ -9,13 +9,14 @@
                     <v-form v-model="valid">
                         <v-layout row>
                             <span class="mt-2"><strong>Đến</strong></span>
+                            <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
                             <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
                         </v-layout>
                         <br>
                         <v-layout row>
                             <v-flex>
                                 <span><strong>Từ</strong></span>
-                                <span class="ml-4">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span>
+                                <span class="ml-4">{{currentUser.displayName}} ({{currentUser.username}})</span>
                             </v-flex>
                         </v-layout>
                         <br>
@@ -39,7 +40,7 @@
             </v-layout>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId, currentContact.email, to, subject)" :disabled="disableSendButton">Send</v-btn>
+            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId)" :disabled="disableSendButton">Send</v-btn>
             <v-btn flat color="red" @click="closeEmailTemplateDialog()">Cancel</v-btn>
         </v-card-actions>
     </v-card>
@@ -74,12 +75,13 @@
             </v-container>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="createTemplate()">Tạo mẫu</v-btn>
+            <v-btn flat color="green" @click="createTemplate()" :disabled="!createEmailTemplate.button">Tạo mẫu</v-btn>
             <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Quay lại</v-btn>
         </v-card-actions>
     </v-card>
 </template>
 <script>
+import {eventBus} from '../../../eventBus'
 import emailServices from '../../../services/email.service'
 import contactsService from '../../../services/contacts.service'
 export default {
@@ -104,8 +106,13 @@ export default {
         }
     },
     watch: {
-        templateId(){
-            
+        'createEmailTemplate.title'(){
+            if(this.createEmailTemplate.title == ''){
+                this.createEmailTemplate.button = false
+            }
+            else{
+                this.createEmailTemplate.button = true
+            }
         }
     },
     data(){
@@ -128,6 +135,7 @@ export default {
             templateId: '',
             chosenTemplate: null,
             htmlText: '',
+            currentUser: null,
             createEmailTemplate: {
                 dialog: false,
                 htmlText: '',
@@ -170,7 +178,8 @@ export default {
                         value: '{{Contacts.bussiness}}',
                     }
                 ],
-                property: ''
+                property: '',
+                button: false
             }
         }
     },
@@ -211,6 +220,7 @@ export default {
         getCurrentContact(){
             contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
                 this.currentContact = result.response;
+                this.to = this.currentContact.email;
             })
         },
         getEmailTemplate(){
@@ -233,16 +243,17 @@ export default {
             }
             return result;
         },
-        sendEmailViaTemplate(idAccount, idContact, templateId, from, to, subject){
+        sendEmailViaTemplate(idAccount, idContact, templateId){
             let body = {
-                from: from, 
-                to: to, 
-                subject: subject
+                from: this.currentUser.username, 
+                to: this.to, 
+                subject: this.subject
             }
 
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
                 console.log(result);
                 this.closeEmailTemplateDialog();
+                eventBus.updateEmailList();
             }).catch(error => {
                 console.log(error);
             })
@@ -261,12 +272,18 @@ export default {
             emailServices.createEmailTemplate(this.idAccount, body).then(result => {
                 this.getEmailTemplate();
                 this.createEmailTemplate.dialog = false;
+            }).catch(error => {
+                console.log(error);
             })
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
         }
     },
     created(){
         this.getCurrentContact();
         this.getEmailTemplate();
+        this.getCurrentUser();
     }
 }
 </script>

@@ -3,10 +3,10 @@
         <v-layout row>
             <v-flex>
                 <a @click.stop="emailTemplateDialog = true">
-                    Mẫu email
+                    Gửi email theo mẫu
                 </a>
             </v-flex>
-            <v-flex>
+            <!-- <v-flex>
                 <a href="#">
                     Sequences
                 </a>
@@ -25,21 +25,22 @@
                 <a href="#">
                     Quotes
                 </a>
-            </v-flex>
+            </v-flex> -->
         </v-layout>
         <v-layout wrap>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-form v-model="valid">
                     <v-layout row>
-                        <span class="mt-4"><strong>To</strong></span>
+                        <span class="mt-4"><strong>Đến: </strong></span>
                         <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
+                        <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
                     <!-- <v-chip v-model="chip" class="ml-4" small close>Tunt</v-chip> -->
                     
                     </v-layout>
                     <v-layout row>
                         <v-flex>
-                            <span><strong>From</strong></span>
-                            <span class="ml-4">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span>
+                            <span><strong>Từ: </strong></span>
+                            <span class="ml-4">{{currentUser.displayName}} ({{currentUser.username}})</span>
                         </v-flex>
                         <!-- <v-flex class="text-xs-right">
                             <a href="#" style="text-decoration: none">Cc</a>
@@ -63,7 +64,7 @@
                 <v-divider :divider="divider"></v-divider>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <v-textarea name="input" label="" v-model="body"></v-textarea>
+                <v-textarea name="input" label="Nội dung" v-model="body"></v-textarea>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-layout row>
@@ -99,9 +100,9 @@
             <v-divider :divider="divider"></v-divider>
             <v-flex>
                 <v-btn color="blue darken-1" small flat
-                    @click="sendEmail()" :disabled="!valid">Sent</v-btn>
+                    @click="sendEmail()" :disabled="!valid">Gửi</v-btn>
                 <v-btn color="red" small flat
-                    @click="closeCreateEmailDialog()">Cancel</v-btn>
+                    @click="closeCreateEmailDialog()">Đóng</v-btn>
             </v-flex>
             <v-dialog v-model="emailTemplateDialog" width="90%">
                 <emailTemplate @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -110,6 +111,7 @@
     </v-card-text>
 </template>
 <script>
+    import {eventBus} from '../../../eventBus'
     import emailServices from '../../../services/email.service'
     import contactsService from '../../../services/contacts.service'
     import emailTemplate from './EmailTemplate'
@@ -142,12 +144,14 @@
             body: '',
             currentContact: null,
             valid: false,
-            emailTemplateDialog: false
+            emailTemplateDialog: false,
+            currentUser: null
         }),
         methods: {
             getCurrentContact(){
                 contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
                     this.currentContact = result.response;
+                    this.to = this.currentContact.email;
                 })
             },
             closeCreateEmailDialog(){
@@ -156,7 +160,7 @@
             },
             sendEmail(){
                 let body = {
-                    "from": this.currentContact.email,
+                    "from": this.currentUser.username,
                     "to": this.to,
                     "subject": this.subject,
                     "body": this.body,
@@ -164,14 +168,19 @@
                 }
                 emailServices.sendEmail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
+                    eventBus.updateEmailList();
                     this.closeCreateEmailDialog();
                 }).catch(error => {
                     console.log(error);
                 })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
             }
         },
         created(){
             this.getCurrentContact();
+            this.getCurrentUser();
         }
     }
 </script>
