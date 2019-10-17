@@ -66,7 +66,7 @@
                 </v-list-tile-action>
             </v-list>
         </v-menu>
-        <v-dialog v-model="expiredDialog" @click:outside="forceLogout()" width="250px">
+        <v-dialog v-model="expiredDialog" persistent width="250px">
             <v-card>
                 <v-card-title>
                     <h3 style="width: 100%; text-align: center">Phiên đã hết hạn</h3>
@@ -121,8 +121,16 @@
                 }
             },
             forceLogout(){
-                this.expiredDialog = false;
-                this.logout()
+                try {
+                    this.expiredDialog = false;
+                } catch (error) {
+                    this.expiredDialog = false;
+                }
+                finally{
+                    this.expiredDialog = false;
+                    this.logout()
+                }
+                
             }
         },
         created() {

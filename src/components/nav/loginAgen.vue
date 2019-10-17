@@ -17,7 +17,10 @@
   export default {
     name: 'loginAgen',
     data(){
-      currentUser: null
+      return {
+        currentUser: null
+      }
+      
     },
     methods: {
       goToSettingsPage(){

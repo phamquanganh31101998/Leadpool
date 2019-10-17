@@ -10,7 +10,7 @@
                                     <v-layout row>
                                         <v-flex xs7 sm7 md7 lg9 xl10>
                                             <v-btn outline color="indigo" @click="$router.push('../')">
-                                                <v-icon>keyboard_arrow_left</v-icon>Danh sách liên lạc<v-icon>person</v-icon>
+                                                <v-icon>keyboard_arrow_left</v-icon>LEADSc<v-icon>person</v-icon>
                                             </v-btn>
                                         </v-flex>
                                         <!-- <v-flex xs5 sm5 md5 lg3 xl2>
@@ -176,8 +176,8 @@
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-menu offset-y>
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0">
-                                                                <v-icon dark v-on="on">add</v-icon>
+                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                                <v-icon dark>add</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-list>
@@ -294,10 +294,10 @@
                                 </v-flex>
                             </v-layout>
                             <v-layout row>
-                                <v-expansion-panel expand>
+                                <v-expansion-panel expand v-model="expandDetail">
                                     <v-expansion-panel-content>
                                         <template v-slot:header>
-                                            <div>Thông tin về liên lạc này</div>
+                                            <div>Thông tin Lead</div>
                                         </template>
                                         <v-layout row v-for="(item,i) in items" :key="i">
                                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
@@ -366,7 +366,7 @@
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-layout>
-                            <v-layout row>
+                            <!-- <v-layout row>
                                 <v-expansion-panel>
                                     <v-expansion-panel-content>
                                         <template v-slot:header>
@@ -378,7 +378,7 @@
                                         </v-layout>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                            </v-layout>
+                            </v-layout> -->
                         </v-card>
                     </v-flex>
                 </v-layout>
@@ -475,7 +475,7 @@
                         <v-tab-item value="tab-3">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Lưu lại thông tin Email</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Lưu thông tin Email</v-btn>
                                     <v-btn dark depressed small color="#425b76" @click="createEmail= true">Gửi email
                                     </v-btn>
                                 </v-flex>
@@ -485,8 +485,8 @@
                         <v-tab-item value="tab-4">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogCall = true">Lưu lại thông tin cuộc gọi</v-btn>
-                                    <v-btn dark depressed small color="#425b76">Tạo cuộc gọi</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogCall = true">Lưu thông tin cuộc gọi</v-btn>
+                                    <!-- <v-btn dark depressed small color="#425b76">Tạo cuộc gọi</v-btn> -->
                                 </v-flex>
                             </v-layout>
                             <call :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -503,7 +503,7 @@
                         <v-tab-item value="tab-6">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Lưu lại thông tin cuộc họp</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Lưu thông tin cuộc họp</v-btn>
                                     <v-btn dark depressed small color="#425b76" @click="createMeet=true">Tạo cuộc họp mới
                                     </v-btn>
                                 </v-flex>
@@ -646,7 +646,7 @@
                 }
             ],
             detail:[],
-            expandDetail: true,
+            expandDetail: [true],
             basicInfoDialog: false
         }),
         methods:{

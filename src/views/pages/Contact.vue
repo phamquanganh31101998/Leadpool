@@ -2,14 +2,14 @@
   <v-content class="mt-5 pl-3 pr-3">
     <v-layout row wrap>
       <v-flex xs12 sm12 md5 lg6 xl6>
-        <h1 class="ml-3">Liên lạc</h1>
+        <h1 class="ml-3">Leads</h1>
       </v-flex>
       <v-flex xs12 sm12 md7 lg6 xl6>
         <v-layout row>
-          <v-flex xs5 sm5 md5 lg5 xl5>
-            <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+          <v-flex xs9 sm9 md9 lg9 xl9>
+            <v-text-field v-model="search" append-icon="search" label="Tìm kiếm Lead theo tên" single-line hide-details></v-text-field>
           </v-flex>
-          <v-flex xs2 sm2 md2 lg2 xl2>
+          <!-- <v-flex xs2 sm2 md2 lg2 xl2>
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
                 <v-btn outline color="warning" dark v-on="on">
@@ -27,15 +27,15 @@
             <v-btn outline color="warning">
               Import
             </v-btn>
-          </v-flex>
-          <v-flex xs3 md3 lg3 xl3>
+          </v-flex> -->
+          <v-flex xs3 sm3 md3 lg3 xl3>
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                <v-btn dark color="warning" v-on="on">Tạo liên lạc mới</v-btn>
+                <v-btn dark color="warning" v-on="on">Tạo Lead mới</v-btn>
               </template>
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Tạo liên lạc mới</span>
+                  <span class="headline">Tạo Lead mới</span>
                 </v-card-title>
                 <v-card-text>
                   <v-form v-model="valid">
@@ -87,10 +87,10 @@
       <v-flex xs6 sm4 md4 lg3 xl3>
         <v-list>
           <v-list-tile @click="getAllContact()">
-            <v-list-tile-title>Tất cả các liên lạc</v-list-tile-title>
+            <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
           </v-list-tile>
           <v-list-tile @click="getMyContact()">
-            <v-list-tile-title>Các liên lạc của tôi</v-list-tile-title>
+            <v-list-tile-title>Các Lead của tôi</v-list-tile-title>
           </v-list-tile>
           <!-- <v-list-tile @click="dialog = true">
             <v-list-tile-title>Các bộ lọc đã lưu<v-icon>keyboard_arrow_right</v-icon>
@@ -189,7 +189,7 @@
             <v-card-text>
                 <template v-for="(orCondition, orIndex) in conditions">
                     <v-card flat style="border: 1px solid #CCCCCC">
-                        <v-card-title>
+                        <v-card-title style="padding: 8px 0px; margins: 4px 4px">
                             <v-layout row wrap>
                                 <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
                                     <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
@@ -198,13 +198,13 @@
                                 </v-flex>
                             </v-layout>
                         </v-card-title>
-                        <v-card-text>
+                        <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                             <template v-for="(andCondition, andIndex) in orCondition">
                                 <v-card flat style="border: 1px solid #CCCCCC">
-                                    <v-card-text>
+                                    <v-card-text style="padding: 8px 8px;">
                                         <v-layout row>
                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong {{andCondition.condition}} 
+                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong 
                                                     <template v-for="val in andCondition.value">
                                                         <v-chip>{{val}}</v-chip>
                                                     </template>
@@ -227,11 +227,10 @@
                                         </v-layout>
                                     </v-card-text>
                                 </v-card>
-                                <br>
                                 <p>và</p>
                             </template>
                         </v-card-text>
-                        <v-card-actions>
+                        <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
                             <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                                 <template v-slot:activator="{ on }">
                                     <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện</v-btn>
@@ -263,7 +262,6 @@
                             <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
                         </v-card-actions>
                     </v-card>
-                    <br>
                     <!-- <p>hoặc</p> -->
                 </template>
             </v-card-text>
@@ -408,7 +406,7 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-card-text>
-            Bạn có chắc chắn muốn xóa liên lạc này?
+            Bạn có chắc chắn muốn xóa Lead này?
         </v-card-text>
         <v-card-actions>
           <v-btn flat color="red" @click="deleteContact(deleteContactDialog.id)">Xóa</v-btn>

@@ -12,7 +12,7 @@
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-text-field append-icon="search" v-model="search" label="Tìm contact theo tên" single-line hide-details></v-text-field>
+                        <v-text-field append-icon="search" v-model="search" label="Tìm lead theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
                         <v-btn dark color="warning" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Tạo danh sách</v-btn>
@@ -21,17 +21,15 @@
             </v-flex>
         </v-layout>
         <v-divider class="mt-4" :divider="divider"></v-divider>
-        <br>
-        <br>
         <v-layout row>
-            <v-flex xs12 sm12 md4 lg4 xl4>
+            <v-flex xs12 sm12 md3 lg3 xl3>
                 <template v-if="!firstConditionMenu">
                     <div class="conditions">
                         <v-card>
-                            <v-card-text>
+                            <v-card-text style="padding: 8px;">
                                 <template v-for="(orCondition, orIndex) in conditions">
                                     <v-card flat style="border: 1px solid #CCCCCC">
-                                        <v-card-title>
+                                        <v-card-title style="padding: 8px 0px; margins: 4px 4px">
                                             <v-layout row wrap>
                                                 <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
                                                     <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
@@ -40,13 +38,13 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-card-title>
-                                        <v-card-text>
+                                        <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                                             <template v-for="(andCondition, andIndex) in orCondition">
                                                 <v-card flat style="border: 1px solid #CCCCCC">
-                                                    <v-card-text>
+                                                    <v-card-text style="padding: 8px 8px;">
                                                         <v-layout row>
                                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong {{andCondition.condition}} 
+                                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong 
                                                                     <template v-for="val in andCondition.value">
                                                                         <v-chip>{{val}}</v-chip>
                                                                     </template>
@@ -69,11 +67,10 @@
                                                         </v-layout>
                                                     </v-card-text>
                                                 </v-card>
-                                                <br>
                                                 <p>và</p>
                                             </template>
                                         </v-card-text>
-                                        <v-card-actions>
+                                        <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
                                             <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện và</v-btn>
@@ -105,7 +102,6 @@
                                             <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
                                         </v-card-actions>
                                     </v-card>
-                                    <br>
                                     <p>hoặc</p>
                                 </template>
                             </v-card-text>
@@ -115,10 +111,8 @@
                         </v-card>
                         <v-btn dark color="warning" @click="filter()">Lọc</v-btn>
                     </div>
-                    <br>
                 </template>
                 <template v-else>
-                    <br>
                     <br>
                     <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                         <template v-slot:activator="{ on }">
@@ -150,7 +144,7 @@
                     </v-menu>
                 </template>
             </v-flex>
-            <v-flex xs12 sm12 md8 lg8 xl8>
+            <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-data-table
                     :headers="headersLists"
                     :items="contacts"
@@ -524,7 +518,13 @@ export default {
 </script>
 <style>
     div.conditions {
-        height: 800px;
+        height: 600px;
         overflow-y: scroll;
+    }
+    p {
+        margin: 0px 0px 8px;
+    }
+    v-card.innerCard {
+        
     }
 </style>

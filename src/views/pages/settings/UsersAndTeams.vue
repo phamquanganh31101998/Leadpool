@@ -24,7 +24,7 @@
             <v-flex xs9 sm9 md9 lg9 xl9>
                 <h1>Người dùng và nhóm</h1>
                 <br>
-                Tạo, chỉnh sửa, xóa người dùng khỏi tài khoản của bạn
+                Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
                 <br>
                 <br>
                 <v-layout row wrap>
@@ -74,7 +74,7 @@
                                     <v-tab-item value="tab1">
                                         <br>
                                         <h3>Quyền Contact</h3>
-                                        <p>Tất cả các tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
+                                        <p>Tất cả người dùng đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
@@ -88,7 +88,7 @@
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                    Communicate
+                                                    Liên lạc (gửi email, sms...)
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
                                                     <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
@@ -112,7 +112,7 @@
                                             <v-layout row wrap>
                                                 <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
                                                     <h3>Quyền Admin</h3>
-                                                    <p>Thiết lập quyền để tùy chỉnh tài khoản và quản lý người dùng</p>
+                                                    <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý người dùng</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
                                                     <v-switch :disabled="!enableSetting" v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
@@ -154,7 +154,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Chỉnh sửa tài khoản mặc định
+                                                        Chỉnh sửa tổ chức mặc định
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', openUser.adminPer.EditAccountDefaults)"></v-switch>

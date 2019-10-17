@@ -24,7 +24,7 @@ export const user = {
             commit('clearAuthData')
             localStorage.removeItem('token')
             localStorage.removeItem('user')
-            router.replace('/login')
+            router.replace('/login');
         },
     },
     mutations:{
