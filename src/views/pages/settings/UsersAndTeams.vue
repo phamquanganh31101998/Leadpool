@@ -2,36 +2,36 @@
     <v-content>
         <v-layout row wrap class="mt-5 pl-5 pr-5">
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <h1 class="ml-3">Settings</h1>
+                <h1 class="ml-3">Cài đặt</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
         <v-layout row wrap class="mt-5 pl-5 pr-5">
             <v-flex xs3 sm3 md3 lg3 xl3>
                 <v-list>
-                    <v-list-tile>
+                    <!-- <v-list-tile>
                         <v-list-tile-content>
                             Sales
                         </v-list-tile-content>
-                    </v-list-tile>
+                    </v-list-tile> -->
                     <v-list-tile>
-                        <v-list-tile-content style="fontStyle: bold;">
-                            Users & Teams
+                        <v-list-tile-content style="font-weight: bold;">
+                            Người dùng và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs9 sm9 md9 lg9 xl9>
-                <h1>Users & Teams</h1>
+                <h1>Người dùng và nhóm</h1>
                 <br>
-                Create new users, customize user permissions, and remove users from your account.
+                Tạo, chỉnh sửa, xóa người dùng khỏi tài khoản của bạn
                 <br>
                 <br>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-data-table :headers="headers" :items="users">
                             <template v-slot:items="props">
-                                <td><a style="color: blue;" @click="openPermissionDialog(props.item.number)">{{ props.item.displayName }}</a></td>
+                                <td><a style="color: blue;" @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
                                 <td>{{ props.item.userEmail }}</td>
                                 <td>{{ props.item.role }}</td>
                             </template>
@@ -73,15 +73,15 @@
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
                                         <br>
-                                        <h3>Contacts Access</h3>
-                                        <p>All users have a basic level of access. The permissions below apply to contacts, companies, and tasks.</p>
+                                        <h3>Quyền Contact</h3>
+                                        <p>Tất cả các tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                    View
+                                                    Xem
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                    <v-select :disabled="!enableSetting" v-model="contactAccessLevelEx1" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', contactAccessLevelEx1)"></v-select>
+                                                    <v-select :disabled="!enableSetting" v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -91,17 +91,17 @@
                                                     Communicate
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="contactAccessLevelEx2" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', contactAccessLevelEx2)"></v-select>
+                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
                                                 <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
-                                                    Edit
+                                                    Sửa
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
-                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="contactAccessLevelEx3" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', contactAccessLevelEx3)"></v-select>
+                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -111,53 +111,53 @@
                                         <div>
                                             <v-layout row wrap>
                                                 <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
-                                                    <h3>Admin Access</h3>
-                                                    <p>Set access to account configuration and user management.</p>
+                                                    <h3>Quyền Admin</h3>
+                                                    <p>Thiết lập quyền để tùy chỉnh tài khoản và quản lý người dùng</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
-                                                    <v-switch :disabled="!enableSetting" v-model="isAdmin" @change="changeAdminAccessLevel(openUser.userId, isAdmin)"></v-switch>
+                                                    <v-switch :disabled="!enableSetting" v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         
-                                        <template v-if="isAdmin">
+                                        <template v-if="openUser.isAdmin">
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Add & Edit Users
+                                                        Thêm & tùy chỉnh người dùng
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', AddAndEditUsers)"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Add & Edit Teams
+                                                        Thêm & tùy chỉnh nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="AddAndEditTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', AddAndEditTeams)"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditTeam" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', openUser.adminPer.AddAndEditTeam)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Partition By Teams
+                                                        Chia theo nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', PartitionByTeams)"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', openUser.adminPer.PartitionByTeams)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Edit Account Defaults
+                                                        Chỉnh sửa tài khoản mặc định
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', EditAccountDefaults)"></v-switch>
+                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', openUser.adminPer.EditAccountDefaults)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
@@ -170,7 +170,7 @@
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <v-btn @click="closePermissionDialog()" flat style="color: red;">Close</v-btn>
+                    <v-btn @click="closePermissionDialog()" flat style="color: red;">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -191,7 +191,7 @@ export default {
             permissionsDialog: false,
             headers: [
                 {
-                    text: 'NAME',
+                    text: 'TÊN',
                     align: 'left',
                     sortable: true,
                     value: 'name'
@@ -203,7 +203,7 @@ export default {
                     value: 'email'
                 },
                 {
-                    text: 'ROLE',
+                    text: 'QUYỀN',
                     align: 'left',
                     sortable: true,
                     value: 'role'
@@ -211,30 +211,42 @@ export default {
             ],
             users: [],
             openUser: {
-                "userId": '',
-                "accountId": '',
-                "teamId": '',
-                "groupPermission": [],
-                "userLogin": '',
-                "userEmail": '',
-                "userPhone": 0,
-                "displayName": '',
-                "userPass": '',
-                "userAvatar": "https://lh6.googleusercontent.com/-n4NhykJUtpI/AAAAAAAAAAI/AAAAAAAAAJI/y8obm2aTP1Y/photo.jpg",
-                "createdAt": "2019-07-10T06:54:54.867+0000",
-                "updateAt": "2019-07-10T09:42:42.433+0000"
+                "userId": "5d22bbc6bd497e45940e8885",
+                "accountId": "5d1dd258f0aa61074608b0e3",
+                "teamId": "5d25af7d77201a3b689d45b4",
+                "groupPermission": null,
+                "userLogin": "duc.tbmd@gmail.com",
+                "userEmail": "duc.tbmd@gmail.com",
+                "userPhone": null,
+                "displayName": "Minh Đức Tô Bá",
+                "userPass": null,
+                "userAvatar": "https://lh4.googleusercontent.com/-nQOa7xIDJho/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3resROrKen7vu9EAI8ZCgLJ8j2VfFA/photo.jpg",
+                "createdAt": null,
+                "updateAt": "2019-07-10T09:43:24.331+0000",
+                "isAdmin": true,
+                "adminPer": {
+                    "AddAndEditUsers": "None",
+                    "AddAndEditTeam": "None",
+                    "PartitionsByTeams": "None",
+                    "EditAccountDefaults": "None"
+                },
+                "contactPer": {
+                    "view": "Everything",
+                    "communicate": "Everything",
+                    "edit": "Everything"
+                }
             },
             contactAccessLevels: [
                 {
-                    text: 'Team Only',
-                    value: 'teamOnly'
+                    text: 'Trong cùng nhóm',
+                    value: 'TeamOnly'
                 },
                 {
-                    text: 'Owned Only',
-                    value: 'ownedOnly'
+                    text: 'Cá nhân',
+                    value: 'OwnedOnly'
                 },
                 {
-                    text: 'Everything',
+                    text: 'Tất cả',
                     value: 'Everything'
                 }
             ],
@@ -278,12 +290,53 @@ export default {
                 console.log(error)
             })
         },
-        openPermissionDialog(number){
-            for(let i = 0; i<this.users.length;i++){
-                if(this.users[i].number == number){
-                    this.openUser = this.users[i];
-                }
+        setAdminAccessLevel(value){
+            let result = false;
+            if(value == 'None'){
+                result = false
             }
+            else {
+                result = true;
+            }
+            return result;
+        },
+        openPermissionDialog(userId){
+            permissionsService.getUserInfo(this.idAccount, userId).then(result => {
+                let res = result.response;
+                try {
+                    if(res.groupPermission != null && res.groupPermission.length > 0){
+                        res.isAdmin = false;
+                        res.adminPer = {
+                            AddAndEditUsers: false,
+                            AddAndEditTeam: false,
+                            PartitionByTeams: false,
+                            EditAccountDefaults: false
+                        }
+                        for(let i = 0; i<res.groupPermission.length;i++){
+                            if(res.groupPermission[i].name == 'contact'){
+                                let contactPer = {};
+                                contactPer.view = res.groupPermission[i].permission[0].accessLevel.accessLevel;
+                                contactPer.communicate = res.groupPermission[i].permission[1].accessLevel.accessLevel;
+                                contactPer.edit = res.groupPermission[i].permission[2].accessLevel.accessLevel;
+                                res.contactPer = contactPer;
+                            }
+                            if(res.groupPermission[i].name == 'admin'){
+                                let adminPer = {};
+                                adminPer.AddAndEditUsers = this.setAdminAccessLevel(res.groupPermission[i].permission[0].accessLevel.accessLevel);
+                                adminPer.AddAndEditTeam = this.setAdminAccessLevel(res.groupPermission[i].permission[1].accessLevel.accessLevel);
+                                adminPer.PartitionByTeams = this.setAdminAccessLevel(res.groupPermission[i].permission[2].accessLevel.accessLevel);
+                                adminPer.EditAccountDefaults = this.setAdminAccessLevel(res.groupPermission[i].permission[3].accessLevel.accessLevel);
+                                res.adminPer = adminPer;
+                                res.isAdmin = true;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+                this.openUser = result.response;
+                console.log(this.openUser);
+            })
             this.permissionsDialog = true;
         },
         updateContactAccessLevel(userId, permissionId, accessLevel){
@@ -308,6 +361,12 @@ export default {
             else{
                 permissionsService.removeAdminPermission(this.idAccount, userId).then(result => {
                     console.log(result);
+                    this.openUser.adminPer = {
+                        AddAndEditUsers: false,
+                        AddAndEditTeam: false,
+                        PartitionByTeams: false,
+                        EditAccountDefaults: false
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
@@ -327,6 +386,7 @@ export default {
             }
             permissionsService.updateAccessLevel(this.idAccount, userId, body).then(result => {
                 console.log(result);
+                this.openPermissionDialog(userId);
             }).catch(error => {
                 console.log(error);
             })

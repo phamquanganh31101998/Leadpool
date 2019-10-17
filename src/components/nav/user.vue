@@ -23,7 +23,7 @@
                 <v-list-tile>
                     <v-list-tile-content>
                         <v-list-tile-title>ADSPLUS.VN</v-list-tile-title>
-                        <v-list-tile-sub-title>3385135</v-list-tile-sub-title>
+                        <!-- <v-list-tile-sub-title>3385135</v-list-tile-sub-title> -->
                     </v-list-tile-content>
                 </v-list-tile>
                 <v-divider></v-divider>
@@ -66,9 +66,25 @@
                 </v-list-tile-action>
             </v-list>
         </v-menu>
+        <v-dialog v-model="expiredDialog" @click:outside="forceLogout()" width="250px">
+            <v-card>
+                <v-card-title>
+                    <h3 style="width: 100%; text-align: center">Phiên đã hết hạn</h3>
+                </v-card-title>
+                <v-card-text>
+                    <p style="width: 100%; text-align: center">Vui lòng đăng nhập lại để làm mới phiên của bạn</p>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <div style="width: 100%; text-align: center"><v-btn color="primary" flat @click="forceLogout()">OK</v-btn></div>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
+    import moment from 'moment'
+    import jwt from 'jsonwebtoken'
     export default {
         name: 'user',
         data: () => ({
@@ -78,7 +94,8 @@
             hints: true,
             divider: true,
             name: '',
-            email: ''
+            email: '',
+            expiredDialog: false
         }),
         computed: {
 
@@ -94,10 +111,23 @@
                     dispatch
                 } = this.$store;
                 dispatch('user/logout')
+            },
+            checkToken(){
+                let tokenInfo = jwt.decode(localStorage.getItem('token'));
+                var expDay = moment(tokenInfo.exp * 1000);
+                var today = moment();
+                if(today.isAfter(expDay)){
+                    this.expiredDialog = true;
+                }
+            },
+            forceLogout(){
+                this.expiredDialog = false;
+                this.logout()
             }
         },
         created() {
             this.displayName()
+            this.checkToken();
         }
     }
 </script>

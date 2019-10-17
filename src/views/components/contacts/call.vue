@@ -52,7 +52,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteLog(call.logId)">Xóa
+                                                            <a color="indigo" @click="confirmDeleteLog(call.logId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -86,7 +86,7 @@
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="call.dateLog" label="Date" persistent-hint
+                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = call.dateToPut" v-on="on">
                                                 </v-text-field>
                                             </template>
@@ -97,7 +97,7 @@
                                         <v-dialog ref="dialog" v-model="call.modal2Log" :return-value.sync="time" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="call.timeLog" label="Times"
+                                                <v-text-field v-model="call.timeLog" label="Giờ"
                                                     prepend-icon="access_time" readonly v-on="on"></v-text-field>
                                             </template>
                                             <v-time-picker v-if="call.modal2Log" v-model="call.timeLog" full-width>
@@ -138,6 +138,21 @@
             <br>
             <br>
         </v-flex>
+        <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Xóa?</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn có chắc chắn muốn xóa?
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="deleteLog(deleteLogDialog.id)">Xóa</v-btn>
+                <v-btn flat color="primary" @click="deleteLogDialog.dialog = false">Quay lại</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-layout>
 </template>
 <script>
@@ -164,9 +179,38 @@
             menu2: false,
             modal2: false,
             calls: [],
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
+            items: [
+                {
+                    text: 'Không trả lời',
+                    value: 'No answer'
+                },
+                {
+                    text: 'Bận',
+                    value: 'Busy'
+                },
+                {
+                    text: 'Nhầm số',
+                    value: 'Wrong number'
+                },
+                {
+                    text: 'Để lại lời nhắn trực tiếp',
+                    value: 'Left live message'
+                },
+                {
+                    text: 'Để lại thư thoại',
+                    value: 'Left voicemail'
+                },
+                {
+                    text: 'Đã kết nối',
+                    value: 'Connected'
+                },
+            ],
             item: 'No answer',
-            progress: true
+            progress: true,
+            deleteLogDialog: {
+                dialog: false,
+                id: ''
+            }
         }),
         computed: {
             computedDateFormatted() {
@@ -212,11 +256,18 @@
                     this.progress = false;
                 })
             },
+            confirmDeleteLog(id){
+                this.deleteLogDialog.dialog = true;
+                this.deleteLogDialog.id = id;
+            },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
                     eventBus.updateLogCallList();
+                    this.deleteLogDialog.id = '';
+                    this.deleteLogDialog.dialog = false;
                 })
             },
+            
             updateLog(date, time, idLog){
                 let body = {
                     "property": "time",

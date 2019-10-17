@@ -51,7 +51,7 @@
                                                             </a>
                                                         </v-flex>
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="deleteNote(note.noteId)">Xóa
+                                                            <a color="indigo" @click="confirmDeleteNote(note.noteId)">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -106,6 +106,21 @@
             <br>
             <br>
         </v-flex>
+        <v-dialog v-model="deleteNoteDialog.dialog" @click:outside="deleteNoteDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Xóa?</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn có chắc chắn muốn xóa ghi chú này?
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="deleteNote(deleteNoteDialog.id)">Xóa</v-btn>
+                <v-btn flat color="primary" @click="deleteNoteDialog.dialog = false">Quay lại</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-layout>
 </template>
 <script>
@@ -126,14 +141,24 @@ export default {
     data(){
         return{
             notes: [],
-            progress: true
+            progress: true,
+            deleteNoteDialog: {
+                dialog: false,
+                id: ''
+            }
         }
     },
     methods: {
         deleteNote(noteId){
             noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
                 eventBus.updateNoteList();
+                this.deleteNoteDialog.id = '';
+                this.deleteNoteDialog.dialog = false;
             });
+        },
+        confirmDeleteNote(id){
+            this.deleteNoteDialog.dialog = true;
+            this.deleteNoteDialog.id = id;
         },
         coverTime(time){
             if (_.isNull(time)) return '';

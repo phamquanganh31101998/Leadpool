@@ -20,13 +20,13 @@
                                 <v-icon small left>
                                     calendar_today
                                 </v-icon>
-                                <span class="">Task</span>
+                                <span class="">Công việc</span>
                             </v-flex>
                         </v-layout>
                     </v-card-title>
                     <v-layout row wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4" v-if="checkOverdue(task.dueDate)">
-                            <v-btn color="error" outline small class="ml-4">Overdue</v-btn>
+                            <v-btn color="error" outline small class="ml-4">Quá hạn</v-btn>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-3">
                             <v-layout row>
@@ -47,7 +47,7 @@
                                 <v-flex xs7 sm6 md5 lg4 xl3 class="pl-4">
                                     <v-layout row>
                                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                            <span>Assigned to</span>
+                                            <span>Giao cho</span>
                                         </v-flex>
                                     </v-layout>
                                     <br>
@@ -73,7 +73,7 @@
                                                     <v-card-title>
                                                         <v-layout row wrap>
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail" ></v-text-field>
+                                                                <v-text-field append-icon="search" label="Tìm kiếm" single-line hide-details v-model="searchEmail" ></v-text-field>
                                                             </v-flex>
                                                             <br>
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
@@ -88,7 +88,7 @@
                                 </v-flex>
                                 <v-flex xs5 sm6 md7 lg8 xl9>
                                     <v-layout row>
-                                        <span>Due date</span>
+                                        <span>Thời gian hoàn thành</span>
                                     </v-layout>
                                     <v-layout row>
                                         <v-menu v-model="task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
@@ -146,7 +146,7 @@
                             <v-list-group sub-group no-action>
                                 <template v-slot:activator>
                                     <v-list-tile>
-                                        <v-list-tile-title><span>Details</span></v-list-tile-title>
+                                        <v-list-tile-title><span>Chi tiết</span></v-list-tile-title>
                                     </v-list-tile>
                                 </template>
                                 <v-list-tile>
@@ -156,22 +156,22 @@
                                                 <v-flex xs12 sm12 md12 lg10 xl8>
                                                     <v-layout row>
                                                         <v-flex xs2 sm2 md2 lg2 xl2>
-                                                            <span>Type</span>
+                                                            <span>Kiểu</span>
                                                         </v-flex>
                                                         <v-flex xs2 sm2 md2 lg2 xl2>
-                                                            <span>Reminder</span>
+                                                            <span>Nhắc nhở</span>
                                                         </v-flex>
                                                         <!-- <v-flex v-if="task.emailReminder != null" xs2 sm2 md2 lg2 xl2>
                                                             <span>Time</span>
                                                         </v-flex> -->
                                                         <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
-                                                            <span>Time</span>
+                                                            <span>Thời gian</span>
                                                         </v-flex>
                                                         <v-flex xs2 sm2 md2 lg2 xl2>
-                                                            <span>Queue</span>
+                                                            <span>Thứ tự</span>
                                                         </v-flex>
                                                         <v-flex xs4 sm4 md4 lg4 xl4>
-                                                            <span>Created by</span>
+                                                            <span>Tạo bởi</span>
                                                         </v-flex>
                                                     </v-layout>
                                                 </v-flex>
@@ -209,7 +209,7 @@
                                                                     <v-menu :close-on-content-click="false" :nudge-width="200" top offset-y>
                                                                         <template v-slot:activator="{ on }">
                                                                             <a color="indigo" v-on="on" v-if="task.emailReminder == null">
-                                                                                No reminder
+                                                                                Không nhắc trước
                                                                             </a>
                                                                             <a color="indigo" v-on="on" v-else>
                                                                                 {{task.emailReminderDate}}
@@ -219,7 +219,7 @@
                                                                             <v-menu :close-on-content-click="false" offset-y v-model="task.date2" full-width max-width="290px" min-width="290px">
                                                                                 <template v-slot:activator="{ on }">
                                                                                     <v-list-tile v-on="on">
-                                                                                        <v-list-tile-title>Custom Date</v-list-tile-title>
+                                                                                        <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                                                     </v-list-tile>
                                                                                 </template>
                                                                                 <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')" ></v-date-picker>
@@ -227,7 +227,7 @@
                                                                             </v-menu>
                                                                             
                                                                             <v-list-tile @click="updateTask(task.taskId, 'emailReminder', '')">
-                                                                                <v-list-tile-title >No reminder</v-list-tile-title>
+                                                                                <v-list-tile-title >Không nhắc trước</v-list-tile-title>
                                                                             </v-list-tile>
                                                                         </v-list>
                                                                     </v-menu>
@@ -349,7 +349,7 @@
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg4 xl4>
                                                         <v-layout row>
-                                                            <span class="pl-5">Hạn cuối</span>
+                                                            <span class="pl-5">Thời gian hoàn thành</span>
                                                         </v-layout>
                                                     </v-flex>
                                                     <v-flex xs3 sm3 md3 lg5 xl4>
@@ -465,19 +465,19 @@
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
-                                                                <span>Loại</span>
+                                                                <span>Kiểu</span>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Nhắc nhở</span>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
-                                                                <span>Time</span>
+                                                                <span>Giờ</span>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
-                                                                <span>Queue</span>
+                                                                <span>Thứ tự</span>
                                                             </v-flex>
                                                             <v-flex xs4 sm4 md4 lg4 xl4>
-                                                                <span>Created by</span>
+                                                                <span>Tạo bởi</span>
                                                             </v-flex>
                                                         </v-layout>
                                                     </v-flex>
@@ -515,7 +515,7 @@
                                                                         <v-menu :close-on-content-click="false" :nudge-width="200" top offset-y>
                                                                             <template v-slot:activator="{ on }">
                                                                                 <a color="indigo" v-on="on" v-if="task.emailReminder == null">
-                                                                                    No reminder
+                                                                                    Không nhắc trước
                                                                                 </a>
                                                                                 <a color="indigo" v-on="on" v-else>
                                                                                     {{task.emailReminderDate}}
@@ -525,14 +525,14 @@
                                                                                 <v-menu :close-on-content-click="false" :nudge-width="200" offset-y v-model="task.date2" full-width max-width="290px" min-width="290px">
                                                                                     <template v-slot:activator="{ on }">
                                                                                         <v-list-tile v-on="on">
-                                                                                            <v-list-tile-title>Custom Date</v-list-tile-title>
+                                                                                            <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                                                         </v-list-tile>
                                                                                     </template>
                                                                                     <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')" ></v-date-picker>
                                                                                 </v-menu>
                                                                                 
                                                                                 <v-list-tile @click="updateTask(task.taskId, 'emailReminder', '')">
-                                                                                    <v-list-tile-title >No reminder</v-list-tile-title>
+                                                                                    <v-list-tile-title >Không nhắc trước</v-list-tile-title>
                                                                                 </v-list-tile>
                                                                             </v-list>
                                                                         </v-menu>

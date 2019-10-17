@@ -3,15 +3,15 @@
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
                 <v-flex xs4 sm4 md4 lg3 xl3>
-                    <p>Outcome</p>
+                    <!-- <p>Outcome</p> -->
                     <v-select :items="items" label="Select an outcome" v-model="item"></v-select>
                 </v-flex>
                 <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offseo-xl1>
-                    <p>Date</p>
+                    <!-- <p>Date</p> -->
                     <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" :nudge-right="40" lazy
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="dateFormatted" label="Date" persistent-hint prepend-icon="event"
+                            <v-text-field v-model="dateFormatted" label="Ngày" persistent-hint prepend-icon="event"
                                 @blur="date = parseDate(dateFormatted)" v-on="on" required>
                             </v-text-field>
                         </template>
@@ -19,11 +19,11 @@
                     </v-menu>
                 </v-flex>
                 <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offseo-xl1>
-                    <p>Time</p>
+                    <!-- <p>Time</p> -->
                     <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent lazy full-width
                         width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="time" label="Times" prepend-icon="access_time" readonly v-on="on"  required>
+                            <v-text-field v-model="time" label="Giờ" prepend-icon="access_time" readonly v-on="on"  required>
                             </v-text-field>
                         </template>
                         <v-time-picker v-if="modal2" v-model="time" full-width>
@@ -37,7 +37,7 @@
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
             <v-divider :divider="divider"></v-divider>
-            <v-textarea class="mt-2" name="input" label="Describe the call..." v-model="log" :rules="logRules"></v-textarea>
+            <v-textarea class="mt-2" name="input" label="Mô tả cuộc gọi..." v-model="log" :rules="logRules"></v-textarea>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
@@ -78,9 +78,9 @@
         <br>
         <v-layout wrap>
             <v-btn color="blue darken-1" small flat :disabled="disableSaveButton"
-                @click="createLogCall()">Save</v-btn>
+                @click="createLogCall()">Tạo</v-btn>
             <v-btn color="red" small flat
-                @click="closeCreateLogCallDialog()">Close</v-btn>
+                @click="closeCreateLogCallDialog()">Đóng</v-btn>
         </v-layout>
     </v-layout>
 </template>
@@ -107,10 +107,36 @@
             time: '08:00',
             menu2: false,
             modal2: false,
-            items: ['No answer', 'Busy', 'Wrong number', 'Left live message', 'Left voicemail', 'Connected'],
+            items: [
+                {
+                    text: 'Không trả lời',
+                    value: 'No answer'
+                },
+                {
+                    text: 'Bận',
+                    value: 'Busy'
+                },
+                {
+                    text: 'Nhầm số',
+                    value: 'Wrong number'
+                },
+                {
+                    text: 'Để lại lời nhắn trực tiếp',
+                    value: 'Left live message'
+                },
+                {
+                    text: 'Để lại thư thoại',
+                    value: 'Left voicemail'
+                },
+                {
+                    text: 'Đã kết nối',
+                    value: 'Connected'
+                },
+            
+            ],
             item: 'No answer',
             logRules: [
-                v => !!v || 'Required'
+                v => !!v || 'Không được để trống'
             ],
             // enableSaveButton: true
         }),

@@ -10,10 +10,10 @@
                                     <v-layout row>
                                         <v-flex xs7 sm7 md7 lg9 xl10>
                                             <v-btn outline color="indigo" @click="$router.push('../')">
-                                                <v-icon>keyboard_arrow_left</v-icon>Contacts<v-icon>person</v-icon>
+                                                <v-icon>keyboard_arrow_left</v-icon>Danh sách liên lạc<v-icon>person</v-icon>
                                             </v-btn>
                                         </v-flex>
-                                        <v-flex xs5 sm5 md5 lg3 xl2>
+                                        <!-- <v-flex xs5 sm5 md5 lg3 xl2>
                                             <v-menu offset-y left>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn small flat color="primary" left dark v-on="on">
@@ -47,7 +47,7 @@
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
-                                        </v-flex>
+                                        </v-flex> -->
                                     </v-layout>
                                 </v-card-text>
                             </v-layout>
@@ -64,7 +64,7 @@
                                                 <h3 class="mt-2">{{detail.lastName}} {{detail.firstName}}</h3>
                                             </v-flex>
                                             <v-flex xs4 sm4 md5 lg5 xl5 class="text-xs-right">
-                                                <v-menu :close-on-content-click="false" :width="100" offset-x>
+                                                <v-menu :close-on-content-click="false" :width="100" offset-x v-model="basicInfoDialog">
                                                     <template v-slot:activator="{ on }">
                                                         <v-btn flat color="indigo" dark v-on="on">
                                                             <v-icon>edit</v-icon>
@@ -73,21 +73,21 @@
                                                     <v-card class="pa-3">
                                                         <v-layout row>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="First Name" outline></v-text-field>
+                                                                <v-text-field label="Họ" outline v-model="detail.firstName"></v-text-field>
                                                             </v-flex>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="Last Name" outline></v-text-field>
+                                                                <v-text-field label="Tên" outline v-model="detail.lastName"></v-text-field>
                                                             </v-flex>
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field label="Job title" outline></v-text-field>
+                                                            <v-text-field label="Email" outline v-model="detail.email"></v-text-field>
                                                         </v-layout>
 
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
-                                                            <v-btn flat>Cancel</v-btn>
-                                                            <v-btn color="primary" flat>Save</v-btn>
+                                                            <v-btn flat @click="basicInfoDialog = false" color="red">Đóng</v-btn>
+                                                            <v-btn color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
@@ -110,7 +110,7 @@
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Note</span>
+                                                                <span class="headline">Ghi chú</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newNote @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -120,7 +120,7 @@
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Note</p>
+                                                    <p>Ghi chú</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -135,7 +135,7 @@
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Email</span>
+                                                                <span class="headline">Gửi Email</span>
                                                             </v-card-title>
                                                             <!-- <v-card-text>
                                                                 
@@ -167,7 +167,7 @@
                                                     </v-btn>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Call</p>
+                                                    <p>Gọi điện</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -182,20 +182,20 @@
                                                         </template>
                                                         <v-list>
                                                             <v-list-tile @click="createLogCall = true">
-                                                                <v-list-tile-title>Log a call</v-list-tile-title>
+                                                                <v-list-tile-title>Lưu thông tin cuộc gọi</v-list-tile-title>
                                                             </v-list-tile>
                                                             <v-list-tile @click="createLogEmail = true">
-                                                                <v-list-tile-title>Log an email</v-list-tile-title>
+                                                                <v-list-tile-title>Lưu thông tin email</v-list-tile-title>
                                                             </v-list-tile>
                                                             <v-list-tile @click="createLogMeet= true">
-                                                                <v-list-tile-title>Log a meeting</v-list-tile-title>
+                                                                <v-list-tile-title>Lưu thông tin cuộc họp</v-list-tile-title>
                                                             </v-list-tile>
                                                         </v-list>
                                                     </v-menu>
                                                     <v-dialog v-model="createLogCall" persistent max-width="700px">
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Log call</span>
+                                                                <span class="headline">Lưu thông tin cuộc gọi</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newLogCall :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
@@ -205,7 +205,7 @@
                                                     <v-dialog v-model="createLogEmail" persistent max-width="700px">
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Log email</span>
+                                                                <span class="headline">Lưu thông tin email</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
@@ -215,7 +215,7 @@
                                                     <v-dialog v-model="createLogMeet" persistent max-width="700px">
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Log meet</span>
+                                                                <span class="headline">Lưu thông tin cuộc họp</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
@@ -224,7 +224,7 @@
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Log</p>
+                                                    <p>Lưu lại</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -239,7 +239,7 @@
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Task</span>
+                                                                <span class="headline">Công việc</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
@@ -255,7 +255,7 @@
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Task</p>
+                                                    <p>Công việc</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -270,7 +270,7 @@
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Schedule</span>
+                                                                <span class="headline">Tạo cuộc họp</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newMeet />
@@ -388,25 +388,25 @@
                     <v-tabs left color="transparent" style="width:100%">
                         <v-tabs-slider color="#000000"></v-tabs-slider>
                         <v-tab href="#tab-1">
-                            Activity
+                            Hoạt động
                         </v-tab>
                         <v-tab href="#tab-2">
-                            Notes
+                            Ghi chú
                         </v-tab>
                         <v-tab href="#tab-3">
-                            Emails
+                            Email
                         </v-tab>
                         <v-tab href="#tab-4">
-                            Calls
+                            Cuộc Gọi
                         </v-tab>
                         <v-tab href="#tab-5">
-                            Tasks
+                            Công việc
                         </v-tab>
                         <v-tab href="#tab-6">
-                            Meets
+                            Cuộc họp
                         </v-tab>
                         <v-tab-item value="tab-1">
-                            <v-layout row>
+                            <!-- <v-layout row>
                                 <span class="mt-2 ml-3">Filter by:</span>
                                 <v-menu :close-on-content-click="false" :nudge-width="120" offset-y>
                                     <template v-slot:activator="{ on }">
@@ -456,7 +456,7 @@
                                         </v-card-title>
                                     </v-card>
                                 </v-menu>
-                            </v-layout>
+                            </v-layout> -->
                             <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -466,7 +466,7 @@
                         <v-tab-item value="tab-2">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark small depressed @click="createNote = true" color="#425b76">Create Note
+                                    <v-btn dark small depressed @click="createNote = true" color="#425b76">Tạo ghi chú
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -475,8 +475,8 @@
                         <v-tab-item value="tab-3">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Log Email</v-btn>
-                                    <v-btn dark depressed small color="#425b76" @click="createEmail= true">Create Email
+                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Lưu lại thông tin Email</v-btn>
+                                    <v-btn dark depressed small color="#425b76" @click="createEmail= true">Gửi email
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -485,9 +485,8 @@
                         <v-tab-item value="tab-4">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogCall = true">Log Call</v-btn>
-                                    <v-btn dark depressed small color="#425b76">Make a phone
-                                        call</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogCall = true">Lưu lại thông tin cuộc gọi</v-btn>
+                                    <v-btn dark depressed small color="#425b76">Tạo cuộc gọi</v-btn>
                                 </v-flex>
                             </v-layout>
                             <call :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -495,7 +494,7 @@
                         <v-tab-item value="tab-5">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark depressed small @click="createTask = true" color="#425b76">Create Task
+                                    <v-btn dark depressed small @click="createTask = true" color="#425b76">Tạo công việc
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -504,8 +503,8 @@
                         <v-tab-item value="tab-6">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Log Meet</v-btn>
-                                    <v-btn dark depressed small color="#425b76" @click="createMeet=true">Create Meet
+                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Lưu lại thông tin cuộc họp</v-btn>
+                                    <v-btn dark depressed small color="#425b76" @click="createMeet=true">Tạo cuộc họp mới
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -647,7 +646,8 @@
                 }
             ],
             detail:[],
-            expandDetail: true
+            expandDetail: true,
+            basicInfoDialog: false
         }),
         methods:{
             getDetail(){
@@ -668,7 +668,7 @@
                         property: 'leadStatus'
                     },
                     {
-                        title: 'Contact owner',
+                        title: 'Thuộc sở hữu',
                         description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
                         value: result.response.contactOwner,
                         dialog: false,
@@ -728,6 +728,30 @@
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
+            updateBasicInfoContactDetail(firstName, lastName, email){
+                let body = {
+                    properties: [
+                        {
+                            property: 'firstName',
+                            value: firstName
+                        },
+                        {
+                            property: 'lastName',
+                            value: lastName
+                        },
+                        {
+                            property: 'email',
+                            value: email
+                        },
+                    ]
+                }
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                    this.basicInfoDialog = false;
                 }).catch(error => {
                     console.log(error);
                 })
