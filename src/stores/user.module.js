@@ -4,7 +4,8 @@ export const user = {
     namespaced: true,
     state:{
         token: null,
-        user: null
+        user: null,
+        expiredDialog: false
     },
     actions:{
         login({commit}, data){
@@ -26,6 +27,12 @@ export const user = {
             localStorage.removeItem('user')
             router.replace('/login');
         },
+        turnOnExpiredDialog({commit}){
+            commit('turnOnExpiredDialog');
+        },
+        turnOffExpiredDialog({commit}){
+            commit('turnOffExpiredDialog');
+        }
     },
     mutations:{
         authToken(state, userToken){
@@ -38,5 +45,16 @@ export const user = {
             state.token = null
             state.user = null
         },
+        turnOnExpiredDialog(state){
+            state.expiredDialog = true;
+        },
+        turnOffExpiredDialog(state){
+            state.expiredDialog = false;
+        }
     },
+    getters: {
+        expiredDialog: state => {
+            return state.expiredDialog
+        }
+    }
 }

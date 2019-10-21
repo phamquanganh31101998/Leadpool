@@ -76,7 +76,7 @@
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <div style="width: 100%; text-align: center"><v-btn color="primary" flat @click="forceLogout()">OK</v-btn></div>
+                    <div style="width: 100%; text-align: center"><v-btn color="primary" flat @click="logout()">OK</v-btn></div>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -85,6 +85,7 @@
 <script>
     import moment from 'moment'
     import jwt from 'jsonwebtoken'
+    import {mapGetters} from 'vuex'
     export default {
         name: 'user',
         data: () => ({
@@ -95,10 +96,12 @@
             divider: true,
             name: '',
             email: '',
-            expiredDialog: false
         }),
         computed: {
-
+            ...mapGetters({
+                expiredDialog: 'expiredDialog'
+                // ...
+		})
         },
         methods: {
             displayName() {
@@ -107,9 +110,8 @@
                 this.email = a.username
             },
             logout() {
-                const {
-                    dispatch
-                } = this.$store;
+                this.$store.dispatch('turnOffExpiredDialog');
+                const {dispatch} = this.$store;
                 dispatch('user/logout')
             },
             checkToken(){
@@ -117,21 +119,22 @@
                 var expDay = moment(tokenInfo.exp * 1000);
                 var today = moment();
                 if(today.isAfter(expDay)){
-                    this.expiredDialog = true;
+                    // this.expiredDialog = true;
+                    this.$store.dispatch('turnOnExpiredDialog');
                 }
             },
-            forceLogout(){
-                try {
-                    this.expiredDialog = false;
-                } catch (error) {
-                    this.expiredDialog = false;
-                }
-                finally{
-                    this.expiredDialog = false;
-                    this.logout()
-                }
+            // forceLogout(){
+            //     try {
+            //         this.expiredDialog = false;
+            //     } catch (error) {
+            //         this.expiredDialog = false;
+            //     }
+            //     finally{
+            //         this.expiredDialog = false;
+            //         this.logout()
+            //     }
                 
-            }
+            // }
         },
         created() {
             this.displayName()

@@ -3,7 +3,8 @@
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
                 <v-flex xs4 sm5 md6 lg6 xl6>
-                    <v-text-field placeholder="Tên công việc" v-model="title"></v-text-field>
+                    <v-text-field placeholder=
+                    "Tên công việc" v-model="title"></v-text-field>
                 </v-flex>
                 <v-flex xs4 sm4 md4 lg4 xl4>
                     <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" lazy
