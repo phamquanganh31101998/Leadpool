@@ -2,7 +2,7 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Danh sách các liên lạc</h1>
+                <h1 class="ml-3">Danh sách các Lead</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>

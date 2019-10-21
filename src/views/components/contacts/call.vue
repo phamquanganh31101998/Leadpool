@@ -134,9 +134,6 @@
                 </v-hover>
             </template>
             <br>
-            <br>
-            <br>
-            <br>
         </v-flex>
         <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>

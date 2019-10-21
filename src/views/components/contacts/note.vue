@@ -101,10 +101,6 @@
                     </v-card>
                 </v-hover>
             </template>
-            <br>
-            <br>
-            <br>
-            <br>
         </v-flex>
         <v-dialog v-model="deleteNoteDialog.dialog" @click:outside="deleteNoteDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>

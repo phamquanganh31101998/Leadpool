@@ -1,7 +1,16 @@
 <template>
   <v-toolbar dark color="#2e3f50" style="border-top:4px solid #ff7a59">
     <v-toolbar-items color="#2e3f50">
-      <v-menu offset-y>
+      <v-btn flat color="#fff" @click="goToContactsPage()">
+        LEADS <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+      </v-btn>
+      <v-btn flat color="#fff" @click="goToListsPage()">
+        Danh sách <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+      </v-btn>
+      <v-btn flat color="#fff" @click="goToMyTaskPage()">
+        Công việc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+      </v-btn>
+      <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
             Liên lạc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
@@ -11,18 +20,18 @@
           <v-list-tile @click="goToContactsPage()">
             <v-list-tile-title>Các liên lạc</v-list-tile-title>
           </v-list-tile>
-          <!-- <v-list-tile>
+          <v-list-tile>
             <v-list-tile-title>Companies</v-list-tile-title>
-          </v-list-tile> -->
+          </v-list-tile>
           <v-divider :divider="divider"></v-divider>
-          <!-- <v-list-tile>
+          <v-list-tile>
             <v-list-tile-title>Activity Feed</v-list-tile-title>
-          </v-list-tile> -->
+          </v-list-tile>
           <v-list-tile @click="goToListsPage()">
             <v-list-tile-title>Danh sách</v-list-tile-title>
           </v-list-tile>
         </v-list>
-      </v-menu>
+      </v-menu> -->
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -57,28 +66,28 @@
           </v-list-tile>
         </v-list>
       </v-menu> -->
-      <v-menu offset-y>
+      <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
             Sales <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
           </v-btn>
         </template>
         <v-list dark style="background-color:#253342">
-          <!-- <v-list-tile>
+          <v-list-tile>
             <v-list-tile-title>Deals</v-list-tile-title>
-          </v-list-tile> -->
+          </v-list-tile>
           <v-list-tile @click="goToMyTaskPage()">
             <v-list-tile-title>Công việc</v-list-tile-title>
           </v-list-tile>
           <v-divider :divider="divider"></v-divider>
-          <!-- <v-list-tile>
+          <v-list-tile>
             <v-list-tile-title>Documents</v-list-tile-title>
-          </v-list-tile> -->
-          <!-- <v-list-tile>
+          </v-list-tile>
+          <v-list-tile>
             <v-list-tile-title>Meetings</v-list-tile-title>
-          </v-list-tile> -->
+          </v-list-tile>
         </v-list>
-      </v-menu>
+      </v-menu> -->
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">

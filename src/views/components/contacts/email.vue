@@ -122,9 +122,6 @@
                 </v-hover>
             </template>
             <br>
-            <br>
-            <br>
-            <br>
             <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5 v-if="progressLog">
                 <v-progress-circular
                     :size="70"
@@ -255,11 +252,7 @@
                 </v-hover>
             </template>
             <br>
-            <br>
-            <br>
-            <br>
         </v-flex>
-        <br>
         <br>
         <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>

@@ -291,7 +291,7 @@
                         <br>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
                             <v-layout wrap>
-                                <v-btn color="blue darken-1" small flat @click="viewTask.dialog = false">OK</v-btn>
+                                <v-btn color="blue darken-1" small flat @click="viewTask.dialog = false">Đóng</v-btn>
                             </v-layout>
                         </v-flex>
                     </v-layout>
