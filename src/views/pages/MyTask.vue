@@ -70,7 +70,6 @@
                                 <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
                             </template>
                         </v-data-table>
-                        
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>

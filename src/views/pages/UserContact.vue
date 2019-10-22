@@ -162,12 +162,35 @@
                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-btn fab small color="#E0E0E0">
-                                                        <v-icon>phone</v-icon>
-                                                    </v-btn>
+                                                    <v-dialog v-model="createSMS" persistent max-width="700px">
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                                <v-icon>mail_outline</v-icon>
+                                                            </v-btn>
+                                                        </template>
+                                                        <v-card>
+                                                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                                <span class="headline">Gửi tin nhắn SMS</span>
+                                                            </v-card-title>
+                                                            <!-- <v-card-text>
+                                                                
+                                                            </v-card-text> -->
+                                                            <!-- <v-divider :divider="divider"></v-divider> -->
+                                                            <!-- <v-card-text> -->
+                                                                <newSMS :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
+                                                            <!-- </v-card-text> -->
+                                                            <v-divider :divider="divider"></v-divider>
+                                                            <!-- <v-card-actions>
+                                                                <v-btn color="blue darken-1" small flat
+                                                                    @click="createEmail = false">Sent</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createEmail = false">Cancel</v-btn>
+                                                            </v-card-actions> -->
+                                                        </v-card>
+                                                    </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Gọi điện</p>
+                                                    <p>SMS</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -564,6 +587,7 @@
     import newLogCall from '../components/creates/createLogCall'
     import newLogEmail from '../components/creates/createLogEmail'
     import newLogMeet from '../components/creates/createLogMeet'
+    import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
     export default {
@@ -623,6 +647,7 @@
             createLogCall: false,
             createLogEmail: false,
             createLogMeet: false,
+            createSMS: false,
             items: [{
                     title: 'Lifecycle stage',
                     description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -880,7 +905,7 @@
             newLogEmail,
             newLogCall,
             newLogMeet,
-        
+            newSMS
         }
     }
     // đã làm được phần lấy list thuộc tính

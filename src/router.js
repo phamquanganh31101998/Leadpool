@@ -12,6 +12,7 @@ import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
+import SMSService from './views/pages/SMSService.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -118,6 +119,18 @@ const router = new Router({
             path: '/contacts/:idAccount/emailTemplate',
             name: 'emailTemplate',
             component: emailTemplate,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/smsservice',
+            name: 'smsservice',
+            component: SMSService,
             props(route) {
                 const props = {
                     ...route.params

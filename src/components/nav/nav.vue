@@ -10,6 +10,9 @@
       <v-btn flat color="#fff" @click="goToMyTaskPage()">
         Công việc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
       </v-btn>
+      <v-btn flat color="#fff" @click="goToSMSServicePage()">
+        Tin nhắn SMS <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+      </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -166,6 +169,10 @@
       },
       goToMyTaskPage(){
         let link = `/contacts/${this.currentUser.accountId}/myTask`;
+        this.$router.push(link);
+      },
+      goToSMSServicePage(){
+        let link = `/contacts/${this.currentUser.accountId}/smsservice`;
         this.$router.push(link);
       }
     },
