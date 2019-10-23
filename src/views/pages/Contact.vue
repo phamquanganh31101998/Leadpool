@@ -338,7 +338,7 @@
           <br>
           <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
               <template v-slot:activator="{ on }">
-                  <a v-on="on"><v-icon>add</v-icon> Thêm điều kiện mới</a>
+                  <a v-on="on"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
               </template>
               <v-card style="width: 100%;">
                   <v-card-text>
@@ -379,11 +379,11 @@
           <template v-slot:items="props">
               <tr>
               <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
-              <td class="text-xs-center">{{ props.item.email }}</td>
-              <td class="text-xs-center">{{ props.item.phone }}</td>
-              <td class="text-xs-center">{{ props.item.leadStatus }}</td>
-              <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
-              <td class="text-xs-right text-md-right text-lg-right">
+              <td class="text-xs-left">{{ props.item.email }}</td>
+              <td class="text-xs-left">{{ props.item.phone }}</td>
+              <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+              <td class="text-xs-left">{{ covertime(props.item.updateAt) }}</td>
+              <td class="text-xs-left">
                 <v-btn class="red" outline round style="color: red;" @click="confirmDeleteContact(props.item.contactId)">Xóa</v-btn>
               </td>
             </tr>
@@ -536,7 +536,7 @@
           value: 'name'
         },
         {
-          text: 'Email',
+          text: 'EMAIL',
           align: 'left',
           value: 'calories'
         },
@@ -546,7 +546,7 @@
           value: 'fat'
         },
         {
-          text: 'Lead Status',
+          text: 'LIFECYCLE STAGE',
           align: 'left',
           value: 'carbs'
         },

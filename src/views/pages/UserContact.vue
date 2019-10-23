@@ -554,7 +554,7 @@
                     <span class="headline">Lịch sử thay đổi {{actionLog.title}}</span>
                 </v-card-title>
                 <v-card-text class>
-                    <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray">
+                    <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
                         <template v-slot:items="props">
                             <td>{{ actionLog.title }}</td>
                             <td>{{ props.item.newValue }}</td>
@@ -569,7 +569,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%" >
             <v-card tile>
                 <v-toolbar card dark color="red">
                     <v-toolbar-title>Thất bại</v-toolbar-title>
@@ -580,6 +580,27 @@
                 </v-card-text>
                 <v-card-actions>
                 <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="actionLog.failDialog" width="60%" persistent>
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff" >
+                    <span class="headline">Lịch sử thay đổi {{actionLog.title}}</span>
+                </v-card-title>
+                <v-card-text class>
+                    <v-data-table :headers="actionLog.headers" :items="actionLog.failArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
+                        <template v-slot:items="props">
+                            <td>{{ actionLog.title }}</td>
+                            <td>{{ props.item.newValue }}</td>
+                            <td>{{ coverTimeTooltip(props.item.created_at) }}</td>
+                            <td>{{ props.item.createdBy }}</td>
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <v-btn flat color="red" @click="actionLog.failDialog = false">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -617,8 +638,10 @@
         },
         data: () => ({
             actionLog: {
+                failDialog: false,
                 dialog: false,
                 changeArray: [],
+                failArray: [],
                 headers: [{
                     text: 'THUỘC TÍNH',
                     align: 'left',
@@ -780,12 +803,14 @@
                     objectId: this.idContact,
                     property: property
                 }
+                console.log(params)
                 contact.getActionLog(this.idAccount, params).then(result => {
                     console.log(result);
                     this.actionLog.changeArray = result.response.Detail.reverse();
                     this.actionLog.dialog = true;
                 }).catch(error => {
                     console.log(error);
+                    this.actionLog.failDialog = true;
                 })
             },
             coverTimeTooltip(time){

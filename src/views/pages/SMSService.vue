@@ -45,7 +45,7 @@
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-actions>
-                                <v-btn block color="primary" ><v-icon>textsms</v-icon>Gửi ngay</v-btn>
+                                <v-btn block color="primary" >Gửi ngay</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-flex>
@@ -260,14 +260,24 @@
                                 <h3 v-else>Nhập mẫu tin nhắn mới tại đây (không dấu)</h3>
                             </v-card-title>
                             <v-card-text>
-                                <v-textarea rows="9" box disabled v-if="!template.creatingTemplate" v-model="template.selectTemplate"></v-textarea>
-                                <v-textarea v-else rows="9"
-                                v-model="template.content"
-                                    onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
+                                <v-textarea rows="4" box disabled v-if="!template.creatingTemplate" v-model="template.selectTemplate"></v-textarea>
+                                <template v-else>
+                                    <v-textarea rows="4"
+                                        counter="160"
+                                        v-model="template.content"
+                                        onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
                                     ></v-textarea>
+                                     <v-alert
+                                        :value="template.content.length > 160"
+                                        type="error"
+                                        >
+                                        Độ dài tin nhắn phải nhỏ hơn 160 kí tự.
+                                    </v-alert>
+                                </template>
+                                
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn v-if="template.creatingTemplate" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
+                                <v-btn v-if="template.creatingTemplate" :disabled="template.content == '' || template.content.length > 160" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
                                 <v-btn v-if="template.creatingTemplate" color="red" dark @click="template.creatingTemplate = false">Quay lại</v-btn>
                             </v-card-actions>
                         </v-card>

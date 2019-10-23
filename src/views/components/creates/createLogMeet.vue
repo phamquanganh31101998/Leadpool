@@ -24,7 +24,7 @@
                         </template>
                         <v-time-picker v-if="modal2" v-model="time" full-width>
                             <v-spacer></v-spacer>
-                            <v-btn flat color="primary" @click="modal2 = false">Đóng</v-btn>
+                            <v-btn flat color="red" @click="modal2 = false">Đóng</v-btn>
                             <v-btn flat color="primary" @click="$refs.dialog.save(time)">Chọn</v-btn>
                         </v-time-picker>
                     </v-dialog>
@@ -117,7 +117,7 @@
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
-            time: null,
+            time: '08:00',
             menu2: false,
             modal2: false,
             log: '',

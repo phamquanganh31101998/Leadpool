@@ -10,7 +10,7 @@
                         <v-layout row>
                             <span class="mt-2"><strong>Đến</strong></span>
                             <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
-                            <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
+                            <span class="ml-4" style="width: 100%"><v-text-field readonly v-model="to" :rules="emailRules"></v-text-field></span>
                         </v-layout>
                         <br>
                         <v-layout row>

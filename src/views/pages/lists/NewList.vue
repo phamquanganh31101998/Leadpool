@@ -124,7 +124,7 @@
                     <br>
                     <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                         <template v-slot:activator="{ on }">
-                            <a v-on="on"><v-icon>add</v-icon> Thêm điều kiện mới</a>
+                            <a v-on="on"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
                         </template>
                         <v-card style="width: 100%;">
                             <v-card-text>

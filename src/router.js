@@ -24,36 +24,36 @@ const router = new Router({
       component: Home,
       children: [
           {
-          path: '/',
-          name: 'homeA',
-          component: HomeA,
-          props: true,
+            path: '/',
+            name: 'homeA',
+            component: HomeA,
+            props: true,
           }, 
           {
-          path: '/contacts/:idUser',
-          name: 'contacts',
-          component: Contacts,
-          props(route) {
-            const props = {
-                ...route.params
-            }
-            props.idUser
-            return props
-            },
-          }, 
-          {
-          path: '/contacts/:idAccount/contact/:idContact',
-          name: 'contact',
-          component: UserContacts,
-          props(route) {
+            path: '/contacts/:idUser',
+            name: 'contacts',
+            component: Contacts,
+            props(route) {
               const props = {
                   ...route.params
               }
-              props.idAccount
-              props.idContact
+              props.idUser
               return props
+              },
+            }, 
+          {
+            path: '/contacts/:idAccount/contact/:idContact',
+            name: 'contact',
+            component: UserContacts,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                props.idContact
+                return props
+              },
             },
-          },
           {
             path: '/contacts/:idAccount/lists',
             name: 'lists',
@@ -139,6 +139,10 @@ const router = new Router({
                 return props
             },
           },
+          {
+            path: "/*",
+            redirect: '/'
+          }
       ],
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')

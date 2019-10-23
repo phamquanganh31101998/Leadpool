@@ -32,7 +32,7 @@
                 <v-form v-model="valid">
                     <v-layout row>
                         <span class="mt-4"><strong>Đến: </strong></span>
-                        <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
+                        <span class="ml-4" style="width: 100%"><v-text-field readonly v-model="to" :rules="emailRules"></v-text-field></span>
                         <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
                     <!-- <v-chip v-model="chip" class="ml-4" small close>Tunt</v-chip> -->
                     
