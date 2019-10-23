@@ -258,6 +258,34 @@
             transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
             <v-date-picker v-model="emailReminder.date" no-title @input="emailReminder.dateMenu = false"></v-date-picker>
         </v-menu> -->
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Tạo công việc thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi Tạo công việc. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-layout>
 </template>
 <script>
@@ -314,7 +342,9 @@
                 dateMenu: false,
                 time: '08:00',
                 modal2: false,
-            }
+            },
+            successfulDialog: false,
+            failDialog: false
         }),
         computed: {
             computedDateFormatted() {
@@ -440,6 +470,11 @@
                         this.day = 'The day of';
                         eventBus.updateTaskList();
                     }
+                    this.successfulDialog = true;
+                    this.closeCreateTaskDialog();
+                }).catch(error => {
+                    console.log(error);
+                    this.failDialog = true;
                     this.closeCreateTaskDialog();
                 })
 

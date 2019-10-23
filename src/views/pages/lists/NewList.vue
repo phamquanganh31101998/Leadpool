@@ -162,6 +162,7 @@
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-data-table
+                    no-data-text="Không có kết quả nào phù hợp"
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
@@ -184,6 +185,20 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy thông tin các Lead. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -223,6 +238,7 @@ export default {
     },
     data(){
         return {
+            failDialog: false,
             currentUser: null,
             divider: true,
             search: '',
@@ -560,6 +576,7 @@ export default {
                 this.allContacts = result.response;
                 this.contacts = this.allContacts;
             }).catch(error => {
+                this.failDialog = true;
                 console.log(error);
             })
         }

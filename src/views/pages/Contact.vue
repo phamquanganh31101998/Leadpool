@@ -37,34 +37,34 @@
                 <v-card-title style="background-color:#1E88E5;color:#fff">
                   <span class="headline">Tạo Lead mới</span>
                 </v-card-title>
-                <v-card-text>
+                <v-card-text style="padding: 0px 16px;">
                   <v-form v-model="valid">
                     <v-container grid-list-xl>
                       <v-layout wrap>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="firstname" :rules="nameRules" label="Họ" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="lastname" :rules="nameRules" label="Tên" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="phone" label="Số điện thoại" required :rules="phoneRules">
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-select v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
                             label="Life Cycle Stage" required></v-select>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="city" label="Thành phố" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="bussiness" label="Ngành Nghề" required>
                           </v-text-field>
                         </v-flex>
@@ -73,7 +73,7 @@
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" flat @click="createContacts">Tạo</v-btn>
+                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting">Tạo</v-btn>
                   <v-btn color="red" flat @click="checkInfo = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
@@ -375,7 +375,7 @@
         </template>
       </v-flex>
       <v-flex xs6 sm8 md8 lg9 xl9>
-        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1">
+        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
           <template v-slot:items="props">
               <tr>
               <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
@@ -430,6 +430,34 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-card tile>
+            <v-toolbar card dark color="red">
+                <v-toolbar-title>Thất bại</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-card-text>
+                Đã có lỗi xảy ra khi lấy danh sách Lead. Xin hãy thử lại.
+            </v-card-text>
+            <v-card-actions>
+            <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog v-model="createFailDialog" @click:outside="createFailDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-card tile>
+            <v-toolbar card dark color="red">
+                <v-toolbar-title>Thất bại</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-card-text>
+                Đã có lỗi xảy ra khi tạo Lead. Xin hãy thử lại.
+            </v-card-text>
+            <v-card-actions>
+            <v-btn flat color="red" @click="createFailDialog = false">OK</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
   </v-content>
 </template>
 <script>
@@ -445,6 +473,9 @@
       },
     },
     data: () => ({
+      createFailDialog: false,
+      createWaiting: false,
+      failDialog: false,
       items: [{
           title: 'Edit columns'
         },
@@ -687,6 +718,7 @@
         return result;
       },
       createContacts() {
+        this.createWaiting = true;
         let userInfo = JSON.parse(localStorage.getItem('user'));
         let userName = userInfo.username;
         let contact = [{
@@ -732,7 +764,13 @@
           this.lifecycleStage = ''
           this.city = ''
           this.bussiness = ''
-          this.getAllContact()
+          this.getAllContact();
+          this.createWaiting = false;
+        }).catch(error => {
+          console.log(error);
+          this.createFailDialog = true;
+          this.checkInfo = false;
+          this.createWaiting = false;
         })
       },
       getAllContact() {
@@ -742,22 +780,47 @@
           this.allContacts = result.response.results;
           this.contacts = this.allContacts;
           this.pages = result.response.totalPage
+        }).catch(error => {
+          this.failDialog = true;
+          console.log(error);
         })
       },
       getMyContact(){
         this.contacts = []
         this.allContacts = [];
-        contacts.getAllContact(this.idUser, this.page).then(result => {
-          const res = result.response.results;
-          const email = JSON.parse(localStorage.getItem("user")).username;
-          for(let i = 0; i<res.length;i++){
-            if(res[i].createdBy == email){
-              this.allContacts.push(res[i]);
+        let currentEmail = JSON.parse(localStorage.getItem('user')).username;
+        let conditions = [
+          [
+            {
+              conditionId: null,
+              object: "Contact",
+              property: "createdBy",
+              condition: "EQUAL",
+              value: currentEmail
             }
-          }
+          ]
+        ]
+        listService.findContactByCondition(this.idUser, conditions).then(result => {
+          this.allContacts = result.response;
           this.contacts = this.allContacts;
-          this.pages = result.response.totalPage
+          this.page = 1;
+          this.pages = 1;
+        }).catch(error => {
+          this.failDialog = true;
+          console.log(error);
         })
+        // contacts.getAllContact(this.idUser, this.page).then(result => {
+        //   const res = result.response.results;
+        //   const email = JSON.parse(localStorage.getItem("user")).username;
+        //   for(let i = 0; i<res.length;i++){
+        //     if(res[i].createdBy == email){
+        //       this.allContacts.push(res[i]);
+        //     }
+        //   }
+        //   this.contacts = this.allContacts;
+        //   this.pages = result.response.totalPage
+        // })
+
       },
       covertime(time) {
         if (_.isNull(time)) return '';
@@ -892,6 +955,7 @@
           this.page = 1;
           this.pages = 1;
         }).catch(error => {
+          this.failDialog = true;
           console.log(error);
         })
       },

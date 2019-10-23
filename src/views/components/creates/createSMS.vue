@@ -18,13 +18,15 @@
         <v-divider :divider="divider"></v-divider>
         <v-layout row wrap>
             <v-flex xs12 sm12 md12 lg12 xl12>
+                <br>
                 <span class="mt-4"><strong>Nội dung tin nhắn (Không dấu)</strong></span>
+                <br>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <v-textarea label="Nội dung" rows="16" disabled v-if="smsType=='template'" box></v-textarea>
-                <v-textarea label="Nội dung" rows="16" v-else
+                <v-textarea label="Nội dung" rows="4" disabled v-if="smsType=='template'" box></v-textarea>
+                <v-textarea label="Nội dung" rows="4" v-else counter="160"
                     onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
-                    filled counter="160"
+                    filled
                 ></v-textarea>
             </v-flex>
             

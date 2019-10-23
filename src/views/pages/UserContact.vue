@@ -165,7 +165,7 @@
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small color="#E0E0E0" v-on="on">
-                                                                <v-icon>mail_outline</v-icon>
+                                                                <v-icon>textsms</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
@@ -569,6 +569,20 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy thông tin chi tiết của Lead. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -742,7 +756,8 @@
             detail:[],
             expandDetail: [true],
             basicInfoDialog: false,
-            allEmail: []
+            allEmail: [],
+            failDialog: false
         }),
         methods:{
             getAllEmail(){
@@ -781,69 +796,72 @@
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
                     this.items = [{
-                        title: 'Lifecycle stage',
-                        description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
-                        value: result.response.lifecycleStage,
-                        dialog: false,
-                        property: 'lifecycleStage'
-                    },
-                    {
-                        title: 'Trạng thái',
-                        description: "The contact's sales, prospecting or outreach status",
-                        value: result.response.leadStatus,
-                        dialog: false,
-                        property: 'leadStatus'
-                    },
-                    {
-                        title: 'Thuộc sở hữu',
-                        description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
-                        value: result.response.contactOwner,
-                        dialog: false,
-                        property: 'contactOwner'
-                    },
-                    {
-                        title: 'Số điện thoại',
-                        description: "A contact's primary phone number",
-                        value: result.response.phone,
-                        dialog: false,
-                        property: 'phone'
-                    },
-                    {
-                        title: 'Email',
-                        description: "A contact's email address",
-                        value: result.response.email,
-                        dialog: false,
-                        property: 'email'
-                    },
-                    {
-                        title: 'Thời gian hoạt động gần nhất',
-                        description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                        value: result.response.lastActivityDate,
-                        dialog: false,
-                        property: 'lastActivityDate'
-                    },
-                    {
-                        title: 'Thời gian liên lạc gần nhất',
-                        description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                        value: result.response.lastContacted,
-                        dialog: false,
-                        property: 'lastContacted'
-                    },
-                    {
-                        title: 'Thành phố',
-                        description: 'Thành phố',
-                        value: result.response.city,
-                        dialog: false,
-                        property: 'city'
-                    },
-                    {
-                        title: 'Ngành nghề',
-                        description: 'phân loại ngành nghề',
-                        value: result.response.bussiness,
-                        dialog: false,
-                        property: 'bussiness'
-                    }]
+                            title: 'Lifecycle stage',
+                            description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
+                            value: result.response.lifecycleStage,
+                            dialog: false,
+                            property: 'lifecycleStage'
+                        },
+                        {
+                            title: 'Trạng thái',
+                            description: "The contact's sales, prospecting or outreach status",
+                            value: result.response.leadStatus,
+                            dialog: false,
+                            property: 'leadStatus'
+                        },
+                        {
+                            title: 'Thuộc sở hữu',
+                            description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
+                            value: result.response.contactOwner,
+                            dialog: false,
+                            property: 'contactOwner'
+                        },
+                        {
+                            title: 'Số điện thoại',
+                            description: "A contact's primary phone number",
+                            value: result.response.phone,
+                            dialog: false,
+                            property: 'phone'
+                        },
+                        {
+                            title: 'Email',
+                            description: "A contact's email address",
+                            value: result.response.email,
+                            dialog: false,
+                            property: 'email'
+                        },
+                        {
+                            title: 'Thời gian hoạt động gần nhất',
+                            description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                            value: result.response.lastActivityDate,
+                            dialog: false,
+                            property: 'lastActivityDate'
+                        },
+                        {
+                            title: 'Thời gian liên lạc gần nhất',
+                            description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                            value: result.response.lastContacted,
+                            dialog: false,
+                            property: 'lastContacted'
+                        },
+                        {
+                            title: 'Thành phố',
+                            description: 'Thành phố',
+                            value: result.response.city,
+                            dialog: false,
+                            property: 'city'
+                        },
+                        {
+                            title: 'Ngành nghề',
+                            description: 'phân loại ngành nghề',
+                            value: result.response.bussiness,
+                            dialog: false,
+                            property: 'bussiness'
+                        }]
                     // console.log(result)
+                }).catch(error => {
+                    this.failDialog = true;
+                    console.log(error);
                 })
             },
             updateContactDetail(property, value){

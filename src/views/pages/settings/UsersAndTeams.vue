@@ -24,12 +24,12 @@
             <v-flex xs9 sm9 md9 lg9 xl9>
                 <h1>Người dùng và nhóm</h1>
                 <br>
-                Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
+                    Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
                 <br>
                 <br>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users">
+                        <v-data-table :headers="headers" :items="users" no-data-text="Không có quyền xem danh sách các người dùng">
                             <template v-slot:items="props">
                                 <td><a style="color: blue;" @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
                                 <td>{{ props.item.userEmail }}</td>
@@ -174,6 +174,20 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="forbiddenDialog" @click:outside="forbiddenDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn phải là Admin và có quyền chỉnh sửa người dùng mới có thể xem trang này.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="forbiddenDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -188,6 +202,7 @@ export default {
     data(){
         return {
             divider: true,
+            forbiddenDialog: false,
             permissionsDialog: false,
             headers: [
                 {
@@ -287,6 +302,7 @@ export default {
                     }
                 }
             }).catch(error => {
+                this.forbiddenDialog = true;
                 console.log(error)
             })
         },

@@ -98,7 +98,7 @@
                         </v-layout>
                         <v-layout row wrap class="mt-3">
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <p>hello</p>
+                                <p>{{email.body}}</p>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>

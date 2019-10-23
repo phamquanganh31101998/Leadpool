@@ -34,13 +34,13 @@
                     <span><a @click.stop="createNewTemplateSection()">Tạo mẫu mới</a></span>
                 </v-flex>
                 <v-flex xs12 sm12 md9 lg9 xl9> 
-                    <h4>Mẫu email</h4>
+                    <h4 class="pl-3">Mẫu email</h4>
                     <div id="templateBody" style="width: 100%; overflow-y: scroll; height: 500px; margin: 10px; border: 1px solid #DDDDDD"></div>
                 </v-flex>
             </v-layout>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId)" :disabled="disableSendButton">Send</v-btn>
+            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId)" :disabled="disableSendButton || waiting">Send</v-btn>
             <v-btn flat color="red" @click="closeEmailTemplateDialog()">Cancel</v-btn>
         </v-card-actions>
     </v-card>
@@ -78,6 +78,34 @@
             <v-btn flat color="green" @click="createTemplate()" :disabled="!createEmailTemplate.button">Tạo mẫu</v-btn>
             <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Quay lại</v-btn>
         </v-card-actions>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Gửi email thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi gửi email. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-card>
 </template>
 <script>
@@ -117,6 +145,9 @@ export default {
     },
     data(){
         return{
+            waiting: false,
+            successfulDialog: false,
+            failDialog: false,
             first: null,
             iframe: null,
             btn: null,
@@ -225,9 +256,7 @@ export default {
         },
         getEmailTemplate(){
             emailServices.getEmailTemplate(this.idAccount).then(result => {
-                
                 this.templates = result.response;
-                console.log(this.templates);
                 this.templateSelect = [];
                 this.templateSelect = this.setSelectEmailTemplate(this.templates);
             })
@@ -249,13 +278,17 @@ export default {
                 to: this.to, 
                 subject: this.subject
             }
-
+            this.waiting = true;
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
-                console.log(result);
+                this.successfulDialog = true;
                 this.closeEmailTemplateDialog();
                 eventBus.updateEmailList();
+                this.waiting = false;
             }).catch(error => {
+                this.failDialog = true;
+                this.closeEmailTemplateDialog();
                 console.log(error);
+                this.waiting = false;
             })
         },
         createTemplate(){

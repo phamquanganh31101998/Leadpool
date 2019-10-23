@@ -26,8 +26,8 @@
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 class="ml-3 mt-3">
                 <v-layout row v-if="page=='send'">
-                    <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-card>
+                    <v-flex xs3 sm3 md3 lg3 xl3 style="height: 100%">
+                        <v-card >
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
                                 <span class="ml-4"><v-select></v-select></span>
@@ -36,7 +36,7 @@
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn mẫu tin nhắn</strong></span>
                                 <span class="ml-4"><v-select></v-select></span>
-                                <v-textarea box disabled></v-textarea>
+                                <v-textarea box disabled rows="13"></v-textarea>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-text>
@@ -73,13 +73,15 @@
                                 <v-data-table dense :headers="send.headers" :items="send.displayContacts" hide-actions class="elevation-1">
                                     <template v-slot:items="props">
                                         <tr>
-                                            <td><v-checkbox class="mt-3" v-model="props.item.chosen" @change="checkChosenContact(props.item.contactId, props.item.chosen)"></v-checkbox></td>
+                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" v-model="props.item.chosen" @change="checkChosenContact(props.item.contactId, props.item.chosen)"></v-checkbox></td>
                                             <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
                                             <td>{{ props.item.phone }}</td>
                                         </tr>
                                     </template>
                                 </v-data-table>
+                                <br>
                                 <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
+                                <br>
                             </v-card-text>
                         </v-card>
                     </v-flex>
