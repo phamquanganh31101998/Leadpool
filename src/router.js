@@ -139,10 +139,6 @@ const router = new Router({
                 return props
             },
           },
-          {
-            path: "/*",
-            redirect: '/'
-          }
       ],
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
@@ -158,6 +154,10 @@ const router = new Router({
       props: (router) => ({
         token: router.query.token
       })
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 });

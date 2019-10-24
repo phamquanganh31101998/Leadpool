@@ -20,7 +20,7 @@
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
       <v-btn flat color="#fff" @click="goToSMSServicePage()">
-        Tin nhắn SMS 
+        SMS 
         <v-icon color="white" class="ml-2">textsms</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>

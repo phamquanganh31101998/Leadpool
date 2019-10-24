@@ -10,17 +10,17 @@
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <v-list-tile @click="page='send'">
-                        <v-list-tile-content>Gửi tin nhắn</v-list-tile-content>
+                        <v-list-tile-content :style="fontWeight[0]">Gửi tin nhắn</v-list-tile-content>
                     </v-list-tile>
                 </v-list>
                 <v-list>
                     <v-list-tile @click="page='saveKey'">
-                        <v-list-tile-content>Quản lý chiến dịch</v-list-tile-content>
+                        <v-list-tile-content :style="fontWeight[1]">Quản lý chiến dịch</v-list-tile-content>
                     </v-list-tile>
                 </v-list>
                 <v-list>
                     <v-list-tile @click="page='template'">
-                        <v-list-tile-content>Mẫu tin nhắn</v-list-tile-content>
+                        <v-list-tile-content :style="fontWeight[2]">Mẫu tin nhắn</v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
@@ -45,26 +45,31 @@
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-actions>
-                                <v-btn block color="primary" >Gửi ngay</v-btn>
+                                <v-btn block color="primary" :disabled="send.remain < 0">Gửi ngay</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
                         <v-card>
                             <v-card-title>
-                                <v-layout row>
+                                <v-layout row wrap>
                                     <v-flex xs7 sm7 md7 lg7 xl7>
-                                        <h3>Đã chọn {{numberOfRecipient}} người nhận</h3>
+                                        <h3>Đã chọn {{numberOfRecipient}} người nhận, còn {{send.remain}} tin nhắn</h3>
+                                        
                                     </v-flex>
                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                         <v-btn color="success" @click="markAllContact()">
                                             Chọn tất cả
                                         </v-btn>
                                     </v-flex>
+                                    
                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                         <v-btn @click="unmarkAllContact()">
                                             Bỏ chọn tất cả
                                         </v-btn>
+                                    </v-flex>
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <v-alert type="error" :value="send.remain < 0">Số lượng người nhận không được lớn hơn số tin nhắn còn lại</v-alert>
                                     </v-flex>
                                 </v-layout>
                             </v-card-title>
@@ -300,6 +305,18 @@ export default {
     watch: {
         'send.page'(){
             this.getAllContact(this.idAccount, this.send.page);
+        },
+        page(){
+            this.fontWeight = ['', '', ''];
+            if(this.page == 'send'){
+                this.fontWeight[0] = 'fontWeight: bold';
+            }
+            else if (this.page == 'saveKey'){
+                this.fontWeight[1] = 'fontWeight: bold';
+            }
+            else{
+                this.fontWeight[2] = 'fontWeight: bold';
+            }
         }
     },
     computed: {
@@ -309,6 +326,7 @@ export default {
     },
     data(){
         return {
+            fontWeight: ['fontWeight: bold', '', ''],
             page: 'send',
             divider: true,
             saveKey: {
@@ -361,7 +379,8 @@ export default {
                     },
                 ],
                 page: 1,
-                pages: 1
+                pages: 1,
+                remain: 10
             }
         }
     },
@@ -405,34 +424,27 @@ export default {
         checkChosenContact(id, choice){
             if(choice == true){
                 this.send.chosenContacts.push(this.getContactById(id))
+                this.send.remain = this.send.remain - 1;
+                // else {
+                //     for (let i = 0; i < this.send.displayContacts.length; i++){
+                //         if(this.send.displayContacts[i].contactId == id){
+                //             this.send.displayContacts[i].chosen = false;
+                //         }
+                //     }
+                //     alert('Không thể chọn số lượng người nhận vượt quá số tin nhắn còn lại');
+                // }
             }
             else{
                 let obj = this.getContactById(id);
                 for (let i = 0; i < this.send.chosenContacts.length;i++){
                     if(this.send.chosenContacts[i].contactId == obj.contactId){
                         this.send.chosenContacts.splice(i, 1);
+                        this.send.remain = this.send.remain + 1;
                     }
                 }
             }
             this.send.chosenContacts = [...this.send.chosenContacts];
             console.log(this.send.chosenContacts)
-            // if(this.send.chosenContacts.length == 0){
-            //     this.send.chosenContacts.push(this.getContactById(id))
-            // }
-            // else {
-            //     for (let i = 0; i < this.send.chosenContacts.length; i++){
-            //         if(this.send.chosenContacts[i].contactId == id){
-            //             this.send.chosenContacts.splice(i, 1);
-
-            //         }
-            //         else {
-            //             this.send.chosenContacts.push(this.getContactById(id))
-            //         }
-            //     }
-            // }
-            
-            // this.send.chosenContacts = [...this.send.chosenContacts];
-            // console.log(this.send.chosenContacts)
         },
         getContactById(id){
             let result = null;
@@ -447,6 +459,7 @@ export default {
             for (let i = 0; i < this.send.displayContacts.length;i++){
                 if(this.send.displayContacts[i].chosen == false){
                     this.send.displayContacts[i].chosen = true;
+                    this.send.remain = this.send.remain - 1;
                     this.send.chosenContacts.push(this.send.displayContacts[i]);
                 }
             }
@@ -465,6 +478,7 @@ export default {
                 for (let k = 0; k < tempArr.length; k++){
                     if (this.send.chosenContacts[i].contactId == tempArr[k].contactId){
                         this.send.chosenContacts.splice(i, 1);
+                        this.send.remain = this.send.remain + 1;
                     }
                 }
             }

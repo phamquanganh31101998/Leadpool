@@ -2,7 +2,7 @@
   <v-content class="mt-5 pl-3 pr-3">
     <v-layout row wrap>
       <v-flex xs12 sm12 md5 lg6 xl6>
-        <h1 class="ml-3">Leads</h1>
+        <h1 class="ml-3">Quản lý Leads</h1>
       </v-flex>
       <v-flex xs12 sm12 md7 lg6 xl6>
         <v-layout row>
@@ -117,70 +117,6 @@
           </v-list-tile> -->
         </v-list>
         <v-divider divider="true" class="mr-3"></v-divider>
-        <!-- <v-card width="100%">
-          <v-card-text>
-            <template v-for="(andCondition, andIndex) in conditions[0]">
-              <v-card>
-                <v-card-text>
-                  <v-layout row wrap>
-                    <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                      <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
-                        <template v-for="val in andCondition.value">
-                            <v-chip>{{val}}</v-chip>
-                        </template>
-                      </p>
-                      <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                    </v-flex>
-                    <v-flex xs2 sm2 md2 lg2 xl2>
-                      <v-tooltip right>
-                        <template v-slot:activator="{ on }">
-                            <v-btn @click="deleteFilter(andIndex)" flat v-on="on" fab>
-                                <v-icon style="color: red;" >clear</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Delete this condition</span>
-                      </v-tooltip>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-card>
-              <br>
-            </template>
-          </v-card-text>
-          <v-card-actions>
-            <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
-              <template v-slot:activator="{ on }">
-                  <a v-on="on" style="fontSize: 16px;"> <v-icon>add</v-icon> Add filter </a>
-              </template>
-              <v-card style="width: 100%;">
-                  <v-card-text>
-                      <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="newCondition.contactProperties" label="Choose Contact Property" v-model="newCondition.chosenProperty"></v-select>
-                          </v-flex>
-                          <br>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="newCondition.conditionConstants" label="Choose constant" v-model="newCondition.chosenConstant"></v-select>
-                          </v-flex>
-                          <br>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
-                              <v-text-field v-model="newCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
-                              
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFilter(newCondition.chosenProperty, 'IN', newCondition.vchipTextField)"><v-icon>add</v-icon> Add</v-btn>
-                          </v-flex>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-else>
-                              <v-text-field v-model="newCondition.value" label="Value"></v-text-field>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFilter(newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)" ><v-icon>add</v-icon> Add </v-btn>
-                          </v-flex>
-                      </v-layout>
-                  </v-card-text>
-              </v-card>
-            </v-menu>
-          </v-card-actions>
-        </v-card> -->
         <template v-if="!firstConditionMenu">
           <v-card class="mr-3">
             <v-card-title>
@@ -204,15 +140,15 @@
                                     <v-card-text style="padding: 8px 8px;">
                                         <v-layout row>
                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong 
+                                                <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
                                                     <template v-for="val in andCondition.value">
                                                         <v-chip>{{val}}</v-chip>
                                                     </template>
                                                 </p>
-                                                <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
                                             </v-flex>
                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                 <v-tooltip right>
@@ -557,7 +493,7 @@
         },
         {
           text: 'XÓA',
-          align: 'left',
+          align: 'center',
           value: 'delete'
         }
       ],
