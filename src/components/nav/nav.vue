@@ -1,14 +1,28 @@
 <template>
-  <v-toolbar dark color="#2e3f50" style="border-top:4px solid #ff7a59">
-    <v-toolbar-items color="#2e3f50">
+  <v-toolbar dark color="#2e3f50" style="border-top:4px solid #ff7a59; padding: 0px 0px;">
+    <v-toolbar-items color="#2e3f50" style="padding: 0px 0px;">
       <v-btn flat color="#fff" @click="goToContactsPage()">
-        LEADS <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+        LEADS 
+        <v-icon color="white" class="ml-2">people</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
       <v-btn flat color="#fff" @click="goToListsPage()">
-        Danh sách <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+        Danh sách 
+        <v-icon color="white" class="ml-2">list</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
       <v-btn flat color="#fff" @click="goToMyTaskPage()">
-        Công việc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
+        Công việc 
+        <v-icon color="white" class="ml-2">work_outline</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
+      </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn flat color="#fff" @click="goToSMSServicePage()">
+        SMS 
+        <v-icon color="white" class="ml-2">textsms</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -166,6 +180,10 @@
       },
       goToMyTaskPage(){
         let link = `/contacts/${this.currentUser.accountId}/myTask`;
+        this.$router.push(link);
+      },
+      goToSMSServicePage(){
+        let link = `/contacts/${this.currentUser.accountId}/smsservice`;
         this.$router.push(link);
       }
     },

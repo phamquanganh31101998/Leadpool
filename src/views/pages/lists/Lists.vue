@@ -37,6 +37,20 @@
                 </v-alert>
             </template>
         </v-data-table>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy các danh sách. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -61,13 +75,17 @@ export default {
             ],
             lists: [],
             listDetail: false,
-            currentUser: null
+            currentUser: null,
+            failDialog: false
         }
     },
     methods: {
         getList(){
             listService.getList(this.idAccount).then(result => {
                 this.lists = result.response;
+            }).catch(error => {
+                console.log(error);
+                this.failDialog = true;
             })
         },
         goToListDetailPage(idList){

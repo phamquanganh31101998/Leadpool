@@ -37,15 +37,15 @@
                                         <template v-for="(andCondition, andIndex) in orCondition">
                                             <v-card flat style="border: 1px solid #CCCCCC">
                                                 <v-card-text style="padding: 8px 8px;">
-                                                    <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong
+                                                    <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> có trong
                                                         <template v-for="val in andCondition.value">
                                                             <v-chip>{{val}}</v-chip>
                                                         </template>
                                                     </p>
-                                                    <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
-                                                    <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
+                                                    <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold">{{andCondition.value}}</span></p>
+                                                    <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold">{{andCondition.value}}</span></p>
+                                                    <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold">{{andCondition.value}}</span></p>
+                                                    <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold">{{andCondition.value}}</span></p>
                                                 </v-card-text>
                                                 <!-- <v-card-actions>
                                                     <div class="flex-grow-1"></div>
@@ -69,6 +69,7 @@
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
+                    no-data-text="Không có kết quả nào phù hợp"
                     >
                     <template v-slot:items="props">
                         <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.firstName }} {{props.item.lastName}}</a></td>
@@ -88,6 +89,20 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy chi tiết danh sách. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -242,7 +257,7 @@ export default {
                     }
                 ]
             ],
-            
+            failDialog: false
         }
     },
     methods: {
@@ -271,6 +286,9 @@ export default {
                 }
             }).then(() => {
                 this.getAllContacts();
+            }).catch(error => {
+                console.log(error);
+                this.failDialog = true;
             })
         },
         goToContactPage(idContact){

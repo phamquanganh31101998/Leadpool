@@ -44,15 +44,15 @@
                                                     <v-card-text style="padding: 8px 8px;">
                                                         <v-layout row>
                                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong 
+                                                                <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
                                                                     <template v-for="val in andCondition.value">
                                                                         <v-chip>{{val}}</v-chip>
                                                                     </template>
                                                                 </p>
-                                                                <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
-                                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
+                                                                <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                                <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                                <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                                <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
                                                             </v-flex>
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <v-tooltip right>
@@ -124,7 +124,7 @@
                     <br>
                     <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
                         <template v-slot:activator="{ on }">
-                            <a v-on="on"><v-icon>add</v-icon> Thêm điều kiện mới</a>
+                            <a v-on="on"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
                         </template>
                         <v-card style="width: 100%;">
                             <v-card-text>
@@ -162,6 +162,7 @@
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-data-table
+                    no-data-text="Không có kết quả nào phù hợp"
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
@@ -184,6 +185,20 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy thông tin các Lead. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -223,6 +238,7 @@ export default {
     },
     data(){
         return {
+            failDialog: false,
             currentUser: null,
             divider: true,
             search: '',
@@ -560,6 +576,7 @@ export default {
                 this.allContacts = result.response;
                 this.contacts = this.allContacts;
             }).catch(error => {
+                this.failDialog = true;
                 console.log(error);
             })
         }

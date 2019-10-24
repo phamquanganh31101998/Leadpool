@@ -12,6 +12,7 @@ import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
+import SMSService from './views/pages/SMSService.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -23,36 +24,36 @@ const router = new Router({
       component: Home,
       children: [
           {
-          path: '/',
-          name: 'homeA',
-          component: HomeA,
-          props: true,
+            path: '/',
+            name: 'homeA',
+            component: HomeA,
+            props: true,
           }, 
           {
-          path: '/contacts/:idUser',
-          name: 'contacts',
-          component: Contacts,
-          props(route) {
-            const props = {
-                ...route.params
-            }
-            props.idUser
-            return props
-            },
-          }, 
-          {
-          path: '/contacts/:idAccount/contact/:idContact',
-          name: 'contact',
-          component: UserContacts,
-          props(route) {
+            path: '/contacts/:idUser',
+            name: 'contacts',
+            component: Contacts,
+            props(route) {
               const props = {
                   ...route.params
               }
-              props.idAccount
-              props.idContact
+              props.idUser
               return props
+              },
+            }, 
+          {
+            path: '/contacts/:idAccount/contact/:idContact',
+            name: 'contact',
+            component: UserContacts,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                props.idContact
+                return props
+              },
             },
-          },
           {
             path: '/contacts/:idAccount/lists',
             name: 'lists',
@@ -126,6 +127,18 @@ const router = new Router({
                 return props
             },
           },
+          {
+            path: '/contacts/:idAccount/smsservice',
+            name: 'smsservice',
+            component: SMSService,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
       ],
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
@@ -141,6 +154,10 @@ const router = new Router({
       props: (router) => ({
         token: router.query.token
       })
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 });

@@ -2,7 +2,7 @@
   <v-content class="mt-5 pl-3 pr-3">
     <v-layout row wrap>
       <v-flex xs12 sm12 md5 lg6 xl6>
-        <h1 class="ml-3">Leads</h1>
+        <h1 class="ml-3">Quản lý Leads</h1>
       </v-flex>
       <v-flex xs12 sm12 md7 lg6 xl6>
         <v-layout row>
@@ -37,34 +37,34 @@
                 <v-card-title style="background-color:#1E88E5;color:#fff">
                   <span class="headline">Tạo Lead mới</span>
                 </v-card-title>
-                <v-card-text>
+                <v-card-text style="padding: 0px 16px;">
                   <v-form v-model="valid">
                     <v-container grid-list-xl>
                       <v-layout wrap>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="firstname" :rules="nameRules" label="Họ" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="lastname" :rules="nameRules" label="Tên" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="phone" label="Số điện thoại" required :rules="phoneRules">
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-select v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
                             label="Life Cycle Stage" required></v-select>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="city" label="Thành phố" required>
                           </v-text-field>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="bussiness" label="Ngành Nghề" required>
                           </v-text-field>
                         </v-flex>
@@ -73,7 +73,7 @@
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" flat @click="createContacts">Tạo</v-btn>
+                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting">Tạo</v-btn>
                   <v-btn color="red" flat @click="checkInfo = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
@@ -117,70 +117,6 @@
           </v-list-tile> -->
         </v-list>
         <v-divider divider="true" class="mr-3"></v-divider>
-        <!-- <v-card width="100%">
-          <v-card-text>
-            <template v-for="(andCondition, andIndex) in conditions[0]">
-              <v-card>
-                <v-card-text>
-                  <v-layout row wrap>
-                    <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                      <p v-if="andCondition.condition == 'IN'">{{andCondition.property}} is {{andCondition.condition}} 
-                        <template v-for="val in andCondition.value">
-                            <v-chip>{{val}}</v-chip>
-                        </template>
-                      </p>
-                      <p v-if="andCondition.condition == 'EQUAL'">{{andCondition.property}} is {{andCondition.condition}} to {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'LIKE'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'GREAT_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                      <p v-if="andCondition.condition == 'LESS_THAN'">{{andCondition.property}} is {{andCondition.condition}} {{andCondition.value}}</p>
-                    </v-flex>
-                    <v-flex xs2 sm2 md2 lg2 xl2>
-                      <v-tooltip right>
-                        <template v-slot:activator="{ on }">
-                            <v-btn @click="deleteFilter(andIndex)" flat v-on="on" fab>
-                                <v-icon style="color: red;" >clear</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Delete this condition</span>
-                      </v-tooltip>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-card>
-              <br>
-            </template>
-          </v-card-text>
-          <v-card-actions>
-            <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
-              <template v-slot:activator="{ on }">
-                  <a v-on="on" style="fontSize: 16px;"> <v-icon>add</v-icon> Add filter </a>
-              </template>
-              <v-card style="width: 100%;">
-                  <v-card-text>
-                      <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="newCondition.contactProperties" label="Choose Contact Property" v-model="newCondition.chosenProperty"></v-select>
-                          </v-flex>
-                          <br>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="newCondition.conditionConstants" label="Choose constant" v-model="newCondition.chosenConstant"></v-select>
-                          </v-flex>
-                          <br>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-if="newCondition.chosenConstant == 'IN'">
-                              <v-text-field v-model="newCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
-                              
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFilter(newCondition.chosenProperty, 'IN', newCondition.vchipTextField)"><v-icon>add</v-icon> Add</v-btn>
-                          </v-flex>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-else>
-                              <v-text-field v-model="newCondition.value" label="Value"></v-text-field>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFilter(newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value)" ><v-icon>add</v-icon> Add </v-btn>
-                          </v-flex>
-                      </v-layout>
-                  </v-card-text>
-              </v-card>
-            </v-menu>
-          </v-card-actions>
-        </v-card> -->
         <template v-if="!firstConditionMenu">
           <v-card class="mr-3">
             <v-card-title>
@@ -204,15 +140,15 @@
                                     <v-card-text style="padding: 8px 8px;">
                                         <v-layout row>
                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                <p v-if="andCondition.condition == 'IN'">{{getPropertyName(andCondition.property)}} có trong 
+                                                <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
                                                     <template v-for="val in andCondition.value">
                                                         <v-chip>{{val}}</v-chip>
                                                     </template>
                                                 </p>
-                                                <p v-if="andCondition.condition == 'EQUAL'">{{getPropertyName(andCondition.property)}} là {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LIKE'">{{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'GREAT_THAN'">{{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}</p>
-                                                <p v-if="andCondition.condition == 'LESS_THAN'">{{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}</p>
+                                                <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
                                             </v-flex>
                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                 <v-tooltip right>
@@ -338,7 +274,7 @@
           <br>
           <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
               <template v-slot:activator="{ on }">
-                  <a v-on="on"><v-icon>add</v-icon> Thêm điều kiện mới</a>
+                  <a v-on="on"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
               </template>
               <v-card style="width: 100%;">
                   <v-card-text>
@@ -375,15 +311,15 @@
         </template>
       </v-flex>
       <v-flex xs6 sm8 md8 lg9 xl9>
-        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1">
+        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
           <template v-slot:items="props">
               <tr>
               <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
-              <td class="text-xs-center">{{ props.item.email }}</td>
-              <td class="text-xs-center">{{ props.item.phone }}</td>
-              <td class="text-xs-center">{{ props.item.leadStatus }}</td>
-              <td class="text-xs-center">{{ covertime(props.item.updateAt) }}</td>
-              <td class="text-xs-right text-md-right text-lg-right">
+              <td class="text-xs-left">{{ props.item.email }}</td>
+              <td class="text-xs-left">{{ props.item.phone }}</td>
+              <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+              <td class="text-xs-left">{{ covertime(props.item.updateAt) }}</td>
+              <td class="text-xs-left">
                 <v-btn class="red" outline round style="color: red;" @click="confirmDeleteContact(props.item.contactId)">Xóa</v-btn>
               </td>
             </tr>
@@ -430,6 +366,34 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-card tile>
+            <v-toolbar card dark color="red">
+                <v-toolbar-title>Thất bại</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-card-text>
+                Đã có lỗi xảy ra khi lấy danh sách Lead. Xin hãy thử lại.
+            </v-card-text>
+            <v-card-actions>
+            <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <v-dialog v-model="createFailDialog" @click:outside="createFailDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-card tile>
+            <v-toolbar card dark color="red">
+                <v-toolbar-title>Thất bại</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-card-text>
+                Đã có lỗi xảy ra khi tạo Lead. Xin hãy thử lại.
+            </v-card-text>
+            <v-card-actions>
+            <v-btn flat color="red" @click="createFailDialog = false">OK</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
   </v-content>
 </template>
 <script>
@@ -445,6 +409,9 @@
       },
     },
     data: () => ({
+      createFailDialog: false,
+      createWaiting: false,
+      failDialog: false,
       items: [{
           title: 'Edit columns'
         },
@@ -505,7 +472,7 @@
           value: 'name'
         },
         {
-          text: 'Email',
+          text: 'EMAIL',
           align: 'left',
           value: 'calories'
         },
@@ -515,7 +482,7 @@
           value: 'fat'
         },
         {
-          text: 'Lead Status',
+          text: 'LIFECYCLE STAGE',
           align: 'left',
           value: 'carbs'
         },
@@ -526,7 +493,7 @@
         },
         {
           text: 'XÓA',
-          align: 'left',
+          align: 'center',
           value: 'delete'
         }
       ],
@@ -687,6 +654,7 @@
         return result;
       },
       createContacts() {
+        this.createWaiting = true;
         let userInfo = JSON.parse(localStorage.getItem('user'));
         let userName = userInfo.username;
         let contact = [{
@@ -732,7 +700,13 @@
           this.lifecycleStage = ''
           this.city = ''
           this.bussiness = ''
-          this.getAllContact()
+          this.getAllContact();
+          this.createWaiting = false;
+        }).catch(error => {
+          console.log(error);
+          this.createFailDialog = true;
+          this.checkInfo = false;
+          this.createWaiting = false;
         })
       },
       getAllContact() {
@@ -742,22 +716,47 @@
           this.allContacts = result.response.results;
           this.contacts = this.allContacts;
           this.pages = result.response.totalPage
+        }).catch(error => {
+          this.failDialog = true;
+          console.log(error);
         })
       },
       getMyContact(){
         this.contacts = []
         this.allContacts = [];
-        contacts.getAllContact(this.idUser, this.page).then(result => {
-          const res = result.response.results;
-          const email = JSON.parse(localStorage.getItem("user")).username;
-          for(let i = 0; i<res.length;i++){
-            if(res[i].createdBy == email){
-              this.allContacts.push(res[i]);
+        let currentEmail = JSON.parse(localStorage.getItem('user')).username;
+        let conditions = [
+          [
+            {
+              conditionId: null,
+              object: "Contact",
+              property: "createdBy",
+              condition: "EQUAL",
+              value: currentEmail
             }
-          }
+          ]
+        ]
+        listService.findContactByCondition(this.idUser, conditions).then(result => {
+          this.allContacts = result.response;
           this.contacts = this.allContacts;
-          this.pages = result.response.totalPage
+          this.page = 1;
+          this.pages = 1;
+        }).catch(error => {
+          this.failDialog = true;
+          console.log(error);
         })
+        // contacts.getAllContact(this.idUser, this.page).then(result => {
+        //   const res = result.response.results;
+        //   const email = JSON.parse(localStorage.getItem("user")).username;
+        //   for(let i = 0; i<res.length;i++){
+        //     if(res[i].createdBy == email){
+        //       this.allContacts.push(res[i]);
+        //     }
+        //   }
+        //   this.contacts = this.allContacts;
+        //   this.pages = result.response.totalPage
+        // })
+
       },
       covertime(time) {
         if (_.isNull(time)) return '';
@@ -892,6 +891,7 @@
           this.page = 1;
           this.pages = 1;
         }).catch(error => {
+          this.failDialog = true;
           console.log(error);
         })
       },

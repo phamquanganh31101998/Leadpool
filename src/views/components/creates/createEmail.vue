@@ -32,7 +32,7 @@
                 <v-form v-model="valid">
                     <v-layout row>
                         <span class="mt-4"><strong>Đến: </strong></span>
-                        <span class="ml-4" style="width: 100%"><v-text-field v-model="to" :rules="emailRules"></v-text-field></span>
+                        <span class="ml-4" style="width: 100%"><v-text-field readonly v-model="to" :rules="emailRules"></v-text-field></span>
                         <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
                     <!-- <v-chip v-model="chip" class="ml-4" small close>Tunt</v-chip> -->
                     
@@ -100,7 +100,7 @@
             <v-divider :divider="divider"></v-divider>
             <v-flex>
                 <v-btn color="blue darken-1" small flat
-                    @click="sendEmail()" :disabled="!valid">Gửi</v-btn>
+                    @click="sendEmail()" :disabled="!valid || waiting">Gửi</v-btn>
                 <v-btn color="red" small flat
                     @click="closeCreateEmailDialog()">Đóng</v-btn>
             </v-flex>
@@ -108,6 +108,34 @@
                 <emailTemplate @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
             </v-dialog>
         </v-layout>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Gửi email thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi gửi email. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-card-text>
 </template>
 <script>
@@ -130,6 +158,7 @@
             }
         },
         data: () => ({
+            waiting: false,
             emailRules: [
                 v => !!v || 'Chưa nhập E-mail',
                 v => /.+@.+/.test(v) || 'E-mail không đúng định dạng',
@@ -145,7 +174,9 @@
             currentContact: null,
             valid: false,
             emailTemplateDialog: false,
-            currentUser: null
+            currentUser: null,
+            successfulDialog: false,
+            failDialog: false
         }),
         methods: {
             getCurrentContact(){
@@ -166,12 +197,17 @@
                     "body": this.body,
                     "type": this.type,
                 }
+                this.waiting = true;
                 emailServices.sendEmail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
-                    eventBus.updateEmailList();
+                    this.successfulDialog = true;
                     this.closeCreateEmailDialog();
+                    eventBus.updateEmailList();
+                    this.waiting = false;
                 }).catch(error => {
+                    this.failDialog = true;
+                    this.closeCreateEmailDialog();
                     console.log(error);
+                    this.waiting = false;
                 })
             },
             getCurrentUser(){

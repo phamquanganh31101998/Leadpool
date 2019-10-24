@@ -24,7 +24,7 @@
                         </template>
                         <v-time-picker v-if="modal2" v-model="time" full-width>
                             <v-spacer></v-spacer>
-                            <v-btn flat color="primary" @click="modal2 = false">Đóng</v-btn>
+                            <v-btn flat color="red" @click="modal2 = false">Đóng</v-btn>
                             <v-btn flat color="primary" @click="$refs.dialog.save(time)">Chọn</v-btn>
                         </v-time-picker>
                     </v-dialog>
@@ -78,6 +78,34 @@
             <v-btn color="red" small flat
                 @click="closeCreateLogMeetDialog()">Đóng</v-btn>
         </v-layout>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Lưu thông tin cuộc họp thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi Lưu thông tin cuộc họp. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-layout>
 </template>
 <script>
@@ -89,10 +117,12 @@
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
             menu1: false,
-            time: null,
+            time: '08:00',
             menu2: false,
             modal2: false,
-            log: ''
+            log: '',
+            successfulDialog: false,
+            failDialog: false
         }),
         props: {
             idAccount: {
@@ -148,8 +178,12 @@
                     "type":"meeting",
                 }
                 logService.createLog(this.idAccount, this.idContact, data).then(result => {
+                    this.successfulDialog = true;
                     this.log = '';
                     eventBus.updateLogMeetList();
+                }).catch(error => {
+                    this.failDialog = true;
+                    console.log(error);
                 });
                 this.$emit('closeCreateLogMeetDialog');
             }

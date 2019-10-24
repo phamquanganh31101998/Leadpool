@@ -47,7 +47,7 @@
             <v-flex xs10 sm10 md10 lg10 xl10>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="displayTasks" hide-actions>
+                        <v-data-table :headers="headers" :items="displayTasks" hide-actions no-data-text="Không có công việc nào">
                             <template v-slot:items="props">
                                 <td v-if="props.item.status == 'NOTCOMPLETED'">
                                     <v-tooltip top>
@@ -70,7 +70,6 @@
                                 <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
                             </template>
                         </v-data-table>
-                        
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -298,6 +297,20 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy danh sách công việc. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -336,6 +349,7 @@ export default {
     },
     data(){
         return {
+            failDialog: false,
             pagination: {
                 page: 1,
             },
@@ -509,6 +523,7 @@ export default {
                 this.length = result.response.totalPage;
                 // this.viewTask.task = this.tasks[0];
             }).catch(error => {
+                this.failDialog = true;
                 console.log(error);
             })
         },

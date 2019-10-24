@@ -162,12 +162,35 @@
                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-btn fab small color="#E0E0E0">
-                                                        <v-icon>phone</v-icon>
-                                                    </v-btn>
+                                                    <v-dialog v-model="createSMS" persistent max-width="700px">
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                                <v-icon>textsms</v-icon>
+                                                            </v-btn>
+                                                        </template>
+                                                        <v-card>
+                                                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                                <span class="headline">Gửi tin nhắn SMS</span>
+                                                            </v-card-title>
+                                                            <!-- <v-card-text>
+                                                                
+                                                            </v-card-text> -->
+                                                            <!-- <v-divider :divider="divider"></v-divider> -->
+                                                            <!-- <v-card-text> -->
+                                                                <newSMS :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
+                                                            <!-- </v-card-text> -->
+                                                            <v-divider :divider="divider"></v-divider>
+                                                            <!-- <v-card-actions>
+                                                                <v-btn color="blue darken-1" small flat
+                                                                    @click="createEmail = false">Sent</v-btn>
+                                                                <v-btn color="red" small flat
+                                                                    @click="createEmail = false">Cancel</v-btn>
+                                                            </v-card-actions> -->
+                                                        </v-card>
+                                                    </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Gọi điện</p>
+                                                    <p>SMS</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -531,7 +554,7 @@
                     <span class="headline">Lịch sử thay đổi {{actionLog.title}}</span>
                 </v-card-title>
                 <v-card-text class>
-                    <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray">
+                    <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
                         <template v-slot:items="props">
                             <td>{{ actionLog.title }}</td>
                             <td>{{ props.item.newValue }}</td>
@@ -543,6 +566,41 @@
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
                     <v-btn flat color="red" @click="actionLog.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%" >
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy thông tin chi tiết của Lead. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="actionLog.failDialog" width="60%" persistent>
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff" >
+                    <span class="headline">Lịch sử thay đổi {{actionLog.title}}</span>
+                </v-card-title>
+                <v-card-text class>
+                    <v-data-table :headers="actionLog.headers" :items="actionLog.failArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
+                        <template v-slot:items="props">
+                            <td>{{ actionLog.title }}</td>
+                            <td>{{ props.item.newValue }}</td>
+                            <td>{{ coverTimeTooltip(props.item.created_at) }}</td>
+                            <td>{{ props.item.createdBy }}</td>
+                        </template>
+                    </v-data-table>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <v-btn flat color="red" @click="actionLog.failDialog = false">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -564,6 +622,7 @@
     import newLogCall from '../components/creates/createLogCall'
     import newLogEmail from '../components/creates/createLogEmail'
     import newLogMeet from '../components/creates/createLogMeet'
+    import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
     export default {
@@ -579,8 +638,10 @@
         },
         data: () => ({
             actionLog: {
+                failDialog: false,
                 dialog: false,
                 changeArray: [],
+                failArray: [],
                 headers: [{
                     text: 'THUỘC TÍNH',
                     align: 'left',
@@ -623,6 +684,7 @@
             createLogCall: false,
             createLogEmail: false,
             createLogMeet: false,
+            createSMS: false,
             items: [{
                     title: 'Lifecycle stage',
                     description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -717,7 +779,8 @@
             detail:[],
             expandDetail: [true],
             basicInfoDialog: false,
-            allEmail: []
+            allEmail: [],
+            failDialog: false
         }),
         methods:{
             getAllEmail(){
@@ -740,12 +803,14 @@
                     objectId: this.idContact,
                     property: property
                 }
+                console.log(params)
                 contact.getActionLog(this.idAccount, params).then(result => {
                     console.log(result);
                     this.actionLog.changeArray = result.response.Detail.reverse();
                     this.actionLog.dialog = true;
                 }).catch(error => {
                     console.log(error);
+                    this.actionLog.failDialog = true;
                 })
             },
             coverTimeTooltip(time){
@@ -756,69 +821,72 @@
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
                     this.items = [{
-                        title: 'Lifecycle stage',
-                        description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
-                        value: result.response.lifecycleStage,
-                        dialog: false,
-                        property: 'lifecycleStage'
-                    },
-                    {
-                        title: 'Trạng thái',
-                        description: "The contact's sales, prospecting or outreach status",
-                        value: result.response.leadStatus,
-                        dialog: false,
-                        property: 'leadStatus'
-                    },
-                    {
-                        title: 'Thuộc sở hữu',
-                        description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
-                        value: result.response.contactOwner,
-                        dialog: false,
-                        property: 'contactOwner'
-                    },
-                    {
-                        title: 'Số điện thoại',
-                        description: "A contact's primary phone number",
-                        value: result.response.phone,
-                        dialog: false,
-                        property: 'phone'
-                    },
-                    {
-                        title: 'Email',
-                        description: "A contact's email address",
-                        value: result.response.email,
-                        dialog: false,
-                        property: 'email'
-                    },
-                    {
-                        title: 'Thời gian hoạt động gần nhất',
-                        description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                        value: result.response.lastActivityDate,
-                        dialog: false,
-                        property: 'lastActivityDate'
-                    },
-                    {
-                        title: 'Thời gian liên lạc gần nhất',
-                        description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                        value: result.response.lastContacted,
-                        dialog: false,
-                        property: 'lastContacted'
-                    },
-                    {
-                        title: 'Thành phố',
-                        description: 'Thành phố',
-                        value: result.response.city,
-                        dialog: false,
-                        property: 'city'
-                    },
-                    {
-                        title: 'Ngành nghề',
-                        description: 'phân loại ngành nghề',
-                        value: result.response.bussiness,
-                        dialog: false,
-                        property: 'bussiness'
-                    }]
+                            title: 'Lifecycle stage',
+                            description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
+                            value: result.response.lifecycleStage,
+                            dialog: false,
+                            property: 'lifecycleStage'
+                        },
+                        {
+                            title: 'Trạng thái',
+                            description: "The contact's sales, prospecting or outreach status",
+                            value: result.response.leadStatus,
+                            dialog: false,
+                            property: 'leadStatus'
+                        },
+                        {
+                            title: 'Thuộc sở hữu',
+                            description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
+                            value: result.response.contactOwner,
+                            dialog: false,
+                            property: 'contactOwner'
+                        },
+                        {
+                            title: 'Số điện thoại',
+                            description: "A contact's primary phone number",
+                            value: result.response.phone,
+                            dialog: false,
+                            property: 'phone'
+                        },
+                        {
+                            title: 'Email',
+                            description: "A contact's email address",
+                            value: result.response.email,
+                            dialog: false,
+                            property: 'email'
+                        },
+                        {
+                            title: 'Thời gian hoạt động gần nhất',
+                            description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                            value: result.response.lastActivityDate,
+                            dialog: false,
+                            property: 'lastActivityDate'
+                        },
+                        {
+                            title: 'Thời gian liên lạc gần nhất',
+                            description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                            value: result.response.lastContacted,
+                            dialog: false,
+                            property: 'lastContacted'
+                        },
+                        {
+                            title: 'Thành phố',
+                            description: 'Thành phố',
+                            value: result.response.city,
+                            dialog: false,
+                            property: 'city'
+                        },
+                        {
+                            title: 'Ngành nghề',
+                            description: 'phân loại ngành nghề',
+                            value: result.response.bussiness,
+                            dialog: false,
+                            property: 'bussiness'
+                        }]
                     // console.log(result)
+                }).catch(error => {
+                    this.failDialog = true;
+                    console.log(error);
                 })
             },
             updateContactDetail(property, value){
@@ -880,7 +948,7 @@
             newLogEmail,
             newLogCall,
             newLogMeet,
-        
+            newSMS
         }
     }
     // đã làm được phần lấy list thuộc tính
