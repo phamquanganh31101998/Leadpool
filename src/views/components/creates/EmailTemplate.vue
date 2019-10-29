@@ -228,8 +228,6 @@ export default {
             }
             let regex = /\\\"/gi
             this.htmlText = this.chosenTemplate.content;
-            console.log(this.htmlText.replace(regex, "\""))
-            // console.log(this.htmlText)
             document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
             document.getElementById("call").innerHTML = '';
         },

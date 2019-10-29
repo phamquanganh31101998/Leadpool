@@ -36,16 +36,35 @@
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn mẫu tin nhắn</strong></span>
                                 <span class="ml-4"><v-select></v-select></span>
-                                <v-textarea box disabled rows="13"></v-textarea>
+                                <p>Chiến dịch này còn {{send.remain}} tin nhắn</p>
+                                <v-textarea box disabled rows="6"></v-textarea>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-text>
+                                <span class="mt-4"><strong>Chọn danh sách gửi </strong></span>
+                                <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
+                            </v-card-text>
+                            <v-card-text>
                                 <span class="mt-4"><strong>Chọn thời gian gửi</strong></span>
-                                <span class="ml-4"><v-text-field></v-text-field></span>
+                                <span class="ml-4">
+                                    <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
+                                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field v-model="send.dateFormatted" label="Ngày hết hạn" persistent-hint prepend-icon="event"
+                                                v-on="on">
+                                            </v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="send.date" no-title @input="send.menu1 = false"></v-date-picker>
+                                    </v-menu>
+                                </span>
+                                <br>
+                                <span class="ml-4">
+                                    <v-select v-model="send.time" :items="send.timeToChoose"></v-select>
+                                </span>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-actions>
-                                <v-btn block color="primary" :disabled="send.remain < 0">Gửi ngay</v-btn>
+                                <v-btn block color="primary" :disabled="send.remain < 0" @click="getPhoneNumberToSendSMS()">Gửi ngay</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-flex>
@@ -53,11 +72,13 @@
                         <v-card>
                             <v-card-title>
                                 <v-layout row wrap>
-                                    <v-flex xs7 sm7 md7 lg7 xl7>
-                                        <h3>Đã chọn {{numberOfRecipient}} người nhận, còn {{send.remain}} tin nhắn</h3>
-                                        
-                                    </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
+                                    <!-- <v-flex xs6 sm6 md6 lg6 xl6>
+                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
+                                    </v-flex> -->
+                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
+                                    </v-flex> -->
+                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                         <v-btn color="success" @click="markAllContact()">
                                             Chọn tất cả
                                         </v-btn>
@@ -67,9 +88,9 @@
                                         <v-btn @click="unmarkAllContact()">
                                             Bỏ chọn tất cả
                                         </v-btn>
-                                    </v-flex>
+                                    </v-flex> -->
                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-alert type="error" :value="send.remain < 0">Số lượng người nhận không được lớn hơn số tin nhắn còn lại</v-alert>
+                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
                                     </v-flex>
                                 </v-layout>
                             </v-card-title>
@@ -78,28 +99,68 @@
                                 <v-data-table dense :headers="send.headers" :items="send.displayContacts" hide-actions class="elevation-1">
                                     <template v-slot:items="props">
                                         <tr>
-                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" v-model="props.item.chosen" @change="checkChosenContact(props.item.contactId, props.item.chosen)"></v-checkbox></td>
+                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                    v-model="props.item.chosen" 
+                                                    @change="getPhoneNumberToSendSMS()"
+                                                    >
+                                                    </v-checkbox></td>
                                             <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
                                             <td>{{ props.item.phone }}</td>
                                         </tr>
                                     </template>
                                 </v-data-table>
                                 <br>
-                                <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
+                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
                                 <br>
+
+                            
                             </v-card-text>
                         </v-card>
+                        <br>
+                        <v-card>
+                            <v-card-title>
+                                <v-layout row wrap>
+                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                        <h2>Chọn thêm người nhận</h2>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card-title>
+                            <v-card-text>
+                                <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                <v-data-table dense :headers="send.headers" :items="send.additionalContacts" hide-actions class="elevation-1">
+                                    <template v-slot:items="props">
+                                        <tr>
+                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                    v-model="props.item.chosen" 
+                                                    @change="getPhoneNumberToSendSMS()"
+                                                    >
+                                                    </v-checkbox></td>
+                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                            <td>{{ props.item.phone }}</td>
+                                        </tr>
+                                    </template>
+                                </v-data-table>
+                                <br>
+                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                <br>
+
+                            
+                            </v-card-text>
+                        </v-card>
+                        <br>
                     </v-flex>
                 </v-layout>
                 <v-layout row v-if="page=='saveKey'">
                     <v-flex xs3 sm3 md3 lg3 xl3>
                         <v-card>
                             <v-card-title>
-                                <h3>Quản lý chiến dịch</h3>
+                                <h2>Quản lý chiến dịch</h2>
                             </v-card-title>
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
-                                <span class="ml-4"><v-select></v-select></span>
+                                <span class="ml-4"><v-select :items="saveKey.list" v-model="saveKey.selectedCampaignId" @input="getStatisticAndHistory()"></v-select></span>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             
@@ -111,14 +172,18 @@
                                             <span class="headline">Tạo chiến dịch mới</span>
                                         </v-card-title>
                                         <v-card-text>
-                                            <span class="mt-4"><strong>Tên chiến dịch </strong></span>
-                                            <span class="ml-4"><v-text-field></v-text-field></span>
-                                            <span class="mt-4"><strong>Key </strong></span>
-                                            <span class="ml-4"><v-text-field placeholder="Nhập key"></v-text-field></span>
+                                            <v-form v-model="saveKey.createValid">
+                                                <span class="mt-4"><strong>Tên chiến dịch </strong></span>
+                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.campaign"></v-text-field></span>
+                                                <span class="mt-4"><strong>Nhập Key </strong></span>
+                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.key"></v-text-field></span>
+                                                <span class="mt-4"><strong>Nhập branch name </strong></span>
+                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.name"></v-text-field></span>
+                                            </v-form>
                                         </v-card-text>
                                         <v-divider :divider="divider"></v-divider>
                                         <v-card-actions>
-                                            <v-btn flat color="primary" @click="saveKey.createCampaign = false">Tạo</v-btn>
+                                            <v-btn flat color="primary" @click="createCampaign()" :disabled="!saveKey.createValid">Tạo</v-btn>
                                             <v-btn flat color="red" @click="saveKey.createCampaign = false">Đóng</v-btn>
                                         </v-card-actions>
                                     </v-card>
@@ -139,30 +204,21 @@
                                                 <h3>Đăng ký</h3>
                                                 <v-layout row class="mt-4">
                                                     <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.currentCampaign.total}}</div>
+                                                        {{saveKey.selectedCampaignDetail.total}}</div>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs4 class="text-center">
                                                 <h3>Còn lại</h3>
                                                 <v-layout row class="mt-4">
                                                     <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.currentCampaign.remain}}</div>
+                                                        {{saveKey.selectedCampaignDetail.remain}}</div>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs4 class="text-center">
                                                 <h3>Đã gửi</h3>
                                                 <v-layout row class="mt-4" >
                                                     <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.currentCampaign.total - saveKey.currentCampaign.remain}}</div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Lỗi</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color:#EF5350;">
-                                                        <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsSuccess = false, saveKey.showSmsError = true, saveKey.showSmsTemplate = false">
-                                                            <span style="font-size: 20px">{{saveKey.currentCampaign.fail}}</span></v-btn>
-                                                    </div>
+                                                        {{saveKey.selectedCampaignDetail.total - saveKey.selectedCampaignDetail.remain}}</div>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs4 class="text-center">
@@ -170,11 +226,20 @@
                                                 <v-layout row class="mt-4">
                                                     <div class="score" style="background-color: #00C853;">
                                                         <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsError = false, saveKey.showSmsTemplate = false, saveKey.showSmsSuccess = true">
-                                                            <span style="font-size: 20px">{{saveKey.currentCampaign.success}}</span></v-btn>
+                                                            <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.success}}</span></v-btn>
                                                     </div>
                                                 </v-layout>
                                             </v-flex>
                                             <v-flex xs4 class="text-center">
+                                                <h3>Thất bại</h3>
+                                                <v-layout row class="mt-4">
+                                                    <div class="score" style="background-color:#EF5350;">
+                                                        <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsSuccess = false, saveKey.showSmsError = true, saveKey.showSmsTemplate = false">
+                                                            <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.fail}}</span></v-btn>
+                                                    </div>
+                                                </v-layout>
+                                            </v-flex>
+                                            <!-- <v-flex xs4 class="text-center">
                                                 <h3>Template sử dụng</h3>
                                                 <v-layout row class="mt-4">
                                                     <div class="score" style="background-color: #00C853;">
@@ -182,48 +247,58 @@
                                                             <span style="font-size: 20px">{{saveKey.currentCampaign.templateUsed}}</span></v-btn>
                                                     </div>
                                                 </v-layout>
-                                            </v-flex>
+                                            </v-flex> -->
                                         </v-layout>
                                     </v-card-text>
                                 </v-card>
                             </v-flex>
                         </v-layout>
-                        <v-layout row class="mt-5" v-if="saveKey.currentCampaign.remain <= 0">
+                        <v-layout row class="mt-5" v-if="saveKey.selectedCampaignDetail.remain <= 0">
                             <v-flex xs12>
                                 <v-alert type="error">
-                                    Bạn đã dùng hết sms cần phải gia hạn thêm
+                                    Bạn đã dùng hết số lượng tin nhắn được cấp. Cần phải gia hạn thêm
                                 </v-alert>
                             </v-flex>
                         </v-layout>
-                        <v-layout class="mt-3" row v-if="saveKey.showSmsSuccess">
-                            <v-card width="100%">
-                                <v-card-title>
-                                    <p>
-                                        <v-icon class="mr-2">perm_contact_calendar</v-icon>0123456789
-                                    </p>
-                                </v-card-title>
-                                <v-card-text>
-                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: Không có lỗi
-                                    <br>
-                                    <span style="font-weight:bold">Thời gian gửi</span> 13/10/2019
-                                </v-card-text>
-                            </v-card>
-                            <br>
-                            <br>
+                        <v-layout class="mt-3" wrap v-if="saveKey.showSmsSuccess">
+                            <template v-for="sms in saveKey.selectedCampaignHistory.success">
+                                <v-flex xs12 sm12 md12 lg12 xl12 >
+                                    <v-card width="100%" height="100%">
+                                        <v-card-title>
+                                            <span style="font-weight:bold"><v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
+                                            <br>
+                                            <span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}}
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                                
+                                <br>
+                            </template>
+                            
                         </v-layout>
-                        <v-layout class="mt-3" row v-if="saveKey.showSmsError">
-                            <v-card width="100%">
-                                <v-card-title>
-                                    <p>
-                                        <v-icon class="mr-2">perm_contact_calendar</v-icon>0123456789
-                                    </p>
-                                </v-card-title>
-                                <v-card-text>
-                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: Lỗi
-                                    <p><span style="font-weight:bold">Thời gian gửi</span> 31/10/1998</p>
-                                    <p><span style="font-weight:bold">Lỗi:</span> Gửi nhầm só</p>
-                                </v-card-text>
-                            </v-card>
+                        <v-layout class="mt-3" wrap v-if="saveKey.showSmsError">
+                            <template v-for="sms in saveKey.selectedCampaignHistory.fail">
+                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <v-card width="100%" height="100%">
+                                        <v-card-title>
+                                            <span style="font-weight:bold">
+                                                <v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}
+                                            </span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
+                                            <p><span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}} </p>
+                                            <p><span style="font-weight:bold">Lỗi:</span> {{sms.statusMessage}} </p>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                                <br>
+                                <br>
+                            </template>
+                            
                         </v-layout>
                         <!-- <v-layout class="mt-3" row v-if="saveKey.showSmsTemplate">
                             <v-flex v-for="(item,key) in templateSmsShow" :key="key" class="pa-2">
@@ -246,7 +321,7 @@
                             </v-card-title>
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn mẫu </strong></span>
-                                <span class="ml-4"><v-select :disabled="template.creatingTemplate" :items="template.currentTemplates" v-model="template.selectTemplate"></v-select></span>
+                                <span class="ml-4"><v-select :disabled="template.creatingTemplate" :items="template.currentTemplates" v-model="template.selectedTemplateId" @input="setTemplateContent()"></v-select></span>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-text v-if="template.creatingTemplate"> 
@@ -265,7 +340,15 @@
                                 <h3 v-else>Nhập mẫu tin nhắn mới tại đây (không dấu)</h3>
                             </v-card-title>
                             <v-card-text>
-                                <v-textarea rows="4" box disabled v-if="!template.creatingTemplate" v-model="template.selectTemplate"></v-textarea>
+                                <template v-if="!template.creatingTemplate">
+                                    <v-textarea 
+                                        rows="4" 
+                                        box 
+                                        v-model="template.selectedTemplateContent"
+                                        onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
+                                        ></v-textarea>
+                                    <v-btn color="primary" @click="updateTemplate">Lưu lại</v-btn>
+                                </template>
                                 <template v-else>
                                     <v-textarea rows="4"
                                         counter="160"
@@ -294,7 +377,9 @@
 </template>
 <script>
 import listService from '../../services/list.services'
+import moment from 'moment'
 import contactService from '../../services/contacts.service'
+import SMSService from '../../services/sms.service'
 export default {
     props: {
         idAccount: {
@@ -303,9 +388,9 @@ export default {
         },
     },
     watch: {
-        'send.page'(){
-            this.getAllContact(this.idAccount, this.send.page);
-        },
+        // 'send.page'(){
+        //     this.getAllContact(this.idAccount, this.send.page);
+        // },
         page(){
             this.fontWeight = ['', '', ''];
             if(this.page == 'send'){
@@ -317,11 +402,45 @@ export default {
             else{
                 this.fontWeight[2] = 'fontWeight: bold';
             }
-        }
-    },
-    computed: {
-        numberOfRecipient(){
-            return this.send.chosenContacts.length;
+        },
+        'send.selectedListToSendSMS'(){
+            this.send.displayContacts = [];
+            this.send.additionalContacts = [];
+            //lấy danh sách các contact để hiển thị
+            for (let i = 0; i < this.send.list.length; i++){
+                if (this.send.selectedListToSendSMS == this.send.list[i].value){
+                    this.send.displayContacts = this.send.list[i].contact;
+                }
+            }
+            for (let i = 0; i < this.send.displayContacts.length; i++){
+                this.send.displayContacts[i].chosen = true;
+            }
+            //lấy danh sách các contact để chọn thêm
+            for (let k = 0; k < this.send.allContacts.length; k++){
+                let found = false;
+                for (let j = 0; j < this.send.displayContacts.length; j++){
+                    if(this.send.displayContacts[j].contactId == this.send.allContacts[k].contactId){
+                        found = true;
+                    }
+                }
+                if (found == false){
+                    this.send.additionalContacts.push(this.send.allContacts[k])
+                }
+            }
+            for (let i = 0; i < this.send.additionalContacts.length; i++){
+                this.send.additionalContacts[i].chosen = false;
+            }
+            this.send.additionalContacts = [...this.send.additionalContacts];
+            this.send.displayContacts = [...this.send.displayContacts]
+            this.getPhoneNumberToSendSMS()
+        },
+        'send.phoneNumberToSend.length'(){
+            if(this.send.phoneNumberToSend.length > this.send.remain){
+                this.send.exceedRecipientAlert = true;
+            }
+            else {
+                this.send.exceedRecipientAlert = false;
+            }
         }
     },
     data(){
@@ -330,87 +449,189 @@ export default {
             page: 'send',
             divider: true,
             saveKey: {
-                currentCampaign: {
-                    total: 10,
-                    remain: 7,
-                    fail: 1,
-                    success: 2,
-                    templateUsed: 1,
+                list: [],
+                selectedCampaignDetail: {
+                    total: 0,
+                    remain: 0,
+                    fail: 0,
+                    success: 0,
+                },
+                selectedCampaignId: '',
+                selectedCampaignHistory: {
+                    success: [],
+                    fail: []
                 },
                 showSmsSuccess: false,
                 showSmsError: false,
                 showSmsTemplate: false,
-                createCampaign: false
+                createCampaign: false,
+                createValid: false,
+                inputRules: [
+                    v => !!v || 'Không được để trống',
+                    // v => v.length <= 15 || 'Tên nhỏ hơn 15 kí tự',
+                ],
+                createData: {
+                    name: '',
+                    key: '',
+                    campaign: ''
+                }
             },
             template: {
-                currentTemplates: [
-                    {
-                        text: 'Mẫu 1',
-                        value: 'Hihi'
-                    },
-                    {
-                        text: 'Mẫu 2',
-                        value: 'hohohohoho'
-                    },
-                ],
+                currentTemplates: [],
                 content: '',
                 name: '',
-                selectTemplate: 'Hihi',
-                creatingTemplate: false
+                selectedTemplateContent: '',
+                selectedTemplateId: '',
+                creatingTemplate: false,
+                
             },
             send: {
                 displayContacts: [],
+                allContacts: [],
+                additionalContacts: [],
                 chosenContacts: [],
                 list: [],
-                headers: [{
-                    text: 'CHỌN',
-                    align: 'left',
-                    value: 'name'
+                selectedListWithOptions: 'all',
+                headers: [
+                    {
+                        text: 'CHỌN',
+                        align: 'left',
+                        value: 'name',
+                        sortable: false
                     },
                     {
-                    text: 'TÊN LEAD',
-                    align: 'left',
-                    value: 'calories'
+                        text: 'TÊN LEAD',
+                        align: 'left',
+                        value: 'calories',
+                        sortable: false
                     },
                     {
-                    text: 'SỐ ĐIỆN THOẠI',
-                    align: 'left',
-                    value: 'fat'
+                        text: 'SỐ ĐIỆN THOẠI',
+                        align: 'left',
+                        value: 'fat',
+                        sortable: false
                     },
                 ],
                 page: 1,
+                //lưu id của list được chọn
+                selectedListToSendSMS: 'all',
                 pages: 1,
-                remain: 10
+                remain: 10,
+                phoneNumberToSend: [],
+                numberOfRecipient: 0,
+                exceedRecipientAlert: false,
+                date: new Date().toISOString().substr(0, 10),
+                // dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+                menu1: false,
+                time: '08:00',
+                menu2: false,
+                modal2: false,
+                timeToChoose: [
+                    '00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', 
+                    '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45',
+                    '04:00', '04:15', '04:30', '04:45', '05:00', '05:15', '05:30', '05:45',
+                    '06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45',
+                    '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45',
+                    '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '11:45',
+                    '12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30', '13:45',
+                    '14:00', '14:15', '14:30', '14:45', '15:00', '15:15', '15:30', '15:45',
+                    '16:00', '16:15', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45',
+                    '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45',
+                    '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
+                    '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
+                ],
+            }
+        }
+    },
+    computed: {
+        exceedRecipientAlert(){
+            if(this.send.phoneNumberToSend.length > this.send.remain){
+                return true;
+            }
+            else {
+                return false;
             }
         }
     },
     methods: {
-        startCreatingTemplate(){
-            this.template.creatingTemplate = true;
+        coverTime(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss DD/MM/YYYY');
         },
-        createNewTemplate(){
-            let obj = {
-                text: this.template.name,
-                value: this.template.content
-            }
-            this.template.currentTemplates.push(obj);
-            this.template.selectTemplate = this.template.currentTemplates[this.template.currentTemplates.length - 1].value
-            this.template.creatingTemplate = false;
+        formatDate(date) {
+            if (!date) return null
+
+            const [year, month, day] = date.split('-')
+            return `${day}/${month}/${year}`
+        },
+        parseDate(date) {
+            if (!date) return null
+
+            const [month, day, year] = date.split('/')
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
         getList(){
             listService.getList(this.idAccount).then(result => {
-                console.log(result);
+                let res = result.response;
+                for (let i = 0; i < res.length; i++){
+                    listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
+                        let obj = {
+                            text: res[i].name,
+                            value: res[i].contactConditionGroupId
+                        }
+                        for (let k = 0; k < result.response.length; k++){
+                            result.response[k].chosen = true;
+                        }
+                        obj.contact = result.response;
+                        this.send.list.push(obj);
+                    })
+                }
+                // console.log(this.send.list);
+            }).then(() => {
+                this.getAllContact()
             })
         },
         getAllContact(){
             contactService.getAllContact(this.idAccount, this.send.page).then(result => {
-                console.log(result);
-                this.send.pages = result.response.totalPage;
-                for (let i = 0; i < result.response.results.length; i++){
-                    result.response.results[i].chosen = this.checkIncludeContact(this.send.chosenContacts, result.response.results[i].contactId);
+                for (let i = 1; i <= result.response.totalPage;i++){
+                    contactService.getAllContact(this.idAccount, i).then(result => {
+                        for(let k = 0; k < result.response.results.length; k++){
+                            result.response.results[k].chosen = true;
+                            this.send.allContacts.push(result.response.results[k]);
+                        }
+                    })
                 }
-                this.send.displayContacts = result.response.results;
+                // console.log(this.send.allContacts.length)
+                let obj = {
+                    text: 'Tất cả các Lead',
+                    value: 'all',
+                    contact: this.send.allContacts
+                }
+                
+                this.send.list.push(obj);
+                // console.log(this.send.list)
+                this.send.displayContacts = this.send.allContacts;
+                console.log(this.send.allContacts.constructor.name)
+                // this.send.allContacts.filter(e => {
+                //     console.log(e)
+                //     this.send.phoneNumberToSend.push(e.phone)
+                // })
+                for (let i = 0; i < this.send.allContacts.length; i++){
+                    // console.log(i)
+                    this.send.phoneNumberToSend.push(this.send.allContacts[i].phone)
+                }
+                // console.log(this.send.phoneNumberToSend)
+                
+                if (this.send.phoneNumberToSend.length > this.send.remain){
+                    console.log('lon hon')
+                    this.send.exceedRecipientAlert = true;
+                }
+                else {
+                    console.log('nho hon')
+                    this.send.exceedRecipientAlert = false;
+                }
             })
+            // console.log(this.send.pages);
         },
         checkIncludeContact(array, id){
             let result = false;
@@ -421,31 +642,6 @@ export default {
             }
             return result;
         },
-        checkChosenContact(id, choice){
-            if(choice == true){
-                this.send.chosenContacts.push(this.getContactById(id))
-                this.send.remain = this.send.remain - 1;
-                // else {
-                //     for (let i = 0; i < this.send.displayContacts.length; i++){
-                //         if(this.send.displayContacts[i].contactId == id){
-                //             this.send.displayContacts[i].chosen = false;
-                //         }
-                //     }
-                //     alert('Không thể chọn số lượng người nhận vượt quá số tin nhắn còn lại');
-                // }
-            }
-            else{
-                let obj = this.getContactById(id);
-                for (let i = 0; i < this.send.chosenContacts.length;i++){
-                    if(this.send.chosenContacts[i].contactId == obj.contactId){
-                        this.send.chosenContacts.splice(i, 1);
-                        this.send.remain = this.send.remain + 1;
-                    }
-                }
-            }
-            this.send.chosenContacts = [...this.send.chosenContacts];
-            console.log(this.send.chosenContacts)
-        },
         getContactById(id){
             let result = null;
             for (let i = 0; i < this.send.displayContacts.length; i++){
@@ -455,40 +651,334 @@ export default {
             }
             return result;
         },
-        markAllContact(){
-            for (let i = 0; i < this.send.displayContacts.length;i++){
-                if(this.send.displayContacts[i].chosen == false){
-                    this.send.displayContacts[i].chosen = true;
-                    this.send.remain = this.send.remain - 1;
-                    this.send.chosenContacts.push(this.send.displayContacts[i]);
-                }
-            }
-            this.send.chosenContacts = [...this.send.chosenContacts];
-            console.log(this.send.chosenContacts);
+        logging(){
+            // console.log(this.send.selectedListToSendSMS)
         },
-        unmarkAllContact(){
-            let tempArr = [];
-            for (let i = 0; i<this.send.displayContacts.length;i++){
-                if(this.send.displayContacts[i].chosen == true){
-                    this.send.displayContacts[i].chosen = false;
-                    tempArr.push(this.send.displayContacts[i])
+        //Lấy tất cả các số điện thoại từ các list đã chọn
+        
+        getPhoneNumberToSendSMS(){
+            let contactToSend = [];
+            this.send.phoneNumberToSend = []
+            let id = this.send.selectedListToSendSMS;
+            contactToSend = [...this.getChosenContactFromListByListId(id), ...this.getChosenContactFromListByListId('additional')]
+            let uniqueContact = [];
+            for (let k = 0; k < contactToSend.length;k++){
+                let found = false;
+                for (let j = 0; j < uniqueContact.length; j++){
+                    if(uniqueContact[j].contactId == contactToSend[k].contactId){
+                        found = true;
+                    }
                 }
+                if(found == false){
+                    uniqueContact.push(contactToSend[k]);
+                }
+                // if(uniqueContact.includes(contactToSend[k]) == false){
+                //     uniqueContact.push(contactToSend[k]);
+                // }
             }
-            for (let i = 0; i < this.send.chosenContacts.length; i++){
-                for (let k = 0; k < tempArr.length; k++){
-                    if (this.send.chosenContacts[i].contactId == tempArr[k].contactId){
-                        this.send.chosenContacts.splice(i, 1);
-                        this.send.remain = this.send.remain + 1;
+            // console.log(uniqueContact)
+            for (let index = 0; index < uniqueContact.length; index++){
+                this.send.phoneNumberToSend.push(uniqueContact[index].phone);
+            }
+            console.log(this.send.phoneNumberToSend);
+            this.send.numberOfRecipient = this.send.phoneNumberToSend.length;
+            //kiểm tra trùng lặp  theo số điện thoại
+            // for (let i = 0; i < contactToSend.length;i++){
+            //     this.send.phoneNumberToSend.push(contactToSend[i].phone)
+            // }
+            // this.send.phoneNumberToSend = [...new Set(this.send.phoneNumberToSend)]
+            // console.log(this.send.phoneNumberToSend)
+        },
+        //Trả lại mảng các contact được đánh dấu để gửi trong 1 list dựa vào id của list (value)
+        getChosenContactFromListByListId(id){
+            let result = []
+            let allContactArray = [];
+            //Lấy mảng tất cả các contact
+            if(id == 'additional'){
+                allContactArray = this.send.additionalContacts;
+            }
+            else {
+                for (let i = 0; i < this.send.list.length;i++){
+                    if(id == this.send.list[i].value){
+                        allContactArray = this.send.list[i].contact
                     }
                 }
             }
-            this.send.chosenContacts = [...this.send.chosenContacts];
-            console.log(this.send.chosenContacts);
+            //Lấy các contact được chọn từ mảng tất cả các contact
+            for (let i = 0; i < allContactArray.length;i++){
+                if(allContactArray[i].chosen == true){
+                    result.push(allContactArray[i]);
+                }
+            }
+            return result;
+        },
+        sendSMS(){
+
+        },
+
+        //SaveKey
+        getListDeviceKey(){
+            this.saveKey.list = [];
+            SMSService.getListDeviceKey(this.idAccount).then(result => {
+                console.log(result)
+                for (let i = 0; i < result.response.length; i++){
+                    let name = '';
+                    if (result.response[i].campaign == null){
+                        name = '*chiến dịch không có tên*' + ' (' + result.response[i].name + ')'
+                    }
+                    else{
+                        name = result.response[i].campaign + ' (' + result.response[i].name + ')'
+                    }
+                    let obj = {
+                        text: name,
+                        value: result.response[i].smsDeviceId
+                    }
+                    this.saveKey.list.push(obj)
+                }
+                this.saveKey.list = this.saveKey.list.reverse();
+                this.saveKey.selectedCampaignId = this.saveKey.list[0].value;
+                this.getStatisticAndHistory();
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+        getStatisticAndHistory(){
+            this.saveKey.selectedCampaignDetail = {
+                total: 0,
+                remain: 0,
+                fail: 0,
+                success: 0,
+            }
+            SMSService.getStatisticDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
+                console.log(result);
+                this.saveKey.selectedCampaignDetail.success = result.response.success;
+                this.saveKey.selectedCampaignDetail.fail = result.response.fail;
+            });
+            this.saveKey.selectedCampaignHistory.success = [];
+            this.saveKey.selectedCampaignHistory.fail = [];
+            SMSService.getHistoryDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
+                console.log(result);
+                result.response = result.response.reverse();
+                for (let i = 0; i < result.response.length; i++){
+                    let obj = {
+                        phoneNumber: result.response[i].phoneNumber,
+                        message: result.response[i].message,
+                        statusMessage: this.returnBug(result.response[i].status),
+                        status: result.response[i].status,
+                        time: this.coverTime(result.response[i].createdAt)
+                    }
+                    if (obj.status == 'SUCCESS'){
+                        this.saveKey.selectedCampaignHistory.success.push(obj);
+                    }
+                    else {
+                        this.saveKey.selectedCampaignHistory.fail.push(obj);
+                    }
+                }
+            })
+        },
+        createCampaign(){
+            let body = {
+                name: this.saveKey.createData.name,
+                apiKey: this.saveKey.createData.key,
+                campaign: this.saveKey.createData.campaign,
+            }
+            SMSService.createDeviceKey(this.idAccount, body).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.log(error);
+            })
+            SMSService.getListDeviceKey(this.idAccount).then(result => {
+                let data = result.response.reverse();
+                let newDeviceKey = {
+                    text: data[0].campaign + ' ' + '(' + data[0].name + ')',
+                    value: data[0].smsDeviceId
+                }
+                this.saveKey.list.unshift(newDeviceKey);
+                this.saveKey.list = [...this.saveKey.list]
+                this.saveKey.selectedCampaignId = newDeviceKey.value
+                this.saveKey.createCampaign = false;
+            }).catch(error => {
+                console.log(error);
+            })
+            
+        },
+        returnBug(data) {
+            if (data == 'SUCCESS') {
+                return "Thành công"
+            } 
+            else {
+                let a = parseInt(data)
+                switch (a) {
+                    case 356:
+                        return "Mã dịch vụ để trống"
+                        break;
+                    case 357:
+                        return "Dịch vụ không tồn tại hoặc chưa được kích hoạt"
+                        break;
+                    case 359:
+                        return "Phiên không tồn tại hoặc chưa được kích hoạt"
+                        break;
+                    case 392:
+                        return "không tìm thấy Telcos , số điện thoại bị sai"
+                        break;
+                    case 360:
+                        return "số điện thoại có trong danh sách từ chối nhận tin"
+                        break;
+                    case 393:
+                        return "sai account gửi hoặc password gửi tin"
+                        break;
+                    case 394:
+                        return "đối tác không tìm thấy với User gửi"
+                        break;
+                    case 395:
+                        return "địa chỉ IP không được đăng ký"
+                        break;
+                    case 267:
+                        return "Sai Username hoặc Password, hoặc IP không được phép gửi tin"
+                        break;
+                    case 396:
+                        return "không tìm thấy phiên dịch vụ"
+                        break;
+                    case 397:
+                        return "không tìm thấy nhà cung cấp"
+                        break;
+                    case 398:
+                        return "Không tìm thấy đối tác"
+                        break;
+                    case 399:
+                        return "MT của đối tác bị lặp"
+                        break;
+                    case 304:
+                        return "MT gửi lặp (cùng 1 nội dung gửi tới 1 số điện thoại trong thời gian ngắn)"
+                        break;
+                    case 509:
+                        return "Template IC chưa được khai báo"
+                        break;
+                    case 253:
+                        return "thêm mới vào bảng Concentrator bị sai"
+                        break;
+                    case 511:
+                        return "Chưa khai báo SessionPrefix"
+                        break;
+                }
+            }
+        },
+
+
+
+        //Template
+        startCreatingTemplate(){
+            this.template.creatingTemplate = true;
+        },
+        createNewTemplate(){
+            let obj = {
+                name: this.template.name,
+                content: this.template.content,
+                status: 'ACTIVE'
+            }
+            SMSService.createTemplate(this.idAccount, obj).then(result => {
+                console.log(result);
+                let obj = {
+                    text: result.response.name,
+                    content: result.response.content,
+                    value: result.response.smsTemplateId
+                }
+                this.template.currentTemplates.unshift(obj);
+                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                this.template.selectedTemplateId = this.template.currentTemplates[0].value;
+            }).catch(error => {
+                console.log(error);
+            })
+            this.template.creatingTemplate = false;
+        },
+        setTemplateContent(){
+            for (let i = 0; i < this.template.currentTemplates.length; i++){
+                if(this.template.selectedTemplateId == this.template.currentTemplates[i].value){
+                    this.template.selectedTemplateContent = this.template.currentTemplates[i].content
+                }
+            }
+        },
+        getTemplate(){
+            SMSService.getTemplate(this.idAccount).then(result => {
+                console.log(result);
+                for (let i = 0; i < result.response.length; i++){
+                    let obj = {
+                        text: result.response[i].name,
+                        content: result.response[i].content,
+                        value: result.response[i].smsTemplateId
+                    }
+                    this.template.currentTemplates.push(obj)
+                }
+                this.template.currentTemplates = this.template.currentTemplates.reverse();
+                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                this.template.selectedTemplateId = this.template.currentTemplates[0].value
+            })
+        },
+        updateTemplate(){
+            let body = {
+                smsTemplateId: this.template.selectedTemplateId,
+                content: this.template.selectedTemplateContent
+            }
+            SMSService.updateTemplate(this.idAccount, body).then(result => {
+                console.log(result)
+                SMSService.getTemplate(this.idAccount).then(result => {
+                    let tempArr = [];
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            text: result.response[i].name,
+                            content: result.response[i].content,
+                            value: result.response[i].smsTemplateId
+                        }
+                        tempArr.push(obj)
+                    }
+                    tempArr = tempArr.reverse()
+                    for (let i = 0; i < tempArr.length; i++){
+                        if(this.template.currentTemplates[i] != tempArr[i]){
+                            this.template.currentTemplates[i] = tempArr[i]
+                        }
+                    }
+                    this.template.currentTemplates = [...this.template.currentTemplates]
+                })
+            }).catch(error => {
+                console.log(error)
+            })
         }
+        // markAllContact(){
+        //     for (let i = 0; i < this.send.displayContacts.length;i++){
+        //         if(this.send.displayContacts[i].chosen == false){
+        //             this.send.displayContacts[i].chosen = true;
+        //             this.send.remain = this.send.remain - 1;
+        //             this.send.chosenContacts.push(this.send.displayContacts[i]);
+        //         }
+        //     }
+        //     this.send.chosenContacts = [...this.send.chosenContacts];
+        //     console.log(this.send.chosenContacts);
+        // },
+        // unmarkAllContact(){
+        //     let tempArr = [];
+        //     for (let i = 0; i<this.send.displayContacts.length;i++){
+        //         if(this.send.displayContacts[i].chosen == true){
+        //             this.send.displayContacts[i].chosen = false;
+        //             tempArr.push(this.send.displayContacts[i])
+        //         }
+        //     }
+        //     for (let i = 0; i < this.send.chosenContacts.length; i++){
+        //         for (let k = 0; k < tempArr.length; k++){
+        //             if (this.send.chosenContacts[i].contactId == tempArr[k].contactId){
+        //                 this.send.chosenContacts.splice(i, 1);
+        //                 this.send.remain = this.send.remain + 1;
+        //             }
+        //         }
+        //     }
+        //     this.send.chosenContacts = [...this.send.chosenContacts];
+        //     console.log(this.send.chosenContacts);
+        // }
     },
     created(){
         this.getList();
-        this.getAllContact();
+        this.getTemplate();
+        this.getListDeviceKey();
+        // this.getAllContact();
     }
 }
 </script>

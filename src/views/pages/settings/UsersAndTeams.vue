@@ -19,6 +19,11 @@
                             Người dùng và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="goToAccountSettingPage()">
+                        <v-list-tile-content>
+                            Quản lý tổ chức
+                        </v-list-tile-content>
+                    </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs9 sm9 md9 lg9 xl9>
@@ -29,7 +34,7 @@
                 <br>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Không có quyền xem danh sách các người dùng">
+                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
                             <template v-slot:items="props">
                                 <td><a style="color: blue;" @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
                                 <td>{{ props.item.userEmail }}</td>
@@ -409,7 +414,6 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            console.log(this.currentUser)
             for(let i = 0; i < this.currentUser.authorities.length;i++){
                 if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT'){
                     this.enableSetting = true;
@@ -448,8 +452,13 @@ export default {
                 console.log(error)
             })
             this.permissionsDialog = false;
+        },
+        goToAccountSettingPage(){
+            let link = `/settings/${this.currentUser.accountId}/manageaccount`;
+            this.$router.push(link);
         }
     },
+    
     created(){
         this.getCurrentUser();
         this.findUserByAccount()

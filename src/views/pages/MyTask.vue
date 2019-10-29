@@ -29,12 +29,12 @@
                             Hết hạn trong tuần này
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="type = changeStyleBeforeGetTask(2)">
+                    <v-list-tile @click="changeStyleBeforeGetTask(2)">
                         <v-list-tile-content :style="fontWeight[2]">
                             Quá hạn
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="status = changeStyleBeforeGetTask(3)">
+                    <v-list-tile @click="changeStyleBeforeGetTask(3)">
                         <v-list-tile-content :style="fontWeight[3]">
                             Đã hoàn thành
                         </v-list-tile-content>
