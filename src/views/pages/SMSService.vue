@@ -12,15 +12,14 @@
                     <v-list-tile @click="page='send'">
                         <v-list-tile-content :style="fontWeight[0]">Gửi tin nhắn</v-list-tile-content>
                     </v-list-tile>
-                </v-list>
-                <v-list>
                     <v-list-tile @click="page='saveKey'">
                         <v-list-tile-content :style="fontWeight[1]">Quản lý chiến dịch</v-list-tile-content>
                     </v-list-tile>
-                </v-list>
-                <v-list>
                     <v-list-tile @click="page='template'">
                         <v-list-tile-content :style="fontWeight[2]">Mẫu tin nhắn</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="page='schedule'">
+                        <v-list-tile-content :style="fontWeight[3]">Scheduled message</v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
@@ -29,28 +28,28 @@
                     <v-flex xs3 sm3 md3 lg3 xl3 style="height: 100%">
                         <v-card >
                             <v-card-text>
-                                <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
-                                <span class="ml-4"><v-select></v-select></span>
+                                <span class="mt-4"><strong><h2>Chọn chiến dịch</h2> </strong></span>
+                                <span class="ml-4"><v-select :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-text>
-                                <span class="mt-4"><strong>Chọn mẫu tin nhắn</strong></span>
-                                <span class="ml-4"><v-select></v-select></span>
+                                <span class="mt-4"><strong><h2>Chọn mẫu tin nhắn</h2></strong></span>
+                                <span class="ml-4"><v-select :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
                                 <p>Chiến dịch này còn {{send.remain}} tin nhắn</p>
-                                <v-textarea box disabled rows="6"></v-textarea>
+                                <v-textarea box readonly rows="6" v-model="send.chosenContent"></v-textarea>
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-text>
-                                <span class="mt-4"><strong>Chọn danh sách gửi </strong></span>
+                                <span class="mt-4"><strong><h2>Chọn danh sách gửi</h2> </strong></span>
                                 <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
                             </v-card-text>
                             <v-card-text>
-                                <span class="mt-4"><strong>Chọn thời gian gửi</strong></span>
+                                <span class="mt-4"><strong><h2>Đặt lịch gửi</h2></strong></span>
                                 <span class="ml-4">
                                     <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                         <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="send.dateFormatted" label="Ngày hết hạn" persistent-hint prepend-icon="event"
+                                            <v-text-field v-model="send.date"  persistent-hint prepend-icon="event"
                                                 v-on="on">
                                             </v-text-field>
                                         </template>
@@ -64,14 +63,17 @@
                             </v-card-text>
                             <v-divider :divider="divider"></v-divider>
                             <v-card-actions>
-                                <v-btn block color="primary" :disabled="send.remain < 0" @click="getPhoneNumberToSendSMS()">Gửi ngay</v-btn>
+                                <v-btn block color="primary" :disabled="send.remain < 0" @click="sendSMS()">Gửi ngay</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card>
+                        <v-card flat>
                             <v-card-title>
                                 <v-layout row wrap>
+                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                        <h2>Danh sách</h2>
+                                    </v-flex>
                                     <!-- <v-flex xs6 sm6 md6 lg6 xl6>
                                         <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
                                     </v-flex> -->
@@ -118,7 +120,7 @@
                             </v-card-text>
                         </v-card>
                         <br>
-                        <v-card>
+                        <v-card v-if="send.additionalContacts.length > 0" flat>
                             <v-card-title>
                                 <v-layout row wrap>
                                     <v-flex xs6 sm6 md6 lg6 xl6>
@@ -317,7 +319,7 @@
                     <v-flex xs3 sm3 md3 lg3 xl3>
                         <v-card>
                             <v-card-title>
-                                <h3>Mẫu tin nhắn</h3>
+                                <h2>Mẫu tin nhắn</h2>
                             </v-card-title>
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn mẫu </strong></span>
@@ -336,26 +338,61 @@
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
                         <v-card>
                             <v-card-title>
-                                <h3 v-if="!template.creatingTemplate">Nội dung tin nhắn</h3>
-                                <h3 v-else>Nhập mẫu tin nhắn mới tại đây (không dấu)</h3>
+                                <h2 v-if="!template.creatingTemplate">Nội dung tin nhắn</h2>
+                                <h2 v-else>Tạo mẫu tin nhắn mới</h2>
                             </v-card-title>
                             <v-card-text>
                                 <template v-if="!template.creatingTemplate">
-                                    <v-textarea 
-                                        rows="4" 
-                                        box 
-                                        v-model="template.selectedTemplateContent"
-                                        onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
-                                        ></v-textarea>
-                                    <v-btn color="primary" @click="updateTemplate">Lưu lại</v-btn>
+                                    <v-layout>
+                                        <v-flex xs5 sm5 md5 lg5 xl5>
+                                            <v-textarea 
+                                                label="Chỉnh sửa mẫu tin nhắn tại đây"
+                                                rows="8" 
+                                                box 
+                                                counter="160"
+                                                maxlength="160"
+                                                v-model="template.selectedTemplateContent"
+                                                @focus="template.updateTemplateView = true"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex xs5 sm5 md5 lg5 xl5 offset-xs1 offset-sm1 offset-md1 offset-xl1 offset-lg1 v-if="template.updateTemplateView">
+                                            <v-textarea 
+                                                box
+                                                label="Nội dung hiển thị (không dấu)"
+                                                rows="8" 
+                                                readonly
+                                                :value="normalText(template.selectedTemplateContent)"
+                                            ></v-textarea>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-btn color="primary" @click="updateTemplate" :disabled="template.selectedTemplateContent.length > 160">Lưu lại</v-btn>
                                 </template>
                                 <template v-else>
-                                    <v-textarea rows="4"
-                                        counter="160"
-                                        v-model="template.content"
-                                        onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 32)"
-                                    ></v-textarea>
-                                     <v-alert
+                                    <v-layout>
+                                        <v-flex xs5 sm5 md5 lg5 xl5>
+                                            <v-textarea rows="8"
+                                                label="Nhập mẫu tin nhắn mới tại đây"
+                                                counter="160"
+                                                maxlength="160"
+                                                box
+                                                v-model="template.content"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex xs5 sm5 md5 lg5 xl5 offset-xs1 offset-sm1 offset-md1 offset-xl1 offset-lg1>
+                                            <v-textarea rows="8"
+                                                label="Nội dung hiển thị"
+                                                disabled
+                                                counter="160"
+                                                box
+                                                maxlength="160"
+                                                :value="normalText(template.content)"
+                                            ></v-textarea>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-btn v-if="template.creatingTemplate" :disabled="template.content == '' || template.content.length > 160" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
+                                    <v-btn v-if="template.creatingTemplate" color="grey" dark @click="template.creatingTemplate = false">Quay lại</v-btn>
+                                    
+                                    <v-alert
                                         :value="template.content.length > 160"
                                         type="error"
                                         >
@@ -365,11 +402,65 @@
                                 
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn v-if="template.creatingTemplate" :disabled="template.content == '' || template.content.length > 160" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
-                                <v-btn v-if="template.creatingTemplate" color="red" dark @click="template.creatingTemplate = false">Quay lại</v-btn>
+                                
                             </v-card-actions>
                         </v-card>
                     </v-flex>
+                </v-layout>
+                <v-layout row v-if="page=='schedule'">
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-data-table :headers="schedule.headers" :items="schedule.list">
+                            <template v-slot:items="props">
+                                <tr>
+                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                    <td>{{ props.item.campaign}}</td>
+                                    <td>{{ props.item.time }} </td>
+                                    <td>{{ props.item.status }}</td>
+                                    <!-- <v-menu :close-on-content-click="false" right offset-x style="background-color: white">
+                                        <template v-slot:activator="{ on }">
+                                            
+                                            <td>
+                                                <a color="indigo" v-on="on">
+                                                    {{ props.item.status }}
+                                                </a>
+                                            </td>
+                                            
+                                        </template>
+                                        <v-select  style="background-color: white; width: 120px; padding: 0px 10px;" v-model="props.item.status" :items="['ACTIVE', 'INACTIVE']" @change="changeScheduleStatus(props.item.number, props.item.status)" ></v-select>
+                                    </v-menu> -->
+                                    <td><a @click.stop="openScheduleDetailDialog(props.item.number)"> Xem chi tiết >> </a></td>
+                                    <td v-if="props.item.status == 'ACTIVE'"><v-btn color="red" outline round @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">Tạm dừng gửi</v-btn></td>
+                                    <td v-if="props.item.status == 'INACTIVE'"><v-btn color="primary" outline round @click="changeScheduleStatus(props.item.number, 'ACTIVE'), props.item.status = 'ACTIVE'">Tiếp tục gửi</v-btn></td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-flex>
+                    <v-dialog v-model="schedule.detail.dialog" width="40%" persistent>
+                        <v-card>
+                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                <span class="headline">Chi tiết</span>
+                            </v-card-title>
+                            <v-card-text>
+                                <p>Nội dung gửi: </p>
+                                <v-textarea v-model="schedule.detail.content" readonly rows="2" box></v-textarea>
+                                <br>
+                                <v-data-table hide-actions :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
+                                    <template v-slot:items="props">
+                                        <tr>
+                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                            <td>{{ props.item.phoneNumber}}</td>
+                                            <td>{{ coverTime(props.item.timeToSend) }} </td>
+                                            <td>{{ props.item.status }}</td>
+                                        </tr>
+                                    </template>
+                                </v-data-table>
+                            </v-card-text>
+                            <v-divider :divider="divider"></v-divider>
+                            <v-card-actions>
+                                <v-btn flat color="red" @click="schedule.detail.dialog = false">Đóng</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -392,15 +483,18 @@ export default {
         //     this.getAllContact(this.idAccount, this.send.page);
         // },
         page(){
-            this.fontWeight = ['', '', ''];
+            this.fontWeight = ['', '', '', ''];
             if(this.page == 'send'){
                 this.fontWeight[0] = 'fontWeight: bold';
             }
             else if (this.page == 'saveKey'){
                 this.fontWeight[1] = 'fontWeight: bold';
             }
-            else{
+            else if (this.page == 'template'){
                 this.fontWeight[2] = 'fontWeight: bold';
+            }
+            else {
+                this.fontWeight[3] = 'fontWeight: bold';
             }
         },
         'send.selectedListToSendSMS'(){
@@ -441,11 +535,18 @@ export default {
             else {
                 this.send.exceedRecipientAlert = false;
             }
+        },
+        'send.chosenContentId'(){
+            for (let i = 0; i < this.template.currentTemplates.length; i++){
+                if(this.send.chosenContentId == this.template.currentTemplates[i].value){
+                    this.send.chosenContent = this.template.currentTemplates[i].content;
+                } 
+            }
         }
     },
     data(){
         return {
-            fontWeight: ['fontWeight: bold', '', ''],
+            fontWeight: ['fontWeight: bold', '', '', ''],
             page: 'send',
             divider: true,
             saveKey: {
@@ -482,6 +583,7 @@ export default {
                 name: '',
                 selectedTemplateContent: '',
                 selectedTemplateId: '',
+                updateTemplateView: false,
                 creatingTemplate: false,
                 
             },
@@ -490,6 +592,9 @@ export default {
                 allContacts: [],
                 additionalContacts: [],
                 chosenContacts: [],
+                chosenCampaign: '',
+                chosenContentId: '',
+                chosenContent: '',
                 list: [],
                 selectedListWithOptions: 'all',
                 headers: [
@@ -514,7 +619,7 @@ export default {
                 ],
                 page: 1,
                 //lưu id của list được chọn
-                selectedListToSendSMS: 'all',
+                selectedListToSendSMS: '',
                 pages: 1,
                 remain: 10,
                 phoneNumberToSend: [],
@@ -522,6 +627,7 @@ export default {
                 exceedRecipientAlert: false,
                 date: new Date().toISOString().substr(0, 10),
                 // dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+                dateFormatted: '',
                 menu1: false,
                 time: '08:00',
                 menu2: false,
@@ -540,6 +646,66 @@ export default {
                     '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
                 ],
+            },
+            schedule: {
+                headers: [
+                    {
+                        text: 'TÊN CHIẾN DỊCH',
+                        align: 'left',
+                        value: 'name',
+                        sortable: false
+                    },
+                    {
+                        text: 'THỜI GIAN GỬI',
+                        align: 'left',
+                        value: 'calories',
+                        sortable: false
+                    },
+                    {
+                        text: 'TRẠNG THÁI',
+                        align: 'left',
+                        value: 'fat',
+                        sortable: false
+                    },
+                    {
+                        text: 'CHI TIẾT',
+                        align: 'left',
+                        value: 'fat',
+                        sortable: false
+                    },
+                    {
+                        text: 'HÀNH ĐỘNG',
+                        align: 'left',
+                        value: 'fat',
+                        sortable: false
+                    }
+                ],
+                list: [],
+                detail: {
+                    dialog: false,
+                    content: '',
+                    headers: [
+                        {
+                            text: 'SỐ ĐIỆN THOẠI',
+                            align: 'left',
+                            value: 'name',
+                            sortable: false
+                        },
+                        {
+                            text: 'NGÀY NHẬN',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'TRẠNG THÁI',
+                            align: 'left',
+                            value: 'fat',
+                            sortable: false
+                        },
+                    ],
+                    listPhone: []
+                }
             }
         }
     },
@@ -554,9 +720,20 @@ export default {
         }
     },
     methods: {
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
         coverTime(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss DD/MM/YYYY');
+        },
+        coverTime2(time){
+            if (_.isNull(time)) return '';
+            return moment(time).subtract(7, 'hours').format('HH:mm:ss DD/MM/YYYY');
+        },
+        coverTimeToSend(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('YYYY-MM-DDTHH:mm:ss');
         },
         formatDate(date) {
             if (!date) return null
@@ -608,28 +785,27 @@ export default {
                     contact: this.send.allContacts
                 }
                 
-                this.send.list.push(obj);
+                this.send.list.unshift(obj);
                 // console.log(this.send.list)
-                this.send.displayContacts = this.send.allContacts;
-                console.log(this.send.allContacts.constructor.name)
+                // this.send.displayContacts = this.send.allContacts;
                 // this.send.allContacts.filter(e => {
                 //     console.log(e)
                 //     this.send.phoneNumberToSend.push(e.phone)
                 // })
-                for (let i = 0; i < this.send.allContacts.length; i++){
-                    // console.log(i)
-                    this.send.phoneNumberToSend.push(this.send.allContacts[i].phone)
-                }
-                // console.log(this.send.phoneNumberToSend)
+                // for (let i = 0; i < this.send.allContacts.length; i++){
+                //     // console.log(i)
+                //     this.send.phoneNumberToSend.push(this.send.allContacts[i].phone)
+                // }
+                // // console.log(this.send.phoneNumberToSend)
                 
-                if (this.send.phoneNumberToSend.length > this.send.remain){
-                    console.log('lon hon')
-                    this.send.exceedRecipientAlert = true;
-                }
-                else {
-                    console.log('nho hon')
-                    this.send.exceedRecipientAlert = false;
-                }
+                // if (this.send.phoneNumberToSend.length > this.send.remain){
+                //     console.log('lon hon')
+                //     this.send.exceedRecipientAlert = true;
+                // }
+                // else {
+                //     console.log('nho hon')
+                //     this.send.exceedRecipientAlert = false;
+                // }
             })
             // console.log(this.send.pages);
         },
@@ -653,6 +829,8 @@ export default {
         },
         logging(){
             // console.log(this.send.selectedListToSendSMS)
+            console.log(this.send.chosenCampaign)
+            console.log(this.send.chosenContentId);
         },
         //Lấy tất cả các số điện thoại từ các list đã chọn
         
@@ -713,7 +891,35 @@ export default {
             return result;
         },
         sendSMS(){
-
+            // console.log(this.send.chosenCampaign)
+            // console.log(this.send.chosenContent)
+            // console.log(this.send.date);
+            // console.log(this.send.time);
+            // console.log(this.send.phoneNumberToSend)
+            let timeToSend = moment(this.send.date + ' ' + this.send.time);
+            // console.log(this.coverTimeToSend(timeToSend.subtract(7, 'hours')));
+            let listPhone = [];
+            for (let i = 0; i < this.send.phoneNumberToSend.length;i++){
+                let obj = {
+                    phoneNumber: this.send.phoneNumberToSend[i]
+                }
+                listPhone.push(obj)
+            }
+            let body = {
+                device: {
+                    smsDeviceId: this.send.chosenCampaign
+                },
+                content: this.send.chosenContent,
+                timeToSend: this.coverTimeToSend(timeToSend.subtract(7, 'hours')),
+                listPhone: listPhone
+            }
+            SMSService.createSchedule(this.idAccount, body).then(result => {
+                console.log(result);
+                this.getSchedule();
+                this.page = 'schedule'
+            }).catch(error => {
+                console.log(error)
+            })
         },
 
         //SaveKey
@@ -873,7 +1079,7 @@ export default {
         createNewTemplate(){
             let obj = {
                 name: this.template.name,
-                content: this.template.content,
+                content: this.normalText(this.template.content),
                 status: 'ACTIVE'
             }
             SMSService.createTemplate(this.idAccount, obj).then(result => {
@@ -915,9 +1121,10 @@ export default {
             })
         },
         updateTemplate(){
+            this.template.selectedTemplateContent = this.normalText(this.template.selectedTemplateContent)
             let body = {
                 smsTemplateId: this.template.selectedTemplateId,
-                content: this.template.selectedTemplateContent
+                content: this.normalText(this.template.selectedTemplateContent)
             }
             SMSService.updateTemplate(this.idAccount, body).then(result => {
                 console.log(result)
@@ -938,10 +1145,121 @@ export default {
                         }
                     }
                     this.template.currentTemplates = [...this.template.currentTemplates]
+                    
+                    this.template.updateTemplateView = false;
                 })
             }).catch(error => {
                 console.log(error)
             })
+        },
+
+        //Schedule
+        getSchedule(){
+            this.schedule.list = [];
+            SMSService.getSchedule(this.idAccount).then(result => {
+                console.log(result);
+                let data = result.response;
+                for (let i = 0; i < data.length; i++){
+                    let name = '';
+                    if (data[i].device.campaign == null){
+                        name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+                    }
+                    else{
+                        name = data[i].device.campaign + ' (' + data[i].device.name + ')'
+                    }
+                    let obj = {
+                        content: data[i].content,
+                        campaign: name,
+                        time: this.coverTime(data[i].timeToSend),
+                        status: data[i].status,
+                        listPhone: data[i].listPhone,
+                        number: i,
+                        id: data[i].smsScheduleId
+                    }
+                    this.schedule.list.push(obj);
+                }
+            })
+        },
+        openScheduleDetailDialog(number){
+            // SMSService.getSchedule(this.idAccount).then(result => {
+            //     console.log(result);
+            //     let tempArr = []
+            //     let data = result.response;
+            //     for (let i = 0; i < data.length; i++){
+            //         let name = '';
+            //         if (data[i].device.campaign == null){
+            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+            //         }
+            //         else{
+            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
+            //         }
+            //         let obj = {
+            //             content: data[i].content,
+            //             campaign: name,
+            //             time: this.coverTime(data[i].timeToSend),
+            //             status: data[i].status,
+            //             listPhone: data[i].listPhone,
+            //             number: i,
+            //             id: data[i].smsScheduleId
+            //         }
+            //         tempArr.push(obj);
+            //     }
+            //     this.schedule.list = [...tempArr]
+            // })
+            
+            let obj = this.schedule.list[number];
+            this.schedule.detail.content = obj.content;
+            this.schedule.detail.listPhone = obj.listPhone;
+            this.schedule.detail.dialog = true;
+        },
+        changeScheduleStatus(number, status){
+            let obj = this.schedule.list[number];
+            let id = obj.id;
+            if (status == 'ACTIVE'){
+                SMSService.activateSchedule(this.idAccount, id).then(result => {
+                    console.log(result);
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+            else {
+                SMSService.deactivateSchedule(this.idAccount, id).then(result => {
+                    console.log(result);
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+            // SMSService.getSchedule(this.idAccount).then(result => {
+            //     console.log(result);
+            //     let tempArr = [];
+            //     let data = result.response;
+            //     for (let i = 0; i < data.length; i++){
+            //         let name = '';
+            //         if (data[i].device.campaign == null){
+            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+            //         }
+            //         else{
+            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
+            //         }
+            //         let obj = {
+            //             content: data[i].content,
+            //             campaign: name,
+            //             time: this.coverTime2(data[i].timeToSend),
+            //             status: data[i].status,
+            //             listPhone: data[i].listPhone,
+            //             number: i,
+            //             id: data[i].smsScheduleId
+            //         }
+            //         tempArr.push(obj);
+            //     }
+            //     // for(let i = 0; i < tempArr.length; i++){
+            //     //     if (this.schedule.list[i] != tempArr[i]){
+            //     //         this.schedule.list[i] = tempArr[i];
+            //     //     }
+            //     // }
+                
+            //     this.schedule.list = [...tempArr];
+            // })
         }
         // markAllContact(){
         //     for (let i = 0; i < this.send.displayContacts.length;i++){
@@ -979,6 +1297,8 @@ export default {
         this.getTemplate();
         this.getListDeviceKey();
         // this.getAllContact();
+        this.getSchedule();
+        this.send.dateFormatted = this.formatDate(new Date().toISOString().substr(0, 10))
     }
 }
 </script>

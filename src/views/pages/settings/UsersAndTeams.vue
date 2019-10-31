@@ -1,13 +1,13 @@
 <template>
     <v-content>
-        <v-layout row wrap class="mt-5 pl-5 pr-5">
+        <v-layout row wrap class="mt-5 pl-2 pr-5">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <h1 class="ml-3">Cài đặt</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row wrap class="mt-5 pl-5 pr-5">
-            <v-flex xs3 sm3 md3 lg3 xl3>
+        <v-layout row wrap class="mt-5 pl-2 pr-5">
+            <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <!-- <v-list-tile>
                         <v-list-tile-content>
@@ -21,24 +21,44 @@
                     </v-list-tile>
                     <v-list-tile @click="goToAccountSettingPage()">
                         <v-list-tile-content>
-                            Quản lý tổ chức
+                            Quản lý hệ thống
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
-            <v-flex xs9 sm9 md9 lg9 xl9>
+            <v-flex xs10 sm10 md10 lg10 xl10>
                 <h1>Người dùng và nhóm</h1>
                 <br>
                     Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
                 <br>
                 <br>
+                <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
+                    <v-card>
+                        <v-card-title style="background-color:#1E88E5;color:#fff">
+                            <span class="headline">Thêm người vào tổ chức</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <span class="mt-4"><strong>Nhập email </strong></span>
+                            <v-form v-model="inviteUser.valid">
+                                <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
+                            </v-form>
+                        </v-card-text>
+                        <v-divider :divider="divider"></v-divider>
+                        <v-card-actions>
+                            <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                            <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
                             <template v-slot:items="props">
-                                <td><a style="color: blue;" @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
+                                <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
                                 <td>{{ props.item.role }}</td>
+                                <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -186,10 +206,38 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Bạn phải là Admin và có quyền chỉnh sửa người dùng mới có thể xem trang này.
+                    Lỗi
                 </v-card-text>
                 <v-card-actions>
                 <v-btn flat color="red" @click="forbiddenDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="inviteUser.success" @click:outside="inviteUser.success = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="green">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã gửi email xác nhận gia nhập tổ chức thành công. Hãy đợi họ xác nhận...
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="green" @click="inviteUser.success = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="inviteUser.fail" @click:outside="inviteUser.fail = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Có lỗi xảy ra khi thêm người dùng. Hãy thử lại
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="inviteUser.fail = false">OK</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -197,6 +245,7 @@
 </template>
 <script>
 import permissionsService from '../../../services/permissions.service'
+import accountService from '../../../services/accountsetting.service'
 export default {
     props: {
         idAccount: {
@@ -213,19 +262,25 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'email'
                 },
                 {
                     text: 'QUYỀN',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
+                    value: 'role'
+                },
+                {
+                    text: 'THIẾT LẬP QUYỀN',
+                    align: 'left',
+                    sortable: false,
                     value: 'role'
                 },
             ],
@@ -279,10 +334,35 @@ export default {
             PartitionByTeams: false,
             EditAccountDefaults: false,
             currentUser: null,
-            enableSetting: false
+            enableSetting: false,
+            inviteUser: {
+                dialog: false,
+                email: '',
+                emailRules: [
+                    v => !!v || 'Chưa nhập E-mail',
+                    v => /.+@.+/.test(v) || 'E-mail không đúng định dạng',
+                ],
+                valid: false,
+                success: false,
+                fail: false
+            }
         }
     },
     methods: {
+        inviteUserToAccount(){
+            let body = {
+                email: this.inviteUser.email
+            }
+            accountService.inviteUser(this.idAccount, body).then(result => {
+                console.log(result);
+                this.inviteUser.success = true;
+            }).catch(error => {
+                console.log(error);
+                this.inviteUser.fail = true;
+            }).finally(() => {
+                this.inviteUser.dialog = false;
+            })
+        },
         findUserByAccount(){
             permissionsService.findUserByAccount(this.idAccount).then(result => {
                 // console.log(result);
