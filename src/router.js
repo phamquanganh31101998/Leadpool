@@ -10,9 +10,12 @@ import NewList from './views/pages/lists/NewList.vue'
 import ListDetail from './views/pages/lists/ListDetail.vue'
 import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
+import AccountSetting from './views/pages/settings/AccountSetting.vue'
 import Setting from './views/pages/settings/SettingNavBar.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
 import SMSService from './views/pages/SMSService.vue'
+import SMSTest from './views/pages/SMSTest.vue'
+import EmailService from './views/pages/EmailService.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -92,9 +95,21 @@ const router = new Router({
             },
           },
           {
-            path: '/settings/:idAccount',
-            name: 'settings',
+            path: '/settings/:idAccount/userandteam',
+            name: 'userandteamsettings',
             component: UsersAndTeamsSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/settings/:idAccount/manageaccount',
+            name: 'manageaccount',
+            component: AccountSetting,
             props(route) {
                 const props = {
                     ...route.params
@@ -131,6 +146,30 @@ const router = new Router({
             path: '/contacts/:idAccount/smsservice',
             name: 'smsservice',
             component: SMSService,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/smstest',
+            name: 'smstest',
+            component: SMSTest,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/emailservice',
+            name: 'emailservice',
+            component: EmailService,
             props(route) {
                 const props = {
                     ...route.params

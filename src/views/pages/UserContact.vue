@@ -335,6 +335,7 @@
                                                             </template>
                                                             <template v-else>
                                                                 <v-text-field :label="item.title" v-model="item.value" filled
+                                                                v-if="item.title != 'Thời gian hoạt động gần nhất' && item.title != 'Thời gian liên lạc gần nhất'"
                                                                 :disabled = "item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
                                                                 :box="item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
                                                                 @change="updateContactDetail(item.property, item.value)">

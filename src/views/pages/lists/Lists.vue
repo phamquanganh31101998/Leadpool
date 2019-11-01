@@ -76,7 +76,8 @@ export default {
             lists: [],
             listDetail: false,
             currentUser: null,
-            failDialog: false
+            failDialog: false,
+            divider: true
         }
     },
     methods: {

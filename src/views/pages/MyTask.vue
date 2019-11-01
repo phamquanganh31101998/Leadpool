@@ -1,8 +1,8 @@
 <template>
-    <v-content class="mt-5 pl-3 pr-3">
+    <v-content class="mt-5 pl-2 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Công việc</h1>
+                <h1 class="ml-2">Công việc</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -29,12 +29,12 @@
                             Hết hạn trong tuần này
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="type = changeStyleBeforeGetTask(2)">
+                    <v-list-tile @click="changeStyleBeforeGetTask(2)">
                         <v-list-tile-content :style="fontWeight[2]">
                             Quá hạn
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="status = changeStyleBeforeGetTask(3)">
+                    <v-list-tile @click="changeStyleBeforeGetTask(3)">
                         <v-list-tile-content :style="fontWeight[3]">
                             Đã hoàn thành
                         </v-list-tile-content>
@@ -65,9 +65,12 @@
                                         <span>Đánh dấu chưa hoàn thành</span>
                                     </v-tooltip>
                                 </td>
-                                <td><a @click.stop="getTaskById(props.item.taskId)">{{ props.item.title }}</a></td>
+                                <td>{{ props.item.title }}</td>
                                 <td>{{ props.item.type }}</td>
                                 <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
+                                <td>
+                                    <v-btn color="primary" round outline flat @click.stop="getTaskById(props.item.taskId)">Xem chi tiết</v-btn>
+                                </td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -290,7 +293,7 @@
                         <br>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
                             <v-layout wrap>
-                                <v-btn color="blue darken-1" small flat @click="viewTask.dialog = false">Đóng</v-btn>
+                                <v-btn color="red" small flat @click="viewTask.dialog = false">Đóng</v-btn>
                             </v-layout>
                         </v-flex>
                     </v-layout>
@@ -371,26 +374,32 @@ export default {
                 {
                     text: 'TRẠNG THÁI',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'status'
                 },
                 {
                     text: 'TÊN CÔNG VIỆC',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'title'
                 },
                 {
                     text: 'KIỂU',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'type'
                 },
                 {
                     text: 'HẠN CUỐI',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'dueDate'
+                },
+                {
+                    text: 'XEM CHI TIẾT',
+                    align: 'left',
+                    sortable: false,
+                    value: 'detail'
                 },
             ],
             tasks: [],

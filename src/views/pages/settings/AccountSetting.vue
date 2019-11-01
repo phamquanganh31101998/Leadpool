@@ -14,59 +14,122 @@
                             Sales
                         </v-list-tile-content>
                     </v-list-tile> -->
-                    <v-list-tile>
-                        <v-list-tile-content style="font-weight: bold;">
+                    <v-list-tile @click="goToUserAndTeamSettingPage()">
+                        <v-list-tile-content>
                             Người dùng và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
-                        <v-list-tile-content>
+                    <v-list-tile>
+                        <v-list-tile-content style="font-weight: bold;">
                             Quản lý hệ thống
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10>
-                <h1>Người dùng và nhóm</h1>
+                <h1>Quản lý toàn bộ hệ thống </h1>
                 <br>
-                    Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
-                <br>
-                <br>
-                <v-layout>
-                    <v-flex xs8 sm8 md8 lg8 xl8>
-                        <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                <v-layout row wrap>
+                    <v-flex xs3 sm3 md3 lg3 xl3>
+                        <v-select label="Chọn tổ chức" :items="listAccount" v-model="currentAccountId" @change="findUserByAccount()"></v-select>
                     </v-flex>
-                    <v-flex xs4 sm4 md4 lg4 xl4>
-                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản người dùng theo tên" single-line hide-details></v-text-field>
+                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-btn color="red" dark round @click="confirmDeleteDialog = true">Xóa tổ chức này</v-btn>
+                        <v-dialog v-model="confirmDeleteDialog" @click:outside="confirmDeleteDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+                            <v-card tile>
+                                <v-toolbar card dark color="red">
+                                    <v-toolbar-title>Xác nhận xóa</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                </v-toolbar>
+                                <v-card-text>
+                                    Bạn có chắc chắn muốn đánh dấu tổ chức này là xóa?
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn flat color="red" @click="deleteAccount()">XÓA</v-btn>
+                                    <v-btn flat color="primary" @click="confirmDeleteDialog = false">Đóng</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-flex>
+                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn>
+                        <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
+                            <v-card>
+                                <v-card-title style="background-color:#1E88E5;color:#fff">
+                                    <span class="headline">Thêm người vào tổ chức</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <span class="mt-4"><strong>Nhập email </strong></span>
+                                    <v-form v-model="inviteUser.valid">
+                                        <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
+                                    </v-form>
+                                </v-card-text>
+                                <v-divider :divider="divider"></v-divider>
+                                <v-card-actions>
+                                    <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                                    <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-flex>
+                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs2 offset-sm2 offset-md2 offset-lg2 offset-xl2>
+                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức</v-btn>
+                        <v-dialog v-model="createAccountDialog" width="30%" persistent>
+                            <v-card>
+                                <v-card-title style="background-color:#1E88E5;color:#fff">
+                                    <span class="headline">Tạo tổ chức mới</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <span class="mt-4"><strong>Tên chiến dịch </strong></span>
+                                    <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
+                                </v-card-text>
+                                <v-divider :divider="divider"></v-divider>
+                                <v-card-actions>
+                                    <v-btn flat color="primary" @click="createAccount()" :disabled="createAccountName == ''">Tạo</v-btn>
+                                    <v-btn flat color="red" @click="createAccountDialog = false">Đóng</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                     </v-flex>
                     
+                    
                 </v-layout>
-                <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
-                    <v-card>
-                        <v-card-title style="background-color:#1E88E5;color:#fff">
-                            <span class="headline">Thêm người vào tổ chức</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <span class="mt-4"><strong>Nhập email </strong></span>
-                            <v-form v-model="inviteUser.valid">
-                                <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
-                            </v-form>
-                        </v-card-text>
-                        <v-divider :divider="divider"></v-divider>
-                        <v-card-actions>
-                            <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
-                            <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
+                <v-layout>
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
+                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
+                    </v-flex>
+                </v-layout>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu" hide-actions>
+                        <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có người dùng nào">
                             <template v-slot:items="props">
                                 <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
                                 <td>{{ props.item.role }}</td>
-                                <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td>
+                                <v-menu offset-x>
+                                    <template v-slot:activator="{ on }">
+                                        <td>
+                                            <v-btn
+                                                color="primary"
+                                                dark
+                                                outline flat
+                                                v-on="on"
+                                                round
+                                                >
+                                            Chọn hành động
+                                            </v-btn>
+                                        </td>
+                                    </template>
+                                    <v-list>
+                                        <v-list-tile @click="openPermissionDialog(props.item.userId)">
+                                            <v-list-tile-content>Thiết lập quyền</v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="openNewAccountDialog(props.item.userId)">
+                                            <v-list-tile-content>Chuyển sang tổ chức khác</v-list-tile-content>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                                <!-- <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td> -->
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -114,7 +177,7 @@
                                                     Xem
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                    <v-select :disabled="!enableSetting" v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
+                                                    <v-select v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -124,7 +187,7 @@
                                                     Liên lạc (gửi email, sms...)
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
-                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
+                                                    <v-select style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -134,7 +197,7 @@
                                                     Sửa
                                                 </v-flex>
                                                 <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
-                                                    <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
+                                                    <v-select style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -148,7 +211,7 @@
                                                     <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý người dùng</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
-                                                    <v-switch :disabled="!enableSetting" v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
+                                                    <v-switch v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
@@ -160,7 +223,7 @@
                                                         Thêm & tùy chỉnh người dùng
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
+                                                        <v-switch v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
@@ -170,7 +233,7 @@
                                                         Thêm & tùy chỉnh nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditTeam" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', openUser.adminPer.AddAndEditTeam)"></v-switch>
+                                                        <v-switch v-model="openUser.adminPer.AddAndEditTeam" @change="updateAdminAccessLevel(openUser.userId, '5d255a0d77201a474d72eaca', openUser.adminPer.AddAndEditTeam)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
@@ -180,7 +243,7 @@
                                                         Chia theo nhóm
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', openUser.adminPer.PartitionByTeams)"></v-switch>
+                                                        <v-switch v-model="openUser.adminPer.PartitionByTeams" @change="updateAdminAccessLevel(openUser.userId, '5d255a5077201a474d72eacb', openUser.adminPer.PartitionByTeams)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
@@ -190,7 +253,7 @@
                                                         Chỉnh sửa tổ chức mặc định
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', openUser.adminPer.EditAccountDefaults)"></v-switch>
+                                                        <v-switch v-model="openUser.adminPer.EditAccountDefaults" @change="updateAdminAccessLevel(openUser.userId, '5d255a8477201a474d72eacc', openUser.adminPer.EditAccountDefaults)"></v-switch>
                                                     </v-flex>
                                                 </v-layout>
                                             </div>
@@ -249,6 +312,22 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="newAccount.dialog" width="30%" persistent>
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                    <span class="headline">Chuyển người dùng sang tổ chức khác</span>
+                </v-card-title>
+                <v-card-text>
+                    <span class="mt-4"><strong>Chọn tổ chức </strong></span>
+                    <v-select :items="newAccount.listAccount" v-model="newAccount.accountId"></v-select>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <v-btn flat color="primary" @click="setNewAccount()">Chuyển</v-btn>
+                    <v-btn flat color="red" @click="newAccount.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -261,8 +340,23 @@ export default {
             default: null,
         },
     },
+    // watch: {
+    //     currentAccountId(){
+    //         console.log(this.currentAccount)
+    //     }
+    // },
+    watch: {
+        search(){
+            this.users = [];
+            for (let i = 0; i < this.allUsers.length; i++){
+                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
+                    this.users.push(this.allUsers[i])
+                }
+            }
+        }
+    },
     data(){
-        return {
+        return{
             divider: true,
             forbiddenDialog: false,
             permissionsDialog: false,
@@ -286,15 +380,14 @@ export default {
                     value: 'role'
                 },
                 {
-                    text: 'THIẾT LẬP QUYỀN',
+                    text: 'Hành động',
                     align: 'left',
                     sortable: false,
                     value: 'role'
                 },
             ],
-            allUsers: [],
             users: [],
-            search: '',
+            allUsers: [],
             openUser: {
                 "userId": "5d22bbc6bd497e45940e8885",
                 "accountId": "5d1dd258f0aa61074608b0e3",
@@ -343,9 +436,12 @@ export default {
             AddAndEditTeams: false,
             PartitionByTeams: false,
             EditAccountDefaults: false,
+            currentAccountId: '',
+            currentAccount: null,
             currentUser: null,
-            enableSetting: false,
-            isSysadmin: false,
+            listAccount: [],
+            createAccountDialog: false,
+            createAccountName: '',
             inviteUser: {
                 dialog: false,
                 email: '',
@@ -356,25 +452,49 @@ export default {
                 valid: false,
                 success: false,
                 fail: false
-            }
-        }
-    },
-    watch: {
-        search(){
-            this.users = [];
-            for (let i = 0; i < this.allUsers.length; i++){
-                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
-                    this.users.push(this.allUsers[i])
-                }
-            }
+            },
+            newAccount: {
+                listAccount: [],
+                accountId: '',
+                dialog: false,
+                userId: ''
+            },
+            confirmDeleteDialog: false,
+            search: ''
         }
     },
     methods: {
+        openNewAccountDialog(id){
+            this.newAccount.lists = [];
+            for (let i = 0; i < this.listAccount.length; i++){
+                this.newAccount.listAccount.push(this.listAccount[i])
+                // if (this.listAccount[i].value != this.currentAccountId){
+                    
+                // }
+            }
+            this.newAccount.userId = id;
+            this.newAccount.accountId = this.newAccount.listAccount[0].value;
+            this.newAccount.dialog = true
+        },
+        setNewAccount(){
+            let body = {
+                accountId: this.newAccount.accountId
+            }
+            accountService.setNewAccount(this.currentAccountId, this.newAccount.userId, body).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.findUserByAccount();
+                this.newAccount.dialog = false;
+            })
+        },
+
         inviteUserToAccount(){
             let body = {
                 email: this.inviteUser.email
             }
-            accountService.inviteUser(this.idAccount, body).then(result => {
+            accountService.inviteUser(this.currentAccountId, body).then(result => {
                 console.log(result);
                 this.inviteUser.success = true;
             }).catch(error => {
@@ -384,11 +504,66 @@ export default {
                 this.inviteUser.dialog = false;
             })
         },
+        deleteAccount(){
+            accountService.deleteAccount(this.currentAccountId).then(result => {
+                console.log(result);
+                this.getListAccount();
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+        getListAccount(){
+            this.listAccount = [];
+            accountService.getListAccount().then(result => {
+                console.log(result)
+                result.response = result.response.reverse()
+                for (let i = 0; i < result.response.length; i++){
+                    let name = '';
+                    if (result.response[i].deletedAt != null){
+                        name = result.response[i].accountName + ' *(ĐÃ XÓA)*'
+                    }
+                    else {
+                        name = result.response[i].accountName
+                    }
+                    let obj = {
+                        text: name,
+                        value: result.response[i].accountId
+                    }
+                    this.listAccount.push(obj);
+                }
+                this.currentAccount = this.listAccount[0];
+                this.currentAccountId = this.listAccount[0].value;
+                this.findUserByAccount();
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        createAccount(){
+            let body = {
+                accountName: this.createAccountName
+            }
+            accountService.createAccount(body).then(result => {
+                console.log(result);
+                
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.createAccountDialog = false;
+                this.createAccountName = '';
+                this.getListAccount();
+            })
+        },
         findUserByAccount(){
             this.allUsers = [];
             this.users = [];
-            permissionsService.findUserByAccount(this.idAccount).then(result => {
-                // console.log(result);
+            for (let i = 0; i < this.listAccount.length;i++){
+                if (this.currentAccountId == this.listAccount[i].value){
+                    this.currentAccount = this.listAccount[i];
+                }
+            }
+            console.log(this.currentAccountId)
+            permissionsService.findUserByAccount(this.currentAccountId).then(result => {
+                console.log(result);
                 for (let i = 0; i<result.response.length;i++){
                     
                 result.response[i].number = i;
@@ -426,7 +601,7 @@ export default {
             return result;
         },
         openPermissionDialog(userId){
-            permissionsService.getUserInfo(this.idAccount, userId).then(result => {
+            permissionsService.getUserInfo(this.currentAccountId, userId).then(result => {
                 let res = result.response;
                 try {
                     if(res.groupPermission != null && res.groupPermission.length > 0){
@@ -469,7 +644,7 @@ export default {
                 "permissionId": permissionId,
                 "accessLevel": accessLevel
             }
-            permissionsService.updateAccessLevel(this.idAccount, userId, body).then(result => {
+            permissionsService.updateAccessLevel(this.currentAccountId, userId, body).then(result => {
                 console.log(result);
             }).catch(error => {
                 console.log(error);
@@ -477,14 +652,14 @@ export default {
         },
         changeAdminAccessLevel(userId, value){
             if(value == true){
-                permissionsService.upgradeToAdmin(this.idAccount, userId).then(result => {
+                permissionsService.upgradeToAdmin(this.currentAccountId, userId).then(result => {
                     console.log(result);
                 }).catch(error => {
                     console.log(error)
                 })
             }
             else{
-                permissionsService.removeAdminPermission(this.idAccount, userId).then(result => {
+                permissionsService.removeAdminPermission(this.currentAccountId, userId).then(result => {
                     console.log(result);
                     this.openUser.adminPer = {
                         AddAndEditUsers: false,
@@ -509,7 +684,7 @@ export default {
                 "permissionId": permissionId,
                 "accessLevel": accessLevel
             }
-            permissionsService.updateAccessLevel(this.idAccount, userId, body).then(result => {
+            permissionsService.updateAccessLevel(this.currentAccountId, userId, body).then(result => {
                 console.log(result);
                 this.openPermissionDialog(userId);
             }).catch(error => {
@@ -518,61 +693,59 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            for(let i = 0; i < this.currentUser.authorities.length;i++){
-                if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.enableSetting = true;
-                }
-            }
-            for(let i = 0; i < this.currentUser.authorities.length;i++){
-                if(this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.isSysadmin = true;
-                }
-            }
+            // for(let i = 0; i < this.currentUser.authorities.length;i++){
+            //     if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT'){
+            //         this.enableSetting = true;
+            //     }
+            // }
         },
         closePermissionDialog(){
             const tempArray = [];
-            // permissionsService.findUserByAccount(this.idAccount).then(result => {
-            //     for (let i = 0; i<result.response.length;i++){
-            //         result.response[i].number = i;
-            //         var role = '';
-            //         var obj = result.response[i];
-            //         if (obj.groupPermission == null){
-            //             role = 'null'
-            //         }
-            //         else {
-            //             for (let k = 0; k < obj.groupPermission.length; k++){
-            //                 role = role + ' ' + obj.groupPermission[k].name + ' | '
-            //             }
-            //         }
-            //         result.response[i].role = role;
-            //     }
-            //     for(let i = 0; i<result.response.length;i++){
-            //         if(result.response[i].role != 'null'){
-            //             tempArray.push(result.response[i]);
-            //         }
-            //     }
-            //     for (let i = 0; i<tempArray.length;i++){
-            //         if(this.users[i] != tempArray[i]){
-            //             this.users[i] = tempArray[i];
-            //         }
-            //     }
-            //     this.users = [...this.users];
-            // }).catch(error => {
-            //     console.log(error)
-            // })
-            this.findUserByAccount();
-            this.search = '';
+            permissionsService.findUserByAccount(this.currentAccountId).then(result => {
+                for (let i = 0; i<result.response.length;i++){
+                    result.response[i].number = i;
+                    var role = '';
+                    var obj = result.response[i];
+                    if (obj.groupPermission == null){
+                        role = 'null'
+                    }
+                    else {
+                        for (let k = 0; k < obj.groupPermission.length; k++){
+                            role = role + ' ' + obj.groupPermission[k].name + ' | '
+                        }
+                    }
+                    result.response[i].role = role;
+                }
+                for(let i = 0; i<result.response.length;i++){
+                    if(result.response[i].role != 'null'){
+                        tempArray.push(result.response[i]);
+                    }
+                }
+                for (let i = 0; i<tempArray.length;i++){
+                    if(this.users[i] != tempArray[i]){
+                        this.users[i] = tempArray[i];
+                    }
+                }
+                this.users = [...this.users];
+            }).catch(error => {
+                console.log(error)
+            })
+            this.search = ''
             this.permissionsDialog = false;
         },
-        goToAccountSettingPage(){
-            let link = `/settings/${this.currentUser.accountId}/manageaccount`;
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            // this.currentAccountId = this.idAccount;
+        },
+        goToUserAndTeamSettingPage(){
+            let link = `/settings/${this.currentUser.accountId}/userandteam`;
             this.$router.push(link);
         }
     },
-    
     created(){
         this.getCurrentUser();
-        this.findUserByAccount()
+        this.getListAccount();
+        
     }
 }
 </script>

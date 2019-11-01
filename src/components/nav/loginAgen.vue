@@ -24,7 +24,7 @@
     },
     methods: {
       goToSettingsPage(){
-        let link = `/settings/${this.currentUser.accountId}`;
+        let link = `/settings/${this.currentUser.accountId}/userandteam`;
         this.$router.push(link);
       },
       getCurrentUser(){
