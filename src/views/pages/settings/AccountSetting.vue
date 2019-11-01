@@ -42,7 +42,7 @@
                                     <v-spacer></v-spacer>
                                 </v-toolbar>
                                 <v-card-text>
-                                    Bạn có chắc chắn muốn xóa tổ chức này?
+                                    Bạn có chắc chắn muốn đánh dấu tổ chức này là xóa?
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn flat color="red" @click="deleteAccount()">XÓA</v-btn>
@@ -52,26 +52,7 @@
                         </v-dialog>
                     </v-flex>
                     <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <v-btn color="primary" round @click="createAccountDialog = true">Thêm tổ chức</v-btn>
-                        <v-dialog v-model="createAccountDialog" width="30%" persistent>
-                            <v-card>
-                                <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Tạo tổ chức mới</span>
-                                </v-card-title>
-                                <v-card-text>
-                                    <span class="mt-4"><strong>Tên chiến dịch </strong></span>
-                                    <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
-                                </v-card-text>
-                                <v-divider :divider="divider"></v-divider>
-                                <v-card-actions>
-                                    <v-btn flat color="primary" @click="createAccount()" :disabled="createAccountName == ''">Tạo</v-btn>
-                                    <v-btn flat color="red" @click="createAccountDialog = false">Đóng</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                        <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn>
                         <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -91,9 +72,31 @@
                             </v-card>
                         </v-dialog>
                     </v-flex>
+                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs2 offset-sm2 offset-md2 offset-lg2 offset-xl2>
+                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức</v-btn>
+                        <v-dialog v-model="createAccountDialog" width="30%" persistent>
+                            <v-card>
+                                <v-card-title style="background-color:#1E88E5;color:#fff">
+                                    <span class="headline">Tạo tổ chức mới</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <span class="mt-4"><strong>Tên chiến dịch </strong></span>
+                                    <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
+                                </v-card-text>
+                                <v-divider :divider="divider"></v-divider>
+                                <v-card-actions>
+                                    <v-btn flat color="primary" @click="createAccount()" :disabled="createAccountName == ''">Tạo</v-btn>
+                                    <v-btn flat color="red" @click="createAccountDialog = false">Đóng</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-flex>
                     
-                    <v-flex xs3 sm3 md3 lg3 xl3>
-                        
+                    
+                </v-layout>
+                <v-layout>
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
+                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -109,6 +112,7 @@
                                             <v-btn
                                                 color="primary"
                                                 dark
+                                                outline flat
                                                 v-on="on"
                                                 round
                                                 >
@@ -341,6 +345,16 @@ export default {
     //         console.log(this.currentAccount)
     //     }
     // },
+    watch: {
+        search(){
+            this.users = [];
+            for (let i = 0; i < this.allUsers.length; i++){
+                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
+                    this.users.push(this.allUsers[i])
+                }
+            }
+        }
+    },
     data(){
         return{
             divider: true,
@@ -366,13 +380,14 @@ export default {
                     value: 'role'
                 },
                 {
-                    text: 'THIẾT LẬP QUYỀN',
+                    text: 'Hành động',
                     align: 'left',
                     sortable: false,
                     value: 'role'
                 },
             ],
             users: [],
+            allUsers: [],
             openUser: {
                 "userId": "5d22bbc6bd497e45940e8885",
                 "accountId": "5d1dd258f0aa61074608b0e3",
@@ -444,7 +459,8 @@ export default {
                 dialog: false,
                 userId: ''
             },
-            confirmDeleteDialog: false
+            confirmDeleteDialog: false,
+            search: ''
         }
     },
     methods: {
@@ -538,6 +554,7 @@ export default {
             })
         },
         findUserByAccount(){
+            this.allUsers = [];
             this.users = [];
             for (let i = 0; i < this.listAccount.length;i++){
                 if (this.currentAccountId == this.listAccount[i].value){
@@ -565,6 +582,7 @@ export default {
                 for(let i = 0; i<result.response.length;i++){
                     if(result.response[i].role != 'null'){
                         this.users.push(result.response[i]);
+                        this.allUsers.push(result.response[i]);
                     }
                 }
             }).catch(error => {
@@ -712,6 +730,7 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
+            this.search = ''
             this.permissionsDialog = false;
         },
         getCurrentUser(){

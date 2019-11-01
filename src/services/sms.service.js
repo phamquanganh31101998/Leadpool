@@ -6,7 +6,7 @@ const qs = require('qs');
 export default {
     getTemplate, createTemplate, updateTemplate, 
     getListDeviceKey, createDeviceKey, getStatisticDetail, 
-    getHistoryDetail, createSchedule, getSchedule,
+    getHistoryDetail , getInfo,  createSchedule, getSchedule,
     activateSchedule, deactivateSchedule
 }
 
@@ -64,6 +64,15 @@ function getStatisticDetail(idAccount, idDeviceKey){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/sms-device/${idDeviceKey}/statistic`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getInfo(idAccount, idDeviceKey){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/sms-device/${idDeviceKey}/info`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 

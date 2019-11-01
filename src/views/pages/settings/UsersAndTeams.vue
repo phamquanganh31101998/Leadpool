@@ -19,7 +19,7 @@
                             Người dùng và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="goToAccountSettingPage()">
+                    <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
                         <v-list-tile-content>
                             Quản lý hệ thống
                         </v-list-tile-content>
@@ -32,7 +32,15 @@
                     Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
                 <br>
                 <br>
-                <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                <v-layout>
+                    <v-flex xs8 sm8 md8 lg8 xl8>
+                        <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                    </v-flex>
+                    <v-flex xs4 sm4 md4 lg4 xl4>
+                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản người dùng theo tên" single-line hide-details></v-text-field>
+                    </v-flex>
+                    
+                </v-layout>
                 <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
                     <v-card>
                         <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -53,7 +61,7 @@
                 </v-dialog>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
+                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu" hide-actions>
                             <template v-slot:items="props">
                                 <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
@@ -284,7 +292,9 @@ export default {
                     value: 'role'
                 },
             ],
+            allUsers: [],
             users: [],
+            search: '',
             openUser: {
                 "userId": "5d22bbc6bd497e45940e8885",
                 "accountId": "5d1dd258f0aa61074608b0e3",
@@ -335,6 +345,7 @@ export default {
             EditAccountDefaults: false,
             currentUser: null,
             enableSetting: false,
+            isSysadmin: false,
             inviteUser: {
                 dialog: false,
                 email: '',
@@ -345,6 +356,16 @@ export default {
                 valid: false,
                 success: false,
                 fail: false
+            }
+        }
+    },
+    watch: {
+        search(){
+            this.users = [];
+            for (let i = 0; i < this.allUsers.length; i++){
+                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
+                    this.users.push(this.allUsers[i])
+                }
             }
         }
     },
@@ -364,6 +385,8 @@ export default {
             })
         },
         findUserByAccount(){
+            this.allUsers = [];
+            this.users = [];
             permissionsService.findUserByAccount(this.idAccount).then(result => {
                 // console.log(result);
                 for (let i = 0; i<result.response.length;i++){
@@ -384,6 +407,7 @@ export default {
                 for(let i = 0; i<result.response.length;i++){
                     if(result.response[i].role != 'null'){
                         this.users.push(result.response[i]);
+                        this.allUsers.push(result.response[i]);
                     }
                 }
             }).catch(error => {
@@ -495,42 +519,49 @@ export default {
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             for(let i = 0; i < this.currentUser.authorities.length;i++){
-                if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT'){
+                if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
                     this.enableSetting = true;
+                }
+            }
+            for(let i = 0; i < this.currentUser.authorities.length;i++){
+                if(this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+                    this.isSysadmin = true;
                 }
             }
         },
         closePermissionDialog(){
             const tempArray = [];
-            permissionsService.findUserByAccount(this.idAccount).then(result => {
-                for (let i = 0; i<result.response.length;i++){
-                    result.response[i].number = i;
-                    var role = '';
-                    var obj = result.response[i];
-                    if (obj.groupPermission == null){
-                        role = 'null'
-                    }
-                    else {
-                        for (let k = 0; k < obj.groupPermission.length; k++){
-                            role = role + ' ' + obj.groupPermission[k].name + ' | '
-                        }
-                    }
-                    result.response[i].role = role;
-                }
-                for(let i = 0; i<result.response.length;i++){
-                    if(result.response[i].role != 'null'){
-                        tempArray.push(result.response[i]);
-                    }
-                }
-                for (let i = 0; i<tempArray.length;i++){
-                    if(this.users[i] != tempArray[i]){
-                        this.users[i] = tempArray[i];
-                    }
-                }
-                this.users = [...this.users];
-            }).catch(error => {
-                console.log(error)
-            })
+            // permissionsService.findUserByAccount(this.idAccount).then(result => {
+            //     for (let i = 0; i<result.response.length;i++){
+            //         result.response[i].number = i;
+            //         var role = '';
+            //         var obj = result.response[i];
+            //         if (obj.groupPermission == null){
+            //             role = 'null'
+            //         }
+            //         else {
+            //             for (let k = 0; k < obj.groupPermission.length; k++){
+            //                 role = role + ' ' + obj.groupPermission[k].name + ' | '
+            //             }
+            //         }
+            //         result.response[i].role = role;
+            //     }
+            //     for(let i = 0; i<result.response.length;i++){
+            //         if(result.response[i].role != 'null'){
+            //             tempArray.push(result.response[i]);
+            //         }
+            //     }
+            //     for (let i = 0; i<tempArray.length;i++){
+            //         if(this.users[i] != tempArray[i]){
+            //             this.users[i] = tempArray[i];
+            //         }
+            //     }
+            //     this.users = [...this.users];
+            // }).catch(error => {
+            //     console.log(error)
+            // })
+            this.findUserByAccount();
+            this.search = '';
             this.permissionsDialog = false;
         },
         goToAccountSettingPage(){

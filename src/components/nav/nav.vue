@@ -166,7 +166,8 @@
   export default {
     data: () => ({
       divider: true,
-      currentUser: null
+      currentUser: null,
+      
     }),
     components: {
       loginAgen,
