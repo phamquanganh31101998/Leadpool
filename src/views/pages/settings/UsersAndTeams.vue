@@ -16,7 +16,7 @@
                     </v-list-tile> -->
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
-                            Người dùng và nhóm
+                            Tài khoản và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
@@ -27,17 +27,17 @@
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10>
-                <h1>Người dùng và nhóm</h1>
+                <h1>Tài khoản và nhóm</h1>
                 <br>
-                    Tạo, chỉnh sửa, xóa người dùng khỏi tổ chức của bạn
+                    Tạo, chỉnh sửa, xóa Tài khoản khỏi tổ chức của bạn
                 <br>
                 <br>
                 <v-layout>
                     <v-flex xs8 sm8 md8 lg8 xl8>
-                        <v-btn color="primary" round @click="inviteUser.dialog = true">Thêm người vào tổ chức này</v-btn>
+                        <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức</v-btn>
                     </v-flex>
                     <v-flex xs4 sm4 md4 lg4 xl4>
-                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản người dùng theo tên" single-line hide-details></v-text-field>
+                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                     
                 </v-layout>
@@ -61,7 +61,7 @@
                 </v-dialog>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu" hide-actions>
+                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
                             <template v-slot:items="props">
                                 <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
@@ -79,6 +79,9 @@
                     <h1>{{openUser.displayName}}</h1>
                 </v-card-title>
                 <v-divider :divider="divider"></v-divider> -->
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                    <span class="headline">Thiết lập quyền cho tài khoản</span>
+                </v-card-title>
                 <v-card-text>
                     <v-container>
                         <v-layout row>
@@ -100,40 +103,39 @@
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                <br>
                                 <v-tabs>
-                                    <v-tab href="#tab1">Contacts</v-tab>
+                                    <v-tab href="#tab1">Lead</v-tab>
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
                                         <br>
-                                        <h3>Quyền Contact</h3>
-                                        <p>Tất cả người dùng đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
+                                        <h3>Quyền đối với Lead</h3>
+                                        <p>Tất cả Tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Xem
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
                                                     <v-select :disabled="!enableSetting" v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Liên lạc (gửi email, sms...)
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
                                                     <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Sửa
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4"> 
                                                     <v-select :disabled="!enableSetting" style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
                                                 </v-flex>
                                             </v-layout>
@@ -145,7 +147,7 @@
                                             <v-layout row wrap>
                                                 <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
                                                     <h3>Quyền Admin</h3>
-                                                    <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý người dùng</p>
+                                                    <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý Tài khoản</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
                                                     <v-switch :disabled="!enableSetting" v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
@@ -157,7 +159,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Thêm & tùy chỉnh người dùng
+                                                        Thêm & tùy chỉnh Tài khoản
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch :disabled="!enableSetting" v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
@@ -242,7 +244,7 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Có lỗi xảy ra khi thêm người dùng. Hãy thử lại
+                    Có lỗi xảy ra khi thêm Tài khoản. Hãy thử lại
                 </v-card-text>
                 <v-card-actions>
                 <v-btn flat color="red" @click="inviteUser.fail = false">OK</v-btn>
@@ -363,13 +365,27 @@ export default {
         search(){
             this.users = [];
             for (let i = 0; i < this.allUsers.length; i++){
-                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
+                if (this.normalText(this.allUsers[i].displayName).toLowerCase().includes(this.normalText(this.search.toLowerCase().trim()))){
                     this.users.push(this.allUsers[i])
                 }
             }
         }
     },
     methods: {
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
+        returnRole(role){
+            if (role == 'contact'){
+                return 'Lead'
+            }
+            else if (role == 'admin'){
+                return 'Quản lý'
+            }
+            else if (role == 'sysadmin'){
+                return 'Quản trị hệ thống'
+            }
+        },
         inviteUserToAccount(){
             let body = {
                 email: this.inviteUser.email
@@ -399,13 +415,13 @@ export default {
                     }
                     else {
                         for (let k = 0; k < obj.groupPermission.length; k++){
-                            role = role + ' ' + obj.groupPermission[k].name + ' | '
+                            role = role + ' ' + this.returnRole(obj.groupPermission[k].name) + ' | '
                         }
                     }
                     result.response[i].role = role;
                 }
                 for(let i = 0; i<result.response.length;i++){
-                    if(result.response[i].role != 'null'){
+                    if(result.response[i].role != 'null' && !result.response[i].role.includes('Quản trị hệ thống')){
                         this.users.push(result.response[i]);
                         this.allUsers.push(result.response[i]);
                     }
