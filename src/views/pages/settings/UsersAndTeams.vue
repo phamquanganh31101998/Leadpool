@@ -34,7 +34,7 @@
                 <br>
                 <v-layout>
                     <v-flex xs8 sm8 md8 lg8 xl8>
-                        <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức</v-btn>
+                        <v-btn color="primary" round v-if="isAdmin" @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm tài khoản vào tổ chức</v-btn>
                     </v-flex>
                     <v-flex xs4 sm4 md4 lg4 xl4>
                         <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
@@ -209,17 +209,17 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="forbiddenDialog" @click:outside="forbiddenDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-dialog v-model="forbiddenDialog" @click:outside="$store.dispatch('turnOffForbiddenDialog')" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="red">
-                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-toolbar-title>Không có quyền truy cập</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Lỗi
+                    Bạn phải là Quản lý và có quyền chỉnh sửa tài khoản mới có thể truy cập vào trang này.
                 </v-card-text>
                 <v-card-actions>
-                <v-btn flat color="red" @click="forbiddenDialog = false">OK</v-btn>
+                <v-btn flat color="red" @click="$store.dispatch('turnOffForbiddenDialog')">OK</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -244,7 +244,7 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Có lỗi xảy ra khi thêm Tài khoản. Hãy thử lại
+                    Có lỗi xảy ra khi thêm Tài khoản vào tổ chức. Hãy thử lại
                 </v-card-text>
                 <v-card-actions>
                 <v-btn flat color="red" @click="inviteUser.fail = false">OK</v-btn>
@@ -256,6 +256,7 @@
 <script>
 import permissionsService from '../../../services/permissions.service'
 import accountService from '../../../services/accountsetting.service'
+import {mapGetters} from 'vuex'
 export default {
     props: {
         idAccount: {
@@ -266,7 +267,7 @@ export default {
     data(){
         return {
             divider: true,
-            forbiddenDialog: false,
+            // forbiddenDialog: false,
             permissionsDialog: false,
             headers: [
                 {
@@ -371,6 +372,12 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters({
+            forbiddenDialog: 'forbiddenDialog'
+            // ...
+        })
+    },
     methods: {
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
@@ -406,8 +413,7 @@ export default {
             permissionsService.findUserByAccount(this.idAccount).then(result => {
                 // console.log(result);
                 for (let i = 0; i<result.response.length;i++){
-                    
-                result.response[i].number = i;
+                    result.response[i].number = i;
                     var role = '';
                     var obj = result.response[i];
                     if (obj.groupPermission == null){
@@ -427,7 +433,6 @@ export default {
                     }
                 }
             }).catch(error => {
-                this.forbiddenDialog = true;
                 console.log(error)
             })
         },
@@ -537,6 +542,7 @@ export default {
             for(let i = 0; i < this.currentUser.authorities.length;i++){
                 if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
                     this.enableSetting = true;
+                    this.isAdmin = true;
                 }
             }
             for(let i = 0; i < this.currentUser.authorities.length;i++){

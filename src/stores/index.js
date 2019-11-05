@@ -8,7 +8,8 @@ export const store = new vuex.Store({
 		user,
 	},
 	state:{
-        expiredDialog: false
+        expiredDialog: false,
+        forbiddenDialog: false
     },
     actions:{
         turnOnExpiredDialog({commit}){
@@ -16,6 +17,12 @@ export const store = new vuex.Store({
         },
         turnOffExpiredDialog({commit}){
             commit('turnOffExpiredDialog');
+        },
+        turnOnForbiddenDialog({commit}){
+            commit('turnOnForbiddenDialog');
+        },
+        turnOffForbiddenDialog({commit}){
+            commit('turnOffForbiddenDialog');
         }
     },
     mutations:{
@@ -24,11 +31,20 @@ export const store = new vuex.Store({
         },
         turnOffExpiredDialog(state){
             state.expiredDialog = false;
+        },
+        turnOnForbiddenDialog(state){
+            state.forbiddenDialog = true;
+        },
+        turnOffForbiddenDialog(state){
+            state.forbiddenDialog = false;
         }
     },
     getters: {
         expiredDialog: state => {
             return state.expiredDialog
+        }, 
+        forbiddenDialog: state => {
+            return state.forbiddenDialog
         }
     }
 })

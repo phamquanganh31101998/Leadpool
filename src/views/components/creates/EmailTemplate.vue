@@ -31,7 +31,7 @@
                     <br>
                     <span class="mt-2"><strong>Chọn mẫu</strong></span>
                     <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
-                    <span><a @click.stop="createNewTemplateSection()">Tạo mẫu mới</a></span>
+                    <!-- <span><a @click.stop="createNewTemplateSection()">Tạo mẫu mới</a></span> -->
                 </v-flex>
                 <v-flex xs12 sm12 md9 lg9 xl9> 
                     <h4 class="pl-3">Mẫu email</h4>
@@ -228,7 +228,9 @@ export default {
             }
             let regex = /\\\"/gi
             this.htmlText = this.chosenTemplate.content;
+            console.log(this.htmlText)
             document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+
             document.getElementById("call").innerHTML = '';
         },
         logging(){
@@ -277,7 +279,9 @@ export default {
                 subject: this.subject
             }
             this.waiting = true;
+            console.log(body)
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
+                console.log(result);
                 this.successfulDialog = true;
                 this.closeEmailTemplateDialog();
                 eventBus.updateEmailList();

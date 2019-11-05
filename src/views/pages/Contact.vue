@@ -83,8 +83,8 @@
       </v-flex>
     </v-layout>
     <v-divider class="mt-4" :divider="divider"></v-divider>
-    <v-layout row wrap class="mt-3">
-      <v-flex xs6 sm4 md4 lg3 xl3>
+    <v-layout row class="mt-3">
+      <v-flex xs6 sm4 md3 lg3 xl3>
         <v-list>
           <v-list-tile @click="getAllContact()">
             <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
@@ -310,7 +310,7 @@
           </v-menu>
         </template>
       </v-flex>
-      <v-flex xs6 sm8 md8 lg9 xl9>
+      <v-flex xs6 sm8 md9 lg9 xl9>
         <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
           <template v-slot:items="props">
               <tr>
@@ -319,18 +319,26 @@
               <td class="text-xs-left">{{ props.item.phone }}</td>
               <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
               <td class="text-xs-left">{{ covertime(props.item.updateAt) }}</td>
-              <td class="text-xs-left">
-                <v-btn class="red" outline round style="color: red;" @click="confirmDeleteContact(props.item.contactId)">Xóa</v-btn>
-              </td>
+              
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                      <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                  </template>
+                  <v-list>
+                    <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                      <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="confirmDeleteContact(props.item.contactId)">
+                      <v-list-tile-content>Xóa Lead này</v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
             </tr>
           </template>
         </v-data-table>
         <div class="text-xs-center pt-2">
           <v-pagination v-model="page" :length="pages"></v-pagination>
         </div>
-        <br>
-        <br>
-        <br>
         <br>
         <br>
       </v-flex>
@@ -469,32 +477,38 @@
       headers: [{
           text: 'TÊN',
           align: 'left',
-          value: 'name'
+          value: 'name',
+          sortable: false
         },
         {
           text: 'EMAIL',
           align: 'left',
-          value: 'calories'
+          value: 'calories',
+          sortable: false
         },
         {
           text: 'SỐ ĐIỆN THOẠI',
           align: 'left',
-          value: 'fat'
+          value: 'fat',
+          sortable: false
         },
         {
           text: 'LIFECYCLE STAGE',
           align: 'left',
-          value: 'carbs'
+          value: 'carbs',
+          sortable: false
         },
         {
           text: 'NGÀY TẠO',
           align: 'left',
-          value: 'protein'
+          value: 'protein',
+          sortable: false
         },
         {
-          text: 'XÓA',
-          align: 'center',
-          value: 'delete'
+          text: 'HÀNH ĐỘNG',
+          align: 'right',
+          value: 'delete',
+          sortable: false
         }
       ],
       contacts: [],
@@ -885,9 +899,28 @@
         this.getAllContact();
       },
       filter(){
-        listService.findContactByCondition(this.idUser, this.conditions).then(result => {
+        let conditions = this.conditions;
+        let user = JSON.parse(localStorage.getItem('user'));
+        let canViewEverything = false;
+        for (let i = 0; i < user.authorities.length; i++){
+          if(user.authorities[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+            canViewEverything = true;
+          }
+        }
+        if(!canViewEverything){
+          let ownerCheck = {
+            conditionId: null,
+            object: "Contact",
+            property: "createdBy",
+            condition: "EQUAL",
+            value: user.username
+          }
+          conditions[0].push(ownerCheck);
+        }
+        console.log(conditions)
+        listService.findContactByCondition(this.idUser, conditions).then(result => {
           this.allContacts = result.response;
-          this.contacts = this.allContacts;
+          this.contacts = this.allContacts.reverse();
           this.page = 1;
           this.pages = 1;
         }).catch(error => {
@@ -907,7 +940,10 @@
         }).catch(error => {
           console.log(error);
         })
-      }
+      },
+      normalText(str){
+          return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+      },
     },
     computed: {},
     watch:{
@@ -919,7 +955,7 @@
         this.contacts = [];
         for (let i = 0; i < this.allContacts.length; i++){
           const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
-          if(name.toLowerCase().includes(this.search.toLowerCase())){
+          if(this.normalText(name.toLowerCase()).includes(this.normalText(this.search.toLowerCase()))){
             this.contacts.push(this.allContacts[i]);
           }
         }

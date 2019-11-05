@@ -26,7 +26,7 @@
                             Quản lý mẫu email
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page = 'create', grape()">
+                    <v-list-tile @click="page = 'create'">
                         <v-list-tile-content :style="fontWeight[1]">
                             Tạo mẫu email
                         </v-list-tile-content>
@@ -62,18 +62,21 @@
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='create'">
                 <v-layout>
+                    <v-btn block @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
+                </v-layout>
+                <!-- <v-layout>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div class="panel__top" style="width: 100%">
                             <div class="panel__basic-actions" style="width: 100%"></div>
                             <div class="panel__switcher"></div>
                         </div>
                     </v-flex>
-                </v-layout>
+                </v-layout> -->
                 <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div class="editor-row">
                             <div class="editor-canvas">
-                                <div id="gjs">...</div>
+                                <div id="gjs"></div>
                             </div>
                             <div class="panel__right">
                                 <div class="layers-container"></div>
@@ -87,6 +90,9 @@
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div id="blocks" style="width: 100%"></div>
                     </v-flex>
+                </v-layout>
+                <v-layout>
+                    <v-btn block @click="create.dialog = true">Tạo mẫu mới</v-btn>
                 </v-layout>
                 <!-- <v-layout>
                     <div class="panel__top">
@@ -104,6 +110,22 @@
                 </v-layout> -->
             </v-flex>
         </v-layout>
+        <v-dialog v-model="create.dialog" width="30%" persistent>
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                    <span class="headline">Tạo mẫu email mới</span>
+                </v-card-title>
+                <v-card-text>
+                    <span class="mt-4"><strong>Tên mẫu </strong></span>
+                    <span class="ml-4"><v-text-field v-model="create.name"></v-text-field></span>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <v-btn flat color="primary" @click="createNewTemplate()" :disabled="create.name == ''">Tạo</v-btn>
+                    <v-btn flat color="red" @click="create.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <!-- <v-dialog v-model="createTask" persistent max-width="700px">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -130,6 +152,11 @@ export default {
             htmlText: '',
             divider: true,
             editor: null,
+            create: {
+                dialog: false,
+                name: '',
+                btn: true
+            }
         }
     },
     props: {
@@ -190,16 +217,16 @@ export default {
             fromElement: true,
             // Size of the editor
             height: '300px',
-            width: 'auto',
+            width: '500px;',
             // Disable the storage manager for the moment
             storageManager: {
                 id: 'gjs-',             // Prefix identifier that will be used inside storing and loading
                 type: 'local',          // Type of the storage
                 autosave: true,         // Store data automatically
-                autoload: true,         // Autoload stored data on init
+                autoload: false,         // Autoload stored data on init
                 stepsBeforeSave: 1,     // If autosave enabled, indicates how many changes are necessary before store method is triggered
-                storeComponents: true,  // Enable/Disable storing of components in JSON format
-                storeStyles: true,      // Enable/Disable storing of rules in JSON format
+                storeComponents: false,  // Enable/Disable storing of components in JSON format
+                storeStyles: false,      // Enable/Disable storing of rules in JSON format
                 storeHtml: true,        // Enable/Disable storing of components as HTML string
                 storeCss: true,         // Enable/Disable storing of rules as CSS string
             },
@@ -227,14 +254,14 @@ export default {
                     keyWidth: 'flex-basis',
                 },
                 buttons: [
-                        {
-                            id: 'show-layers',
-                            active: true,
-                            label: 'Layers',
-                            command: 'show-layers',
-                            // Once activated disable the possibility to turn it off
-                            togglable: false,
-                        }, 
+                        // {
+                        //     id: 'show-layers',
+                        //     active: true,
+                        //     label: 'Layers',
+                        //     command: 'show-layers',
+                        //     // Once activated disable the possibility to turn it off
+                        //     togglable: false,
+                        // }, 
                         {
                             id: 'show-style',
                             active: true,
@@ -242,13 +269,13 @@ export default {
                             command: 'show-styles',
                             togglable: false,
                         },
-                        {
-                            id: 'show-traits',
-                            active: true,
-                            label: 'Traits',
-                            command: 'show-traits',
-                            togglable: false,
-                        }
+                        // {
+                        //     id: 'show-traits',
+                        //     active: true,
+                        //     label: 'Traits',
+                        //     command: 'show-traits',
+                        //     togglable: false,
+                        // }
                     ]
                 }]
             },
@@ -258,15 +285,16 @@ export default {
             blockManager: {
                 appendTo: '#blocks',
                 blocks: [
+                    // {
+                    //     id: 'section', // id is mandatory
+                    //     label: '<b>Chia phần</b>', // You can use HTML/SVG inside labels
+                    //     attributes: { class:'gjs-block-section' },
+                    //     content: `<section>
+                    //     <h1>This is a fuck</h1>
+                    //     <div>This is juLorem adasdsadsadset</div>
+                    //     </section>`,
+                    // }, 
                     {
-                        id: 'section', // id is mandatory
-                        label: '<b>Chia phần</b>', // You can use HTML/SVG inside labels
-                        attributes: { class:'gjs-block-section' },
-                        content: `<section>
-                        <h1>This is a fuck</h1>
-                        <div>This is juLorem adasdsadsadset</div>
-                        </section>`,
-                    }, {
                         id: 'text',
                         label: 'Text',
                         content: '<div data-gjs-type="text">Viết vào đây here</div>',
@@ -325,82 +353,31 @@ export default {
                     ]
                 }]
             },
-            });
-            this.editor.BlockManager.add('my-block-id', {
-            // ...
-                content: {
-                    tagName: 'div',
-                    draggable: true,
-                    label: '<p style="fontSize: 30px; color: red;">Hihi</p>',
-                    attributes: { 'some-attribute': 'some-value' },
-                    components: [
+            assetManager: {
+                assets: [
+                    'http://placehold.it/350x250/78c5d6/fff/image1.jpg',
+                    // Pass an object with your properties
                     {
-                        tagName: 'span',
-                        content: '<b>Content tĩnh</b>',
-                    }, {
-                        tagName: 'div',
-                        // use `content` for static strings, `components` string will be parsed
-                        // and transformed in Components
-                        components: '<span>HTML at some point</span>',
-                    }
-                    ]
-                }
-            })
-            this.editor.Panels.addPanel({
-                id: 'panel-top',
-                el: '.panel__top',
-                });
-            this.editor.Panels.addPanel({
-                id: 'basic-actions',
-                el: '.panel__basic-actions',
-                buttons: [
+                        type: 'image',
+                        src: 'http://placehold.it/350x250/459ba8/fff/image2.jpg',
+                        height: 350,
+                        width: 250
+                    },
                     {
-                        id: 'visibility',
-                        active: true, // active by default
-                        className: 'btn-toggle-borders',
-                        label: '<u>B</u>',
-                        command: 'sw-visibility', // Built-in command
-                    }, 
-                    {
-                        id: 'export',
-                        className: 'btn-open-export',
-                        label: 'Exp',
-                        command: 'export-template',
-                        context: 'export-template', // For grouping context of buttons from the same panel
-                    }, 
-                    {
-                        id: 'show-json',
-                        className: 'btn-show-json',
-                        label: 'JSON',
-                        context: 'show-json',
-                        command(editor) {
-                            editor.Modal.setTitle('Components JSON')
-                            .setContent(`<textarea style="width:100%; height: 250px;">
-                                ${JSON.stringify(editor.getComponents())}
-                            </textarea>`)
-                            .open();
-                        },
-                    }
+                        // As the 'image' is the base type of assets, omitting it will
+                        // be set as `image` by default
+                        src: 'http://placehold.it/350x250/79c267/fff/image3.jpg',
+                        height: 350,
+                        width: 250
+                    },
                 ],
-            });
-            this.editor.on('run:export-template:before', opts => {
-                console.log('Before the command run');
-                });
-            this.editor.on('run:export-template', () => console.log('After the command run'));
-            this.editor.on('abort:export-template', () => console.log('Command aborted'));
-            this.editor.Commands.add('show-layers', {
-                getRowEl(editor) { return editor.getContainer().closest('.editor-row'); },
-                getLayersEl(row) { return row.querySelector('.layers-container') },
+                uploadText: 'Kéo ảnh từ máy của bạn vào đây hoặc click vào để thêm ảnh',
+                addBtnText: 'Thêm ảnh',
 
-                run(editor, sender) {
-                    const lmEl = this.getLayersEl(this.getRowEl(editor));
-                    lmEl.style.display = '';
-                },
-                stop(editor, sender) {
-                    const lmEl = this.getLayersEl(this.getRowEl(editor));
-                    lmEl.style.display = 'none';
-                },
+
+            }
             });
+            
             this.editor.Commands.add('show-styles', {
                 getRowEl(editor) { return editor.getContainer().closest('.editor-row'); },
                 getStyleEl(row) { return row.querySelector('.styles-container') },
@@ -414,12 +391,58 @@ export default {
                     smEl.style.display = 'none';
                 },
             });
+            
+
+            this.editor.on('asset:upload:start', opts => {
+                console.log(opts)
+            });
+            this.editor.on('asset:remove', opts => {
+                console.log(opts)
+            });
+            this.editor.on('asset:add', opts => {
+                console.log(opts)
+            });
+            // The upload is ended (completed or not)
+            this.editor.on('asset:upload:end', opts => {
+                console.log(opts)
+            });
+
+            // Error handling
+            this.editor.on('asset:upload:error', (err) => {
+                console.log(err)
+            });
+
+            // Do something on response
+            this.editor.on('asset:upload:response', (response) => {
+                alert('hú');
+            });
+
             console.log(this.editor)
         },
         alerting(){
             alert('hú');
+        },
+        createNewTemplate(){
+            let html = localStorage.getItem('gjs-html');
+            let css = localStorage.getItem('gjs-css');
+            // localStorage.removeItem('gjs-html');
+            // localStorage.removeItem('gjs-css');
+            let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
+            let body = {
+                title: this.create.name,
+                content: content,
+                status: 'draft'
+            };
+            emailService.createEmailTemplate(this.idAccount, body).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.create.dialog = false;
+            })
         }
     },
+
     created(){
         this.getEmailTemplate();
         // console.log(result)
@@ -493,5 +516,9 @@ export default {
 
 .panel__switcher {
   position: initial;
+}
+
+.gjs-editor {
+    padding-left: 50px;
 }
 </style>

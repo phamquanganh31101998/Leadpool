@@ -42,12 +42,12 @@
                                     dark
                                     v-on="on"
                                     >
-                                Chọn hành động
+                                Tùy chỉnh tổ chức
                                 </v-btn>
                             </template>
                             <v-list>
                                 <v-list-tile @click="inviteUser.dialog = true">
-                                    <v-list-tile-content>Thêm người vào tổ chức này</v-list-tile-content>
+                                    <v-list-tile-content>Thêm tài khoản vào tổ chức</v-list-tile-content>
                                 </v-list-tile>
                                 <v-list-tile @click="renameAccount.dialog = true">
                                     <v-list-tile-content>Đổi tên tổ chức</v-list-tile-content>
@@ -117,7 +117,7 @@
                         </v-dialog>
                     </v-flex>
                     <v-flex xs1 sm1 md1 lg1 xl1>
-                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức</v-btn>
+                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
                         <v-dialog v-model="createAccountDialog" width="30%" persistent>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">

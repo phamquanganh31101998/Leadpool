@@ -1,3 +1,5 @@
+import {store} from '../stores/index'
+
 export const responseService = { handle, fetchRetry };
 
 async function fetchRetry (url, options, n) {
@@ -17,6 +19,7 @@ async function fetchRetry (url, options, n) {
 
 function handle (response) {
     return response.text().then(text => {
+        // console.log(response)
         const data = text && JSON.parse(text);
 
         if(response.ok) return data;
@@ -26,7 +29,9 @@ function handle (response) {
             localStorage.removeItem('user');
             location.reload(true);
         }
-
+        if (response.status === 403){
+            store.state.forbiddenDialog = true;
+        }
         const error = (data && data.error) || response.statusText;
         return Promise.reject(error);
     });

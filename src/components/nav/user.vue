@@ -101,7 +101,7 @@
             ...mapGetters({
                 expiredDialog: 'expiredDialog'
                 // ...
-		})
+		    })
         },
         methods: {
             displayName() {
