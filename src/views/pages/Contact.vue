@@ -900,23 +900,23 @@
       },
       filter(){
         let conditions = this.conditions;
-        let user = JSON.parse(localStorage.getItem('user'));
-        let canViewEverything = false;
-        for (let i = 0; i < user.authorities.length; i++){
-          if(user.authorities[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
-            canViewEverything = true;
-          }
-        }
-        if(!canViewEverything){
-          let ownerCheck = {
-            conditionId: null,
-            object: "Contact",
-            property: "createdBy",
-            condition: "EQUAL",
-            value: user.username
-          }
-          conditions[0].push(ownerCheck);
-        }
+        // let user = JSON.parse(localStorage.getItem('user'));
+        // let canViewEverything = false;
+        // for (let i = 0; i < user.authorities.length; i++){
+        //   if(user.authorities[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+        //     canViewEverything = true;
+        //   }
+        // }
+        // if(!canViewEverything){
+        //   let ownerCheck = {
+        //     conditionId: null,
+        //     object: "Contact",
+        //     property: "createdBy",
+        //     condition: "EQUAL",
+        //     value: user.username
+        //   }
+        //   conditions[0].push(ownerCheck);
+        // }
         console.log(conditions)
         listService.findContactByCondition(this.idUser, conditions).then(result => {
           this.allContacts = result.response;

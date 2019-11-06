@@ -62,7 +62,7 @@
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='create'">
                 <v-layout>
-                    <v-btn block @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
+                    <v-btn color="primary" @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
                 </v-layout>
                 <!-- <v-layout>
                     <v-flex xs12 sm12 md12 lg12 xl12>
@@ -72,27 +72,42 @@
                         </div>
                     </v-flex>
                 </v-layout> -->
-                <v-layout row>
+                <v-layout row wrap style="height: 600px">
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <div class="editor-row">
-                            <div class="editor-canvas">
-                                <div id="gjs"></div>
-                            </div>
-                            <div class="panel__right">
-                                <div class="layers-container"></div>
-                                <div class="styles-container"></div>
-                                <div class="traits-container"></div>
-                            </div>
-                        </div>
+                        <v-layout>
+                            <v-flex xs1 sm1 md1 lg1 xl1>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-icon color="primary" dark v-on="on">help</v-icon>
+                                    </template>
+                                    <span>Tooltip</span>
+                                </v-tooltip>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout>
+                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                <div id="blocks" style="width: 100%; height: 100%;" ></div>
+                            </v-flex>
+                            <v-flex xs10 sm10 md10 lg10 xl10>
+                                <div class="editor-row" style="height: 100%">
+                                    <div class="editor-canvas">
+                                        <div id="gjs" style="height: 600px;"></div>
+                                    </div>
+                                    <div class="panel__right" >
+                                        <div class="layers-container"></div>
+                                        <div class="styles-container"></div>
+                                        <div class="traits-container"></div>
+                                    </div>
+                                </div>
+                            </v-flex>
+                        </v-layout>
+                        
                     </v-flex>
                 </v-layout>
+                <br>
+                <br>
                 <v-layout>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <div id="blocks" style="width: 100%"></div>
-                    </v-flex>
-                </v-layout>
-                <v-layout>
-                    <v-btn block @click="create.dialog = true">Tạo mẫu mới</v-btn>
+                    <v-btn color="primary" block @click="create.dialog = true">Tạo mẫu mới</v-btn>
                 </v-layout>
                 <!-- <v-layout>
                     <div class="panel__top">
@@ -216,8 +231,8 @@ export default {
             // As an alternative we could use: `components: '<h1>Hello World Component!</h1>'`,
             fromElement: true,
             // Size of the editor
-            height: '300px',
-            width: '500px;',
+            height: '600px',
+            width: '600px;',
             // Disable the storage manager for the moment
             storageManager: {
                 id: 'gjs-',             // Prefix identifier that will be used inside storing and loading
@@ -230,14 +245,15 @@ export default {
                 storeHtml: true,        // Enable/Disable storing of components as HTML string
                 storeCss: true,         // Enable/Disable storing of rules as CSS string
             },
-            layerManager: {
-                appendTo: '.layers-container'
-            },
+            // layerManager: {
+            //     appendTo: '.layers-container'
+            // },
             traitManager: {
                 appendTo: '.traits-container',
             },
             // We define a default panel as a sidebar to contain layers
             panels: {
+                
                 defaults: [{
                 id: 'layers',
                 el: '.panel__right',
@@ -262,13 +278,13 @@ export default {
                         //     // Once activated disable the possibility to turn it off
                         //     togglable: false,
                         // }, 
-                        {
-                            id: 'show-style',
-                            active: true,
-                            label: 'Styles',
-                            command: 'show-styles',
-                            togglable: false,
-                        },
+                        // {
+                        //     id: 'show-style',
+                        //     active: true,
+                        //     label: 'Styles',
+                        //     command: 'show-styles',
+                        //     togglable: false,
+                        // },
                         // {
                         //     id: 'show-traits',
                         //     active: true,
@@ -285,22 +301,25 @@ export default {
             blockManager: {
                 appendTo: '#blocks',
                 blocks: [
-                    // {
-                    //     id: 'section', // id is mandatory
-                    //     label: '<b>Chia phần</b>', // You can use HTML/SVG inside labels
-                    //     attributes: { class:'gjs-block-section' },
-                    //     content: `<section>
-                    //     <h1>This is a fuck</h1>
-                    //     <div>This is juLorem adasdsadsadset</div>
-                    //     </section>`,
-                    // }, 
+
+                    {
+                        id: 'label',
+                        label: '<h2>Tiêu đề</h2>',
+                        content: '<h1 style="text-align: center;">Tiêu đề</h1>',
+                    },
+                    {
+                        id: 'section',
+                        label: '<h2>Đề mục</h2>',
+                        content: '<div><h3>Đề mục</h3><p>Nội dung........</p></div>',
+                    },
                     {
                         id: 'text',
-                        label: 'Text',
-                        content: '<div data-gjs-type="text">Viết vào đây here</div>',
-                    }, {
+                        label: '<h2>Văn bản</h2>',
+                        content: '<div data-gjs-type="text" style="width: 100%">Đoạn văn bản........</div>',
+                    }, 
+                    {
                         id: 'image',
-                        label: 'Image',
+                        label: '<h2>Hình ảnh</h2>',
                         // Select the component once it's dropped
                         select: true,
                         // You can pass components as a JSON instead of a simple HTML string,
@@ -309,49 +328,233 @@ export default {
                         // This triggers `active` event on dropped components and the `image`
                         // reacts by opening the AssetManager
                         activate: true,
+                    },
+                    {
+                        id: 'link',
+                        label: '<h2>Đường dẫn</h2>',
+                        // Select the component once it's dropped
+                        select: true,
+                        // You can pass components as a JSON instead of a simple HTML string,
+                        // in this case we also use a defined component type `image`
+                        content: '<span><a href="http://www.google.com.vn">Đường dẫn đến.............</a></span>',
+                        // This triggers `active` event on dropped components and the `image`
+                        // reacts by opening the AssetManager
+                        activate: true,
+                    },
+                    {
+                        id: 'divider',
+                        label: '<h2>Đường kẻ phân tách</h2>',
+                        // Select the component once it's dropped
+                        select: true,
+                        // You can pass components as a JSON instead of a simple HTML string,
+                        // in this case we also use a defined component type `image`
+                        content: '<hr style="color: #DDDDDD">',
+                        // This triggers `active` event on dropped components and the `image`
+                        // reacts by opening the AssetManager
+                        activate: true,
+                    },
+                    {
+                        id: 'table',
+                        label: '<h2>2 cột </h2>',
+                        // Select the component once it's dropped
+                        select: true,
+                        // You can pass components as a JSON instead of a simple HTML string,
+                        // in this case we also use a defined component type `image`
+                        content: '<table ><tr><td style="width: 400px;"><div>Nội dung</div></td><td style="width: 400px;"><div>Nội dung</div></td></table>',
+                        // This triggers `active` event on dropped components and the `image`
+                        // reacts by opening the AssetManager
+                        activate: true,
+                    },
+                    {
+                        id: 'form',
+                        label: '<h2>Thuộc tính</h2>',
+                        select: true,
+                        content: '<form><input type="text" disabled value="{{Contacts.firstName}}"></form>',
+                        activate: true,
                     }
                 ]
             },
             styleManager: {
                 appendTo: '.styles-container',
-                sectors: [{
-                    name: 'Dimension',
-                    open: false,
-                    // Use built-in properties
-                    buildProps: ['width', 'min-height', 'padding'],
-                    // Use `properties` to define/override single property
-                    properties: [
+                sectors: 
+                [
                     {
-                        // Type of the input,
-                        // options: integer | radio | select | color | slider | file | composite | stack
-                        type: 'integer',
-                        name: 'The width', // Label for the property
-                        property: 'width', // CSS property (if buildProps contains it will be extended)
-                        units: ['px', '%'], // Units, available only for 'integer' types
-                        defaults: 'auto', // Default value
-                        min: 0, // Min value, available only for 'integer' types
-                    }
-                    ]
-                },{
-                    name: 'Extra',
-                    open: false,
-                    buildProps: ['background-color', 'box-shadow', 'custom-prop'],
-                    properties: [
+                        name: 'Khoảng cách',
+                        open: false,
+                        // Use built-in properties
+                        buildProps: ['width', 'height', 'padding-top' , 'padding-bottom' , 'padding-left' , 'padding-right', 
+                        'margin-top', 'margin-bottom', 'margin-left', 'margin-right' ],
+                        // Use `properties` to define/override single property
+                        properties: [
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Chiều rộng</h3>', // Label for the property
+                                property: 'width', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Chiều cao</h3>', // Label for the property
+                                property: 'height', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Padding Top</h3>', // Label for the property
+                                property: 'padding-top', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Padding Bottom</h3>', // Label for the property
+                                property: 'padding-bottom', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Padding Left</h3>', // Label for the property
+                                property: 'padding-left', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Padding Right</h3>', // Label for the property
+                                property: 'padding-right', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Margin Top</h3>', // Label for the property
+                                property: 'margin-top', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Margin Bottom</h3>', // Label for the property
+                                property: 'margin-bottom', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Margin Left</h3>', // Label for the property
+                                property: 'margin-left', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                            {
+                                // Type of the input,
+                                // options: integer | radio | select | color | slider | file | composite | stack
+                                type: 'integer',
+                                name: '<h3>Margin Right</h3>', // Label for the property
+                                property: 'margin-right', // CSS property (if buildProps contains it will be extended)
+                                units: ['px', '%'], // Units, available only for 'integer' types
+                                defaults: 'auto', // Default value
+                                min: 0, // Min value, available only for 'integer' types
+                            },
+                        ]
+                    },
                     {
-                        id: 'custom-prop',
-                        name: 'Custom Label',
-                        property: 'font-size',
-                        type: 'select',
-                        defaults: '32px',
-                        // List of options, available only for 'select' and 'radio'  types
-                        options: [
-                        { value: '12px', name: 'Tiny' },
-                        { value: '18px', name: 'Medium' },
-                        { value: '32px', name: 'Big' },
-                        ],
+                        name: 'Chỉnh sửa nội dung',
+                        open: true,
+                        buildProps: ['background-color', 'font-family', 'custom-prop', 'color', 'font-size'],
+                        properties: [
+                            {
+                                id: 'font-size',
+                                name: '<h3>Cỡ chữ</h3>',
+                                property: 'font-size',
+                                type: 'integer',
+                                units: ['px', '%'],
+                                defaults: 'auto',
+                                min: 1
+                            },
+                            {
+                                id: 'font-family',
+                                name: '<h3>Phông chữ</h3>',
+                                property: 'font-family',
+                                type: 'select',
+                                defaults: 'auto',
+                                // List of options, available only for 'select' and 'radio'  types
+                                options: [
+                                    { value: 'Arial', name: 'Arial' },
+                                    { value: 'Times New Roman', name: 'Times New Roman' },
+                                    { value: 'Roboto', name: 'Roboto' },
+                                    { value: 'Georgia', name: 'Georgia' },
+                                    { value: 'Helvetica', name: 'Helvetica' },
+                                    { value: 'Tahoma', name: 'Tahoma' },
+                                    { value: 'Verdana', name: 'Verdana' },
+                                    { value: 'Impact', name: 'Impact' },
+                                    { value: 'Brush Script MT', name: 'Brush Script MT' },
+                                    { value: 'Trebuchet MS', name: 'Trebuchet MS' },
+                                    { value: 'Courier New', name: 'Courier New' },
+                                ],
+                            },
+                            {
+                                id: 'custom-prop',
+                                name: '<h3>Căn chỉnh</h3>',
+                                property: 'text-align',
+                                type: 'select',
+                                defaults: 'auto',
+                                // List of options, available only for 'select' and 'radio'  types
+                                options: [
+                                    { value: 'center', name: 'Chính giữa' },
+                                    { value: 'left', name: 'Trái' },
+                                    { value: 'right', name: 'Phải' },
+                                    { value: 'justify', name: 'Căn đều hai bên' },
+                                ],
+                            },
+                            {
+                                id: 'background-color',
+                                name: '<h3>Màu nền</h3>',
+                                property: 'background-color',
+                                type: 'color',
+                                defaults: 'auto',
+                            },
+                            {
+                                id: 'color',
+                                name: '<h3>Màu chữ</h3>',
+                                property: 'color',
+                                type: 'color',
+                                defaults: 'auto',
+                            }
+                        ]
                     }
-                    ]
-                }]
+                ]
             },
             assetManager: {
                 assets: [
@@ -373,9 +576,12 @@ export default {
                 ],
                 uploadText: 'Kéo ảnh từ máy của bạn vào đây hoặc click vào để thêm ảnh',
                 addBtnText: 'Thêm ảnh',
-
-
-            }
+                handleAdd: (textFromInput) => {
+                        // some check...
+                        console.log(textFromInput)
+                        this.editor.AssetManager.add(textFromInput);
+                    }
+                }
             });
             
             this.editor.Commands.add('show-styles', {
@@ -423,23 +629,23 @@ export default {
             alert('hú');
         },
         createNewTemplate(){
-            let html = localStorage.getItem('gjs-html');
-            let css = localStorage.getItem('gjs-css');
-            // localStorage.removeItem('gjs-html');
-            // localStorage.removeItem('gjs-css');
-            let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
-            let body = {
-                title: this.create.name,
-                content: content,
-                status: 'draft'
-            };
-            emailService.createEmailTemplate(this.idAccount, body).then(result => {
-                console.log(result);
-            }).catch(error => {
-                console.log(error);
-            }).finally(() => {
-                this.create.dialog = false;
-            })
+            // let html = localStorage.getItem('gjs-html');
+            // let css = localStorage.getItem('gjs-css');
+            // // localStorage.removeItem('gjs-html');
+            // // localStorage.removeItem('gjs-css');
+            // let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
+            // let body = {
+            //     title: this.create.name,
+            //     content: content,
+            //     status: 'draft'
+            // };
+            // emailService.createEmailTemplate(this.idAccount, body).then(result => {
+            //     console.log(result);
+            // }).catch(error => {
+            //     console.log(error);
+            // }).finally(() => {
+            //     this.create.dialog = false;
+            // })
         }
     },
 
@@ -459,7 +665,7 @@ export default {
 
 /* Primary color for the background */
 .gjs-one-bg {
-  background-color: #78366a;
+  background-color: #47453e;
 }
 
 /* Secondary color for the text color */
@@ -480,9 +686,9 @@ export default {
 }
 /* Reset some default styling */
 .gjs-cv-canvas {
-  top: 0;
   width: 100%;
   height: 100%;
+
 }
 
 .panel__top {

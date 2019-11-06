@@ -899,6 +899,7 @@
                         }
                     ]
                 }
+                console.log(body)
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
                 }).catch(error => {
