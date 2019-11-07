@@ -314,6 +314,20 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="logoutDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi lấy danh sách công việc. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -352,6 +366,7 @@ export default {
     },
     data(){
         return {
+            logoutDialog: false,
             failDialog: false,
             pagination: {
                 page: 1,
@@ -532,7 +547,7 @@ export default {
                 this.length = result.response.totalPage;
                 // this.viewTask.task = this.tasks[0];
             }).catch(error => {
-                this.failDialog = true;
+                // this.failDialog = true;
                 console.log(error);
             })
         },

@@ -16,7 +16,7 @@
                     </v-list-tile> -->
                     <v-list-tile @click="goToUserAndTeamSettingPage()">
                         <v-list-tile-content>
-                            Người dùng và nhóm
+                            Tài khoản và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile>
@@ -33,8 +33,34 @@
                     <v-flex xs3 sm3 md3 lg3 xl3>
                         <v-select label="Chọn tổ chức" :items="listAccount" v-model="currentAccountId" @change="findUserByAccount()"></v-select>
                     </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <v-btn color="red" dark round @click="confirmDeleteDialog = true">Xóa tổ chức này</v-btn>
+                    <v-flex xs1 sm1 md1 lg1 xl1>
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn
+                                    round
+                                    color="primary"
+                                    dark
+                                    v-on="on"
+                                    >
+                                Tùy chỉnh tổ chức
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-tile @click="inviteUser.dialog = true">
+                                    <v-list-tile-content>Thêm tài khoản vào tổ chức</v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile @click="renameAccount.dialog = true">
+                                    <v-list-tile-content>Đổi tên tổ chức</v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile @click="confirmDeleteDialog = true" v-if="currentAccount.deletedAt == null">
+                                    <v-list-tile-content>Xóa tổ chức</v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile v-if="currentAccount.deletedAt != null" @click="restoreDeletedAccount()">
+                                    <v-list-tile-content>Khôi phục tổ chức sau khi xóa</v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-menu>
+                        <!-- <v-btn color="red" dark round @click="confirmDeleteDialog = true">Xóa tổ chức này</v-btn> -->
                         <v-dialog v-model="confirmDeleteDialog" @click:outside="confirmDeleteDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
                             <v-card tile>
                                 <v-toolbar card dark color="red">
@@ -50,9 +76,27 @@
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
+                        <v-dialog v-model="renameAccount.dialog" width="30%" persistent>
+                            <v-card>
+                                <v-card-title style="background-color:#1E88E5;color:#fff">
+                                    <span class="headline">Đổi tên tổ chức</span>
+                                </v-card-title>
+                                <v-card-text>
+                                    <span class="mt-4"><strong>Nhập tên mới </strong></span>
+                                    <v-form v-model="inviteUser.valid">
+                                        <span class="ml-4"><v-text-field :rules="renameAccount.nameRules" v-model="renameAccount.name"></v-text-field></span>
+                                    </v-form>
+                                </v-card-text>
+                                <v-divider :divider="divider"></v-divider>
+                                <v-card-actions>
+                                    <v-btn flat color="primary" @click="rename()" :disabled="renameAccount.name.length == 0">Đổi tên</v-btn>
+                                    <v-btn flat color="red" @click="renameAccount.dialog = false">Đóng</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                     </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn>
+                    <v-flex xs1 sm1 md1 lg1 xl1 >
+                        <!-- <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn> -->
                         <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -72,15 +116,15 @@
                             </v-card>
                         </v-dialog>
                     </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs2 offset-sm2 offset-md2 offset-lg2 offset-xl2>
-                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức</v-btn>
+                    <v-flex xs1 sm1 md1 lg1 xl1>
+                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
                         <v-dialog v-model="createAccountDialog" width="30%" persistent>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
                                     <span class="headline">Tạo tổ chức mới</span>
                                 </v-card-title>
                                 <v-card-text>
-                                    <span class="mt-4"><strong>Tên chiến dịch </strong></span>
+                                    <span class="mt-4"><strong>Tên tổ chức </strong></span>
                                     <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
                                 </v-card-text>
                                 <v-divider :divider="divider"></v-divider>
@@ -91,17 +135,19 @@
                             </v-card>
                         </v-dialog>
                     </v-flex>
-                    
-                    
-                </v-layout>
-                <v-layout>
-                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs3 offset-sm3 offset-md3 offset-lg3 offset-xl3>
                         <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
                     </v-flex>
+                    
                 </v-layout>
+                <!-- <v-layout>
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
+                        
+                    </v-flex>
+                </v-layout> -->
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có người dùng nào">
+                        <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có tài khoản nào">
                             <template v-slot:items="props">
                                 <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
@@ -142,6 +188,9 @@
                     <h1>{{openUser.displayName}}</h1>
                 </v-card-title>
                 <v-divider :divider="divider"></v-divider> -->
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                    <span class="headline">Thiết lập quyền cho tài khoản</span>
+                </v-card-title>
                 <v-card-text>
                     <v-container>
                         <v-layout row>
@@ -163,40 +212,38 @@
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                <br>
                                 <v-tabs>
-                                    <v-tab href="#tab1">Contacts</v-tab>
+                                    <v-tab href="#tab1">Lead</v-tab>
                                     <v-tab href="#tab2">Admin</v-tab>
                                     <v-tab-item value="tab1">
-                                        <br>
-                                        <h3>Quyền Contact</h3>
-                                        <p>Tất cả người dùng đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho liên lạc, công ty, công việc</p>
+                                        <h3>Quyền đối với Lead</h3>
+                                        <p>Tất cả tài khoản đều có quyền truy cập cơ bản dưới đây. Các quyền này áp dụng cho lead, tổ chức, công việc</p>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Xem
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
                                                     <v-select v-model="openUser.contactPer.view" style="width: 100%; color: #0091AE;" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9c7f0aa6114b40507b3', openUser.contactPer.view)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Liên lạc (gửi email, sms...)
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
                                                     <v-select style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.communicate" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9d9f0aa6114b40507b4', openUser.contactPer.communicate)"></v-select>
                                                 </v-flex>
                                             </v-layout>
                                         </div>
                                         <div style="border: 1px solid #E0E0E0">
                                             <v-layout row wrap>
-                                                <v-flex xs9 sm9 md9 lg9 xl9 class="mt-4 pl-4">
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
                                                     Sửa
                                                 </v-flex>
-                                                <v-flex xs3 sm3 md3 lg3 xl3 class="pr-4"> 
+                                                <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4"> 
                                                     <v-select style="width: 100%; color: #0091AE;" v-model="openUser.contactPer.edit" :items="contactAccessLevels" @input="updateContactAccessLevel(openUser.userId, '5d1dd9e5f0aa6114b40507b5', openUser.contactPer.edit)"></v-select>
                                                 </v-flex>
                                             </v-layout>
@@ -208,7 +255,7 @@
                                             <v-layout row wrap>
                                                 <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4">
                                                     <h3>Quyền Admin</h3>
-                                                    <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý người dùng</p>
+                                                    <p>Thiết lập quyền để tùy chỉnh tổ chức và quản lý tài khoản</p>
                                                 </v-flex>
                                                 <v-flex xs2 sm2 md2 lg2 xl2>
                                                     <v-switch v-model="openUser.isAdmin" @change="changeAdminAccessLevel(openUser.userId, openUser.isAdmin)"></v-switch>
@@ -220,7 +267,7 @@
                                             <div style="border: 1px solid #E0E0E0">
                                                 <v-layout row wrap>
                                                     <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
-                                                        Thêm & tùy chỉnh người dùng
+                                                        Thêm & tùy chỉnh tài khoản
                                                     </v-flex>
                                                     <v-flex xs2 sm2 md2 lg2 xl2>
                                                         <v-switch v-model="openUser.adminPer.AddAndEditUsers" @change="updateAdminAccessLevel(openUser.userId, '5d2559f577201a474d72eac9', openUser.adminPer.AddAndEditUsers)"></v-switch>
@@ -305,7 +352,7 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Có lỗi xảy ra khi thêm người dùng. Hãy thử lại
+                    Có lỗi xảy ra khi thêm tài khoản. Hãy thử lại
                 </v-card-text>
                 <v-card-actions>
                 <v-btn flat color="red" @click="inviteUser.fail = false">OK</v-btn>
@@ -315,7 +362,7 @@
         <v-dialog v-model="newAccount.dialog" width="30%" persistent>
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                    <span class="headline">Chuyển người dùng sang tổ chức khác</span>
+                    <span class="headline">Chuyển tài khoản sang tổ chức khác</span>
                 </v-card-title>
                 <v-card-text>
                     <span class="mt-4"><strong>Chọn tổ chức </strong></span>
@@ -349,7 +396,7 @@ export default {
         search(){
             this.users = [];
             for (let i = 0; i < this.allUsers.length; i++){
-                if (this.allUsers[i].displayName.toLowerCase().includes(this.search.toLowerCase().trim())){
+                if (this.normalText(this.allUsers[i].displayName).toLowerCase().includes(this.normalText(this.search.toLowerCase().trim()))){
                     this.users.push(this.allUsers[i])
                 }
             }
@@ -460,10 +507,45 @@ export default {
                 userId: ''
             },
             confirmDeleteDialog: false,
-            search: ''
+            search: '',
+            renameAccount: {
+                dialog: false,
+                name: '',
+                nameRules: [
+                    v => !!v || 'Không được để trống',
+                ],
+            }
         }
     },
     methods: {
+        returnRole(role){
+            if (role == 'contact'){
+                return 'Lead'
+            }
+            else if (role == 'admin'){
+                return 'Quản lý'
+            }
+            else if (role == 'sysadmin'){
+                return 'Quản trị hệ thống'
+            }
+        },
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
+        rename(){
+            let body = {
+                accountName: this.renameAccount.name
+            }
+            accountService.renameAccount(this.currentAccountId, body).then(result => {
+                console.log(result);
+                this.renameAccount.name = '';
+                this.getListAccount()
+            }).then(error => {
+                console.log(error);
+            }).finally(() => {
+                this.renameAccount.dialog = false;
+            })
+        },
         openNewAccountDialog(id){
             this.newAccount.lists = [];
             for (let i = 0; i < this.listAccount.length; i++){
@@ -512,6 +594,14 @@ export default {
                 console.log(error)
             })
         },
+        restoreDeletedAccount(){
+            accountService.restoreDeletedAccount(this.currentAccountId).then(result => {
+                console.log(result);
+                this.getListAccount();
+            }).catch(error =>{
+                console.log(error);
+            })
+        },
         getListAccount(){
             this.listAccount = [];
             accountService.getListAccount().then(result => {
@@ -527,7 +617,8 @@ export default {
                     }
                     let obj = {
                         text: name,
-                        value: result.response[i].accountId
+                        value: result.response[i].accountId,
+                        deletedAt: result.response[i].deletedAt
                     }
                     this.listAccount.push(obj);
                 }
@@ -559,9 +650,10 @@ export default {
             for (let i = 0; i < this.listAccount.length;i++){
                 if (this.currentAccountId == this.listAccount[i].value){
                     this.currentAccount = this.listAccount[i];
+
                 }
             }
-            console.log(this.currentAccountId)
+            console.log(this.currentAccount)
             permissionsService.findUserByAccount(this.currentAccountId).then(result => {
                 console.log(result);
                 for (let i = 0; i<result.response.length;i++){
@@ -574,7 +666,7 @@ export default {
                     }
                     else {
                         for (let k = 0; k < obj.groupPermission.length; k++){
-                            role = role + ' ' + obj.groupPermission[k].name + ' | '
+                            role = role + ' ' + this.returnRole(obj.groupPermission[k].name) + ' | '
                         }
                     }
                     result.response[i].role = role;

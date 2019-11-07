@@ -4,7 +4,8 @@ import { responseService } from './response.service'
 
 export default{
     findUserByAccount, createAccount, getListAccount, 
-    deleteAccount, inviteUser, setNewAccount
+    deleteAccount, inviteUser, setNewAccount,
+    renameAccount, restoreDeletedAccount
 }
 
 function findUserByAccount(idAccount){
@@ -61,5 +62,24 @@ function setNewAccount(idAccount, idUser, body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiContact}/${idAccount}/user/${idUser}/account`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function renameAccount(idAccount, body){
+    let request = {
+        method: 'PUT',
+        headers: authHeader(), 
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiUrl}accounts/${idAccount}/rename`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function restoreDeletedAccount(idAccount){
+    let request = {
+        method: 'PUT',
+        headers: authHeader(), 
+    }
+    let endpoint = `${config.apiUrl}accounts/${idAccount}/restore`
     return responseService.fetchRetry(endpoint, request, 1)
 }

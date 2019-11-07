@@ -7,7 +7,7 @@
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToListsPage()">
+      <v-btn flat color="#fff" @click="goToListsPage()" v-if="contactViewEverything">
         Danh sách 
         <v-icon color="white" class="ml-2">list</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
@@ -18,8 +18,8 @@
         <v-icon color="white" class="ml-2">work_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
-      <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToSMSServicePage()">
+      <v-divider :divider="divider" vertical ></v-divider>
+      <v-btn flat color="#fff" @click="goToSMSServicePage()" v-if="contactCommunicateEverything">
         SMS 
         <v-icon color="white" class="ml-2">textsms</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
@@ -167,7 +167,8 @@
     data: () => ({
       divider: true,
       currentUser: null,
-      
+      contactViewEverything: false,
+      contactCommunicateEverything: false
     }),
     components: {
       loginAgen,
@@ -176,6 +177,15 @@
     methods:{
       getCurrentUser(){
         this.currentUser = JSON.parse(localStorage.getItem('user'));
+        let role = this.currentUser.authorities;
+        for (let i = 0; i < role.length; i++){
+          if (role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+            this.contactViewEverything = true;
+          }
+          if (role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+            this.contactCommunicateEverything = true;
+          } 
+        }
       },
       goToContactsPage(){
         let link = `/contacts/${this.currentUser.accountId}`
