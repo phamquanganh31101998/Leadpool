@@ -72,25 +72,28 @@
                         </div>
                     </v-flex>
                 </v-layout> -->
-                <v-layout row wrap style="height: 600px">
+                <br>
+                <v-layout row wrap style="height: 700px">
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-layout>
-                            <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on }">
+                        <v-tooltip top v-if="!create.btn">
+                            <template v-slot:activator="{ on }">
+                                <v-layout>
+                                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs11 offset-sm11 offset-md11 offset-lg11 offset-xl11>
                                         <v-icon color="primary" dark v-on="on">help</v-icon>
-                                    </template>
-                                    <span>Tooltip</span>
-                                </v-tooltip>
-                            </v-flex>
-                        </v-layout>
+                                    </v-flex>
+                                </v-layout>
+                            </template>
+                            <span>Kéo các thành phần vào ở cột bên trái, chỉnh sửa thuộc tính của thành phần ở cột bên phải</span>
+                            <span></span>
+                        </v-tooltip>
+                        <br>
                         <v-layout>
                             <v-flex xs2 sm2 md2 lg2 xl2>
                                 <div id="blocks" style="width: 100%; height: 100%;" ></div>
                             </v-flex>
                             <v-flex xs10 sm10 md10 lg10 xl10>
                                 <div class="editor-row" style="height: 100%">
-                                    <div class="editor-canvas">
+                                    <div class="editor-canvas" style="height: 600px;">
                                         <div id="gjs" style="height: 600px;"></div>
                                     </div>
                                     <div class="panel__right" >
@@ -295,9 +298,9 @@ export default {
                     ]
                 }]
             },
-            selectorManager: {
-                appendTo: '.styles-container'
-            },
+            // selectorManager: {
+            //     appendTo: '.styles-container'
+            // },
             blockManager: {
                 appendTo: '#blocks',
                 blocks: [
@@ -307,15 +310,16 @@ export default {
                         label: '<h2>Tiêu đề</h2>',
                         content: '<h1 style="text-align: center;">Tiêu đề</h1>',
                     },
-                    {
-                        id: 'section',
-                        label: '<h2>Đề mục</h2>',
-                        content: '<div><h3>Đề mục</h3><p>Nội dung........</p></div>',
-                    },
+                    // {
+                    //     id: 'section',
+                    //     label: '<h2>Đề mục</h2>',
+                    //     content: '<div><h3>Đề mục</h3><p>Nội dung........</p></div>',
+                    // },
                     {
                         id: 'text',
                         label: '<h2>Văn bản</h2>',
-                        content: '<div data-gjs-type="text" style="width: 100%">Đoạn văn bản........</div>',
+                        content: '<div data-gjs-type="text" style="width: 100%">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Leo urna molestie at elementum eu facilisis sed. Tortor id aliquet lectus proin nibh nisl. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Venenatis cras sed felis eget velit aliquet sagittis id. Pretium quam vulputate dignissim suspendisse in est. Massa placerat duis ultricies lacus sed turpis tincidunt id. Duis ultricies lacus sed turpis tincidunt. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et netus. Rhoncus mattis rhoncus urna neque viverra justo nec. Malesuada fames ac turpis egestas integer eget. Felis bibendum ut tristique et egestas quis ipsum. Augue neque gravida in fermentum.</div>',
+                        
                     }, 
                     {
                         id: 'image',
@@ -366,12 +370,47 @@ export default {
                         activate: true,
                     },
                     {
-                        id: 'form',
-                        label: '<h2>Thuộc tính</h2>',
+                        id: 'firstName',
+                        label: '<h2>Họ</h2>',
                         select: true,
-                        content: '<form><input type="text" disabled value="{{Contacts.firstName}}"></form>',
+                        content: '<span>{{Contacts.firstName}}</span>',
                         activate: true,
-                    }
+                    },
+                    {
+                        id: 'lastName',
+                        label: '<h2>Tên</h2>',
+                        select: true,
+                        content: '<span>{{Contacts.lastName}}</span>',
+                        activate: true,
+                    },
+                    {
+                        id: 'city',
+                        label: '<h2>Thành phố</h2>',
+                        select: true,
+                        content: '<span>{{Contacts.city}}</span>',
+                        activate: true,
+                    },
+                    {
+                        id: 'phone',
+                        label: '<h2>Số điện thoại</h2>',
+                        select: true,
+                        content: '<span>{{Contacts.phone}}</span>',
+                        activate: true,
+                    },
+                    {
+                        id: 'bussiness',
+                        label: '<h2>Công ty</h2>',
+                        select: true,
+                        content: '<span>{{Contacts.bussiness}}</span>',
+                        activate: true,
+                    },
+                    {
+                        id: 'email',
+                        label: '<h2>Email</h2>',
+                        select: true,
+                        content: '<span>{{Contacts.email}}</span>',
+                        activate: true,
+                    },
                 ]
             },
             styleManager: {
@@ -379,7 +418,7 @@ export default {
                 sectors: 
                 [
                     {
-                        name: 'Khoảng cách',
+                        name: 'Spacing',
                         open: false,
                         // Use built-in properties
                         buildProps: ['width', 'height', 'padding-top' , 'padding-bottom' , 'padding-left' , 'padding-right', 
@@ -390,7 +429,7 @@ export default {
                                 // Type of the input,
                                 // options: integer | radio | select | color | slider | file | composite | stack
                                 type: 'integer',
-                                name: '<h3>Chiều rộng</h3>', // Label for the property
+                                name: '<h3>Width</h3>', // Label for the property
                                 property: 'width', // CSS property (if buildProps contains it will be extended)
                                 units: ['px', '%'], // Units, available only for 'integer' types
                                 defaults: 'auto', // Default value
@@ -400,7 +439,7 @@ export default {
                                 // Type of the input,
                                 // options: integer | radio | select | color | slider | file | composite | stack
                                 type: 'integer',
-                                name: '<h3>Chiều cao</h3>', // Label for the property
+                                name: '<h3>Height</h3>', // Label for the property
                                 property: 'height', // CSS property (if buildProps contains it will be extended)
                                 units: ['px', '%'], // Units, available only for 'integer' types
                                 defaults: 'auto', // Default value
@@ -490,13 +529,13 @@ export default {
                         ]
                     },
                     {
-                        name: 'Chỉnh sửa nội dung',
+                        name: 'Styling',
                         open: true,
                         buildProps: ['background-color', 'font-family', 'custom-prop', 'color', 'font-size'],
                         properties: [
                             {
                                 id: 'font-size',
-                                name: '<h3>Cỡ chữ</h3>',
+                                name: '<h3>Size</h3>',
                                 property: 'font-size',
                                 type: 'integer',
                                 units: ['px', '%'],
@@ -505,7 +544,7 @@ export default {
                             },
                             {
                                 id: 'font-family',
-                                name: '<h3>Phông chữ</h3>',
+                                name: '<h3>Font</h3>',
                                 property: 'font-family',
                                 type: 'select',
                                 defaults: 'auto',
@@ -526,28 +565,28 @@ export default {
                             },
                             {
                                 id: 'custom-prop',
-                                name: '<h3>Căn chỉnh</h3>',
+                                name: '<h3>Alignment</h3>',
                                 property: 'text-align',
                                 type: 'select',
                                 defaults: 'auto',
                                 // List of options, available only for 'select' and 'radio'  types
                                 options: [
-                                    { value: 'center', name: 'Chính giữa' },
-                                    { value: 'left', name: 'Trái' },
-                                    { value: 'right', name: 'Phải' },
-                                    { value: 'justify', name: 'Căn đều hai bên' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'right', name: 'Right' },
+                                    { value: 'justify', name: 'Justify' },
                                 ],
                             },
                             {
                                 id: 'background-color',
-                                name: '<h3>Màu nền</h3>',
+                                name: '<h3>Background Color</h3>',
                                 property: 'background-color',
                                 type: 'color',
                                 defaults: 'auto',
                             },
                             {
                                 id: 'color',
-                                name: '<h3>Màu chữ</h3>',
+                                name: '<h3>Text Color</h3>',
                                 property: 'color',
                                 type: 'color',
                                 defaults: 'auto',
@@ -575,7 +614,7 @@ export default {
                     },
                 ],
                 uploadText: 'Kéo ảnh từ máy của bạn vào đây hoặc click vào để thêm ảnh',
-                addBtnText: 'Thêm ảnh',
+                addBtnText: 'Thêm ảnh từ link',
                 handleAdd: (textFromInput) => {
                         // some check...
                         console.log(textFromInput)
@@ -629,23 +668,23 @@ export default {
             alert('hú');
         },
         createNewTemplate(){
-            // let html = localStorage.getItem('gjs-html');
-            // let css = localStorage.getItem('gjs-css');
-            // // localStorage.removeItem('gjs-html');
-            // // localStorage.removeItem('gjs-css');
-            // let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
-            // let body = {
-            //     title: this.create.name,
-            //     content: content,
-            //     status: 'draft'
-            // };
-            // emailService.createEmailTemplate(this.idAccount, body).then(result => {
-            //     console.log(result);
-            // }).catch(error => {
-            //     console.log(error);
-            // }).finally(() => {
-            //     this.create.dialog = false;
-            // })
+            let html = localStorage.getItem('gjs-html');
+            let css = localStorage.getItem('gjs-css');
+            // localStorage.removeItem('gjs-html');
+            // localStorage.removeItem('gjs-css');
+            let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
+            let body = {
+                title: this.create.name,
+                content: content,
+                status: 'draft'
+            };
+            emailService.createEmailTemplate(this.idAccount, body).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.create.dialog = false;
+            })
         }
     },
 
@@ -660,6 +699,8 @@ export default {
 /* We can remove the border we've set at the beginnig */
 #gjs {
   border: none;
+  width: 100%;
+  height: 100%;
 }
 /* Theming */
 

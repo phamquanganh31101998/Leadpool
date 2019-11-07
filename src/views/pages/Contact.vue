@@ -731,7 +731,7 @@
           this.contacts = this.allContacts;
           this.pages = result.response.totalPage
         }).catch(error => {
-          this.failDialog = true;
+          // this.failDialog = true;
           console.log(error);
         })
       },
@@ -879,13 +879,13 @@
         this.createFirstCondition.firstConditionMenu = false;
         this.firstConditionMenu = false;
       },
-      getList(){
-        listService.getList(this.idUser).then(result => {
-          this.lists = result.response;
-        }).catch(error => {
-          console.log(error)
-        })
-      },
+      // getList(){
+      //   listService.getList(this.idUser).then(result => {
+      //     this.lists = result.response;
+      //   }).catch(error => {
+      //     console.log(error)
+      //   })
+      // },
       setChosenList(index){
         this.conditions = [];
         this.conditions = this.lists[index].conditions;
@@ -928,19 +928,19 @@
           console.log(error);
         })
       },
-      createFilter(name, conditions){
-        let body = {
-          name: name,
-          conditions: conditions
-        }
-        listService.createNewList(this.idUser, body).then(result => {
-          this.getList();
-          this.saveFilter.name = '';
-          this.saveFilter.dialog = false;
-        }).catch(error => {
-          console.log(error);
-        })
-      },
+      // createFilter(name, conditions){
+      //   let body = {
+      //     name: name,
+      //     conditions: conditions
+      //   }
+      //   listService.createNewList(this.idUser, body).then(result => {
+      //     this.getList();
+      //     this.saveFilter.name = '';
+      //     this.saveFilter.dialog = false;
+      //   }).catch(error => {
+      //     console.log(error);
+      //   })
+      // },
       normalText(str){
           return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
       },
@@ -963,7 +963,7 @@
 
     },
     created() {
-      this.getList();
+      // this.getList();
       this.getAllContact()
     }
   }

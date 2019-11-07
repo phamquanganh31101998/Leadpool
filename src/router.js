@@ -16,6 +16,8 @@ import emailTemplate from './views/components/creates/EmailTemplate'
 import SMSService from './views/pages/SMSService.vue'
 import SMSTest from './views/pages/SMSTest.vue'
 import EmailService from './views/pages/EmailService.vue'
+import Sorry from './views/pages/Sorry.vue'
+import { user } from './stores/user.module'
 Vue.use(Router)
 
 const router = new Router({
@@ -182,6 +184,8 @@ const router = new Router({
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
         if (role) {
+          let user = localStorage.getItem('user');
+          console.log(user);
           next()
         } else {
           next('/login')
@@ -190,6 +194,13 @@ const router = new Router({
     {
       path: '/login',
       component: login,
+      props: (router) => ({
+        token: router.query.token
+      })
+    },
+    {
+      path: '/sorry',
+      component: Sorry,
       props: (router) => ({
         token: router.query.token
       })
