@@ -26,18 +26,18 @@
                             Quản lý mẫu email
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page = 'create'">
+                    <!-- <v-list-tile @click="page = 'create', create.editorDialog = true">
                         <v-list-tile-content :style="fontWeight[1]">
                             Tạo mẫu email
                         </v-list-tile-content>
-                    </v-list-tile>
+                    </v-list-tile> -->
                 </v-list>
                 <br>
                 <v-divider :divider="divider"></v-divider>
                 <!-- <v-select v-model="status" :items="statusToChoose" label="Status" style="width: 60%;" class="ml-2"></v-select> -->
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
-                <!-- <v-layout row>
+                <v-layout row>
                     <v-flex xs3 sm3 md3 lg3 xl3 class="ml-3 mt-3">
                         <v-card>
                             <v-card-title>
@@ -46,6 +46,9 @@
                             <v-card-text>
                                 <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
                             </v-card-text>
+                            <v-card-actions>
+                                <v-btn color="primary" block @click="create.editorDialog = true">Tạo mẫu email mới</v-btn>
+                            </v-card-actions>
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3 mt-3">
@@ -58,12 +61,12 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                </v-layout> -->
+                </v-layout>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='create'">
-                <v-layout>
+                <!-- <v-layout>
                     <v-btn color="primary" @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
-                </v-layout>
+                </v-layout> -->
                 <!-- <v-layout>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div class="panel__top" style="width: 100%">
@@ -73,7 +76,7 @@
                     </v-flex>
                 </v-layout> -->
                 <br>
-                <v-layout row wrap style="height: 700px">
+                <!-- <v-layout row wrap style="height: 700px">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-tooltip top v-if="!create.btn">
                             <template v-slot:activator="{ on }">
@@ -106,12 +109,12 @@
                         </v-layout>
                         
                     </v-flex>
-                </v-layout>
+                </v-layout> -->
                 <br>
                 <br>
-                <v-layout>
+                <!-- <v-layout>
                     <v-btn color="primary" block @click="create.dialog = true">Tạo mẫu mới</v-btn>
-                </v-layout>
+                </v-layout> -->
                 <!-- <v-layout>
                     <div class="panel__top">
                         <div class="panel__basic-actions"></div>
@@ -154,6 +157,50 @@
                 </v-card-text>
             </v-card>
         </v-dialog> -->
+        <v-dialog v-model="create.editorDialog" fullscreen>
+            <v-card>
+                <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="create.editorDialog = false">
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Tạo mẫu email mới</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-items>
+                        <v-tooltip top v-if="!create.btn">
+                            <template v-slot:activator="{ on }">
+                                <v-icon color="primary" dark v-on="on">help</v-icon>
+                            </template>
+                            <span>Kéo các thành phần vào ở cột bên trái, chỉnh sửa thuộc tính của thành phần ở cột bên phải</span>
+                            <span></span>
+                        </v-tooltip>
+                    </v-toolbar-items>
+                    <v-toolbar-items>
+                        
+                        <v-btn dark flat @click="create.dialog = true">Lưu lại</v-btn>
+                    </v-toolbar-items>
+                </v-toolbar>
+                <v-layout>
+                    <v-btn color="primary" @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
+                </v-layout>
+                <v-layout>
+                    <v-flex xs2 sm2 md2 lg2 xl2>
+                        <div id="blocks" style="width: 100%; height: 100%;" ></div>
+                    </v-flex>
+                    <v-flex xs10 sm10 md10 lg10 xl10>
+                        <div class="editor-row" style="height: 100%;">
+                            <div class="editor-canvas" style="height: 100%;">
+                                <div id="gjs" style="height: 100%;"></div>
+                            </div>
+                            <div class="panel__right" >
+                                <div class="layers-container"></div>
+                                <div class="styles-container"></div>
+                                <div class="traits-container"></div>
+                            </div>
+                        </div>
+                    </v-flex>
+                </v-layout>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -173,7 +220,8 @@ export default {
             create: {
                 dialog: false,
                 name: '',
-                btn: true
+                btn: true,
+                editorDialog: false,
             }
         }
     },
@@ -310,15 +358,15 @@ export default {
                         label: '<h2>Tiêu đề</h2>',
                         content: '<h1 style="text-align: center;">Tiêu đề</h1>',
                     },
-                    // {
-                    //     id: 'section',
-                    //     label: '<h2>Đề mục</h2>',
-                    //     content: '<div><h3>Đề mục</h3><p>Nội dung........</p></div>',
-                    // },
+                    {
+                        id: 'section',
+                        label: '<h2>Đề mục</h2>',
+                        content: '<div><h3>Đề mục</h3><p>Nội dung........</p></div>',
+                    },
                     {
                         id: 'text',
                         label: '<h2>Văn bản</h2>',
-                        content: '<div data-gjs-type="text" style="width: 100%">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Leo urna molestie at elementum eu facilisis sed. Tortor id aliquet lectus proin nibh nisl. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Venenatis cras sed felis eget velit aliquet sagittis id. Pretium quam vulputate dignissim suspendisse in est. Massa placerat duis ultricies lacus sed turpis tincidunt id. Duis ultricies lacus sed turpis tincidunt. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et netus. Rhoncus mattis rhoncus urna neque viverra justo nec. Malesuada fames ac turpis egestas integer eget. Felis bibendum ut tristique et egestas quis ipsum. Augue neque gravida in fermentum.</div>',
+                        content: '<div data-gjs-type="text" style="width: 100%"></span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Leo urna molestie at elementum eu facilisis sed. Tortor id aliquet lectus proin nibh nisl. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Venenatis cras sed felis eget velit aliquet sagittis id. Pretium quam vulputate dignissim suspendisse in est. Massa placerat duis ultricies lacus sed turpis tincidunt id. Duis ultricies lacus sed turpis tincidunt. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et netus. Rhoncus mattis rhoncus urna neque viverra justo nec. Malesuada fames ac turpis egestas integer eget. Felis bibendum ut tristique et egestas quis ipsum. Augue neque gravida in fermentum.</span></div>',
                         
                     }, 
                     {
@@ -341,6 +389,18 @@ export default {
                         // You can pass components as a JSON instead of a simple HTML string,
                         // in this case we also use a defined component type `image`
                         content: '<span><a href="http://www.google.com.vn">Đường dẫn đến.............</a></span>',
+                        // This triggers `active` event on dropped components and the `image`
+                        // reacts by opening the AssetManager
+                        activate: true,
+                    },
+                    {
+                        id: 'btn-link',
+                        label: '<h2>Đường dẫn (nút bấm)</h2>',
+                        // Select the component once it's dropped
+                        select: true,
+                        // You can pass components as a JSON instead of a simple HTML string,
+                        // in this case we also use a defined component type `image`
+                        content: '<span><a href="https://www.google.com/" style="background-color: #1c87c9;border: none;color: white;padding: 20px 34px;text-align: center;text-decoration: none;display: inline-block;font-size: 20px;margin: 4px 2px;cursor: pointer;">Click Here</a></span>',
                         // This triggers `active` event on dropped components and the `image`
                         // reacts by opening the AssetManager
                         activate: true,
@@ -373,42 +433,42 @@ export default {
                         id: 'firstName',
                         label: '<h2>Họ</h2>',
                         select: true,
-                        content: '<span>{{Contacts.firstName}}</span>',
+                        content: '<span>{{Contact.firstName}}</span>',
                         activate: true,
                     },
                     {
                         id: 'lastName',
                         label: '<h2>Tên</h2>',
                         select: true,
-                        content: '<span>{{Contacts.lastName}}</span>',
+                        content: '<span>{{Contact.lastName}}</span>',
                         activate: true,
                     },
                     {
                         id: 'city',
                         label: '<h2>Thành phố</h2>',
                         select: true,
-                        content: '<span>{{Contacts.city}}</span>',
+                        content: '<span>{{Contact.city}}</span>',
                         activate: true,
                     },
                     {
                         id: 'phone',
                         label: '<h2>Số điện thoại</h2>',
                         select: true,
-                        content: '<span>{{Contacts.phone}}</span>',
+                        content: '<span>{{Contact.phone}}</span>',
                         activate: true,
                     },
                     {
                         id: 'bussiness',
                         label: '<h2>Công ty</h2>',
                         select: true,
-                        content: '<span>{{Contacts.bussiness}}</span>',
+                        content: '<span>{{Contact.bussiness}}</span>',
                         activate: true,
                     },
                     {
                         id: 'email',
                         label: '<h2>Email</h2>',
                         select: true,
-                        content: '<span>{{Contacts.email}}</span>',
+                        content: '<span>{{Contact.email}}</span>',
                         activate: true,
                     },
                 ]
@@ -592,6 +652,12 @@ export default {
                                 defaults: 'auto',
                             }
                         ]
+                    },
+                    {
+                        name: 'Border',
+                        open: false,
+                        buildProps: ['border'],
+                        
                     }
                 ]
             },
@@ -684,6 +750,8 @@ export default {
                 console.log(error);
             }).finally(() => {
                 this.create.dialog = false;
+                this.create.editorDialog = false;
+                this.getEmailTemplate()
             })
         }
     },
@@ -700,9 +768,12 @@ export default {
 #gjs {
   border: none;
   width: 100%;
-  height: 100%;
+  height: 100%
 }
+
 /* Theming */
+
+
 
 /* Primary color for the background */
 .gjs-one-bg {
