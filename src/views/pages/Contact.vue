@@ -86,10 +86,10 @@
     <v-layout row class="mt-3">
       <v-flex xs6 sm4 md3 lg3 xl3>
         <v-list>
-          <v-list-tile @click="getAllContact()">
+          <v-list-tile @click="getAllContact(), section = 'allContact', page = 1">
             <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="getMyContact()">
+          <v-list-tile @click="getMyContact(), section = 'myContact', page = 1">
             <v-list-tile-title>Các Lead của tôi</v-list-tile-title>
           </v-list-tile>
           <!-- <v-list-tile @click="dialog = true">
@@ -417,6 +417,9 @@
       },
     },
     data: () => ({
+      currentUser: null,
+      logoutDialog: false,
+      section: 'allContact',
       createFailDialog: false,
       createWaiting: false,
       failDialog: false,
@@ -658,6 +661,9 @@
     },
 
     methods: {
+      getCurrentUser(){
+        this.currentUser = localStorage.getItem('user');
+      },
       getPropertyName(value){
         let result = ''
         for(let i = 0; i<this.createFirstCondition.contactProperties.length;i++){
@@ -738,27 +744,35 @@
       getMyContact(){
         this.contacts = []
         this.allContacts = [];
-        let currentEmail = JSON.parse(localStorage.getItem('user')).username;
-        let conditions = [
-          [
-            {
-              conditionId: null,
-              object: "Contact",
-              property: "createdBy",
-              condition: "EQUAL",
-              value: currentEmail
-            }
-          ]
-        ]
-        listService.findContactByCondition(this.idUser, conditions).then(result => {
-          this.allContacts = result.response;
+        contacts.getMyContact(this.idUser, this.page).then(result => {
+          console.log(result)
+          this.allContacts = result.response.results;
           this.contacts = this.allContacts;
-          this.page = 1;
-          this.pages = 1;
+          this.pages = result.response.totalPage
         }).catch(error => {
-          this.failDialog = true;
           console.log(error);
         })
+        // let currentEmail = JSON.parse(localStorage.getItem('user')).username;
+        // let conditions = [
+        //   [
+        //     {
+        //       conditionId: null,
+        //       object: "Contact",
+        //       property: "createdBy",
+        //       condition: "EQUAL",
+        //       value: currentEmail
+        //     }
+        //   ]
+        // ]
+        // listService.findContactByCondition(this.idUser, conditions).then(result => {
+        //   this.allContacts = result.response;
+        //   this.contacts = this.allContacts;
+        //   this.page = 1;
+        //   this.pages = 1;
+        // }).catch(error => {
+        //   this.failDialog = true;
+        //   console.log(error);
+        // })
         // contacts.getAllContact(this.idUser, this.page).then(result => {
         //   const res = result.response.results;
         //   const email = JSON.parse(localStorage.getItem("user")).username;
@@ -949,7 +963,13 @@
     watch:{
       page(){
         this.contacts = []
-        this.getAllContact()
+        if (this.section == 'allContact'){
+          this.getAllContact()
+        }
+        else {
+          this.getMyContact()
+        }
+        
       },
       search(){
         this.contacts = [];
@@ -964,6 +984,7 @@
     },
     created() {
       // this.getList();
+      this.getCurrentUser();
       this.getAllContact()
     }
   }

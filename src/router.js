@@ -184,9 +184,13 @@ const router = new Router({
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
         if (role) {
-          let user = localStorage.getItem('user');
-          console.log(user);
-          next()
+          let user = JSON.parse(localStorage.getItem('user'));
+          if(user.accountId){
+            next()
+          }
+          else {
+            next('/sorry')
+          }
         } else {
           next('/login')
         }}
@@ -203,7 +207,20 @@ const router = new Router({
       component: Sorry,
       props: (router) => ({
         token: router.query.token
-      })
+      }),
+      beforeEnter(to, from, next) {
+        const role = localStorage.getItem('token')
+        if (role) {
+          let user = JSON.parse(localStorage.getItem('user'));
+          if(user.accountId){
+            next('/')
+          }
+          else {
+            next()
+          }
+        } else {
+          next('/login')
+        }}
     },
     {
       path: '*',

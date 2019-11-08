@@ -4,7 +4,9 @@ import { responseService } from './response.service'
 const qs = require('qs');
 
 export default {
-    createContact, getAllContact, getdetailContact, deleteContact, findUserByAccount, updateContactDetail, getActionLog, getAllEmail
+    createContact, getAllContact, getdetailContact, 
+    deleteContact, findUserByAccount, updateContactDetail, 
+    getActionLog, getAllEmail, getMyContact
 }
 
 function createContact(id,data) {
@@ -84,5 +86,18 @@ function getAllEmail(idAccount){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/user/getAllEmail`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getMyContact(idAccount, page){
+    let a = {
+        page: page
+    }
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let _qs = qs.stringify(a);
+    let endpoint = `${config.apiContact}/${idAccount}/contacts/mycontact?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
