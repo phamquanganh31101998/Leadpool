@@ -2,7 +2,7 @@
     <div class="text-center">
         <v-menu v-model="menu" :close-on-content-click="false" :nudge-width="120" left offset-y>
             <template v-slot:activator="{ on }">
-                <v-icon v-on="on" x-large>account_circle</v-icon>
+                <v-icon v-on="on" x-large style="height: 50px; padding-bottom: 10px;">account_circle</v-icon>
             </template>
             <v-list two-line class="pl-3 pr-3">
                 <v-list-tile avatar>

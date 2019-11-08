@@ -35,7 +35,7 @@
                                 <v-card flat style="border: 1px solid #CCCCCC">
                                     <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                                         <template v-for="(andCondition, andIndex) in orCondition">
-                                            <v-card flat style="border: 1px solid #CCCCCC">
+                                            <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA;">
                                                 <v-card-text style="padding: 8px 8px;">
                                                     <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold">{{getPropertyName(andCondition.property)}}</span> có trong
                                                         <template v-for="val in andCondition.value">

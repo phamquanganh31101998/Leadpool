@@ -40,7 +40,7 @@
                                         </v-card-title>
                                         <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                                             <template v-for="(andCondition, andIndex) in orCondition">
-                                                <v-card flat style="border: 1px solid #CCCCCC">
+                                                <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA;">
                                                     <v-card-text style="padding: 8px 8px;">
                                                         <v-layout row>
                                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
@@ -230,7 +230,7 @@ export default {
             this.contacts = [];
             for (let i = 0; i < this.allContacts.length; i++){
                 const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
-                if(name.toLowerCase().includes(this.search.toLowerCase())){
+                if(this.normalText(name).toLowerCase().includes(this.normalText(this.search).toLowerCase())){
                     this.contacts.push(this.allContacts[i]);
                 }
             }
@@ -248,43 +248,43 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'email'
                 },
                 {
                     text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'phone'
                 },
                 {
                     text: 'LIFECYCLE STAGE',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'lifecycleStage'
                 },
                 {
                     text: 'THUỘC SỞ HỮU',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'contactOwner'
                 },
                 {
                     text: 'THÀNH PHÓ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'city'
                 },
                 {
                     text: 'NGÀNH NGHỀ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'bussiness'
                 },
             ],
@@ -421,6 +421,9 @@ export default {
         }
     },
     methods: {
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
         getPropertyName(value){
             let result = ''
             for(let i = 0; i<this.newCondition.contactProperties.length;i++){

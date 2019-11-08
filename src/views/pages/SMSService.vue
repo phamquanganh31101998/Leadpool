@@ -576,16 +576,8 @@
                                     </v-menu> -->
                                     <v-menu offset-x>
                                         <template v-slot:activator="{ on }">
-                                            <td>
-                                                <v-btn
-                                                    color="primary"
-                                                    dark
-                                                    outline flat
-                                                    v-on="on"
-                                                    round
-                                                    >
-                                                Chọn hành động
-                                                </v-btn>
+                                            <td class="text-xs-right">
+                                                <v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn>
                                             </td>
                                         </template>
                                         <v-list>
@@ -841,7 +833,7 @@ export default {
                     },
                     {
                         text: 'HÀNH ĐỘNG',
-                        align: 'left',
+                        align: 'right',
                         value: 'fat',
                         sortable: false
                     }
@@ -1062,7 +1054,9 @@ export default {
             // console.log(this.send.date);
             // console.log(this.send.time);
             // console.log(this.send.phoneNumberToSend)
-            let timeToSend = moment(this.send.date + ' ' + this.send.time);
+            let timeToSend = moment(this.send.date + 'T' + this.send.time);
+            console.log(moment(timeToSend).utc().format());
+            // console.log(this.coverTimeToSend(timeToSend))
             // console.log(this.coverTimeToSend(timeToSend.subtract(7, 'hours')));
             let listPhone = [];
             for (let i = 0; i < this.send.phoneNumberToSend.length;i++){
@@ -1076,16 +1070,17 @@ export default {
                     smsDeviceId: this.send.chosenCampaign
                 },
                 content: this.send.chosenContent,
-                timeToSend: this.coverTimeToSend(timeToSend.subtract(7, 'hours')),
+                timeToSend: this.coverTimeToSend(timeToSend),
                 listPhone: listPhone
             }
-            SMSService.createSchedule(this.idAccount, body).then(result => {
-                console.log(result);
-                this.getSchedule();
-                this.page = 'schedule'
-            }).catch(error => {
-                console.log(error)
-            })
+            // console.log(body)
+            // SMSService.createSchedule(this.idAccount, body).then(result => {
+            //     console.log(result);
+            //     this.getSchedule();
+            //     this.page = 'schedule'
+            // }).catch(error => {
+            //     console.log(error)
+            // })
         },
 
         //SaveKey

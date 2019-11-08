@@ -40,8 +40,8 @@
             </v-layout>
         </v-card-text>
         <v-card-actions>
-            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId)" :disabled="disableSendButton || waiting">Send</v-btn>
-            <v-btn flat color="red" @click="closeEmailTemplateDialog()">Cancel</v-btn>
+            <v-btn flat color="green" @click="sendEmailViaTemplate(idAccount, idContact, templateId)" :disabled="disableSendButton || waiting">Gửi</v-btn>
+            <v-btn flat color="red" @click="closeEmailTemplateDialog()">Đóng</v-btn>
         </v-card-actions>
     </v-card>
     <v-card v-else width="100%">
