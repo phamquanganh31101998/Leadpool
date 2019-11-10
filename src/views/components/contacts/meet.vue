@@ -28,7 +28,7 @@
                                                 <!-- <div v-if="hover"> -->
                                                 <div v-if="hover">
                                                     <v-layout row>
-                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <!-- <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
                                                                 offset-y>
                                                                 <template v-slot:activator="{ on }">
@@ -50,9 +50,9 @@
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
                                                             <a color="indigo">Ghim
                                                             </a>
-                                                        </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="confirmDeleteLog(meetLog.logId)">Xóa
+                                                        </v-flex> -->
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 offset-xs9 offset-sm9 offset-md9 offset-xl9 offset-lg9>
+                                                            <a color="indigo" @click="confirmDeleteLog(meetLog.logId)" v-if="access">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -85,7 +85,10 @@
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="meetLog.dateLog" label="Ngày" persistent-hint
-                                                    prepend-icon="event" @blur="date = meetLog.dateToPut" v-on="on">
+                                                    prepend-icon="event" @blur="date = meetLog.dateToPut" v-on="on" v-if="access">
+                                                </v-text-field>
+                                                <v-text-field v-model="meetLog.dateLog" label="Ngày" persistent-hint
+                                                    prepend-icon="event" @blur="date = meetLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
                                             <v-date-picker v-model="meetLog.dateLog" no-title @input="meetLog.menu1Log = false"></v-date-picker>
@@ -97,13 +100,15 @@
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="meetLog.timeLog" label="Giờ"
-                                                    prepend-icon="access_time" readonly v-on="on"></v-text-field>
+                                                    prepend-icon="access_time" readonly v-on="on" v-if="access"></v-text-field>
+                                                <v-text-field v-model="meetLog.timeLog" label="Giờ"
+                                                    prepend-icon="access_time" readonly v-else></v-text-field>
                                             </template>
                                             <v-time-picker v-if="meetLog.modal2Log" v-model="meetLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Hủy bỏ</v-btn>
+                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Chọn</v-btn>
                                                 <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
-                                                <v-btn flat color="red" @click="meetLog.modal2Log = false">OK</v-btn>
+                                                <!-- <v-btn flat color="red" @click="meetLog.modal2Log = false">Chọn</v-btn> -->
                                             </v-time-picker>
                                         </v-dialog>
                                     </v-flex>
@@ -123,10 +128,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> đã lưu lại cuộc họp</p>
+                                <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> đã lưu lại thông tin cuộc họp</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Lưu</v-btn>
+                                <v-btn v-if="hover && access" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Lưu</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -153,6 +158,7 @@
     </v-layout>
 </template>
 <script>
+    import contact from '../../../services/contacts.service'
     import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
@@ -181,7 +187,10 @@
             deleteLogDialog: {
                 dialog: false,
                 id: ''
-            }
+            },
+            currentContact: null,
+            currentUser: null,
+            access: false,
         }),
         computed: {
             computedDateFormatted() {
@@ -255,9 +264,33 @@
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
                 return moment(time).add(-7, 'h').format('HH:mm')
+            },
+            getDetail(){
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    this.currentContact = result.response
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getCurrentUser()
+                })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length;i++){
+                    if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                        this.access = true;
+                    }
+                    if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                        if (this.detail.contactOwner == this.currentUser.username){
+                            this.access = true;
+                        }
+                    }
+                }
             }
         },
         created(){
+            this.getDetail()
             this.getMeetLogsList();
             eventBus.$on('updateLogMeetList', ()=>{
                 this.getMeetLogsList();

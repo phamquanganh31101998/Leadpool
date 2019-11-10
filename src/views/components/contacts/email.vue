@@ -17,7 +17,7 @@
                                         <v-flex xs7 sm7 lg8 xl8>
                                             <v-expand-transition>
                                                 <div v-if="hover">
-                                                    <v-layout row>
+                                                    <!-- <v-layout row>
                                                         <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
                                                                 offset-y>
@@ -41,11 +41,11 @@
                                                             <a color="indigo">Ghim
                                                             </a>
                                                         </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg2 xl3>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 offset-xs9 offset-sm9 offset-md9 offset-lg9 offset-xl9>
                                                             <a color="indigo">Xóa
                                                             </a>
                                                         </v-flex>
-                                                    </v-layout>
+                                                    </v-layout> -->
                                                 </div>
                                             </v-expand-transition>
                                         </v-flex>
@@ -65,7 +65,7 @@
                             </v-layout>
                         </v-card-title>
                         <v-divider :divider="divider"></v-divider>
-                        <v-layout row class="mt-2">
+                        <!-- <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-btn outline small color="primary" class="ml-4">Đã gửi</v-btn>
                                 <span class="ml-4">Opened: <strong>{{email.open}}</strong></span>
@@ -95,7 +95,7 @@
                                     </v-timeline-item>
                                 </v-timeline>
                             </v-flex>
-                        </v-layout>
+                        </v-layout> -->
                         <v-layout row wrap class="mt-3">
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
                                 <p>{{email.body}}</p>
@@ -147,8 +147,8 @@
                                             <v-expand-transition>
                                                 <!-- <div v-if="hover"> -->
                                                 <div v-if="hover">
-                                                    <v-layout row>
-                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                    <v-layout row v-if="access">
+                                                        <!-- <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
                                                                 offset-y>
                                                                 <template v-slot:activator="{ on }">
@@ -170,8 +170,8 @@
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
                                                             <a color="indigo">Ghim
                                                             </a>
-                                                        </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg2 xl3>
+                                                        </v-flex> -->
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 offset-xs9 offset-sm9 offset-md9 offset-lg9 offset-xl9>
                                                             <a color="indigo" @click="confirmDeleteLog(emailLog.logId)">Xóa
                                                             </a>
                                                         </v-flex>
@@ -205,7 +205,10 @@
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="emailLog.dateLog" label="Ngày" persistent-hint
-                                                    prepend-icon="event" @blur="date = emailLog.dateToPut" v-on="on">
+                                                    prepend-icon="event" @blur="date = emailLog.dateToPut" v-on="on" v-if="access">
+                                                </v-text-field>
+                                                <v-text-field v-model="emailLog.dateLog" label="Ngày" persistent-hint
+                                                    prepend-icon="event" @blur="date = emailLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
                                             <v-date-picker v-model="emailLog.dateLog" no-title @input="emailLog.menu1Log = false"></v-date-picker>
@@ -217,12 +220,15 @@
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="emailLog.timeLog" label="Giờ"
-                                                    prepend-icon="access_time" readonly v-on="on"></v-text-field>
+                                                    prepend-icon="access_time" readonly v-on="on" v-if="access"></v-text-field >
+                                                    <v-text-field v-model="emailLog.timeLog" label="Giờ"
+                                                    prepend-icon="access_time" readonly v-else></v-text-field >
                                             </template>
                                             <v-time-picker v-if="emailLog.modal2Log" v-model="emailLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">Cancel</v-btn>
-                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">OK</v-btn>
+                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">Chọn</v-btn>
+                                                <!-- <v-btn flat color="red" @click="emailLog.modal2Log = false">Đóng</v-btn> -->
+                                                
                                             </v-time-picker>
                                         </v-dialog>
                                     </v-flex>
@@ -242,10 +248,10 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã gửi email</p>
+                                <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã lưu thông tin về email</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Lưu</v-btn>
+                                <v-btn v-if="hover && access" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Lưu lại</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
@@ -277,6 +283,7 @@
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
 import emailService from '../../../services/email.service';
+import contact from '../../../services/contacts.service'
     export default {
         props: {
             idAccount: {
@@ -303,7 +310,10 @@ import emailService from '../../../services/email.service';
             deleteLogDialog: {
                 dialog: false,
                 id: ''
-            }
+            },
+            currentContact: null,
+            currentUser: null,
+            access: false,
         }),
         computed: {
             computedDateFormatted() {
@@ -316,6 +326,29 @@ import emailService from '../../../services/email.service';
             }
         },
         methods: {
+            getDetail(){
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    this.currentContact = result.response
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getCurrentUser()
+                })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length;i++){
+                    if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                        this.access = true;
+                    }
+                    if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                        if (this.detail.contactOwner == this.currentUser.username){
+                            this.access = true;
+                        }
+                    }
+                }
+            },
             formatDate(date) {
                 if (!date) return null
                 const [year, month, day] = date.split('-')
@@ -391,6 +424,7 @@ import emailService from '../../../services/email.service';
             }
         },
         created(){
+            this.getDetail();
             this.getEmail();
             eventBus.$on('updateEmailList', ()=>{
                 this.getEmail();

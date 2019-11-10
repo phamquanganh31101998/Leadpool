@@ -31,11 +31,11 @@
           <v-flex xs3 sm3 md3 lg3 xl3>
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                <v-btn dark color="#3E82F7" block v-on="on">Tạo Lead mới</v-btn>
+                <v-btn dark color="#3E82F7" block v-on="on"> <v-icon>person_add</v-icon> Tạo Lead mới</v-btn>
               </template>
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Tạo Lead mới</span>
+                  <span class="headline">  Tạo Lead mới</span>
                 </v-card-title>
                 <v-card-text style="padding: 0px 16px;">
                   <v-form v-model="valid">

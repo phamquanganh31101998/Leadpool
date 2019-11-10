@@ -152,19 +152,9 @@
                                 <td>{{ props.item.displayName }}</td>
                                 <td>{{ props.item.userEmail }}</td>
                                 <td>{{ props.item.role }}</td>
-                                <v-menu offset-x>
+                                <v-menu>
                                     <template v-slot:activator="{ on }">
-                                        <td>
-                                            <v-btn
-                                                color="primary"
-                                                dark
-                                                outline flat
-                                                v-on="on"
-                                                round
-                                                >
-                                            Chọn hành động
-                                            </v-btn>
-                                        </td>
+                                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
                                     </template>
                                     <v-list>
                                         <v-list-tile @click="openPermissionDialog(props.item.userId)">
@@ -428,7 +418,7 @@ export default {
                 },
                 {
                     text: 'Hành động',
-                    align: 'left',
+                    align: 'right',
                     sortable: false,
                     value: 'role'
                 },

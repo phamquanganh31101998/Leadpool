@@ -1,5 +1,13 @@
 <template>
   <v-toolbar dark color="#3E82F7" style="height: 50px; padding: 0px 0px;">
+    <v-toolbar-title>
+      <!-- <v-img
+        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+        aspect-ratio="1"
+        class="grey lighten-2"
+      > -->
+    </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
       <v-btn flat color="#fff" @click="goToContactsPage()" style="height: 28px; margin-bottom: 10px;">
         LEADS 
@@ -167,8 +175,8 @@
     data: () => ({
       divider: true,
       currentUser: null,
-      contactViewEverything: false,
-      contactCommunicateEverything: false
+      contactViewEverything: true,
+      contactCommunicateEverything: true
     }),
     components: {
       loginAgen,

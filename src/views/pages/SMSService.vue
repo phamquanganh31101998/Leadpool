@@ -1,12 +1,12 @@
 <template>
-    <v-content class="mt-5 pr-3 pd-3">
+    <v-content class="mt-5 pr-3 pd-3 pl-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 class="ml-3">Gửi tin nhắn SMS</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row>
+        <v-layout row v-if="access">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <v-list-tile @click="page='send'">
@@ -628,6 +628,23 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-layout v-else>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-card flat>
+                    <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                        <v-card flat style="background-color: #FDEDEE">
+                            <v-card-title>
+                                <h2>Không có quyền truy cập</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                Bạn phải có quyền Liên lạc tất cả đối với Lead thì mới có thể sử dụng chức năng này. Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                            </v-card-text>
+                        </v-card>
+                    </v-card-text>
+                </v-card>
+                
+            </v-flex>
+        </v-layout>
     </v-content>
 </template>
 <script>
@@ -710,6 +727,8 @@ export default {
     },
     data(){
         return {
+            currentUser: null,
+            access: false,
             fontWeight: ['fontWeight: bold', '', '', ''],
             page: 'send',
             divider: true,
@@ -1451,7 +1470,22 @@ export default {
                 
             //     this.schedule.list = [...tempArr];
             // })
-        }
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                    this.access = true;
+                }
+            }
+            if (this.access == true){
+                this.getList();
+                this.getTemplate();
+                this.getListDeviceKey();
+                this.getSchedule();
+            }
+        },
         // markAllContact(){
         //     for (let i = 0; i < this.send.displayContacts.length;i++){
         //         if(this.send.displayContacts[i].chosen == false){
@@ -1483,12 +1517,14 @@ export default {
         //     console.log(this.send.chosenContacts);
         // }
     },
+
     created(){
-        this.getList();
-        this.getTemplate();
-        this.getListDeviceKey();
-        // this.getAllContact();
-        this.getSchedule();
+        // this.getList();
+        // this.getTemplate();
+        // this.getListDeviceKey();
+        // // this.getAllContact();
+        // this.getSchedule();
+        this.getCurrentUser();
         this.send.dateFormatted = this.formatDate(new Date().toISOString().substr(0, 10))
     }
 }

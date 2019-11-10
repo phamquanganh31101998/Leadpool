@@ -9,9 +9,9 @@
         </v-layout>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Chi tiết danh sách: {{list.name}}</h1>
+                <h1 class="ml-3">Chi tiết danh sách {{list.name}}</h1>
             </v-flex>
-            <v-flex xs12 sm12 md7 lg6 xl6>
+            <v-flex xs12 sm12 md7 lg6 xl6 v-if="access">
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm Lead theo tên.." single-line hide-details></v-text-field>
@@ -26,7 +26,7 @@
         <v-divider class="mt-4" :divider="divider"></v-divider>
         <br>
         <br>
-        <v-layout row>
+        <v-layout row v-if="access">
             <v-flex xs12 sm12 md3 lg3 xl3>
                 <div class="conditions">
                     <v-card>
@@ -89,6 +89,23 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
+        <v-layout v-else>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-card flat>
+                    <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                        <v-card flat style="background-color: #FDEDEE">
+                            <v-card-title>
+                                <h2>Không có quyền truy cập</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                Bạn phải có quyền Xem tất cả các Lead mới có thể sử dụng chức năng này. Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                            </v-card-text>
+                        </v-card>
+                    </v-card-text>
+                </v-card>
+                
+            </v-flex>
+        </v-layout>
         <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="red">
@@ -132,6 +149,7 @@ export default {
     },
     data(){
         return {
+            access: false,
             currentUser: null,
             divider: true,
             search: '',
@@ -144,47 +162,49 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'email'
                 },
                 {
                     text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'phone'
                 },
                 {
                     text: 'LIFECYCLE STAGE',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'lifecycleStage'
                 },
                 {
                     text: 'THUỘC SỞ HỮU',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'contactOwner'
                 },
                 {
                     text: 'THÀNH PHỐ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'city'
                 },
                 {
                     text: 'NGÀNH NGHỀ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'bussiness'
                 },
             ],
-            list: null,
+            list: {
+                name: ''
+            },
             newCondition: {
                 contactProperties: [
                     {
@@ -297,6 +317,15 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+                    this.access = true;
+                }
+            }
+            if (this.access){
+                this.getThisList();
+            }
         },
         goToNewListPage(){
             let link = `/contacts/${this.currentUser.accountId}/lists/newList`
@@ -305,7 +334,7 @@ export default {
     },
     created(){
         this.getCurrentUser();
-        this.getThisList();
+        // this.getThisList();
     }
 }
 </script>
