@@ -111,6 +111,7 @@
 <script>
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
+    import moment from 'moment';
     export default {
         data: vm => ({
             divider: true,
@@ -171,9 +172,11 @@
                 this.$emit('closeCreateLogMeetDialog');
             },
             createLogMeet(){
+                let timeString = this.date + 'T' + this.time
+                let timeToSend = moment(timeString).utc().format().substring(0, 19)
                 let data = {
                     "contactId": this.idContact,
-                    "time":this.date + 'T' + this.time + ':00',
+                    "time": timeToSend,
                     "log": this.log,
                     "type":"meeting",
                 }

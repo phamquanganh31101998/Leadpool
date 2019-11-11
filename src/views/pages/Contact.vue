@@ -314,11 +314,12 @@
         <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
           <template v-slot:items="props">
               <tr>
-              <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
-              <td class="text-xs-left">{{ props.item.email }}</td>
-              <td class="text-xs-left">{{ props.item.phone }}</td>
-              <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-              <td class="text-xs-left">{{ covertime(props.item.updateAt) }}</td>
+              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.lastName }} {{ props.item.firstName }}</a></td>
+                <td class="text-xs-left">{{ props.item.email }}</td>
+                <td class="text-xs-left">{{ props.item.phone }}</td>
+                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                <td class="text-xs-left">{{ covertime(props.item.createdAt) }}</td>
               
                 <v-menu>
                   <template v-slot:activator="{ on }">
@@ -453,8 +454,8 @@
       lifecycleStages: [
         'Lead',
         'Subscriber',
-        'Marketing qualified lead',
-        'Sales qualified lead',
+        'Marketing Qualified Lead',
+        'Sales Qualified Lead',
         'Opportunity',
         'Customer',
         'Evangelist',
@@ -533,7 +534,7 @@
       newCondition: {
         contactProperties: [
             {
-                text: 'Lifecycle Stage',
+                text: 'Vòng đời',
                 value: 'lifecycle_stage'
             },
             {
@@ -591,7 +592,7 @@
       createFirstCondition: {
         contactProperties: [
             {
-                text: 'Lifecycle Stage',
+                text: 'Vòng đời',
                 value: 'lifecycle_stage'
             },
             {
@@ -798,7 +799,7 @@
       },
       covertime(time) {
         if (_.isNull(time)) return '';
-        return moment(time).format('DD/MM/YYYY hh:mm:ss')
+        return moment(time).format('DD/MM/YYYY HH:mm:ss')
       },
       takeLink(idContact){
         return `/contacts/${this.idUser}/contact/${idContact}`;

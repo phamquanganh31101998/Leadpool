@@ -30,7 +30,7 @@
                             <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
                         </v-time-picker>
                     </v-dialog> -->
-                    <v-select v-model="time" :items="timeToChoose"></v-select>
+                    <v-select v-model="time" label="Giờ" :items="timeToChoose"></v-select>
                 </v-flex>
                 
             </v-layout>
@@ -77,16 +77,16 @@
             <v-divider :divider="divider"></v-divider>
             <v-layout row class="mt-2">
                 <v-flex>
-                    <p>Kiểu</p>
+                    <p>Loại</p>
                     <v-menu :close-on-content-click="false" top offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
-                                {{type}}
+                                {{returnType(type)}}
                             </a>
                         </template>
                         <v-list>
                             <v-list-tile v-for="(item, index) in types" :key="index" @click="choisE(item)">
-                                <v-list-tile-title>{{ item }}</v-list-tile-title>
+                                <v-list-tile-title>{{ returnType(item) }}</v-list-tile-title>
                             </v-list-tile>
                         </v-list>
                     </v-menu>
@@ -138,14 +138,14 @@
                                 <template v-slot:activator="{ on }">
                                     <span>
                                         <a color="indigo" v-on="on">
-                                            {{day}}
+                                            {{returnReminder(day)}}
                                         </a>
                                     </span>
                                     
                                 </template>
                                 <v-list>
                                     <v-list-tile @click="day = 'The day of'">
-                                        <v-list-tile-title>Cùng ngày</v-list-tile-title>
+                                        <v-list-tile-title>Trong ngày</v-list-tile-title>
                                     </v-list-tile>
                                     <v-list-tile @click="day = 'The day before'">
                                         <v-list-tile-title>Trước một ngày</v-list-tile-title>
@@ -220,7 +220,7 @@
                         
                     </v-menu> -->
                 </v-flex>
-                <v-flex>
+                <!-- <v-flex>
                     <p>Thứ tự</p>
                     <v-menu :close-on-content-click="false" offset-y>
                         <template v-slot:activator="{ on }">
@@ -237,7 +237,7 @@
                             </v-card-title>
                         </v-card>
                     </v-menu>
-                </v-flex>
+                </v-flex> -->
             </v-layout>
         </v-flex>
         <br>
@@ -387,6 +387,34 @@
         },
 
         methods: {
+            returnReminder(str){
+                if (str == 'The day of'){
+                    return 'Trong ngày'
+                }
+                else if (str == 'The day before'){
+                    return 'Trước một ngày'
+                }
+                else if (str == 'The week before'){
+                    return 'Trước một tuần'
+                }
+                else if (str == 'Custom Date'){
+                    return 'Chọn ngày'
+                }
+                else {
+                    return 'Không nhắc trước'
+                }
+            },
+            returnType(type){
+                if (type == 'To-do'){
+                    return 'Công việc'
+                }
+                else if (type == 'Email'){
+                    return 'Gửi Email'
+                }
+                else {
+                    return 'Gọi điện'
+                }
+            },
             coverTime(time){
                 if (_.isNull(time)) return '';
                 return moment(time).format('YYYY-MM-DD')
@@ -447,14 +475,17 @@
                 else if (this.day == 'Custom Date'){
                     emailReminder = this.coverTime(this.emailReminder.date) + 'T' + this.emailReminder.time + ":00";
                 }
+                let timeString = this.date + 'T' + this.time
+                let timeToSend = moment(timeString).utc().format().substring(0, 19)
+                let reminderToSend = (emailReminder == '' ? '' : moment(emailReminder).utc().format().substring(0, 19))
                 let task = {
                     "contactId": this.idContact,
                     "title": this.title,
-                    "dueDate": this.date + 'T' + this.time + ":00",
+                    "dueDate": timeToSend,
                     "note": this.note,
                     "type": this.type,
                     "assignedTo": this.chosenEmail,
-                    "emailReminder": emailReminder,
+                    "emailReminder": reminderToSend,
                     "queue":"None",
                     "status":"NOTCOMPLETED"
                 }

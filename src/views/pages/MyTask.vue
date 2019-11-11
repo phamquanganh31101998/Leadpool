@@ -66,7 +66,7 @@
                                     </v-tooltip>
                                 </td>
                                 <td>{{ props.item.title }}</td>
-                                <td>{{ props.item.type }}</td>
+                                <td>{{ returnType(props.item.type) }}</td>
                                 <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
                                 <td>
                                     <v-btn color="primary" round outline flat @click.stop="getTaskById(props.item.taskId)">Xem chi tiết</v-btn>
@@ -110,18 +110,19 @@
                                     <v-menu ref="menu1" v-model="viewTask.task.menu1" :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                         <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Hạn cuối" persistent-hint prepend-icon="event"
+                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Ngày hết hạn" persistent-hint prepend-icon="event"
                                                 v-on="on">
                                             </v-text-field>
                                         </template>
-                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @change="updateTask(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate + 'T' + viewTask.task.dueDateTime + ':00')"></v-date-picker>
+                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @change="updateTaskTime(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate, viewTask.task.dueDateTime)"></v-date-picker>
                                     </v-menu>
                                 </v-flex>
                                 <v-flex xs4 sm3 md2 lg2 xl2>
                                     <v-select 
+                                        label="Giờ"
                                         v-model="viewTask.task.dueDateTime" 
                                         :items="viewTask.timeToChoose"
-                                        @change="updateTask(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate + 'T' + viewTask.task.dueDateTime + ':00')"
+                                        @change="updateTaskTime(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate, viewTask.task.dueDateTime)"
                                         ></v-select>
                                 </v-flex>
                             </v-layout>
@@ -155,18 +156,18 @@
                                     <v-menu :close-on-content-click="false" top offset-y>
                                         <template v-slot:activator="{ on }">
                                             <a color="indigo" v-on="on">
-                                                {{viewTask.task.type}}
+                                                {{returnType(viewTask.task.type)}}
                                             </a>
                                         </template>
                                         <v-list>
                                             <v-list-tile @click="changeType(viewTask.task.taskId, 'To-do')" style="backgroundColor: white;">
-                                                <v-list-tile-title>To-do</v-list-tile-title>
+                                                <v-list-tile-title>Công việc</v-list-tile-title>
                                             </v-list-tile>
                                             <v-list-tile @click="changeType(viewTask.task.taskId, 'Email')" style="backgroundColor: white;">
-                                                <v-list-tile-title>Email</v-list-tile-title>
+                                                <v-list-tile-title>Gửi Email</v-list-tile-title>
                                             </v-list-tile>
                                             <v-list-tile @click="changeType(viewTask.task.taskId, 'Call')" style="backgroundColor: white;">
-                                                <v-list-tile-title>Call</v-list-tile-title>
+                                                <v-list-tile-title>Gọi điện</v-list-tile-title>
                                             </v-list-tile>
                                         </v-list>
                                     </v-menu>
@@ -225,19 +226,19 @@
                                                     </v-list-tile> -->
                                                     <v-menu :close-on-content-click="false" offset-y v-model="viewTask.task.menu2">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-list-tile v-on="on" @click="viewTask.task.emailReminderChoice = 'Custom Date'">
+                                                            <v-list-tile v-on="on" @click="viewTask.task.emailReminderChoice = 'Chọn ngày'">
                                                                 <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                             </v-list-tile>
                                                         </template>
                                                         <v-date-picker 
                                                             v-model="viewTask.task.emailReminderDate" 
                                                             no-title 
-                                                            @change="updateTask(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate + 'T' + viewTask.task.emailReminderTime + ':00')"
+                                                            @change="updateTaskTime(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate, viewTask.task.emailReminderTime)"
                                                             >
                                                         </v-date-picker>
                                                     </v-menu>
                                                     
-                                                    <v-list-tile @click="setNoReminder(viewTask.task.taskId)">
+                                                    <v-list-tile @click="setNoReminder(viewTask.task.taskId), viewTask.task.emailReminderChoice = 'Không nhắc trước'">
                                                         <v-list-tile-title>Không nhắc trước</v-list-tile-title>
                                                     </v-list-tile>
                                                 </v-list>
@@ -246,7 +247,7 @@
                                     </v-layout>
                                 
                                 </v-flex>
-                                <v-flex v-if="viewTask.task.emailReminderChoice!= 'No reminder'">
+                                <v-flex v-if="viewTask.task.emailReminderChoice!= 'Không nhắc trước'">
                                     <p>Thời gian</p>
                                     <v-menu :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width >
@@ -261,11 +262,11 @@
                                             v-model="viewTask.task.emailReminderTime" 
                                                 :items="viewTask.timeToChoose" 
                                                 style="backgroundColor: white; padding: 0px 10px; width: 100px;"
-                                                @change="updateTask(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate + 'T' + viewTask.task.emailReminderTime + ':00')"
+                                                @change="updateTaskTime(viewTask.task.taskId, 'a', 'emailReminder', viewTask.task.emailReminderDate, viewTask.task.emailReminderTime)"
                                             ></v-select>
                                     </v-menu>
                                 </v-flex>
-                                <v-flex>
+                                <!-- <v-flex>
                                     <p>Thứ tự</p>
                                     <v-menu :close-on-content-click="false" offset-y>
                                         <template v-slot:activator="{ on }">
@@ -282,7 +283,7 @@
                                             </v-card-title>
                                         </v-card>
                                     </v-menu>
-                                </v-flex>
+                                </v-flex> -->
                             </v-layout>
                         </v-flex>
                         <br>
@@ -505,7 +506,6 @@ export default {
                     e.displayText = e.name + ' (' + e.email + ')'
                     this.viewTask.allEmail.push(e);
                     this.viewTask.searchedEmail.push(e);
-                    console.log(this.viewTask.searchedEmail);
                 });
             }).catch(error => {
                 console.log(error);
@@ -553,7 +553,23 @@ export default {
         },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
-            return moment(time).subtract(7, 'hours').format('DD/MM/YYYY HH:mm')
+            return moment(time).format('DD/MM/YYYY HH:mm')
+        },
+        returnType(type){
+            if (type == 'To-do'){
+                return 'Công việc'
+            }
+            else if (type == 'Email'){
+                return 'Gửi Email'
+            }
+            else {
+                return 'Gọi điện'
+            }
+        },
+        updateTaskTime(id, contactId, property, date, time){
+            let timeString = date + 'T' + time;
+            let timeToSend = moment(timeString).utc().format().substring(0, 19);
+            this.updateTask(id, contactId, property, timeToSend);
         },
         updateTask(taskId, contactId, property, value){
             let body = {
@@ -573,8 +589,8 @@ export default {
             this.getMyTask(this.pagination.page, this.status, this.type);
         },
         setNoReminder(id){
-            this.viewTask.task.emailReminderChoice = 'No reminder'
             this.updateTask(id, 'a', 'emailReminder', '');
+            this.viewTask.task.emailReminderChoice = 'Không nhắc trước'
         },
         getTaskById(id){
             taskService.getTaskById(this.idAccount, id).then(result => {
@@ -583,25 +599,28 @@ export default {
                 result.response.menu1 = false;
                 result.response.time1 = false;
                 result.response.dueDateDate = result.response.dueDate.substring(0, 10);
-                result.response.dueDateTime = result.response.dueDate.substring(11, 16);
+                result.response.dueDateTime = this.coverTimeHourOnly(result.response.dueDate)
                 result.response.menu2 = false;
                 result.response.time2 = false;
                 if(result.response.emailReminder != null){
                     result.response.emailReminderDate = result.response.emailReminder.substring(0, 10);
-                    result.response.emailReminderTime = result.response.emailReminder.substring(11, 16);
-                    result.response.emailReminderChoice = 'Custom Date'
+                    result.response.emailReminderTime = this.coverTimeHourOnly(result.response.emailReminder)
+                    result.response.emailReminderChoice = 'Chọn ngày'
                 }
                 else {
                     result.response.emailReminderDate = '';
                     result.response.emailReminderTime = '08:00';
-                    result.response.emailReminderChoice = 'No reminder'
+                    result.response.emailReminderChoice = 'Không nhắc trước'
                 }
                 this.viewTask.task = result.response;
                 this.viewTask.dialog = true;
-                console.log(this.viewTask.task)
             }).catch(error => {
                 console.log(error);
             })
+        },
+        coverTimeHourOnly(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm')
         },
     },
     created(){

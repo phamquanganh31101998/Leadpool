@@ -341,10 +341,19 @@
                                                     <v-layout row slot-scope="{ hover }">
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
                                                             <template v-if="item.property == 'lifecycleStage'">
-                                                                <v-select :readonly="!access" label="Lifecycle stage" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access" label="Vòng đời" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
-                                                                <v-select :readonly="!access" label="Thuộc sở hữu" :items="allEmail" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'leadStatus'">
+                                                                <v-select :readonly="!access" label="Trạng thái" :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'city'">
+                                                                <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'bussiness'">
+                                                                <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else>
                                                                 <v-text-field :label="item.title" v-model="item.value" filled :readonly="!access"
@@ -682,13 +691,26 @@
             lifecycleStages: [
                 'Lead',
                 'Subscriber',
-                'Marketing qualified lead',
-                'Sales qualified lead',
+                'Marketing Qualified Lead',
+                'Sales Qualified Lead',
                 'Opportunity',
                 'Customer',
                 'Evangelist',
                 'Other'
             ],
+            allLeadStatus: [
+                'New', 'Open', 'In Progress', 'Open Deal', 'Unqualified', 'Attempted to Contact', 'Connected', 'Bad Timing'
+            ],
+            cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
+                'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+                'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+                'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+                'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+            ],
+            allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
+                'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
+                'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
+                'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Khác'],
             divider: true,
             dialog: false,
             createNote: false,
@@ -838,7 +860,7 @@
                     this.detail = result.response
                     console.log(this.detail)
                     this.items = [{
-                            title: 'Lifecycle stage',
+                            title: 'Vòng đời',
                             description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
                             value: result.response.lifecycleStage,
                             dialog: false,

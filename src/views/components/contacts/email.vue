@@ -390,9 +390,11 @@ import contact from '../../../services/contacts.service'
                 })
             },
             updateLog(date, time, idLog){
+                let timeString = date + 'T' + time
+                let timeToSend = moment(timeString).utc().format().substring(0, 19)
                 let body = {
                     "property": "time",
-                    "value": date + 'T' + time
+                    "value": timeToSend
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     eventBus.updateLogEmailList();
@@ -404,11 +406,11 @@ import contact from '../../../services/contacts.service'
             },
             coverTimeTooltip(time){
                 if (_.isNull(time)) return '';
-                return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
+                return moment(time).format('dddd, DD MMMM YYYY HH:mm:ss')
             },
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
-                return moment(time).add(-7, 'h').format('HH:mm')
+                return moment(time).format('HH:mm')
             },
             getEmail(){
                 emailService.getEmailHistory(this.idAccount, this.idContact).then(result => {

@@ -166,7 +166,7 @@ export default {
         },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
+            return moment(time).format('dddd, DD MMMM YYYY HH:mm:ss')
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {

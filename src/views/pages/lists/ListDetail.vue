@@ -18,7 +18,7 @@
                     </v-flex>
                 
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="warning" @click="goToNewListPage()">Tạo mới</v-btn>
+                        <v-btn dark color="#3E82F7" @click="goToNewListPage()">Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>

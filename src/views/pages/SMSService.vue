@@ -581,7 +581,7 @@
                                             </td>
                                         </template>
                                         <v-list>
-                                            <v-list-tile @click.stop="openScheduleDetailDialog(props.item.number)">
+                                            <v-list-tile @click.stop="openScheduleDetailDialog(props.item.id)">
                                                 <v-list-tile-content>Xem chi tiết</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile v-if="props.item.status == 'ACTIVE'" @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">
@@ -605,7 +605,7 @@
                                 <span class="headline">Chi tiết</span>
                             </v-card-title>
                             <v-card-text>
-                                <p>Nội dung gửi: </p>
+                                <p>Nội dung tin nhắn: </p>
                                 <v-textarea v-model="schedule.detail.content" readonly rows="2" box></v-textarea>
                                 <br>
                                 <v-data-table hide-actions :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
@@ -614,7 +614,7 @@
                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                             <td>{{ props.item.phoneNumber}}</td>
                                             <td>{{ coverTime(props.item.timeToSend) }} </td>
-                                            <td>{{ returnStatus(props.item.status) }}</td>
+                                            <td :style="returnStatusColor(props.item.status)">{{ returnStatus(props.item.status) }}</td>
                                         </tr>
                                     </template>
                                 </v-data-table>
@@ -897,6 +897,9 @@ export default {
         }
     },
     methods: {
+        returnTime(data) {
+            return moment(data).lang('vi').format('HH:mm:ss DD/MM/YYYY')
+        },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
         },
@@ -1068,15 +1071,8 @@ export default {
             return result;
         },
         sendSMS(){
-            // console.log(this.send.chosenCampaign)
-            // console.log(this.send.chosenContent)
-            // console.log(this.send.date);
-            // console.log(this.send.time);
-            // console.log(this.send.phoneNumberToSend)
-            let timeToSend = moment(this.send.date + 'T' + this.send.time);
-            console.log(moment(timeToSend).utc().format());
-            // console.log(this.coverTimeToSend(timeToSend))
-            // console.log(this.coverTimeToSend(timeToSend.subtract(7, 'hours')));
+            let timeString = this.send.date + 'T' + this.send.time
+            let timeToSend = moment(timeString).utc().format().substring(0, 19)
             let listPhone = [];
             for (let i = 0; i < this.send.phoneNumberToSend.length;i++){
                 let obj = {
@@ -1089,17 +1085,16 @@ export default {
                     smsDeviceId: this.send.chosenCampaign
                 },
                 content: this.send.chosenContent,
-                timeToSend: this.coverTimeToSend(timeToSend),
+                timeToSend: timeToSend,
                 listPhone: listPhone
             }
-            // console.log(body)
-            // SMSService.createSchedule(this.idAccount, body).then(result => {
-            //     console.log(result);
-            //     this.getSchedule();
-            //     this.page = 'schedule'
-            // }).catch(error => {
-            //     console.log(error)
-            // })
+            SMSService.createSchedule(this.idAccount, body).then(result => {
+                console.log(result);
+                this.getSchedule();
+                this.page = 'schedule'
+            }).catch(error => {
+                console.log(error)
+            })
         },
 
         //SaveKey
@@ -1266,7 +1261,7 @@ export default {
                 result = 'Chờ xử lý'
             }
             else if (status == 'INPROGRESS'){
-                result = 'Đang xử lý'
+                result = 'Đang xử lý...'
             }
             else if (status == 'STOP'){
                 result = 'Bị dừng'
@@ -1279,9 +1274,17 @@ export default {
             }
             return result;
         },
-
-
-
+        returnStatusColor(status){
+            if (status == 'DONE'){
+                return 'color: green;'
+            }
+            else if (status == 'STOP' || status == 'ERROR' || status == 'FAIL'){
+                return 'color: red;'
+            }
+            else {
+                return 'color: black;'
+            }
+        },
         //Template
         startCreatingTemplate(){
             this.template.creatingTemplate = true;
@@ -1380,7 +1383,7 @@ export default {
                     let obj = {
                         content: data[i].content,
                         campaign: name,
-                        time: this.coverTime(data[i].timeToSend),
+                        time: this.returnTime(data[i].timeToSend),
                         status: data[i].status,
                         listPhone: data[i].listPhone,
                         number: i,
@@ -1390,7 +1393,7 @@ export default {
                 }
             })
         },
-        openScheduleDetailDialog(number){
+        openScheduleDetailDialog(id){
             // SMSService.getSchedule(this.idAccount).then(result => {
             //     console.log(result);
             //     let tempArr = []
@@ -1416,11 +1419,20 @@ export default {
             //     }
             //     this.schedule.list = [...tempArr]
             // })
+            let obj = null;
+            SMSService.getSchedule(this.idAccount).then(result => {
+                console.log(result);
+                let data = result.response;
+                for (let i = 0; i < data.length; i++){
+                    if (id == data[i].smsScheduleId){
+                        obj = data[i];
+                        this.schedule.detail.content = obj.content;
+                        this.schedule.detail.listPhone = obj.listPhone;
+                        this.schedule.detail.dialog = true;
+                    }
+                }
+            })
             
-            let obj = this.schedule.list[number];
-            this.schedule.detail.content = obj.content;
-            this.schedule.detail.listPhone = obj.listPhone;
-            this.schedule.detail.dialog = true;
         },
         changeScheduleStatus(number, status){
             let obj = this.schedule.list[number];
