@@ -427,7 +427,7 @@
                                         <br>
                                     </template>
                                      -->
-                                    <v-data-table class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
+                                    <v-data-table style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
                                         <template v-slot:items="props">
                                             <tr>
                                                 <td>{{props.item.phoneNumber}}</td>
@@ -458,6 +458,24 @@
                                         <br>
                                     </template>
                                      -->
+                                    <v-data-table style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
+                                        <template v-slot:items="props">
+                                            <tr>
+                                                <td>{{props.item.phoneNumber}}</td>
+                                                <td>{{props.item.time}}</td>
+                                                <td style="color: red">
+                                                    <span style="margin-right: 5px;">Thất bại</span>
+                                                    <v-tooltip top>
+                                                        <template v-slot:activator="{ on }">
+                                                            <span><v-icon color="red" dark v-on="on">help</v-icon></span>
+                                                        </template>
+                                                        <span>{{props.item.statusMessage}}</span>
+                                                    </v-tooltip>
+                                                </td>
+                                                <td>{{props.item.message}}</td>
+                                            </tr>
+                                        </template>
+                                    </v-data-table>
                                 </v-layout>
                                 <br>
                                 <br>
@@ -799,12 +817,6 @@ export default {
                         },
                         {
                             text: 'Nội dung',
-                            align: 'left',
-                            value: 'calories',
-                            sortable: false
-                        },
-                        {
-                            text: 'Lỗi',
                             align: 'left',
                             value: 'calories',
                             sortable: false

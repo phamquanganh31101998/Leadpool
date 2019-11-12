@@ -2,8 +2,8 @@
     <v-content class="mt-5 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 style="position: absolute; font-size: 36px;" class="ml-3">Email</h1>
-                <br>
+                <!-- <h3 style="position: absolute; font-size: 36px;" class="ml-3">Quản lý mẫu email</h3> -->
+                <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý mẫu email</h1>
                 <br>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
@@ -19,116 +19,50 @@
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
         <v-layout row wrap>
-            <v-flex xs2 sm2 md2 lg2 xl2>
+            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <v-list-tile @click="page = 'manage'">
                         <v-list-tile-content :style="fontWeight[0]">
                             Quản lý mẫu email
                         </v-list-tile-content>
                     </v-list-tile>
-                    <!-- <v-list-tile @click="page = 'create', create.editorDialog = true">
-                        <v-list-tile-content :style="fontWeight[1]">
-                            Tạo mẫu email
-                        </v-list-tile-content>
-                    </v-list-tile> -->
                 </v-list>
                 <br>
                 <v-divider :divider="divider"></v-divider>
-                <!-- <v-select v-model="status" :items="statusToChoose" label="Status" style="width: 60%;" class="ml-2"></v-select> -->
-            </v-flex>
-            <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
+            </v-flex> -->
+            <v-flex xs12 sm12 md12 lg12 xl12 v-if="page=='manage'">
                 <v-layout row>
-                    <v-flex xs3 sm3 md3 lg3 xl3 class="ml-3 mt-3">
+                    <v-flex xs12 sm12 md12 lg12 xl12 class="ml-3 mt-3">
                         <v-card>
                             <v-card-title>
-                                <h3 style="padding-top: 8px; position: absolute; font-size: 18px;">Chọn mẫu</h3>
+                                <!-- <h2 style="font-size: 20px;">Nội dung mẫu: </h2> -->
+                                <!-- <span class="ml-4"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span> -->
+                                <!-- <h2 style="padding-top: 20px; position: absolute; font-size: 18px;">Nội dung mẫu: </h2>
+                                <span class="ml-4" style="padding-top: 20px; position: absolute; padding-left: 120px; font-size: 18px;"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span> -->
+                                
                             </v-card-title>
                             <v-card-text>
-                                <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn color="primary" block @click="create.editorDialog = true">Tạo mẫu email mới</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-flex>
-                    <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3 mt-3">
-                        <v-card>
-                            <v-card-title>
-                                <h3 style="padding-top: 8px; position: absolute; font-size: 18px;">Nội dung mẫu</h3>
-                            </v-card-title>
-                            <v-card-text>
-                                <div id="templateBody" style="width: 100%; margin: 10px; border: 1px solid #DDDDDD"></div>
+                                <span class="ml-4"><v-btn color="#3E82F7" dark @click="create.editorDialog = true"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
+                                <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
+                                <v-data-table :headers="headers" :items="templateSelect">
+                                    <template v-slot:items="props">
+                                        <tr>
+                                            <td>{{props.item.text}}</td>
+                                            <td>{{props.item.createdBy}}</td>
+                                            <td>{{props.item.createdAt}}</td>
+                                            <td class="text-xs-center"><a @click="templateId = props.item.value, setChosenTemplate()">Xem nội dung mẫu >></a></td>
+                                        </tr>
+                                    </template>
+                                </v-data-table>
                             </v-card-text>
                         </v-card>
                     </v-flex>
                 </v-layout>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='create'">
-                <!-- <v-layout>
-                    <v-btn color="primary" @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
-                </v-layout> -->
-                <!-- <v-layout>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <div class="panel__top" style="width: 100%">
-                            <div class="panel__basic-actions" style="width: 100%"></div>
-                            <div class="panel__switcher"></div>
-                        </div>
-                    </v-flex>
-                </v-layout> -->
-                <br>
-                <!-- <v-layout row wrap style="height: 700px">
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-tooltip top v-if="!create.btn">
-                            <template v-slot:activator="{ on }">
-                                <v-layout>
-                                    <v-flex xs1 sm1 md1 lg1 xl1 offset-xs11 offset-sm11 offset-md11 offset-lg11 offset-xl11>
-                                        <v-icon color="primary" dark v-on="on">help</v-icon>
-                                    </v-flex>
-                                </v-layout>
-                            </template>
-                            <span>Kéo các thành phần vào ở cột bên trái, chỉnh sửa thuộc tính của thành phần ở cột bên phải</span>
-                            <span></span>
-                        </v-tooltip>
-                        <br>
-                        <v-layout>
-                            <v-flex xs2 sm2 md2 lg2 xl2>
-                                <div id="blocks" style="width: 100%; height: 100%;" ></div>
-                            </v-flex>
-                            <v-flex xs10 sm10 md10 lg10 xl10>
-                                <div class="editor-row" style="height: 100%">
-                                    <div class="editor-canvas" style="height: 600px;">
-                                        <div id="gjs" style="height: 600px;"></div>
-                                    </div>
-                                    <div class="panel__right" >
-                                        <div class="layers-container"></div>
-                                        <div class="styles-container"></div>
-                                        <div class="traits-container"></div>
-                                    </div>
-                                </div>
-                            </v-flex>
-                        </v-layout>
-                        
-                    </v-flex>
-                </v-layout> -->
                 <br>
                 <br>
-                <!-- <v-layout>
-                    <v-btn color="primary" block @click="create.dialog = true">Tạo mẫu mới</v-btn>
-                </v-layout> -->
-                <!-- <v-layout>
-                    <div class="panel__top">
-                        <div class="panel__basic-actions"></div>
-                    </div>
-                    <div class="editor-row">
-                    <div class="editor-canvas">
-                        <div id="gjs">...</div>
-                    </div>
-                    <div class="panel__right">
-                        <div class="layers-container"></div>
-                    </div>
-                    </div>
-                    <div id="blocks"></div>
-                </v-layout> -->
+                <br>
             </v-flex>
         </v-layout>
         <v-dialog v-model="create.dialog" width="30%" persistent>
@@ -147,16 +81,24 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <!-- <v-dialog v-model="createTask" persistent max-width="700px">
+        <v-dialog v-model="viewDialog" persistent>
             <v-card>
-                <v-card-title style="background-color:#1E88E5;color:#fff">
-                    <span class="headline">Create Task</span>
-                </v-card-title>
+                <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="viewDialog = false">
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Nội dung mẫu email</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-items>
+                        
+                       
+                    </v-toolbar-items>
+                </v-toolbar>
                 <v-card-text>
-                    <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="closeCreateTaskDialog()"/>
+                    <div id="templateBody" style="width: 100%; margin: 10px;"></div>
                 </v-card-text>
             </v-card>
-        </v-dialog> -->
+        </v-dialog>
         <v-dialog v-model="create.editorDialog" fullscreen>
             <v-card>
                 <v-toolbar dark color="primary">
@@ -179,9 +121,6 @@
                         <v-btn dark flat @click="create.dialog = true">Lưu lại</v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
-                <!-- <v-layout>
-                    <v-btn color="primary" @click="grape(), create.btn = false" v-if="create.btn">Bắt đầu tạo mẫu</v-btn>
-                </v-layout> -->
                 <v-layout>
                     <v-flex xs2 sm2 md2 lg2 xl2>
                         <div id="blocks" style="width: 100%; height: 100%;" ></div>
@@ -208,10 +147,10 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Tạo ghi chú thành công
+                    Tạo mẫu email mới thành công
                 </v-card-text>
                 <v-card-actions>
-                <v-btn flat color="#00C853" @click="create.successfulDialog = false">OK</v-btn>
+                    <v-btn flat color="#00C853" @click="create.successfulDialog = false">OK</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -222,16 +161,17 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Đã có lỗi xảy ra khi tạo ghi chú. Xin hãy thử lại.
+                    Đã có lỗi xảy ra khi tạo mẫu email. Xin hãy thử lại.
                 </v-card-text>
                 <v-card-actions>
-                <v-btn flat color="red" @click="create.failDialog = false">OK</v-btn>
+                    <v-btn flat color="red" @click="create.failDialog = false">OK</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
     </v-content>
 </template>
 <script>
+import moment from 'moment'
 import emailService from '../../services/email.service'
 export default {
     data(){
@@ -246,6 +186,32 @@ export default {
             divider: true,
             editor: null,
             counter: 0,
+            headers: [
+                {
+                    text: 'TÊN MẪU',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'NGƯỜI TẠO',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'THỜI GIAN TẠO',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'NỘI DUNG MẪU',
+                    align: 'center',
+                    sortable: false,
+                    value: 'name'
+                }
+            ],
             create: {
                 dialog: false,
                 name: '',
@@ -253,7 +219,8 @@ export default {
                 editorDialog: false,
                 successfulDialog: false,
                 failDialog: false
-            }
+            },
+            viewDialog: false
         }
     },
     props: {
@@ -280,9 +247,13 @@ export default {
         }
     },
     methods: {
+        covertime(time) {
+            if (_.isNull(time)) return '';
+            return moment(time).format('DD/MM/YYYY HH:mm:ss')
+        },
         getEmailTemplate(){
             emailService.getEmailTemplate(this.idAccount).then(result => {
-                this.templates = result.response;
+                this.templates = result.response.reverse();
                 this.templateSelect = [];
                 this.templateSelect = this.setSelectEmailTemplate(this.templates);
                 // console.log(this.templates);
@@ -293,7 +264,9 @@ export default {
             for (let i = 0; i < templateArray.length;i++){
                 const obj = {
                     text: templateArray[i].title,
-                    value: templateArray[i].emailTemplateId
+                    value: templateArray[i].emailTemplateId,
+                    createdBy: templateArray[i].createdBy,
+                    createdAt: this.covertime(templateArray[i].createdAt)
                 }
                 result.push(obj);
             }
@@ -309,6 +282,7 @@ export default {
             let regex = /\\\"/gi
             this.htmlText = this.chosenTemplate.content;
             document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+            this.viewDialog = true;
         },
         grape(){
             this.editor = null;
@@ -773,8 +747,6 @@ export default {
         createNewTemplate(){
             let html = localStorage.getItem('gjs-html');
             let css = localStorage.getItem('gjs-css');
-            // localStorage.removeItem('gjs-html');
-            // localStorage.removeItem('gjs-css');
             let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
             let body = {
                 title: this.create.name,
@@ -783,8 +755,12 @@ export default {
             };
             emailService.createEmailTemplate(this.idAccount, body).then(result => {
                 console.log(result);
+                this.create.successfulDialog = true;
+                localStorage.removeItem('gjs-html');
+                localStorage.removeItem('gjs-css');
             }).catch(error => {
                 console.log(error);
+                this.create.failDialog = true;
             }).finally(() => {
                 this.create.dialog = false;
                 this.create.editorDialog = false;
