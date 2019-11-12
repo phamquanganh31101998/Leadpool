@@ -7,10 +7,10 @@
                         <v-card-title>
 
                         </v-card-title>
-                        <v-card-text style="background-color: #FDEDEE">
-                            <v-card flat style="background-color: #FDEDEE">
+                        <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                            <v-card flat style="background-color: #FDEDEE; ">
                                 <v-card-title>
-                                    <h3>Email không tồn tại</h3>
+                                    <h1>Email không tồn tại</h1>
                                 </v-card-title>
                                 <v-card-text>
                                     Bạn không thuộc tổ chức nào, hãy liên hệ với admin để được thêm vào tổ chức.

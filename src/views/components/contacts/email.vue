@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
+        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3">
             <template>
                 <v-hover v-for="email in emails">
                     <v-card slot-scope="{ hover }" class="pb-3 mt-3">
@@ -121,7 +121,6 @@
                     </v-card>
                 </v-hover>
             </template>
-            <br>
             <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5 v-if="progressLog">
                 <v-progress-circular
                     :size="70"
@@ -257,9 +256,7 @@
                     </v-card>
                 </v-hover>
             </template>
-            <br>
         </v-flex>
-        <br>
         <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="red">

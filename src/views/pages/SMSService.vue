@@ -300,165 +300,173 @@
                     </v-flex> -->
                 </v-layout>
                 <v-layout row v-if="page=='saveKey'">
-                    <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-card>
-                            <v-card-title>
-                                <h2>Quản lý chiến dịch</h2>
-                            </v-card-title>
-                            <v-card-text>
-                                <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
-                                <span class="ml-4"><v-select :items="saveKey.list" v-model="saveKey.selectedCampaignId" @input="getStatisticAndHistory()"></v-select></span>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            
-                            <v-card-actions>
-                                <v-btn block color="primary" @click="saveKey.createCampaign = true"><v-icon>add</v-icon>Tạo chiến dịch mới</v-btn>
-                                <v-dialog v-model="saveKey.createCampaign" width="30%" persistent>
-                                    <v-card>
-                                        <v-card-title style="background-color:#1E88E5;color:#fff">
-                                            <span class="headline">Tạo chiến dịch mới</span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                            <v-form v-model="saveKey.createValid">
-                                                <span class="mt-4"><strong>Tên chiến dịch </strong></span>
-                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.campaign"></v-text-field></span>
-                                                <span class="mt-4"><strong>Nhập Key </strong></span>
-                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.key"></v-text-field></span>
-                                                <span class="mt-4"><strong>Nhập branch name </strong></span>
-                                                <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.name"></v-text-field></span>
-                                            </v-form>
-                                        </v-card-text>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-card-actions>
-                                            <v-btn flat color="primary" @click="createCampaign()" :disabled="!saveKey.createValid">Tạo</v-btn>
-                                            <v-btn flat color="red" @click="saveKey.createCampaign = false">Đóng</v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-dialog>
-                            </v-card-actions>
-                        </v-card>
-                    </v-flex>
-                    <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-layout row >
-                            <v-flex xs12>
-                                <v-card height="100%" style="width:100%">
-                                    <v-card-title>
-                                        <h2>Số tin nhắn trong chiến dịch</h2>
-                                    </v-card-title>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-layout row>
+                            <v-flex xs3 sm3 md3 lg3 xl3 >
+                                <v-card style="height: 220px;">
                                     <v-card-text>
-                                        <v-layout row>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Đăng ký</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.selectedCampaignDetail.total}}</div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Còn lại</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.selectedCampaignDetail.remain}}</div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Đã gửi</h3>
-                                                <v-layout row class="mt-4" >
-                                                    <div class="score" style="background-color:#00adef; padding-top:12%">
-                                                        {{saveKey.selectedCampaignDetail.success + saveKey.selectedCampaignDetail.fail}}</div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Thành công</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color: #00C853;">
-                                                        <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsError = false, saveKey.showSmsTemplate = false, saveKey.showSmsSuccess = true">
-                                                            <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.success}}</span></v-btn>
-                                                    </div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs4 class="text-center">
-                                                <h3>Thất bại</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color:#EF5350;">
-                                                        <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsSuccess = false, saveKey.showSmsError = true, saveKey.showSmsTemplate = false">
-                                                            <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.fail}}</span></v-btn>
-                                                    </div>
-                                                </v-layout>
-                                            </v-flex>
-                                            <!-- <v-flex xs4 class="text-center">
-                                                <h3>Template sử dụng</h3>
-                                                <v-layout row class="mt-4">
-                                                    <div class="score" style="background-color: #00C853;">
-                                                        <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsTemplate = true, saveKey.showSmsError = false, saveKey.showSmsSuccess = false">
-                                                            <span style="font-size: 20px">{{saveKey.currentCampaign.templateUsed}}</span></v-btn>
-                                                    </div>
-                                                </v-layout>
-                                            </v-flex> -->
-                                        </v-layout>
+                                        <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
+                                        <span class="ml-4"><v-select :items="saveKey.list" v-model="saveKey.selectedCampaignId" @input="getStatisticAndHistory()"></v-select></span>
                                     </v-card-text>
+                                    <v-divider :divider="divider"></v-divider>
+                                    <v-card-actions>
+                                        <v-btn block color="primary" @click="saveKey.createCampaign = true"><v-icon>add</v-icon>Tạo chiến dịch mới</v-btn>
+                                        <v-dialog v-model="saveKey.createCampaign" width="30%" persistent>
+                                            <v-card>
+                                                <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                    <span class="headline">Tạo chiến dịch mới</span>
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    <v-form v-model="saveKey.createValid">
+                                                        <span class="mt-4"><strong>Tên chiến dịch </strong></span>
+                                                        <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.campaign"></v-text-field></span>
+                                                        <span class="mt-4"><strong>Nhập Key </strong></span>
+                                                        <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.key"></v-text-field></span>
+                                                        <span class="mt-4"><strong>Nhập branch name </strong></span>
+                                                        <span class="ml-4"><v-text-field :rules="saveKey.inputRules" v-model="saveKey.createData.name"></v-text-field></span>
+                                                    </v-form>
+                                                </v-card-text>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <v-card-actions>
+                                                    <v-btn flat color="primary" @click="createCampaign()" :disabled="!saveKey.createValid">Tạo</v-btn>
+                                                    <v-btn flat color="red" @click="saveKey.createCampaign = false">Đóng</v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                    </v-card-actions>
                                 </v-card>
                             </v-flex>
-                        </v-layout>
-                        <v-layout row class="mt-5" v-if="saveKey.selectedCampaignDetail.remain <= 0">
-                            <v-flex xs12>
-                                <v-alert type="error">
-                                    Bạn đã dùng hết số lượng tin nhắn được cấp. Cần phải gia hạn thêm
-                                </v-alert>
+                            <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
+                                <v-layout row >
+                                    <v-flex xs12>
+                                        <v-card style="width:100%; height: 220px;">
+                                            <v-card-title>
+                                                <h2>Số tin nhắn trong chiến dịch</h2>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <v-layout row>
+                                                    <v-flex xs4 class="text-center">
+                                                        <h3>Đăng ký</h3>
+                                                        <v-layout row class="mt-4">
+                                                            <div class="score" style="background-color:#00adef; padding-top:12%">
+                                                                {{saveKey.selectedCampaignDetail.total}}</div>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <v-flex xs4 class="text-center">
+                                                        <h3>Còn lại</h3>
+                                                        <v-layout row class="mt-4">
+                                                            <div class="score" style="background-color:#00adef; padding-top:12%">
+                                                                {{saveKey.selectedCampaignDetail.remain}}</div>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <v-flex xs4 class="text-center">
+                                                        <h3>Đã gửi</h3>
+                                                        <v-layout row class="mt-4" >
+                                                            <div class="score" style="background-color:#00adef; padding-top:12%">
+                                                                {{saveKey.selectedCampaignDetail.success + saveKey.selectedCampaignDetail.fail}}</div>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <v-flex xs4 class="text-center">
+                                                        <h3>Thành công</h3>
+                                                        <v-layout row class="mt-4">
+                                                            <div class="score" style="background-color: #00C853;">
+                                                                <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsError = false, saveKey.showSmsTemplate = false, saveKey.showSmsSuccess = true">
+                                                                    <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.success}}</span></v-btn>
+                                                            </div>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <v-flex xs4 class="text-center">
+                                                        <h3>Thất bại</h3>
+                                                        <v-layout row class="mt-4">
+                                                            <div class="score" style="background-color:#EF5350;">
+                                                                <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsSuccess = false, saveKey.showSmsError = true, saveKey.showSmsTemplate = false">
+                                                                    <span style="font-size: 20px">{{saveKey.selectedCampaignDetail.fail}}</span></v-btn>
+                                                            </div>
+                                                        </v-layout>
+                                                    </v-flex>
+                                                    <!-- <v-flex xs4 class="text-center">
+                                                        <h3>Template sử dụng</h3>
+                                                        <v-layout row class="mt-4">
+                                                            <div class="score" style="background-color: #00C853;">
+                                                                <v-btn style="color: white; margin-left: -8px" flat @click="saveKey.showSmsTemplate = true, saveKey.showSmsError = false, saveKey.showSmsSuccess = false">
+                                                                    <span style="font-size: 20px">{{saveKey.currentCampaign.templateUsed}}</span></v-btn>
+                                                            </div>
+                                                        </v-layout>
+                                                    </v-flex> -->
+                                                </v-layout>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row class="mt-5" v-if="saveKey.selectedCampaignDetail.remain <= 0">
+                                    <v-flex xs12>
+                                        <v-alert type="error">
+                                            Bạn đã dùng hết số lượng tin nhắn được cấp. Cần phải gia hạn thêm
+                                        </v-alert>
+                                    </v-flex>
+                                </v-layout>
                             </v-flex>
                         </v-layout>
-                        <v-layout class="mt-3" wrap v-if="saveKey.showSmsSuccess">
-                            <template v-for="sms in saveKey.selectedCampaignHistory.success">
-                                <v-flex xs12 sm12 md12 lg12 xl12 >
-                                    <v-card width="100%" height="100%">
-                                        <v-card-title>
-                                            <span style="font-weight:bold"><v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}</span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                            <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
-                                            <br>
-                                            <span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}}
-                                        </v-card-text>
-                                    </v-card>
-                                </v-flex>
-                                
+                        <v-layout row wrap>
+                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                <v-layout class="mt-3" wrap v-if="saveKey.showSmsSuccess">
+                                    <!-- <template v-for="sms in saveKey.selectedCampaignHistory.success">
+                                        <v-flex xs12 sm12 md12 lg12 xl12 >
+                                            <v-card width="100%" height="100%">
+                                                <v-card-title>
+                                                    <span style="font-weight:bold"><v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}</span>
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
+                                                    <br>
+                                                    <span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}}
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-flex>
+                                        
+                                        <br>
+                                    </template>
+                                     -->
+                                    <v-data-table class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
+                                        <template v-slot:items="props">
+                                            <tr>
+                                                <td>{{props.item.phoneNumber}}</td>
+                                                <td>{{props.item.time}}</td>
+                                                <td style="color: green">{{props.item.statusMessage}}</td>
+                                                <td>{{props.item.message}}</td>
+                                            </tr>
+                                        </template>
+                                    </v-data-table>
+                                </v-layout>
+                                <v-layout class="mt-3" wrap v-if="saveKey.showSmsError">
+                                    <!-- <template v-for="sms in saveKey.selectedCampaignHistory.fail">
+                                        <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-card width="100%" height="100%">
+                                                <v-card-title>
+                                                    <span style="font-weight:bold">
+                                                        <v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}
+                                                    </span>
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
+                                                    <p><span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}} </p>
+                                                    <p><span style="font-weight:bold">Lỗi:</span> {{sms.statusMessage}} </p>
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-flex>
+                                        <br>
+                                        <br>
+                                    </template>
+                                     -->
+                                </v-layout>
                                 <br>
-                            </template>
-                            
-                        </v-layout>
-                        <v-layout class="mt-3" wrap v-if="saveKey.showSmsError">
-                            <template v-for="sms in saveKey.selectedCampaignHistory.fail">
-                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                    <v-card width="100%" height="100%">
-                                        <v-card-title>
-                                            <span style="font-weight:bold">
-                                                <v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}
-                                            </span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                            <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
-                                            <p><span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}} </p>
-                                            <p><span style="font-weight:bold">Lỗi:</span> {{sms.statusMessage}} </p>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-flex>
                                 <br>
                                 <br>
-                            </template>
-                            
-                        </v-layout>
-                        <!-- <v-layout class="mt-3" row v-if="saveKey.showSmsTemplate">
-                            <v-flex v-for="(item,key) in templateSmsShow" :key="key" class="pa-2">
-                                <div style="background-image: url('smsboder.png');background-color: #fff;background-position: center;
-                                background-repeat: no-repeat; width:100%;height:150px" class="px-2 py-2">
-                                    <p>{{item.content}}</p>
-                                </div>
                             </v-flex>
-                        </v-layout> -->
-                        <br>
-                        <br>
-                        <br>
+                        </v-layout>
                     </v-flex>
+                    
+                    
                 </v-layout>
                 <v-layout row v-if="page=='template'">
                     <v-flex xs3 sm3 md3 lg3 xl3>
@@ -743,7 +751,65 @@ export default {
                 selectedCampaignId: '',
                 selectedCampaignHistory: {
                     success: [],
-                    fail: []
+                    successHeaders: [
+                        {
+                            text: 'Số điện thoại ',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Thời gian gửi',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Trạng thái',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Nội dung',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                    ],
+                    fail: [],
+                    failHeaders: [
+                        {
+                            text: 'Số điện thoại ',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Thời gian gửi',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Trạng thái',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Nội dung',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                        {
+                            text: 'Lỗi',
+                            align: 'left',
+                            value: 'calories',
+                            sortable: false
+                        },
+                    ],
                 },
                 showSmsSuccess: false,
                 showSmsError: false,
@@ -1131,19 +1197,16 @@ export default {
                 success: 0,
             }
             SMSService.getInfo(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                console.log(result);
                 this.saveKey.selectedCampaignDetail.total = result.response.smsTotal;
                 this.saveKey.selectedCampaignDetail.remain = result.response.smsRemain;
             })
             SMSService.getStatisticDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                console.log(result);
                 this.saveKey.selectedCampaignDetail.success = result.response.success;
                 this.saveKey.selectedCampaignDetail.fail = result.response.fail;
             });
             this.saveKey.selectedCampaignHistory.success = [];
             this.saveKey.selectedCampaignHistory.fail = [];
             SMSService.getHistoryDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                console.log(result);
                 result.response = result.response.reverse();
                 for (let i = 0; i < result.response.length; i++){
                     let obj = {

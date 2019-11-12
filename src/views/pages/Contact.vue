@@ -274,7 +274,7 @@
           <br>
           <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
               <template v-slot:activator="{ on }">
-                  <a v-on="on" style="color: #0091AE"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
+                  <a v-on="on" style="color: #1976D2"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
               </template>
               <v-card style="width: 100%;">
                   <v-card-text>

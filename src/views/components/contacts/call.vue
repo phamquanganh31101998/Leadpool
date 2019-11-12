@@ -8,7 +8,7 @@
                 indeterminate
             ></v-progress-circular>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
+        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3">
             <!-- <h3>June 2019</h3> -->
             <template v-for="call in calls">
                 <v-hover>
@@ -139,7 +139,6 @@
                     </v-card>
                 </v-hover>
             </template>
-            <br>
         </v-flex>
         <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>

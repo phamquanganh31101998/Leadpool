@@ -1,7 +1,7 @@
 <template>
     <v-content class="mt-2">
         <v-layout row>
-            <v-flex xs6 sm6 md4 lg4 xl3 class="pr-3">
+            <v-flex xs6 sm6 md4 lg4 xl3>
                 <v-layout justify-start fill-height>
                     <v-flex d-flex xs12 sm12 md12 lg12 xl12 style="background-color:#fff">
                         <v-card flat>
@@ -333,7 +333,7 @@
                                 <v-expansion-panel expand v-model="expandDetail">
                                     <v-expansion-panel-content>
                                         <template v-slot:header>
-                                            <div>Thông tin Lead</div>
+                                            <div><p style="font-weight: bold;">Thông tin Lead</p></div>
                                         </template>
                                         <v-layout row v-for="(item,i) in items" :key="i">
                                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
@@ -356,10 +356,8 @@
                                                                 <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" filled :readonly="!access"
-                                                                v-if="item.title != 'Thời gian hoạt động gần nhất' && item.title != 'Thời gian liên lạc gần nhất'"
-                                                                :disabled = "item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
-                                                                :box="item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
+                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access || item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
+                                                                
                                                                 @change="updateContactDetail(item.property, item.value)">
                                                                 </v-text-field>
                                                             </template>
@@ -514,16 +512,16 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <task class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark small depressed @click="createNote = true" color="#3E82F7" v-if="access">Tạo ghi chú
+                                    <v-btn dark small @click="createNote = true" color="#3E82F7" v-if="access">Tạo ghi chú
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -533,7 +531,7 @@
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
                                     <v-btn small color="grey lighten-3" @click="createLogEmail=true" v-if="access">Lưu thông tin Email</v-btn>
-                                    <v-btn dark depressed small color="#3E82F7" @click="createEmail= true" v-if="access">Gửi email
+                                    <v-btn dark small color="#3E82F7" @click="createEmail= true" v-if="access">Gửi email
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -551,7 +549,7 @@
                         <v-tab-item value="tab-5">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark depressed small @click="createTask = true" color="#3E82F7" v-if="access">Tạo công việc
+                                    <v-btn dark small @click="createTask = true" color="#3E82F7" v-if="access">Tạo công việc
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -580,7 +578,8 @@
                     <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
                         <template v-slot:items="props">
                             <td>{{ actionLog.title }}</td>
-                            <td>{{ props.item.newValue }}</td>
+                            <td v-if="actionLog.title == 'Thời gian hoạt động gần nhất' || actionLog.title == 'Thời gian liên lạc gần nhất'">{{ coverTimeTooltip(props.item.newValue + '+0000') }}</td>
+                            <td v-else>{{ props.item.newValue }}</td>
                             <td>{{ coverTimeTooltip(props.item.created_at) }}</td>
                             <td>{{ props.item.createdBy }}</td>
                         </template>
@@ -897,7 +896,7 @@
                         {
                             title: 'Thời gian hoạt động gần nhất',
                             description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: result.response.lastActivityDate,
+                            value: this.coverTimeTooltip(result.response.lastActivityDate),
                             dialog: false,
                             property: 'lastActivityDate'
                         },
@@ -936,6 +935,27 @@
                         {
                             property: property,
                             value: value
+                        }
+                    ]
+                }
+                console.log(body)
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                    
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.updateLastActivityDate();
+                    this.getDetail();
+                })
+            },
+            updateLastActivityDate(){
+                let timeToSend = moment().utc().format().substring(0, 19)
+                let body = {
+                    properties: [
+                        {
+                            property: 'lastActivityDate',
+                            value: timeToSend
                         }
                     ]
                 }

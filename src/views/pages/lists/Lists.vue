@@ -25,7 +25,6 @@
                 <v-data-table
                     :headers="headersLists"
                     :items="lists"
-                    :search="search"
                     :hide-headers="true"
                     class="elevation-1 mt-6"
                     v-if="!listDetail"
@@ -96,6 +95,7 @@ export default {
                 },
             ],
             lists: [],
+            allLists: [],
             listDetail: false,
             currentUser: null,
             failDialog: false,
@@ -103,9 +103,20 @@ export default {
             access: false,
         }
     },
+    watch: {
+        search(){
+            this.lists = [];
+            for (let i = 0; i < this.allLists.length; i++){
+                if (this.normalText(this.allLists[i].name.toLowerCase()).includes(this.normalText(this.search.toLowerCase().trim()))){
+                    this.lists.push(this.allLists[i])
+                }
+            }
+        }
+    },
     methods: {
         getList(){
             listService.getList(this.idAccount).then(result => {
+                this.allLists = result.response;
                 this.lists = result.response;
             }).catch(error => {
                 console.log(error);

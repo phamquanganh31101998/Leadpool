@@ -141,7 +141,7 @@ export default {
             this.contacts = [];
             for (let i = 0; i < this.allContacts.length; i++){
                 const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
-                if(name.toLowerCase().includes(this.search.toLowerCase())){
+                if(this.normalText(name.toLowerCase()).includes(this.normalText(this.search.toLowerCase().trim()))){
                     this.contacts.push(this.allContacts[i]);
                 }
             }
@@ -281,6 +281,9 @@ export default {
         }
     },
     methods: {
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
         getPropertyName(value){
             let result = ''
             for(let i = 0; i<this.newCondition.contactProperties.length;i++){
