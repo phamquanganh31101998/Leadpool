@@ -31,11 +31,11 @@
           <v-flex xs3 sm3 md3 lg3 xl3>
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                <v-btn dark color="warning" v-on="on">Tạo Lead mới</v-btn>
+                <v-btn dark color="#3E82F7" block v-on="on"> <v-icon>person_add</v-icon> Tạo Lead mới</v-btn>
               </template>
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Tạo Lead mới</span>
+                  <span class="headline">  Tạo Lead mới</span>
                 </v-card-title>
                 <v-card-text style="padding: 0px 16px;">
                   <v-form v-model="valid">
@@ -61,19 +61,21 @@
                             label="Life Cycle Stage" required></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-text-field v-model="city" label="Thành phố" required>
-                          </v-text-field>
+                          <!-- <v-text-field v-model="city" label="Thành phố" required>
+                          </v-text-field> -->
+                          <v-select label="Thành Phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-text-field v-model="bussiness" label="Ngành Nghề" required>
-                          </v-text-field>
+                          <!-- <v-text-field v-model="bussiness" label="Ngành Nghề" required>
+                          </v-text-field> -->
+                          <v-select label="Thành Phố" v-model="bussiness" :items="allBussiness" :rules="[v => !!v || 'Chưa chọn']"></v-select>
                         </v-flex>
                       </v-layout>
                     </v-container>
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting">Tạo</v-btn>
+                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting && valid">Tạo</v-btn>
                   <v-btn color="red" flat @click="checkInfo = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
@@ -84,7 +86,7 @@
     </v-layout>
     <v-divider class="mt-4" :divider="divider"></v-divider>
     <v-layout row class="mt-3">
-      <v-flex xs6 sm4 md3 lg3 xl3>
+      <v-flex xs12 sm4 md2 lg2 xl2>
         <v-list>
           <v-list-tile @click="getAllContact(), section = 'allContact', page = 1">
             <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
@@ -119,13 +121,11 @@
         <v-divider divider="true" class="mr-3"></v-divider>
         <template v-if="!firstConditionMenu">
           <v-card class="mr-3">
-            <v-card-title>
-              <h3>Bộ lọc kết quả</h3>
-            </v-card-title>
             <v-card-text>
+                <h3>Bộ lọc kết quả</h3>
                 <template v-for="(orCondition, orIndex) in conditions">
-                    <v-card flat style="border: 1px solid #CCCCCC">
-                        <v-card-title style="padding: 8px 0px; margins: 4px 4px">
+                    <v-card flat>
+                        <v-card-title style="padding: 0px 0px; margins: 0px 0px">
                             <v-layout row wrap>
                                 <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
                                     <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
@@ -136,10 +136,10 @@
                         </v-card-title>
                         <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                             <template v-for="(andCondition, andIndex) in orCondition">
-                                <v-card flat style="border: 1px solid #CCCCCC">
+                                <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA">
                                     <v-card-text style="padding: 8px 8px;">
                                         <v-layout row>
-                                            <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
+                                            <v-flex xs9 sm9 md9 lg9 xl9 class="pt-2">
                                                 <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
                                                     <template v-for="val in andCondition.value">
                                                         <v-chip>{{val}}</v-chip>
@@ -150,7 +150,7 @@
                                                 <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
                                                 <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
                                             </v-flex>
-                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                 <v-tooltip right>
                                                     <template v-slot:activator="{ on }">
                                                         <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
@@ -274,7 +274,7 @@
           <br>
           <v-menu v-model="createFirstCondition.firsrConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
               <template v-slot:activator="{ on }">
-                  <a v-on="on"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
+                  <a v-on="on" style="color: #1976D2"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
               </template>
               <v-card style="width: 100%;">
                   <v-card-text>
@@ -310,15 +310,16 @@
           </v-menu>
         </template>
       </v-flex>
-      <v-flex xs6 sm8 md9 lg9 xl9>
+      <v-flex xs12 sm8 md10 lg10 xl10>
         <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
           <template v-slot:items="props">
               <tr>
-              <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td>
-              <td class="text-xs-left">{{ props.item.email }}</td>
-              <td class="text-xs-left">{{ props.item.phone }}</td>
-              <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-              <td class="text-xs-left">{{ covertime(props.item.updateAt) }}</td>
+              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.lastName }} {{ props.item.firstName }}</a></td>
+                <td class="text-xs-left">{{ props.item.email }}</td>
+                <td class="text-xs-left">{{ props.item.phone }}</td>
+                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                <td class="text-xs-left">{{ covertime(props.item.createdAt) }}</td>
               
                 <v-menu>
                   <template v-slot:activator="{ on }">
@@ -453,15 +454,25 @@
       lifecycleStages: [
         'Lead',
         'Subscriber',
-        'Marketing qualified lead',
-        'Sales qualified lead',
+        'Marketing Qualified Lead',
+        'Sales Qualified Lead',
         'Opportunity',
         'Customer',
         'Evangelist',
         'Other'
       ],
-      city: '',
-      bussiness: '',
+      cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
+      'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+      'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+      'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+      'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+      ],
+      city: 'Hà Nội',
+      allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
+      'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
+      'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
+      'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Khác'],
+      bussiness: 'Khác',
       divider: true,
       dialog: false,
       search: '',
@@ -523,7 +534,7 @@
       newCondition: {
         contactProperties: [
             {
-                text: 'Lifecycle Stage',
+                text: 'Vòng đời',
                 value: 'lifecycle_stage'
             },
             {
@@ -581,7 +592,7 @@
       createFirstCondition: {
         contactProperties: [
             {
-                text: 'Lifecycle Stage',
+                text: 'Vòng đời',
                 value: 'lifecycle_stage'
             },
             {
@@ -788,7 +799,7 @@
       },
       covertime(time) {
         if (_.isNull(time)) return '';
-        return moment(time).format('DD/MM/YYYY hh:mm:ss')
+        return moment(time).format('DD/MM/YYYY HH:mm:ss')
       },
       takeLink(idContact){
         return `/contacts/${this.idUser}/contact/${idContact}`;

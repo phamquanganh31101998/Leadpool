@@ -30,9 +30,11 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-3">
                             <v-layout row>
-                                <v-btn small fab dark color="grey lighten-1" @click="updateTask(task.taskId, 'status', 'COMPLETED')"><v-icon>done</v-icon></v-btn>
+                                <v-btn small fab dark color="grey lighten-1" @click="updateTask(task.taskId, 'status', 'COMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
+                                <v-btn small fab dark color="grey lighten-1" v-else><v-icon>done</v-icon></v-btn>
                                 <strong class="mt-3" style="width: 100%">
                                     <v-text-field
+                                        :readonly="!access"
                                         style="fontSize: 18px;"
                                         v-model="task.title"
                                         solo
@@ -47,7 +49,7 @@
                                 <v-flex xs7 sm6 md5 lg4 xl3 class="pl-4">
                                     <v-layout row>
                                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                            <span>Giao cho</span>
+                                            <span>Được giao cho</span>
                                         </v-flex>
                                     </v-layout>
                                     <br>
@@ -65,7 +67,10 @@
                                         <v-flex xs6 sm7 md8 lg8 xl9 class="ml-3 md-0">
                                             <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="400">
                                                 <template v-slot:activator="{ on }">
-                                                    <a color="indigo" v-on="on" style="margin-top: 16px;">
+                                                    <a color="indigo" v-on="on" style="margin-top: 16px;" v-if="access">
+                                                        {{getNameFromEmail(task.assignedTo)}}
+                                                    </a>
+                                                    <a color="indigo" style="margin-top: 16px;" v-else>
                                                         {{getNameFromEmail(task.assignedTo)}}
                                                     </a>
                                                 </template>
@@ -99,11 +104,14 @@
                                                 v-on="on" style="width: 10px;">
                                                 
                                                 </v-text-field> -->
-                                                <a color="indigo" v-on="on" style="margin-top: 20px; fontSize: 16px;">
+                                                <a color="indigo" v-on="on" style="margin-top: 20px; fontSize: 16px;" v-if="access">
+                                                    {{task.dueDateDate}}
+                                                </a>
+                                                <a color="indigo" style="margin-top: 20px; fontSize: 16px;" v-else>
                                                     {{task.dueDateDate}}
                                                 </a>
                                             </template>
-                                            <v-date-picker v-model="task.dueDateDate" no-title @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"></v-date-picker>
+                                            <v-date-picker v-model="task.dueDateDate" no-title @change="updateTaskTime(task.taskId, 'dueDate', task.dueDateDate, task.dueDateTime)"></v-date-picker>
                                         </v-menu>
                                         <v-menu v-model="task.time1" :close-on-content-click="false" :nudge-right="40" lazy
                                             transition="scale-transition" offset-y full-width max-width="100px" min-width="100px">
@@ -113,7 +121,10 @@
                                                 v-on="on" style="width: 10px;">
                                                 
                                                 </v-text-field> -->
-                                                <a color="indigo" v-on="on" style="margin: 20px; fontSize: 16px;">
+                                                <a color="indigo" v-on="on" style="margin: 20px; fontSize: 16px;" v-if="access">
+                                                    {{task.dueDateTime}}
+                                                </a>
+                                                <a color="indigo" style="margin: 20px; fontSize: 16px;" v-else>
                                                     {{task.dueDateTime}}
                                                 </a>
                                             </template>
@@ -121,7 +132,7 @@
                                                 style="padding: 0px 10px;"
                                                 v-model="task.dueDateTime"
                                                 :items="timeToChoose"
-                                                @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
+                                                @change="updateTaskTime(task.taskId, 'dueDate', task.dueDateDate, task.dueDateTime)"
                                             ></v-select>
                                         </v-menu>
                                         
@@ -135,6 +146,7 @@
                                         v-model="task.note"
                                         solo
                                         flat
+                                        :readonly="!access"
                                         @change="updateTask(task.taskId, 'note', task.note)"
                                     ></v-text-field>
                                 </v-flex>
@@ -167,11 +179,11 @@
                                                         <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
                                                             <span>Thời gian</span>
                                                         </v-flex>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <span>Thứ tự</span>
-                                                        </v-flex>
+                                                        </v-flex> -->
                                                         <v-flex xs4 sm4 md4 lg4 xl4>
-                                                            <span>Tạo bởi</span>
+                                                            <span>Người tạo</span>
                                                         </v-flex>
                                                     </v-layout>
                                                 </v-flex>
@@ -185,20 +197,23 @@
                                                             <span>
                                                                 <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                     <template v-slot:activator="{ on }">
-                                                                        <a color="indigo" v-on="on">
-                                                                            {{task.type}}
+                                                                        <a color="indigo" v-on="on" v-if="access">
+                                                                            {{returnType(task.type)}}
+                                                                        </a>
+                                                                        <a color="indigo" v-else>
+                                                                            {{returnType(task.type)}}
                                                                         </a>
                                                                     </template>
                                                                     <!-- <v-select :items="['To-do', 'Email', 'Call']" v-model="task.type" 
                                                                     style="backgroundColor: white; padding: 20px;" @change="updateTask(task.taskId, 'type', task.type)"></v-select> -->
                                                                     <v-list-tile @click="changeType(task.taskId, task.type, 'To-do')" style="backgroundColor: white;">
-                                                                        <v-list-tile-title>To-do</v-list-tile-title>
+                                                                        <v-list-tile-title>Công việc</v-list-tile-title>
                                                                     </v-list-tile>
                                                                     <v-list-tile @click="changeType(task.taskId, task.type, 'Email')" style="backgroundColor: white;">
-                                                                        <v-list-tile-title>Email</v-list-tile-title>
+                                                                        <v-list-tile-title>Gửi Email</v-list-tile-title>
                                                                     </v-list-tile>
                                                                     <v-list-tile @click="changeType(task.taskId, task.type, 'Call')" style="backgroundColor: white;">
-                                                                        <v-list-tile-title>Call</v-list-tile-title>
+                                                                        <v-list-tile-title>Gọi điện</v-list-tile-title>
                                                                     </v-list-tile>
                                                                 </v-menu>
                                                             </span>
@@ -206,8 +221,8 @@
                                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <v-layout row wrap>
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-menu :close-on-content-click="false" :nudge-width="200" top offset-y>
-                                                                        <template v-slot:activator="{ on }">
+                                                                    <v-menu :close-on-content-click="false" :nudge-width="90" top offset-y>
+                                                                        <template v-slot:activator="{ on }" v-if="access">
                                                                             <a color="indigo" v-on="on" v-if="task.emailReminder == null">
                                                                                 Không nhắc trước
                                                                             </a>
@@ -215,14 +230,22 @@
                                                                                 {{task.emailReminderDate}}
                                                                             </a>
                                                                         </template>
-                                                                        <v-list>
+                                                                        <template v-slot:activator="{ on }" v-else>
+                                                                            <a color="indigo" v-if="task.emailReminder == null">
+                                                                                Không nhắc trước
+                                                                            </a>
+                                                                            <a color="indigo" v-else>
+                                                                                {{task.emailReminderDate}}
+                                                                            </a>
+                                                                        </template>
+                                                                        <v-list >
                                                                             <v-menu :close-on-content-click="false" offset-y v-model="task.date2" full-width max-width="290px" min-width="290px">
                                                                                 <template v-slot:activator="{ on }">
                                                                                     <v-list-tile v-on="on">
                                                                                         <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                                                     </v-list-tile>
                                                                                 </template>
-                                                                                <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')" ></v-date-picker>
+                                                                                <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTaskTime(task.taskId, 'emailReminder', task.emailReminderDate, task.emailReminderTime)" ></v-date-picker>
                                                                                    
                                                                             </v-menu>
                                                                             
@@ -249,7 +272,10 @@
                                                             <span>
                                                                 <v-menu :close-on-content-click="false" offset-y>
                                                                     <template v-slot:activator="{ on }">
-                                                                        <a color="indigo" v-on="on" >
+                                                                        <a color="indigo" v-on="on" v-if="access" >
+                                                                            {{task.emailReminderTime}}
+                                                                        </a>
+                                                                        <a color="indigo" v-else>
                                                                             {{task.emailReminderTime}}
                                                                         </a>
                                                                     </template>
@@ -257,7 +283,7 @@
                                                                         style="backgroundColor: white; padding: 0px 10px; width: 100px;"
                                                                         v-model="task.emailReminderTime"
                                                                         :items="timeToChoose"
-                                                                        @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
+                                                                        @change="updateTaskTime(task.taskId, 'emailReminder', task.emailReminderDate, task.emailReminderTime)"
                                                                     ></v-select>
                                                                 </v-menu>
                                                             </span>
@@ -286,9 +312,9 @@
                                                                 @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
                                                             ></v-select>
                                                         </v-flex> -->
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <span>None</span>
-                                                        </v-flex>
+                                                        </v-flex> -->
                                                         <v-flex xs4 sm4 md4 lg4 xl4>
                                                             <span>{{task.createdByUser}}</span>
                                                         </v-flex>
@@ -317,9 +343,11 @@
                     <v-layout row wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-1">
                             <v-layout row>
-                                <v-btn small fab dark color="success" @click="updateTask(task.taskId, 'status', 'NOTCOMPLETED')" ><v-icon>done</v-icon></v-btn> 
+                                <v-btn small fab dark color="success" @click="updateTask(task.taskId, 'status', 'NOTCOMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
+                                <v-btn small fab dark color="success" v-else><v-icon>done</v-icon></v-btn>
                                 <strong class="mt-3" style="width: 100%">
                                     <v-text-field
+                                        :readonly="!access"
                                         v-model="task.title"
                                         solo
                                         flat
@@ -383,7 +411,10 @@
                                                     <v-flex xs6 sm6 md6 lg3 xl4>
                                                         <v-menu :close-on-content-click="false" :nudge-width="100" offset-y max-width="300">
                                                             <template v-slot:activator="{ on }">
-                                                                <a color="indigo" v-on="on" style="margin-top: 16px;">
+                                                                <a color="indigo" v-on="on" style="margin-top: 16px;" v-if="access">
+                                                                    {{getNameFromEmail(task.assignedTo)}}
+                                                                </a>
+                                                                <a color="indigo" style="margin-top: 16px;" v-else>
                                                                     {{getNameFromEmail(task.assignedTo)}}
                                                                 </a>
                                                             </template>
@@ -406,11 +437,14 @@
                                                         <v-menu v-model="task.menu1" :close-on-content-click="false" :nudge-right="40" lazy
                                                             transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                                             <template v-slot:activator="{ on }">
-                                                                <a color="indigo" v-on="on" style="margin-top: 16px;">
+                                                                <a color="indigo" v-on="on" style="margin-top: 16px;" v-if="access">
+                                                                    {{task.dueDateDate}}
+                                                                </a>
+                                                                <a color="indigo" style="margin-top: 16px;" v-else>
                                                                     {{task.dueDateDate}}
                                                                 </a>
                                                             </template>
-                                                            <v-date-picker v-model="task.dueDateDate" no-title @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"></v-date-picker>
+                                                            <v-date-picker v-model="task.dueDateDate" no-title @change="updateTaskTime(task.taskId, 'dueDate', task.dueDateDate, task.dueDateTime)"></v-date-picker>
                                                         </v-menu>
                                                         
                                                         <!-- <v-select
@@ -424,7 +458,10 @@
                                                         <v-menu :close-on-content-click="false" :nudge-right="40" lazy
                                                             transition="scale-transition" offset-y full-width>
                                                             <template v-slot:activator="{ on }">
-                                                                <a color="indigo" v-on="on">
+                                                                <a color="indigo" v-on="on" v-if="access">
+                                                                    {{task.dueDateTime}}
+                                                                </a>
+                                                                <a color="indigo" v-else>
                                                                     {{task.dueDateTime}}
                                                                 </a>
                                                             </template>
@@ -432,7 +469,7 @@
                                                                 style=" width: 100px; padding: 0px 10px;"
                                                                 v-model="task.dueDateTime"
                                                                 :items="timeToChoose"
-                                                                @change="updateTask(task.taskId, 'dueDate', task.dueDateDate + 'T' + task.dueDateTime + ':00')"
+                                                                @change="updateTaskTime(task.taskId, 'dueDate', task.dueDateDate, task.dueDateTime)"
                                                             ></v-select>
                                                         </v-menu>
                                                     </v-flex>
@@ -473,11 +510,11 @@
                                                             <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
                                                                 <span>Giờ</span>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Thứ tự</span>
-                                                            </v-flex>
+                                                            </v-flex> -->
                                                             <v-flex xs4 sm4 md4 lg4 xl4>
-                                                                <span>Tạo bởi</span>
+                                                                <span>Người tạo</span>
                                                             </v-flex>
                                                         </v-layout>
                                                     </v-flex>
@@ -491,20 +528,23 @@
                                                                 <span>
                                                                     <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                         <template v-slot:activator="{ on }">
-                                                                            <a color="indigo" v-on="on">
-                                                                                {{task.type}}
+                                                                            <a color="indigo" v-on="on" v-if="access">
+                                                                                {{returnType(task.type)}}
+                                                                            </a>
+                                                                            <a color="indigo" v-else>
+                                                                                {{returnType(task.type)}}
                                                                             </a>
                                                                         </template>
                                                                         <!-- <v-select :items="['To-do', 'Email', 'Call']" v-model="task.type" 
                                                                         style="backgroundColor: white; padding: 20px;" @change="updateTask(task.taskId, 'type', task.type)"></v-select> -->
                                                                         <v-list-tile @click="changeType(task.taskId, task.type, 'To-do')" style="backgroundColor: white;">
-                                                                            <v-list-tile-title>To-do</v-list-tile-title>
+                                                                            <v-list-tile-title>Công việc</v-list-tile-title>
                                                                         </v-list-tile>
                                                                         <v-list-tile @click="changeType(task.taskId, task.type, 'Email')" style="backgroundColor: white;">
-                                                                            <v-list-tile-title>Email</v-list-tile-title>
+                                                                            <v-list-tile-title>Gửi Email</v-list-tile-title>
                                                                         </v-list-tile>
                                                                         <v-list-tile @click="changeType(task.taskId, task.type, 'Call')" style="backgroundColor: white;">
-                                                                            <v-list-tile-title>Call</v-list-tile-title>
+                                                                            <v-list-tile-title>Gọi điện</v-list-tile-title>
                                                                         </v-list-tile>
                                                                     </v-menu>
                                                                 </span>
@@ -512,12 +552,20 @@
                                                             <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-menu :close-on-content-click="false" :nudge-width="200" top offset-y>
-                                                                            <template v-slot:activator="{ on }">
+                                                                        <v-menu :close-on-content-click="false" :nudge-width="90" top offset-y>
+                                                                            <template v-slot:activator="{ on }" v-if="access">
                                                                                 <a color="indigo" v-on="on" v-if="task.emailReminder == null">
                                                                                     Không nhắc trước
                                                                                 </a>
                                                                                 <a color="indigo" v-on="on" v-else>
+                                                                                    {{task.emailReminderDate}}
+                                                                                </a>
+                                                                            </template>
+                                                                            <template v-slot:activator="{ on }" v-else>
+                                                                                <a color="indigo" v-if="task.emailReminder == null">
+                                                                                    Không nhắc trước
+                                                                                </a>
+                                                                                <a color="indigo" v-else>
                                                                                     {{task.emailReminderDate}}
                                                                                 </a>
                                                                             </template>
@@ -528,7 +576,7 @@
                                                                                             <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                                                                         </v-list-tile>
                                                                                     </template>
-                                                                                    <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')" ></v-date-picker>
+                                                                                    <v-date-picker v-model="task.emailReminderDate" no-title @change="updateTaskTime(task.taskId, 'emailReminder', task.emailReminderDate, task.emailReminderTime)" ></v-date-picker>
                                                                                 </v-menu>
                                                                                 
                                                                                 <v-list-tile @click="updateTask(task.taskId, 'emailReminder', '')">
@@ -552,7 +600,10 @@
                                                                 <span>
                                                                     <v-menu :close-on-content-click="false" offset-y>
                                                                         <template v-slot:activator="{ on }">
-                                                                            <a color="indigo" v-on="on" >
+                                                                            <a color="indigo" v-on="on" v-if="access">
+                                                                                {{task.emailReminderTime}}
+                                                                            </a>
+                                                                            <a color="indigo" v-else>
                                                                                 {{task.emailReminderTime}}
                                                                             </a>
                                                                         </template>
@@ -560,14 +611,14 @@
                                                                             style="backgroundColor: white; padding: 0px 10px; width: 100px;"
                                                                             v-model="task.emailReminderTime"
                                                                             :items="timeToChoose"
-                                                                            @change="updateTask(task.taskId, 'emailReminder', task.emailReminderDate + 'T' + task.emailReminderTime + ':00')"
+                                                                            @change="updateTaskTime(task.taskId, 'emailReminder', task.emailReminderDate, task.emailReminderTime)"
                                                                         ></v-select>
                                                                     </v-menu>
                                                                 </span>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>None</span>
-                                                            </v-flex>
+                                                            </v-flex> -->
                                                             <v-flex xs4 sm4 md4 lg4 xl4>
                                                                 <span>{{task.createdByUser}}</span>
                                                             </v-flex>
@@ -588,6 +639,7 @@
 </template>
 <script>
     import moment from 'moment'
+    import contact from '../../../services/contacts.service'
     import taskService from '../../../services/task.service'
     import { eventBus } from '../../../eventBus';
     export default {
@@ -620,7 +672,10 @@
                     '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45',
                     '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',],
-                searchEmail: ''
+                searchEmail: '',
+                currentContact: null,
+                currentUser: null,
+                access: false,
             }
         },
         watch: {
@@ -634,6 +689,17 @@
             }
         },
         methods: {
+            returnType(type){
+                if (type == 'To-do'){
+                    return 'Công việc'
+                }
+                else if (type == 'Email'){
+                    return 'Gửi Email'
+                }
+                else {
+                    return 'Gọi điện'
+                }
+            },
             parseDate(date) {
                 if (!date) return null
 
@@ -663,12 +729,14 @@
                         result.response[i].menu1 = false;
                         result.response[i].time1 = false;
                         result.response[i].dueDateDate = result.response[i].dueDate.substring(0, 10);
-                        result.response[i].dueDateTime = result.response[i].dueDate.substring(11, 16)
+                        
+                        // result.response[i].dueDateTime = result.response[i].dueDate.substring(11, 16)
+                        result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate)
                         result.response[i].menu2 = false;
                         result.response[i].time2 = false;
                         if(result.response[i].emailReminder != null){
                             result.response[i].emailReminderDate = result.response[i].emailReminder.substring(0, 10);
-                            result.response[i].emailReminderTime = result.response[i].emailReminder.substring(11, 16);
+                            result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder)
                         }
                         else {
                             result.response[i].emailReminderDate = '';
@@ -717,7 +785,14 @@
                 taskService.updateTask(this.idAccount, this.idContact, taskId, body).then(result => {
                     console.log(result);
                     eventBus.updateTaskList();
+                }).catch(error => {
+                    console.log(error);
                 })
+            },
+            updateTaskTime(id, property, date, time){
+                let timeString = date + 'T' + time;
+                let timeToSend = moment(timeString).utc().format().substring(0, 19);
+                this.updateTask(id, property, timeToSend);
             },
             changeType(taskId, type, item){
                 type = item;
@@ -732,13 +807,13 @@
                         result.response[i].menu1 = false;
                         result.response[i].time1 = false;
                         result.response[i].dueDateDate = result.response[i].dueDate.substring(0, 10);
-                        result.response[i].dueDateTime = result.response[i].dueDate.substring(11, 16);
+                        result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate);
                         result.response[i].ref = result.response[i].taskId;
                         result.response[i].menu2 = false;
                         result.response[i].time2 = false;
                         if(result.response[i].emailReminder != null){
                             result.response[i].emailReminderDate = result.response[i].emailReminder.substring(0, 10);
-                            result.response[i].emailReminderTime = result.response[i].emailReminder.substring(11, 16);
+                            result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder);
                         }
                         else {
                             result.response[i].emailReminderDate = '';
@@ -758,10 +833,34 @@
                 }).finally(() => {
                     this.progress = false;
                 })
+            },
+            getDetail(){
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    this.currentContact = result.response
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getCurrentUser()
+                })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length;i++){
+                    if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                        this.access = true;
+                    }
+                    if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                        if (this.detail.contactOwner == this.currentUser.username){
+                            this.access = true;
+                        }
+                    }
+                }
             }
 
         },
         created(){
+            this.getDetail();
             eventBus.$on('updateTaskList', () => {
                 this.updateTaskList();
             })

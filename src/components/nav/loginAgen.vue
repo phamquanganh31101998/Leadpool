@@ -4,7 +4,7 @@
       <!-- <v-btn icon >
         <v-icon>search</v-icon>
       </v-btn> -->
-      <v-btn icon @click="goToSettingsPage()">
+      <v-btn icon @click="goToSettingsPage()" style="height: 28px; margin-bottom: 10px;">
         <v-icon>build</v-icon>
       </v-btn>
       <!-- <v-btn icon>

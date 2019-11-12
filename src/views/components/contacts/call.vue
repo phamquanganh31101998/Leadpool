@@ -8,7 +8,7 @@
                 indeterminate
             ></v-progress-circular>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
+        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3">
             <!-- <h3>June 2019</h3> -->
             <template v-for="call in calls">
                 <v-hover>
@@ -28,7 +28,7 @@
                                                 <!-- <div v-if="hover"> -->
                                                 <div v-if="hover">
                                                     <v-layout row>
-                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <!-- <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
                                                                 offset-y>
                                                                 <template v-slot:activator="{ on }">
@@ -50,9 +50,9 @@
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
                                                             <a color="indigo">Ghim
                                                             </a>
-                                                        </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg2 xl3>
-                                                            <a color="indigo" @click="confirmDeleteLog(call.logId)">Xóa
+                                                        </v-flex> -->
+                                                        <v-flex xs3 sm3 md3 lg2 xl3 offset-xs9 offset-sm9 offset-lg9 offset-xl9 offset-md9>
+                                                            <a color="indigo" @click="confirmDeleteLog(call.logId)" v-if="access">Xóa
                                                             </a>
                                                         </v-flex>
                                                     </v-layout>
@@ -79,7 +79,7 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <v-select :items="items" label="Outcome" v-model="call.status" readonly></v-select>
+                                        <v-select :items="items" label="Outcome" v-model="call.status" :readonly="!access"></v-select>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offset-xl1>
                                         <v-menu ref="menu1" v-model="call.menu1Log" :close-on-content-click="false"
@@ -87,7 +87,10 @@
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
-                                                    prepend-icon="event" @blur="date = call.dateToPut" v-on="on">
+                                                    prepend-icon="event" @blur="date = call.dateToPut" v-on="on" v-if="access">
+                                                </v-text-field>
+                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
+                                                    prepend-icon="event" @blur="date = call.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
                                             <v-date-picker v-model="call.dateLog" no-title @input="call.menu1Log = false"></v-date-picker>
@@ -98,13 +101,16 @@
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="call.timeLog" label="Giờ"
-                                                    prepend-icon="access_time" readonly v-on="on"></v-text-field>
+                                                    prepend-icon="access_time" readonly v-on="on" v-if="access"></v-text-field>
+                                                    <v-text-field v-model="call.timeLog" label="Giờ"
+                                                    prepend-icon="access_time" readonly v-else></v-text-field>
                                             </template>
                                             <v-time-picker v-if="call.modal2Log" v-model="call.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="call.modal2Log = false">Quay lại</v-btn>
+                                                <v-btn flat color="primary" @click="call.modal2Log = false">Chọn</v-btn>
+                                                <!-- <v-btn flat color="red" @click="call.modal2Log = false">Đóng</v-btn> -->
                                                 <!-- <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn> -->
-                                                <v-btn flat color="primary" @click="call.modal2Log = false">OK</v-btn>
+                                                
                                             </v-time-picker>
                                         </v-dialog>
                                     </v-flex>
@@ -124,16 +130,15 @@
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs7 sm8 md8 lg9 xl9>
-                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> đã gọi</p>
+                                <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> đã lưu thông tin cuộc gọi</p>
                             </v-flex>
                             <v-flex xs1 sm1 md1 lg1 xl1>
-                                <v-btn v-if="hover" @click="updateLog(call.dateLog, call.timeLog, call.logId)" outlined>Lưu</v-btn>
+                                <v-btn v-if="hover && access" @click="updateLog(call.dateLog, call.timeLog, call.status, call.logId)" outlined>Lưu lại</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card>
                 </v-hover>
             </template>
-            <br>
         </v-flex>
         <v-dialog v-model="deleteLogDialog.dialog" @click:outside="deleteLogDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
@@ -153,6 +158,7 @@
     </v-layout>
 </template>
 <script>
+    import contact from '../../../services/contacts.service'
     import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
@@ -207,7 +213,10 @@
             deleteLogDialog: {
                 dialog: false,
                 id: ''
-            }
+            },
+            currentContact: null,
+            currentUser: null,
+            access: false,
         }),
         computed: {
             computedDateFormatted() {
@@ -265,14 +274,28 @@
                 })
             },
             
-            updateLog(date, time, idLog){
+            updateLog(date, time, status, idLog){
+                let timeString = date + 'T' + time
+                let timeToSend = moment(timeString).utc().format().substring(0, 19)
                 let body = {
                     "property": "time",
-                    "value": date + 'T' + time
+                    "value": timeToSend
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     console.log(result);
                     eventBus.updateLogCallList();
+                }).catch(error => {
+                    console.log(error);
+                })
+                let body2 = {
+                    "property": "status",
+                    "value": status
+                }
+                logService.updateLog(this.idAccount, this.idContact, body2, idLog).then(result => {
+                    console.log(result);
+                    eventBus.updateLogCallList();
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             coverTime(time){
@@ -285,10 +308,34 @@
             },
             coverTimeHourOnly(time){
                 if (_.isNull(time)) return '';
-                return moment(time).add(-7, 'h').format('HH:mm')
+                return moment(time).format('HH:mm')
+            },
+            getDetail(){
+                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    this.currentContact = result.response
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getCurrentUser()
+                })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length;i++){
+                    if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                        this.access = true;
+                    }
+                    if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                        if (this.detail.contactOwner == this.currentUser.username){
+                            this.access = true;
+                        }
+                    }
+                }
             }
         },
         created(){
+            this.getDetail();
             this.getCallsList();
             eventBus.$on('updateLogCallList', ()=>{
                 this.getCallsList();

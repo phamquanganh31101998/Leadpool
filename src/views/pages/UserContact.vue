@@ -1,7 +1,7 @@
 <template>
     <v-content class="mt-2">
         <v-layout row>
-            <v-flex xs6 sm6 md4 lg4 xl3 class="pr-3">
+            <v-flex xs6 sm6 md4 lg4 xl3>
                 <v-layout justify-start fill-height>
                     <v-flex d-flex xs12 sm12 md12 lg12 xl12 style="background-color:#fff">
                         <v-card flat>
@@ -51,6 +51,19 @@
                                     </v-layout>
                                 </v-card-text>
                             </v-layout>
+                            <v-layout row wrap v-if="access == false">
+                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <v-card flat>
+                                        <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                                            <v-card flat style="background-color: #FDEDEE">
+                                                <v-card-text style="margin: 0px; padding: 0px;">
+                                                    Bạn chỉ có thể xem mà không có quyền thao tác trên Lead này.
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                            </v-layout>
                             <v-layout row wrap>
                                 <v-card-text class="text-xs-center">
                                     <v-flex xs12 sm12 md12 lg12 xl12>
@@ -66,28 +79,28 @@
                                             <v-flex xs4 sm4 md5 lg5 xl5 class="text-xs-right">
                                                 <v-menu :close-on-content-click="false" :width="100" offset-x v-model="basicInfoDialog">
                                                     <template v-slot:activator="{ on }">
-                                                        <v-btn flat color="indigo" dark v-on="on">
+                                                        <v-btn flat color="indigo" dark v-on="on" >
                                                             <v-icon>edit</v-icon>
                                                         </v-btn>
                                                     </template>
                                                     <v-card class="pa-3">
                                                         <v-layout row>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="Họ" outline v-model="detail.firstName"></v-text-field>
+                                                                <v-text-field :readonly="!access" label="Họ" outline v-model="detail.firstName"></v-text-field>
                                                             </v-flex>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-text-field label="Tên" outline v-model="detail.lastName"></v-text-field>
+                                                                <v-text-field :readonly="!access" label="Tên" outline v-model="detail.lastName"></v-text-field>
                                                             </v-flex>
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field label="Email" outline v-model="detail.email"></v-text-field>
+                                                            <v-text-field :readonly="!access" label="Email" outline v-model="detail.email"></v-text-field>
                                                         </v-layout>
 
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
                                                             <v-btn flat @click="basicInfoDialog = false" color="red">Đóng</v-btn>
-                                                            <v-btn color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
+                                                            <v-btn :disabled="!access" color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
@@ -99,12 +112,12 @@
                             <v-layout row>
                                 <v-flex xs12 sm12 md10 lg10 xl10 offset-md1 offset-lg1 offset-xl1>
                                     <v-layout row>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createNote" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
                                                                 <v-icon dark>note_add</v-icon>
                                                             </v-btn>
                                                         </template>
@@ -124,12 +137,12 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createEmail" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
                                                                 <v-icon>mail_outline</v-icon>
                                                             </v-btn>
                                                         </template>
@@ -159,12 +172,12 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
                                                                 <v-icon>textsms</v-icon>
                                                             </v-btn>
                                                         </template>
@@ -194,12 +207,12 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-menu offset-y>
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
                                                                 <v-icon dark>add</v-icon>
                                                             </v-btn>
                                                         </template>
@@ -251,12 +264,12 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createTask" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
                                                                 <v-icon dark>calendar_today</v-icon>
                                                             </v-btn>
                                                         </template>
@@ -282,7 +295,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createMeet" persistent max-width="700px">
@@ -312,7 +325,7 @@
                                                     <p>Meet</p>
                                                 </v-flex>
                                             </v-layout>
-                                        </v-flex>
+                                        </v-flex> -->
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -320,7 +333,7 @@
                                 <v-expansion-panel expand v-model="expandDetail">
                                     <v-expansion-panel-content>
                                         <template v-slot:header>
-                                            <div>Thông tin Lead</div>
+                                            <div><p style="font-weight: bold;">Thông tin Lead</p></div>
                                         </template>
                                         <v-layout row v-for="(item,i) in items" :key="i">
                                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
@@ -328,16 +341,23 @@
                                                     <v-layout row slot-scope="{ hover }">
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
                                                             <template v-if="item.property == 'lifecycleStage'">
-                                                                <v-select label="Lifecycle stage" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access" label="Vòng đời" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
-                                                                <v-select label="Thuộc sở hữu" :items="allEmail" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'leadStatus'">
+                                                                <v-select :readonly="!access" label="Trạng thái" :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'city'">
+                                                                <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'bussiness'">
+                                                                <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" filled
-                                                                v-if="item.title != 'Thời gian hoạt động gần nhất' && item.title != 'Thời gian liên lạc gần nhất'"
-                                                                :disabled = "item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
-                                                                :box="item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
+                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access || item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
+                                                                
                                                                 @change="updateContactDetail(item.property, item.value)">
                                                                 </v-text-field>
                                                             </template>
@@ -492,16 +512,16 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <task class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <call class="mt-3" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark small depressed @click="createNote = true" color="#425b76">Tạo ghi chú
+                                    <v-btn dark small @click="createNote = true" color="#3E82F7" v-if="access">Tạo ghi chú
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -510,8 +530,8 @@
                         <v-tab-item value="tab-3">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true">Lưu thông tin Email</v-btn>
-                                    <v-btn dark depressed small color="#425b76" @click="createEmail= true">Gửi email
+                                    <v-btn small color="grey lighten-3" @click="createLogEmail=true" v-if="access">Lưu thông tin Email</v-btn>
+                                    <v-btn dark small color="#3E82F7" @click="createEmail= true" v-if="access">Gửi email
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -520,7 +540,7 @@
                         <v-tab-item value="tab-4">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogCall = true">Lưu thông tin cuộc gọi</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogCall = true" v-if="access">Lưu thông tin cuộc gọi</v-btn>
                                     <!-- <v-btn dark depressed small color="#425b76">Tạo cuộc gọi</v-btn> -->
                                 </v-flex>
                             </v-layout>
@@ -529,7 +549,7 @@
                         <v-tab-item value="tab-5">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn dark depressed small @click="createTask = true" color="#425b76">Tạo công việc
+                                    <v-btn dark small @click="createTask = true" color="#3E82F7" v-if="access">Tạo công việc
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -538,9 +558,9 @@
                         <v-tab-item value="tab-6">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true">Lưu thông tin cuộc họp</v-btn>
-                                    <v-btn dark depressed small color="#425b76" @click="createMeet=true">Tạo cuộc họp mới
-                                    </v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createLogMeet=true" v-if="access">Lưu thông tin cuộc họp</v-btn>
+                                    <!-- <v-btn dark depressed small color="#425b76" @click="createMeet=true">Tạo cuộc họp mới
+                                    </v-btn> -->
                                 </v-flex>
                             </v-layout>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -558,7 +578,8 @@
                     <v-data-table :headers="actionLog.headers" :items="actionLog.changeArray" no-data-text="Chưa có lịch sử thay đổi thuộc tính này">
                         <template v-slot:items="props">
                             <td>{{ actionLog.title }}</td>
-                            <td>{{ props.item.newValue }}</td>
+                            <td v-if="actionLog.title == 'Thời gian hoạt động gần nhất' || actionLog.title == 'Thời gian liên lạc gần nhất'">{{ coverTimeTooltip(props.item.newValue + '+0000') }}</td>
+                            <td v-else>{{ props.item.newValue }}</td>
                             <td>{{ coverTimeTooltip(props.item.created_at) }}</td>
                             <td>{{ props.item.createdBy }}</td>
                         </template>
@@ -669,13 +690,26 @@
             lifecycleStages: [
                 'Lead',
                 'Subscriber',
-                'Marketing qualified lead',
-                'Sales qualified lead',
+                'Marketing Qualified Lead',
+                'Sales Qualified Lead',
                 'Opportunity',
                 'Customer',
                 'Evangelist',
                 'Other'
             ],
+            allLeadStatus: [
+                'New', 'Open', 'In Progress', 'Open Deal', 'Unqualified', 'Attempted to Contact', 'Connected', 'Bad Timing'
+            ],
+            cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
+                'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+                'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+                'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+                'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+            ],
+            allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
+                'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
+                'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
+                'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Khác'],
             divider: true,
             dialog: false,
             createNote: false,
@@ -777,11 +811,13 @@
                     dialog: false,
                 }
             ],
-            detail:[],
+            detail: null,
             expandDetail: [true],
             basicInfoDialog: false,
             allEmail: [],
-            failDialog: false
+            failDialog: false,
+            access: false,
+            currentUser: null
         }),
         methods:{
             getAllEmail(){
@@ -821,8 +857,9 @@
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
+                    console.log(this.detail)
                     this.items = [{
-                            title: 'Lifecycle stage',
+                            title: 'Vòng đời',
                             description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
                             value: result.response.lifecycleStage,
                             dialog: false,
@@ -859,7 +896,7 @@
                         {
                             title: 'Thời gian hoạt động gần nhất',
                             description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: result.response.lastActivityDate,
+                            value: this.coverTimeTooltip(result.response.lastActivityDate),
                             dialog: false,
                             property: 'lastActivityDate'
                         },
@@ -888,6 +925,8 @@
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);
+                }).finally(() => {
+                    this.getCurrentUser()
                 })
             },
             updateContactDetail(property, value){
@@ -896,6 +935,27 @@
                         {
                             property: property,
                             value: value
+                        }
+                    ]
+                }
+                console.log(body)
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                    
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.updateLastActivityDate();
+                    this.getDetail();
+                })
+            },
+            updateLastActivityDate(){
+                let timeToSend = moment().utc().format().substring(0, 19)
+                let body = {
+                    properties: [
+                        {
+                            property: 'lastActivityDate',
+                            value: timeToSend
                         }
                     ]
                 }
@@ -929,6 +989,20 @@
                 }).catch(error => {
                     console.log(error);
                 })
+            },
+            getCurrentUser(){
+                this.currentUser = JSON.parse(localStorage.getItem('user'));
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length;i++){
+                    if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                        this.access = true;
+                    }
+                    if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                        if (this.detail.contactOwner == this.currentUser.username){
+                            this.access = true;
+                        }
+                    }
+                }
             }
         },
         created(){

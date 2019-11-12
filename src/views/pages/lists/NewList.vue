@@ -1,13 +1,13 @@
 <template>
-    <v-content class="mt-5 pl-3 pr-3">
+    <v-content class="mt-5 pl-3 pr-3" v-if="access">
         <v-layout row wrap>
             <v-flex xs12 sm12 md2 lg2 xl2>
                 <v-btn outline color="indigo" @click="$router.push(`/contacts/${idAccount}/lists`)">
-                    <v-icon>keyboard_arrow_left</v-icon>Danh sách
+                    <v-icon>keyboard_arrow_left</v-icon>Quản lý danh sách
                 </v-btn>
             </v-flex>
             <v-flex xs12 sm12 md3 lg4 xl4>
-                <v-text-field v-model="newListName" label="Tên danh sách" class="fontSize: 20px; width: 100%"></v-text-field>
+                <v-text-field v-model="newListName" :rules="nameRules" label="Tên danh sách" class="fontSize: 20px; width: 100%"></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -40,7 +40,7 @@
                                         </v-card-title>
                                         <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
                                             <template v-for="(andCondition, andIndex) in orCondition">
-                                                <v-card flat style="border: 1px solid #CCCCCC">
+                                                <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA;">
                                                     <v-card-text style="padding: 8px 8px;">
                                                         <v-layout row>
                                                             <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
@@ -117,7 +117,7 @@
                                 <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()"><v-icon>add</v-icon>Thêm điều kiện hoặc</v-btn>
                             </v-card-actions>
                         </v-card>
-                        <v-btn dark color="warning" @click="filter()">Lọc</v-btn>
+                        <v-btn dark color="#3E82F7" @click="filter()">Lọc</v-btn>
                     </div>
                 </template>
                 <template v-else>
@@ -200,6 +200,34 @@
             </v-card>
         </v-dialog>
     </v-content>
+    <v-content v-else class="mt-5 pl-3 pr-3">
+        <v-layout row wrap>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <h1 class="ml-3">Tạo danh sách mới</h1>
+            </v-flex>
+        </v-layout>
+        
+        <v-divider class="mt-4" :divider="divider"></v-divider>
+        <br>
+        <br>
+        <v-layout>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-card flat>
+                    <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                        <v-card flat style="background-color: #FDEDEE">
+                            <v-card-title>
+                                <h2>Không có quyền truy cập</h2>
+                            </v-card-title>
+                            <v-card-text>
+                                Bạn phải có quyền Xem tất cả các Lead mới có thể sử dụng chức năng này. Hãy liên hệ với Admin
+                            </v-card-text>
+                        </v-card>
+                    </v-card-text>
+                </v-card>
+                
+            </v-flex>
+        </v-layout>
+    </v-content>
 </template>
 <script>
 
@@ -230,7 +258,7 @@ export default {
             this.contacts = [];
             for (let i = 0; i < this.allContacts.length; i++){
                 const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
-                if(name.toLowerCase().includes(this.search.toLowerCase())){
+                if(this.normalText(name).toLowerCase().includes(this.normalText(this.search).toLowerCase())){
                     this.contacts.push(this.allContacts[i]);
                 }
             }
@@ -238,6 +266,7 @@ export default {
     },
     data(){
         return {
+            access: false,
             failDialog: false,
             currentUser: null,
             divider: true,
@@ -248,43 +277,43 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'email'
                 },
                 {
                     text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'phone'
                 },
                 {
                     text: 'LIFECYCLE STAGE',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'lifecycleStage'
                 },
                 {
                     text: 'THUỘC SỞ HỮU',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'contactOwner'
                 },
                 {
                     text: 'THÀNH PHÓ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'city'
                 },
                 {
                     text: 'NGÀNH NGHỀ',
                     align: 'left',
-                    sortable: true,
+                    sortable: false,
                     value: 'bussiness'
                 },
             ],
@@ -418,9 +447,16 @@ export default {
                 'Evangelist',
                 'Other'
             ],
+            nameRules: [
+                v => !!v || 'Chưa nhập tên',
+                // v => v.length <= 15 || 'Tên nhỏ hơn 15 kí tự',
+            ],
         }
     },
     methods: {
+        normalText(str){
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        },
         getPropertyName(value){
             let result = ''
             for(let i = 0; i<this.newCondition.contactProperties.length;i++){
@@ -568,6 +604,12 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+                    this.access = true;
+                }
+            }
         },
         filter(){
             this.allContacts = [];

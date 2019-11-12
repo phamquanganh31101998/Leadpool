@@ -1,31 +1,39 @@
 <template>
-  <v-toolbar dark color="#2e3f50" style="border-top:4px solid #ff7a59; padding: 0px 0px;">
-    <v-toolbar-items color="#2e3f50" style="padding: 0px 0px;">
-      <v-btn flat color="#fff" @click="goToContactsPage()">
+  <v-toolbar dark color="#3E82F7" style="height: 50px; padding: 0px 0px;">
+    <v-toolbar-title>
+      <!-- <v-img
+        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+        aspect-ratio="1"
+        class="grey lighten-2"
+      > -->
+    </v-toolbar-title>
+    <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
+      <v-btn flat color="#fff" @click="goToContactsPage()" style="height: 28px; margin-bottom: 10px;">
         LEADS 
         <v-icon color="white" class="ml-2">people_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToListsPage()" v-if="contactViewEverything">
+      <v-btn flat color="#fff" @click="goToListsPage()" v-if="contactViewEverything" style="height: 28px; margin-bottom: 10px;">
         Danh sách 
         <v-icon color="white" class="ml-2">list</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToMyTaskPage()">
+      <v-btn flat color="#fff" @click="goToMyTaskPage()" style="height: 28px; margin-bottom: 10px;">
         Công việc 
         <v-icon color="white" class="ml-2">work_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical ></v-divider>
-      <v-btn flat color="#fff" @click="goToSMSServicePage()" v-if="contactCommunicateEverything">
+      <v-btn flat color="#fff" @click="goToSMSServicePage()" v-if="contactCommunicateEverything" style="height: 28px; margin-bottom: 10px;">
         SMS 
         <v-icon color="white" class="ml-2">textsms</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToEmailServicePage()">
+      <v-btn flat color="#fff" @click="goToEmailServicePage()" style="height: 28px; margin-bottom: 10px;">
         Mẫu Email
         <v-icon color="white" class="ml-2">mail_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
@@ -167,8 +175,8 @@
     data: () => ({
       divider: true,
       currentUser: null,
-      contactViewEverything: false,
-      contactCommunicateEverything: false
+      contactViewEverything: true,
+      contactCommunicateEverything: true
     }),
     components: {
       loginAgen,

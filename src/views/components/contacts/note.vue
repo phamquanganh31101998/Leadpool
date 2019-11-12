@@ -8,11 +8,11 @@
                 indeterminate
             ></v-progress-circular>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3 mt-3">
+        <v-flex xs12 sm12 md12 lg12 xl12 class="pl-3 pr-3">
             <!-- <h3>June 2019</h3> -->
             <template v-for="(note, index) in notes">
                 <v-hover>
-                    <v-card  slot-scope="{ hover }" class="pb-3 mt-3">
+                    <v-card slot-scope="{ hover }" class="pb-3 mt-3">
                         <v-card-title>
                             <v-layout row>
                                 <v-flex xs4 sm4 md4 lg3 xl3>
@@ -26,8 +26,8 @@
                                         <v-flex xs7 sm7 lg8 xl8>
                                             <v-expand-transition>
                                                 <div v-if="hover">
-                                                    <v-layout row>
-                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                    <v-layout row v-if="access">
+                                                        <!-- <v-flex xs6 sm6 md6 lg6 xl6>
                                                             <v-menu :close-on-content-click="false" :nudge-width="200"
                                                                 offset-y>
                                                                 <template v-slot:activator="{ on }">
@@ -49,8 +49,8 @@
                                                         <v-flex xs3 sm3 md3 lg2 xl3>
                                                             <a color="indigo">Ghim
                                                             </a>
-                                                        </v-flex>
-                                                        <v-flex xs3 sm3 md3 lg2 xl3>
+                                                        </v-flex> -->
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 offset-xs9 offset-sm9 offset-md9 offset-lg9 offset-xl9 >
                                                             <a color="indigo" @click="confirmDeleteNote(note.noteId)">Xóa
                                                             </a>
                                                         </v-flex>
@@ -72,7 +72,7 @@
                         </v-card-title>
                         <v-layout row wrap>
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <v-text-field outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false"></v-text-field>
+                                <v-text-field outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -90,7 +90,7 @@
                                         <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> đã tạo 1 ghi chú</p>
                                     </v-flex>
                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn v-if="hover" @click="updateNote(note.note, note.noteId)" outlined :disabled="note.disableSaveButton">Save</v-btn>
+                                        <v-btn v-if="hover && access" @click="updateNote(note.note, note.noteId)" outlined :disabled="note.disableSaveButton" >Lưu lại</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -121,6 +121,7 @@
 </template>
 <script>
 import moment from 'moment'
+import contact from '../../../services/contacts.service'
 import noteService from '../../../services/note.service'
 import { eventBus } from '../../../eventBus';
 export default {
@@ -141,7 +142,10 @@ export default {
             deleteNoteDialog: {
                 dialog: false,
                 id: ''
-            }
+            },
+            currentContact: null,
+            currentUser: null,
+            access: false,
         }
     },
     methods: {
@@ -162,7 +166,7 @@ export default {
         },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('dddd, DD MMMM YYYY hh:mm:ss A')
+            return moment(time).format('dddd, DD MMMM YYYY HH:mm:ss')
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
@@ -191,8 +195,32 @@ export default {
                 });
             }
         },
+        getDetail(){
+            contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                this.currentContact = result.response
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.getCurrentUser()
+            })
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                    this.access = true;
+                }
+                if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                    if (this.detail.contactOwner == this.currentUser.username){
+                        this.access = true;
+                    }
+                }
+            }
+        }
     },
     created(){
+        this.getDetail();
         eventBus.$on('updateNoteList', () => {
             this.getNotesList();
         })

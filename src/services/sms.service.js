@@ -7,7 +7,7 @@ export default {
     getTemplate, createTemplate, updateTemplate, 
     getListDeviceKey, createDeviceKey, getStatisticDetail, 
     getHistoryDetail , getInfo,  createSchedule, getSchedule,
-    activateSchedule, deactivateSchedule
+    activateSchedule, deactivateSchedule, sendSMS
 }
 
 function getTemplate(idAccount){
@@ -119,5 +119,15 @@ function deactivateSchedule(idAccount, idSchedule){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/sms-schedule/${idSchedule}/in-active`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function sendSMS(idAccount, body){
+    let request = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/sendSms`
     return responseService.fetchRetry(endpoint, request, 1)
 }

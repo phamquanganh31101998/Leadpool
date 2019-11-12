@@ -109,6 +109,7 @@
     </v-layout>
 </template>
 <script>
+    import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
     export default {
@@ -171,9 +172,11 @@
                 this.$emit('closeCreateLogEmailDialog');
             },
             createLogEmail(){
+                let timeString = this.date + 'T' + this.time
+                let timeToSend = moment(timeString).utc().format().substring(0, 19)
                 let data = {
                     "contactId": this.idContact,
-                    "time":this.date + 'T' + this.time + ':00',
+                    "time": timeToSend,
                     "log": this.log,
                     "type":"email",
                 }
