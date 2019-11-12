@@ -58,24 +58,20 @@
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-select v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
-                            label="Life Cycle Stage" required></v-select>
+                            label="Vòng đời" required></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <!-- <v-text-field v-model="city" label="Thành phố" required>
-                          </v-text-field> -->
                           <v-select label="Thành Phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <!-- <v-text-field v-model="bussiness" label="Ngành Nghề" required>
-                          </v-text-field> -->
-                          <v-select label="Thành Phố" v-model="bussiness" :items="allBussiness" :rules="[v => !!v || 'Chưa chọn']"></v-select>
+                          <v-select label="Ngành nghề" v-model="bussiness" :items="allBussiness" :rules="[v => !!v || 'Chưa chọn']"></v-select>
                         </v-flex>
                       </v-layout>
                     </v-container>
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting && valid">Tạo</v-btn>
+                  <v-btn color="primary" flat @click="createContacts" :disabled="createWaiting || !valid">Tạo</v-btn>
                   <v-btn color="red" flat @click="checkInfo = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
@@ -94,29 +90,6 @@
           <v-list-tile @click="getMyContact(), section = 'myContact', page = 1">
             <v-list-tile-title>Các Lead của tôi</v-list-tile-title>
           </v-list-tile>
-          <!-- <v-list-tile @click="dialog = true">
-            <v-list-tile-title>Các bộ lọc đã lưu<v-icon>keyboard_arrow_right</v-icon>
-            </v-list-tile-title>
-          </v-list-tile> -->
-          <!-- <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>My Contacts</v-list-tile-title>
-              <v-list-tile-sub-title><small>1 contact</small>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-btn small flat color="primary" left dark v-on="on">
-                      option <v-icon>keyboard_arrow_down</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-tile v-for="(item, index) in items" :key="index">
-                      <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu>
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile> -->
         </v-list>
         <v-divider divider="true" class="mr-3"></v-divider>
         <template v-if="!firstConditionMenu">
@@ -203,15 +176,10 @@
                                     </v-card-text>
                                 </v-card>
                             </v-menu>
-                            <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
                         </v-card-actions>
                     </v-card>
-                    <!-- <p>hoặc</p> -->
                 </template>
             </v-card-text>
-            <!-- <v-card-actions>
-                <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition()"><v-icon>add</v-icon>điều kiện hoặc</v-btn>
-            </v-card-actions> -->
           </v-card>
           <br>
           <v-layout row wrap>
@@ -221,47 +189,6 @@
             <v-flex>
               <v-btn @click="resetFilter()">Xóa</v-btn>
             </v-flex>
-            <!-- <v-dialog
-              width="500"
-              v-model="saveFilter.dialog"
-              >
-              <template v-slot:activator="{ on }">
-                <v-flex>
-                  <v-btn color="warning" v-on="on">Lưu lại</v-btn>
-                </v-flex>
-              </template>
-              <v-card>
-                <v-card-title
-                  class="headline"
-                  style="backgroundColor: #1E88E5; color: white"
-                  primary-title
-                >
-                  Lưu lại danh sách
-                </v-card-title>
-
-                <v-card-text>
-                  <v-layout row wrap>
-                    <p>Tên *</p>
-                    <v-text-field style="width: 100%; padding-top: 0px" v-model="saveFilter.name"></v-text-field>
-                    <p>Share with *</p>
-                    <v-radio-group v-model="saveFilter.shareWith">
-                      <v-radio label="Private" value="private"></v-radio>
-                      <v-radio label="My Team" value="myteam"></v-radio>
-                      <v-radio label="Everyone" value="everyone"></v-radio>
-                    </v-radio-group>
-                  </v-layout>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                  <v-layout row wrap>
-                    <v-flex>
-                      <v-btn flat color="green" @click="createFilter(saveFilter.name, conditions)" :disabled="disableSaveFilterButton">Lưu</v-btn>
-                      <v-btn flat color="red" @click="saveFilter.dialog = false">Hủy</v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-actions>
-              </v-card>
-            </v-dialog> -->
           </v-layout>
           <br>
           <br>
@@ -319,8 +246,9 @@
                 <td class="text-xs-left">{{ props.item.email }}</td>
                 <td class="text-xs-left">{{ props.item.phone }}</td>
                 <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                <td class="text-xs-left">{{ covertime(props.item.createdAt) }}</td>
-              
+                <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                <td class="text-xs-left">{{ props.item.city }}</td>
+                <td class="text-xs-left">{{ props.item.bussiness }}</td>
                 <v-menu>
                   <template v-slot:activator="{ on }">
                       <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
@@ -507,13 +435,25 @@
           sortable: false
         },
         {
-          text: 'LIFECYCLE STAGE',
+          text: 'VÒNG ĐỜI',
           align: 'left',
           value: 'carbs',
           sortable: false
         },
         {
-          text: 'NGÀY TẠO',
+          text: 'TÀI KHOẢN SỞ HỮU',
+          align: 'left',
+          value: 'protein',
+          sortable: false
+        },
+        {
+          text: 'THÀNH PHỐ',
+          align: 'left',
+          value: 'protein',
+          sortable: false
+        },
+        {
+          text: 'NGÀNH NGHỀ',
           align: 'left',
           value: 'protein',
           sortable: false
@@ -527,6 +467,7 @@
       ],
       contacts: [],
       allContacts: [],
+      allEmail: [],
       page: 1,
       pages: 0,
       deleteDialog: false,
@@ -672,6 +613,38 @@
     },
 
     methods: {
+      getAllEmail(){
+          this.allEmail = [];
+          contacts.getAllEmail(this.idAccount).then(result => {
+              result.response.filter(e => {
+                  const obj = {
+                      text: e.name + ' (' + e.email + ')',
+                      value: e.email,
+                      name: e.name
+                  }
+                  this.allEmail.push(obj);
+              });
+          }).catch(error => {
+            console.log(error);
+          }).finally(() => {
+            this.getAllContact();
+          })
+      },
+      returnNameFromEmail(email){
+        let result = '';
+        if (email != null){
+          for (let i = 0; i < this.allEmail.length; i++){
+            if (this.allEmail[i].value == email){
+              result = this.allEmail[i].name;
+            }
+          }
+          
+        }
+        else {
+          result = '';
+        }
+        return result;
+      },
       getCurrentUser(){
         this.currentUser = localStorage.getItem('user');
       },
@@ -996,7 +969,8 @@
     created() {
       // this.getList();
       this.getCurrentUser();
-      this.getAllContact()
+      
+      this.getAllEmail();
     }
   }
 </script>
