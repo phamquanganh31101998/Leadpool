@@ -62,6 +62,34 @@
             <v-btn color="red" small flat
                 @click="closeSendSMSDialog()">Đóng</v-btn>
         </v-layout>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Gửi tin nhắn SMS thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi gửi tin nhắn. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-card-text>
 </template>
 <script>
@@ -98,7 +126,10 @@ export default {
             allTemplates: [],
             allDeviceKey: [],
             deviceKey: '',
-            currentContact: null
+            currentContact: null,
+            waiting: false,
+            successfulDialog: false,
+            failDialog: false
         }
     },
     watch: {
@@ -112,7 +143,6 @@ export default {
         }
     },
     methods: {
-        
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
         },
@@ -176,8 +206,14 @@ export default {
             }
             smsService.sendSMS(this.idAccount, body).then(result => {
                 console.log(result);
+                this.successfulDialog = true;
+                this.$emit('updateLastActivityDate');
+                this.$emit('updateLastContacted');
             }).catch(error => {
                 console.log(error);
+                this.failDialog = true;
+            }).finally(() => {
+                this.closeSendSMSDialog();
             })
         }
     },

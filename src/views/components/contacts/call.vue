@@ -79,7 +79,7 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <v-select :items="items" label="Outcome" v-model="call.status" :readonly="!access"></v-select>
+                                        <v-select :items="items" label="Kết quả cuộc gọi" v-model="call.status" :readonly="!access"></v-select>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offset-xl1>
                                         <v-menu ref="menu1" v-model="call.menu1Log" :close-on-content-click="false"
@@ -268,9 +268,12 @@
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogCallList();
                     this.deleteLogDialog.id = '';
                     this.deleteLogDialog.dialog = false;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             
@@ -283,6 +286,7 @@
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     console.log(result);
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogCallList();
                 }).catch(error => {
                     console.log(error);

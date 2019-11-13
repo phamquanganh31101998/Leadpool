@@ -212,7 +212,10 @@
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     console.log(result);
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogMeetList();
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             confirmDeleteLog(id){
@@ -221,9 +224,12 @@
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogMeetList();
                     this.deleteLogDialog.id = '';
                     this.deleteLogDialog.dialog = false;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             getMeetLogsList(){

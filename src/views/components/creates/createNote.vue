@@ -115,6 +115,7 @@
                     this.successfulDialog = true;
                     this.note = '';
                     eventBus.updateNoteList();
+                    this.$emit('updateLastActivityDate');
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);

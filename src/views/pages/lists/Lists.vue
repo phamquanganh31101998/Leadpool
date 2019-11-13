@@ -30,7 +30,7 @@
                     v-if="!listDetail"
                     >
                     <template v-slot:items="props">
-                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)" style="font-size: 20px;">{{ props.item.name }}</a></td>
+                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)" style="font-size: 16px;">{{ props.item.name }}</a></td>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
@@ -116,8 +116,8 @@ export default {
     methods: {
         getList(){
             listService.getList(this.idAccount).then(result => {
-                this.allLists = result.response;
-                this.lists = result.response;
+                this.allLists = result.response.reverse();
+                this.lists = this.allLists;
             }).catch(error => {
                 console.log(error);
             })

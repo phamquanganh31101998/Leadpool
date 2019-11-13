@@ -502,6 +502,7 @@
                         eventBus.updateTaskList();
                     }
                     this.successfulDialog = true;
+                    this.$emit('updateLastActivityDate');
                     this.closeCreateTaskDialog();
                 }).catch(error => {
                     console.log(error);

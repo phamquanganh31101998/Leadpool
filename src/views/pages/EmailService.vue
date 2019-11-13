@@ -690,11 +690,10 @@ export default {
                             width: 250
                         },
                     ],
-                    uploadText: 'Kéo ảnh từ máy của bạn vào đây hoặc click vào để thêm ảnh',
+                    uploadText: 'Hiện tại chưa hỗ trợ upload ảnh từ máy tính của bạn (ảnh sẽ không thể hiển thị bên phía người nhận)',
                     addBtnText: 'Thêm ảnh từ link',
                     handleAdd: (textFromInput) => {
                             // some check...
-                            console.log(textFromInput)
                             this.editor.AssetManager.add(textFromInput);
                         }
                     }

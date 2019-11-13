@@ -94,13 +94,16 @@
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field :readonly="!access" label="Email" outline v-model="detail.email"></v-text-field>
+                                                            <v-form v-model="basicInfoValid" style="width: 100%;">
+                                                                <v-text-field style="width: 100%;" :rules="emailRules" :readonly="!access" label="Email" outline v-model="detail.email"></v-text-field>
+                                                            </v-form>
+                                                            
                                                         </v-layout>
 
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
                                                             <v-btn flat @click="basicInfoDialog = false" color="red">Đóng</v-btn>
-                                                            <v-btn :disabled="!access" color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
+                                                            <v-btn :disabled="!access || !basicInfoValid" color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
@@ -125,9 +128,7 @@
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Ghi chú</span>
                                                             </v-card-title>
-                                                            <v-card-text>
-                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                                                            </v-card-text>
+                                                            <newNote @updateLastActivityDate="updateLastActivityDate()" @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
                                                     </v-dialog>
@@ -155,7 +156,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
+                                                                <newEmail @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -190,7 +191,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newSMS :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
+                                                                <newSMS @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -234,7 +235,7 @@
                                                                 <span class="headline">Lưu thông tin cuộc gọi</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
+                                                                <newLogCall @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -244,7 +245,7 @@
                                                                 <span class="headline">Lưu thông tin email</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
+                                                                <newLogEmail @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -254,7 +255,7 @@
                                                                 <span class="headline">Lưu thông tin cuộc họp</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
+                                                                <newLogMeet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -278,7 +279,7 @@
                                                                 <span class="headline">Công việc</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
+                                                                <newTask @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
                                                             </v-card-text>
                                                             <!-- <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
@@ -526,11 +527,11 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -854,6 +855,7 @@
             detail: null,
             expandDetail: [true],
             basicInfoDialog: false,
+            basicInfoValid: true,
             allEmail: [],
             failDialog: false,
             access: false,
@@ -1109,7 +1111,24 @@
                         }
                     ]
                 }
-                console.log(body)
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getDetail();
+                })
+            },
+            updateLastContacted(){
+                let timeToSend = moment().utc().format().substring(0, 19)
+                let body = {
+                    properties: [
+                        {
+                            property: 'lastContacted',
+                            value: timeToSend
+                        }
+                    ]
+                }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
                 }).catch(error => {

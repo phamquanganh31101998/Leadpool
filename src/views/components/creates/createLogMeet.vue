@@ -184,6 +184,7 @@
                     this.successfulDialog = true;
                     this.log = '';
                     eventBus.updateLogMeetList();
+                    this.$emit('updateLastActivityDate');
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);

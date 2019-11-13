@@ -9,37 +9,37 @@
       > -->
     </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
-      <v-btn flat color="#fff" @click="goToContactsPage()" style="height: 28px; margin-bottom: 10px;">
+      <v-btn depressed :color="background[0]" @click="goToContactsPage(), checkNavColor(0)" style="height: 50px; margin-bottom: 15px;">
         LEADS 
         <v-icon color="white" class="ml-2">people_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToListsPage()" v-if="contactViewEverything" style="height: 28px; margin-bottom: 10px;">
+      <v-btn depressed :color="background[1]" @click="goToListsPage(), checkNavColor(1)" v-if="contactViewEverything" style="height: 50px; margin-bottom: 15px;">
         Danh sách 
         <v-icon color="white" class="ml-2">list</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToMyTaskPage()" style="height: 28px; margin-bottom: 10px;">
+      <v-btn depressed :color="background[2]" @click="goToMyTaskPage(), checkNavColor(2)" style="height: 50px; margin-bottom: 15px;"> 
         Công việc 
         <v-icon color="white" class="ml-2">work_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical ></v-divider>
-      <v-btn flat color="#fff" @click="goToSMSServicePage()" v-if="contactCommunicateEverything" style="height: 28px; margin-bottom: 10px;">
+      <v-btn depressed :color="background[3]" @click="goToSMSServicePage(), checkNavColor(3)" v-if="contactCommunicateEverything" style="height: 50px; margin-bottom: 15px;">
         SMS 
         <v-icon color="white" class="ml-2">textsms</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="goToEmailServicePage()" style="height: 28px; margin-bottom: 10px;">
+      <v-btn depressed :color="background[4]" @click="goToEmailServicePage(), checkNavColor(4)" style="height: 50px; margin-bottom: 15px;">
         Mẫu Email
         <v-icon color="white" class="ml-2">mail_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn flat color="#fff" @click="gotoLeadHubPage()">
+      <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
         Lead Hub
         <v-icon color="white" class="ml-2">pregnant_woman</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
@@ -169,7 +169,10 @@
       </v-menu> -->
     </v-toolbar-items>
     <v-spacer></v-spacer>
-    <loginAgen />
+    <v-btn icon @click="goToSettingsPage(), checkNavColor(6)" style="padding-bottom: 20px;">
+      <v-icon>build</v-icon>
+    </v-btn>
+    <!-- <loginAgen /> -->
     <!-- <v-spacer></v-spacer> -->
     <user />
   </v-toolbar>
@@ -182,13 +185,20 @@
       divider: true,
       currentUser: null,
       contactViewEverything: true,
-      contactCommunicateEverything: true
+      contactCommunicateEverything: true,
+      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
     }),
     components: {
       loginAgen,
       user
     },
     methods:{
+      checkNavColor(number){
+        this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
+        if (number < 6){
+          this.background[number] = 'primary';
+        }
+      },
       getCurrentUser(){
         this.currentUser = JSON.parse(localStorage.getItem('user'));
         let role = this.currentUser.authorities;
@@ -224,7 +234,11 @@
       gotoLeadHubPage(){
         let link = `/contacts/${this.currentUser.accountId}/leadhub`;
         this.$router.push(link);
-      }
+      },
+      goToSettingsPage(){
+        let link = `/settings/${this.currentUser.accountId}/userandteam`;
+        this.$router.push(link);
+      },
     },
     created(){
       this.getCurrentUser();

@@ -178,13 +178,13 @@ export default {
                     value: 'phone'
                 },
                 {
-                    text: 'LIFECYCLE STAGE',
+                    text: 'VÒNG ĐỜI',
                     align: 'left',
                     sortable: false,
                     value: 'lifecycleStage'
                 },
                 {
-                    text: 'THUỘC SỞ HỮU',
+                    text: 'TÀI KHOẢN SỞ HỮU',
                     align: 'left',
                     sortable: false,
                     value: 'contactOwner'
@@ -208,15 +208,15 @@ export default {
             newCondition: {
                 contactProperties: [
                     {
-                        text: 'Lifecycle Stage',
+                        text: 'Vòng đời',
                         value: 'lifecycle_stage'
                     },
                     {
-                        text: 'Lead Status',
+                        text: 'Trạng thái',
                         value: 'lead_status'
                     },
                     {
-                        text: 'Thuộc sở hữu',
+                        text: 'Tài khoản sở hữu',
                         value: 'contact_owner'
                     },
                     {
@@ -237,7 +237,7 @@ export default {
                     }
                 ],
                 conditionConstants: [
-                    'EQUAL', 'IN', 'LIKE'
+                    'EQUAL', 'IN', 'LIKE', 'GREAT_THAN', 'LESS_THAN'
                 ],
                 chosenProperty: 'lifecycle_stage',
                 chosenConstant: 'EQUAL',

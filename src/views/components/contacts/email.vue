@@ -381,9 +381,12 @@ import contact from '../../../services/contacts.service'
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogEmailList();
                     this.deleteLogDialog.id = '';
                     this.deleteLogDialog.dialog = false;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             updateLog(date, time, idLog){
@@ -394,7 +397,10 @@ import contact from '../../../services/contacts.service'
                     "value": timeToSend
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogEmailList();
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             coverTime(time){

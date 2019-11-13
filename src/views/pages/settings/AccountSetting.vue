@@ -607,6 +607,8 @@ export default {
                 this.getListAccount();
             }).catch(error => {
                 console.log(error)
+            }).finally(() => {
+                confirmDeleteDialog = false
             })
         },
         restoreDeletedAccount(){

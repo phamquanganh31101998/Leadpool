@@ -221,6 +221,7 @@
                     this.successfulDialog = true;
                     this.log = '';
                     eventBus.updateLogCallList();
+                    this.$emit('updateLastActivityDate');
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);
