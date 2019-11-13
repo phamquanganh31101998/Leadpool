@@ -65,12 +65,12 @@
                                         <span>Đánh dấu chưa hoàn thành</span>
                                     </v-tooltip>
                                 </td>
-                                <td>{{ props.item.title }}</td>
+                                <td><a @click="getTaskById(props.item.taskId)">{{ props.item.title }}</a></td>
                                 <td>{{ returnType(props.item.type) }}</td>
                                 <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
-                                <td>
+                                <!-- <td>
                                     <v-btn color="primary" round outline flat @click.stop="getTaskById(props.item.taskId)">Xem chi tiết</v-btn>
-                                </td>
+                                </td> -->
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -394,7 +394,7 @@ export default {
                     value: 'status'
                 },
                 {
-                    text: 'TÊN CÔNG VIỆC',
+                    text: 'TÊN CÔNG VIỆC (CLICK VÀO ĐỂ XEM CHI TIẾT)',
                     align: 'left',
                     sortable: false,
                     value: 'title'
@@ -411,12 +411,12 @@ export default {
                     sortable: false,
                     value: 'dueDate'
                 },
-                {
-                    text: 'XEM CHI TIẾT',
-                    align: 'left',
-                    sortable: false,
-                    value: 'detail'
-                },
+                // {
+                //     text: 'ĐƯỢC GIAO CHO',
+                //     align: 'left',
+                //     sortable: false,
+                //     value: 'detail'
+                // },
             ],
             tasks: [],
             displayTasks: [],

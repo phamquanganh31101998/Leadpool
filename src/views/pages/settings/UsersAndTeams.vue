@@ -9,11 +9,6 @@
         <v-layout row wrap class="mt-5 pl-2 pr-5">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <!-- <v-list-tile>
-                        <v-list-tile-content>
-                            Sales
-                        </v-list-tile-content>
-                    </v-list-tile> -->
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
                             Tài khoản và nhóm
@@ -32,15 +27,6 @@
                     Tạo, chỉnh sửa, xóa Tài khoản khỏi tổ chức của bạn
                 <br>
                 <br>
-                <v-layout>
-                    <v-flex xs8 sm8 md8 lg8 xl8>
-                        <v-btn color="primary" round v-if="isAdmin" @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm tài khoản vào tổ chức</v-btn>
-                    </v-flex>
-                    <v-flex xs4 sm4 md4 lg4 xl4>
-                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
-                    </v-flex>
-                    
-                </v-layout>
                 <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
                     <v-card>
                         <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -61,14 +47,34 @@
                 </v-dialog>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
-                            <template v-slot:items="props">
-                                <td>{{ props.item.displayName }}</td>
-                                <td>{{ props.item.userEmail }}</td>
-                                <td>{{ props.item.role }}</td>
-                                <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td>
-                            </template>
-                        </v-data-table>
+                        <v-card>
+                            <v-card-title>
+                                <v-layout>
+                                    <v-flex xs9 sm9 md9 lg9 xl9>
+                                        <h2 class="mt-4">Các tài khoản trong tổ chức</h2>
+                                    </v-flex>
+                                    <v-flex xs3 sm3 md3 lg3 xl3>
+                                        <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu">
+                                    <template v-slot:items="props">
+                                        <td><a @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
+                                        <td>{{ props.item.userEmail }}</td>
+                                        <td>{{ props.item.role }}</td>
+                                        <!-- <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td> -->
+                                    </template>
+                                </v-data-table>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn color="primary" round v-if="isAdmin" @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm tài khoản vào tổ chức</v-btn>
+                                <br>
+                                <br>
+                            </v-card-actions>
+                        </v-card>
+                        <br>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -288,12 +294,12 @@ export default {
                     sortable: false,
                     value: 'role'
                 },
-                {
-                    text: 'THIẾT LẬP QUYỀN',
-                    align: 'left',
-                    sortable: false,
-                    value: 'role'
-                },
+                // {
+                //     text: 'THIẾT LẬP QUYỀN',
+                //     align: 'left',
+                //     sortable: false,
+                //     value: 'role'
+                // },
             ],
             allUsers: [],
             users: [],

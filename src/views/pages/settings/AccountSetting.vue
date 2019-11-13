@@ -30,114 +30,163 @@
                 <h1>Quản lý toàn bộ hệ thống </h1>
                 <br>
                 <v-layout row wrap>
-                    <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-select label="Chọn tổ chức" :items="listAccount" v-model="currentAccountId" @change="findUserByAccount()"></v-select>
-                    </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1>
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on }">
-                                <v-btn
-                                    round
-                                    color="primary"
-                                    dark
-                                    v-on="on"
-                                    >
-                                Tùy chỉnh tổ chức
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-tile @click="inviteUser.dialog = true">
-                                    <v-list-tile-content>Thêm tài khoản vào tổ chức</v-list-tile-content>
-                                </v-list-tile>
-                                <v-list-tile @click="renameAccount.dialog = true">
-                                    <v-list-tile-content>Đổi tên tổ chức</v-list-tile-content>
-                                </v-list-tile>
-                                <v-list-tile @click="confirmDeleteDialog = true" v-if="currentAccount.deletedAt == null">
-                                    <v-list-tile-content>Xóa tổ chức</v-list-tile-content>
-                                </v-list-tile>
-                                <v-list-tile v-if="currentAccount.deletedAt != null" @click="restoreDeletedAccount()">
-                                    <v-list-tile-content>Khôi phục tổ chức sau khi xóa</v-list-tile-content>
-                                </v-list-tile>
-                            </v-list>
-                        </v-menu>
-                        <!-- <v-btn color="red" dark round @click="confirmDeleteDialog = true">Xóa tổ chức này</v-btn> -->
-                        <v-dialog v-model="confirmDeleteDialog" @click:outside="confirmDeleteDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
-                            <v-card tile>
-                                <v-toolbar card dark color="red">
-                                    <v-toolbar-title>Xác nhận xóa</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                </v-toolbar>
-                                <v-card-text>
-                                    Bạn có chắc chắn muốn đánh dấu tổ chức này là xóa?
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn flat color="red" @click="deleteAccount()">XÓA</v-btn>
-                                    <v-btn flat color="primary" @click="confirmDeleteDialog = false">Đóng</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                        <v-dialog v-model="renameAccount.dialog" width="30%" persistent>
+                    <v-card width="100%">
+                        <v-card-title>
+                            <v-layout row wrap>
+                                <v-flex xs3 sm3 md3 lg3 xl3>
+                                    <v-select label="Chọn tổ chức" :items="listAccount" v-model="currentAccountId" @change="findUserByAccount()"></v-select>
+                                </v-flex>
+                                <v-flex xs1 sm1 md1 lg1 xl1>
+                                    <v-menu offset-y>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn
+                                                round
+                                                color="primary"
+                                                dark
+                                                v-on="on"
+                                                >
+                                            Tùy chỉnh tổ chức
+                                            </v-btn>
+                                        </template>
+                                        <v-list>
+                                            <v-list-tile @click="inviteUser.dialog = true">
+                                                <v-list-tile-content>Thêm tài khoản vào tổ chức</v-list-tile-content>
+                                            </v-list-tile>
+                                            <v-list-tile @click="renameAccount.dialog = true">
+                                                <v-list-tile-content>Đổi tên tổ chức</v-list-tile-content>
+                                            </v-list-tile>
+                                            <v-list-tile @click="confirmDeleteDialog = true" v-if="currentAccount.deletedAt == null">
+                                                <v-list-tile-content>Xóa tổ chức</v-list-tile-content>
+                                            </v-list-tile>
+                                            <v-list-tile v-if="currentAccount.deletedAt != null" @click="restoreDeletedAccount()">
+                                                <v-list-tile-content>Khôi phục tổ chức sau khi xóa</v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-menu>
+                                    <!-- <v-btn color="red" dark round @click="confirmDeleteDialog = true">Xóa tổ chức này</v-btn> -->
+                                    <v-dialog v-model="confirmDeleteDialog" @click:outside="confirmDeleteDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+                                        <v-card tile>
+                                            <v-toolbar card dark color="red">
+                                                <v-toolbar-title>Xác nhận xóa</v-toolbar-title>
+                                                <v-spacer></v-spacer>
+                                            </v-toolbar>
+                                            <v-card-text>
+                                                Bạn có chắc chắn muốn đánh dấu tổ chức này là xóa?
+                                            </v-card-text>
+                                            <v-card-actions>
+                                                <v-btn flat color="red" @click="deleteAccount()">XÓA</v-btn>
+                                                <v-btn flat color="primary" @click="confirmDeleteDialog = false">Đóng</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                    <v-dialog v-model="renameAccount.dialog" width="30%" persistent>
+                                        <v-card>
+                                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                <span class="headline">Đổi tên tổ chức</span>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <span class="mt-4"><strong>Nhập tên mới </strong></span>
+                                                <v-form v-model="inviteUser.valid">
+                                                    <span class="ml-4"><v-text-field :rules="renameAccount.nameRules" v-model="renameAccount.name"></v-text-field></span>
+                                                </v-form>
+                                            </v-card-text>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <v-card-actions>
+                                                <v-btn flat color="primary" @click="rename()" :disabled="renameAccount.name.length == 0">Đổi tên</v-btn>
+                                                <v-btn flat color="red" @click="renameAccount.dialog = false">Đóng</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-flex>
+                                <v-flex xs1 sm1 md1 lg1 xl1 >
+                                    <!-- <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn> -->
+                                    <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
+                                        <v-card>
+                                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                <span class="headline">Thêm người vào tổ chức</span>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <span class="mt-4"><strong>Nhập email </strong></span>
+                                                <v-form v-model="inviteUser.valid">
+                                                    <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
+                                                </v-form>
+                                            </v-card-text>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <v-card-actions>
+                                                <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                                                <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-flex>
+                                <v-flex xs1 sm1 md1 lg1 xl1>
+                                    <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
+                                    <v-dialog v-model="createAccountDialog" width="30%" persistent>
+                                        <v-card>
+                                            <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                <span class="headline">Tạo tổ chức mới</span>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <span class="mt-4"><strong>Tên tổ chức </strong></span>
+                                                <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
+                                            </v-card-text>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <v-card-actions>
+                                                <v-btn flat color="primary" @click="createAccount()" :disabled="createAccountName == ''">Tạo</v-btn>
+                                                <v-btn flat color="red" @click="createAccountDialog = false">Đóng</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-title>
+                        <v-card-text>
                             <v-card>
-                                <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Đổi tên tổ chức</span>
+                                <v-card-title>
+                                    <v-layout>
+                                        <v-flex xs8 sm8 md8 lg8 xl8>
+                                            <h2 class="mt-4">Các tài khoản trong tổ chức</h2>
+                                        </v-flex>
+                                        <v-flex xs4 sm4 md4 lg4 xl4>
+                                            <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-card-title>
                                 <v-card-text>
-                                    <span class="mt-4"><strong>Nhập tên mới </strong></span>
-                                    <v-form v-model="inviteUser.valid">
-                                        <span class="ml-4"><v-text-field :rules="renameAccount.nameRules" v-model="renameAccount.name"></v-text-field></span>
-                                    </v-form>
+                                    <v-layout row wrap>
+                                        <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có tài khoản nào">
+                                                <template v-slot:items="props">
+                                                    <td><a @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
+                                                    <td>{{ props.item.userEmail }}</td>
+                                                    <td>{{ props.item.role }}</td>
+                                                    <v-menu>
+                                                        <template v-slot:activator="{ on }">
+                                                            <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                                                        </template>
+                                                        <v-list>
+                                                            <v-list-tile @click="openPermissionDialog(props.item.userId)">
+                                                                <v-list-tile-content>Thiết lập quyền</v-list-tile-content>
+                                                            </v-list-tile>
+                                                            <v-list-tile @click="openNewAccountDialog(props.item.userId)">
+                                                                <v-list-tile-content>Chuyển sang tổ chức khác</v-list-tile-content>
+                                                            </v-list-tile>
+                                                        </v-list>
+                                                    </v-menu>
+                                                    <!-- <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td> -->
+                                                </template>
+                                            </v-data-table>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-card-text>
-                                <v-divider :divider="divider"></v-divider>
-                                <v-card-actions>
-                                    <v-btn flat color="primary" @click="rename()" :disabled="renameAccount.name.length == 0">Đổi tên</v-btn>
-                                    <v-btn flat color="red" @click="renameAccount.dialog = false">Đóng</v-btn>
-                                </v-card-actions>
                             </v-card>
-                        </v-dialog>
-                    </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1 >
-                        <!-- <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn> -->
-                        <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
-                            <v-card>
-                                <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Thêm người vào tổ chức</span>
-                                </v-card-title>
-                                <v-card-text>
-                                    <span class="mt-4"><strong>Nhập email </strong></span>
-                                    <v-form v-model="inviteUser.valid">
-                                        <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
-                                    </v-form>
-                                </v-card-text>
-                                <v-divider :divider="divider"></v-divider>
-                                <v-card-actions>
-                                    <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
-                                    <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-flex>
-                    <v-flex xs1 sm1 md1 lg1 xl1>
-                        <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
-                        <v-dialog v-model="createAccountDialog" width="30%" persistent>
-                            <v-card>
-                                <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Tạo tổ chức mới</span>
-                                </v-card-title>
-                                <v-card-text>
-                                    <span class="mt-4"><strong>Tên tổ chức </strong></span>
-                                    <span class="ml-4"><v-text-field v-model="createAccountName"></v-text-field></span>
-                                </v-card-text>
-                                <v-divider :divider="divider"></v-divider>
-                                <v-card-actions>
-                                    <v-btn flat color="primary" @click="createAccount()" :disabled="createAccountName == ''">Tạo</v-btn>
-                                    <v-btn flat color="red" @click="createAccountDialog = false">Đóng</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-flex>
-                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs3 offset-sm3 offset-md3 offset-lg3 offset-xl3>
+                            
+                        </v-card-text>
+                    </v-card>
+                    
+                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 offset-xs3 offset-sm3 offset-md3 offset-lg3 offset-xl3>
                         <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
-                    </v-flex>
+                    </v-flex> -->
                     
                 </v-layout>
                 <!-- <v-layout>
@@ -145,31 +194,7 @@
                         
                     </v-flex>
                 </v-layout> -->
-                <v-layout row wrap>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có tài khoản nào">
-                            <template v-slot:items="props">
-                                <td>{{ props.item.displayName }}</td>
-                                <td>{{ props.item.userEmail }}</td>
-                                <td>{{ props.item.role }}</td>
-                                <v-menu>
-                                    <template v-slot:activator="{ on }">
-                                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                                    </template>
-                                    <v-list>
-                                        <v-list-tile @click="openPermissionDialog(props.item.userId)">
-                                            <v-list-tile-content>Thiết lập quyền</v-list-tile-content>
-                                        </v-list-tile>
-                                        <v-list-tile @click="openNewAccountDialog(props.item.userId)">
-                                            <v-list-tile-content>Chuyển sang tổ chức khác</v-list-tile-content>
-                                        </v-list-tile>
-                                    </v-list>
-                                </v-menu>
-                                <!-- <td><v-btn flat round outline color="primary" @click="openPermissionDialog(props.item.userId)">Thiết lập quyền</v-btn></td> -->
-                            </template>
-                        </v-data-table>
-                    </v-flex>
-                </v-layout>
+                
             </v-flex>
         </v-layout>
         <v-dialog v-model="permissionsDialog" width="550" persistent transition="dialog-bottom-transition">

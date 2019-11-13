@@ -96,9 +96,63 @@
           <v-card class="mr-3">
             <v-card-text>
                 <h3>Bộ lọc kết quả</h3>
+                <br>
                 <template v-for="(orCondition, orIndex) in conditions">
                     <v-card flat>
-                        <v-card-title style="padding: 0px 0px; margins: 0px 0px">
+                      <template v-for="(andCondition, andIndex) in orCondition">
+                        <!-- <v-layout row>
+                          <v-flex xs12 sm12 md12 lg12 xl12>
+                            <v-chip text-color="white" color="primary" close v-if="andCondition.condition == 'EQUAL'" @input="deleteAndCondition(orIndex, andIndex)">
+                              {{getPropertyName(andCondition.property)}} là {{andCondition.value}}
+                            </v-chip>
+                            <v-chip text-color="white" color="primary" close v-if="andCondition.condition == 'LIKE'" @input="deleteAndCondition(orIndex, andIndex)">
+                              {{getPropertyName(andCondition.property)}} chứa {{andCondition.value}}
+                            </v-chip>
+                            <v-chip text-color="white" color="primary" close v-if="andCondition.condition == 'IN'" @input="deleteAndCondition(orIndex, andIndex)">
+                              {{getPropertyName(andCondition.property)}} có trong 
+                              <template v-for="val in andCondition.value">
+                                  <span> {{val}}, <br></span>
+                              </template>
+                            </v-chip>
+                            <v-chip text-color="white" color="primary" close v-if="andCondition.condition == 'GREAT_THAN'" @input="deleteAndCondition(orIndex, andIndex)">
+                              {{getPropertyName(andCondition.property)}} lớn hơn {{andCondition.value}}
+                            </v-chip>
+                            <v-chip text-color="white" color="primary" close v-if="andCondition.condition == 'LESS_THAN'" @input="deleteAndCondition(orIndex, andIndex)">
+                              {{getPropertyName(andCondition.property)}} nhỏ hơn {{andCondition.value}}
+                            </v-chip>
+                          </v-flex>
+                        </v-layout> -->
+                          <!-- <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA">
+                              <v-card-text style="padding: 8px 8px;">
+                                  <v-layout row>
+                                      <v-flex xs9 sm9 md9 lg9 xl9 class="pt-2">
+                                          <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
+                                              <template v-for="val in andCondition.value">
+                                                  <v-chip>{{val}}</v-chip>
+                                              </template>
+                                          </p>
+                                          <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                          <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                          <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                          <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                      </v-flex>
+                                      <v-flex xs3 sm3 md3 lg3 xl3>
+                                          <v-tooltip right>
+                                              <template v-slot:activator="{ on }">
+                                                  <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
+                                                      <v-icon style="color: red;" >clear</v-icon>
+                                                  </v-btn>
+                                              </template>
+                                              <span>Xóa điều kiện này</span>
+                                          </v-tooltip>
+                                      </v-flex>
+                                  </v-layout>
+                                  
+                              </v-card-text>
+                          </v-card>
+                          <br> -->
+                      </template>
+                        <!-- <v-card-title style="padding: 0px 0px; margins: 0px 0px">
                             <v-layout row wrap>
                                 <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
                                     <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
@@ -106,38 +160,40 @@
                                     </a>
                                 </v-flex>
                             </v-layout>
-                        </v-card-title>
-                        <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
-                            <template v-for="(andCondition, andIndex) in orCondition">
-                                <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA">
-                                    <v-card-text style="padding: 8px 8px;">
-                                        <v-layout row>
-                                            <v-flex xs9 sm9 md9 lg9 xl9 class="pt-2">
-                                                <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
-                                                    <template v-for="val in andCondition.value">
-                                                        <v-chip>{{val}}</v-chip>
-                                                    </template>
-                                                </p>
-                                                <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                            </v-flex>
-                                            <v-flex xs3 sm3 md3 lg3 xl3>
-                                                <v-tooltip right>
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
-                                                            <v-icon style="color: red;" >clear</v-icon>
-                                                        </v-btn>
-                                                    </template>
-                                                    <span>Xóa điều kiện này</span>
-                                                </v-tooltip>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-text>
-                                </v-card>
-                                <p>và</p>
-                            </template>
+                        </v-card-title> -->
+                        <v-card-text style="padding: 0px 0px; margins: 0px 0px">
+                          <template v-for="(andCondition, andIndex) in orCondition">
+                            <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA">
+                              <v-card-text style="padding: 8px 8px;">
+                                    <v-layout row>
+                                        <v-flex xs9 sm9 md9 lg9 xl9 class="pt-2">
+                                            <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
+                                                <template v-for="val in andCondition.value">
+                                                    <v-chip>{{val}}</v-chip>
+                                                </template>
+                                            </p>
+                                            <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                            <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                            <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                            <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                        </v-flex>
+                                        <v-flex xs3 sm3 md3 lg3 xl3>
+                                            <v-tooltip right>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
+                                                        <v-icon style="color: red;" >clear</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Xóa điều kiện này</span>
+                                            </v-tooltip>
+                                        </v-flex>
+                                    </v-layout>
+                                    
+                                </v-card-text>
+                            </v-card>
+                            <br>
+                          </template>
+                            
                         </v-card-text>
                         <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
                             <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
@@ -258,7 +314,7 @@
                       <v-list-tile-content>Xem chi tiết</v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="confirmDeleteContact(props.item.contactId)">
-                      <v-list-tile-content>Xóa Lead này</v-list-tile-content>
+                      <v-list-tile-content>Xóa Lead</v-list-tile-content>
                     </v-list-tile>
                   </v-list>
                 </v-menu>
@@ -331,6 +387,20 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
+    <v-dialog v-model="cannotDeleteDialog" @click:outside="cannotDeleteDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-card tile>
+            <v-toolbar card dark color="red">
+                <v-toolbar-title>Thất bại</v-toolbar-title>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-card-text>
+                Không thể xóa Lead thuộc quyền sở hữu của người khác
+            </v-card-text>
+            <v-card-actions>
+            <v-btn flat color="red" @click="cannotDeleteDialog = false">OK</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
   </v-content>
 </template>
 <script>
@@ -346,6 +416,7 @@
       },
     },
     data: () => ({
+      cannotDeleteDialog: false,
       currentUser: null,
       logoutDialog: false,
       section: 'allContact',
@@ -409,7 +480,9 @@
       phone: '',
       phoneRules: [
         v => !!v || 'Chưa nhập số điện thoại',
-        v => /^\d{1,}$/.test(v) || 'Không đúng cú pháp'
+        // v => v.length > 2 || 'Tối thiểu 3 kí tự',
+        // v => /^\d{1,}$/.test(v) || 'Không đúng cú pháp'
+        v => /^[0-9\+]{3,15}$/.test(v) || 'Chỉ được nhập số, từ 3 - 15 kí tự, (có thể bắt đầu bằng dấu +) '
       ],
       widgets: false,
       pagination: {
@@ -599,7 +672,7 @@
       deleteContactDialog: {
         dialog: false,
         id: ''
-      }
+      },
     }),
     computed: {
       disableSaveFilterButton(){
@@ -783,9 +856,13 @@
       },
       deleteContact(idContact){
         contacts.deleteContact(this.idUser, idContact).then(result => {
-          console.log(result);
           this.getAllContact();
           this.deleteContactDialog.id = '';
+          
+        }).catch(error => {
+          console.log(error);
+          this.cannotDeleteDialog = true;
+        }).finally(() => {
           this.deleteContactDialog.dialog = false;
         })
       },
