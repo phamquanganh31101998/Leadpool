@@ -344,7 +344,7 @@
                                                                 <v-select :readonly="!access" label="Vòng đời" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
-                                                                <v-select :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'leadStatus'">
                                                                 <v-select :readonly="!access" label="Trạng thái" :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
@@ -355,10 +355,24 @@
                                                             <template v-else-if="item.property == 'bussiness'">
                                                                 <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
-                                                            <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access || item.title == 'Thời gian hoạt động gần nhất' || item.title == 'Thời gian liên lạc gần nhất'"
+                                                            <template v-else-if="item.property == 'phone'">
+                                                                <v-form v-model="validPhone">
+                                                                    <v-text-field :label="item.title" v-model="item.value" :rules="phoneRules" :readonly="!access"
+                                                                        @change="updateContactDetailWithCondition(item.property, item.value, validPhone)">
+                                                                    </v-text-field>
+                                                                </v-form>
                                                                 
-                                                                @change="updateContactDetail(item.property, item.value)">
+                                                            </template>
+                                                            <template v-else-if="item.property == 'email'">
+                                                                <v-form v-model="validEmail">
+                                                                    <v-text-field :label="item.title" v-model="item.value" :rules="emailRules" :readonly="!access"
+                                                                        @change="updateContactDetailWithCondition(item.property, item.value, validEmail)">
+                                                                    </v-text-field>
+                                                                </v-form>
+                                                                
+                                                            </template>
+                                                            <template v-else>
+                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access">
                                                                 </v-text-field>
                                                             </template>
                                                             
@@ -626,6 +640,32 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="changeContactOwner.dialog" width="30%" persistent>
+            <v-card>
+                <v-card-title style="background-color: #1E88E5; color:#fff" >
+                    <span class="headline">Thay đổi tài khoản sở hữu</span>
+                </v-card-title>
+                <v-card-text class>
+                    Bạn có chắc chắn muốn chuyển Lead này sang cho tài khoản {{changeContactOwner.value}} quản lý? 
+                    <br>
+                    <br>
+                    <p style="font-Weight: bold">
+                        Lưu ý: 
+                        <br>
+                        - Không thể tiếp tục xem Lead này nếu không có quyền Xem tất cả
+                        <br>
+                        - Không thể tiếp tục thao tác trên Lead này nếu không có quyền Chỉnh sửa tất cả
+                    </p>
+                    
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <!-- <v-btn flat color="primary" @click="updateContactDetail('contactOwner', changeContactOwner.value), changeContactOwner.dialog = false, updateLastActivityDate(), access = false">Chuyển</v-btn> -->
+                    <v-btn flat color="primary" @click="updateContactOwner()">Chuyển</v-btn>
+                    <v-btn flat color="red" @click="items[2].value = currentUser.username, changeContactOwner.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -817,7 +857,23 @@
             allEmail: [],
             failDialog: false,
             access: false,
-            currentUser: null
+            currentUser: null,
+            validPhone: true,
+            validEmail: true,
+            emailRules: [
+                v => !!v || 'Chưa nhập E-mail',
+                v => /.+@.+/.test(v) || 'E-mail không đúng định dạng',
+            ],
+            phoneRules: [
+                v => !!v || 'Chưa nhập số điện thoại',
+                // v => v.length > 2 || 'Tối thiểu 3 kí tự',
+                // v => /^\d{1,}$/.test(v) || 'Không đúng cú pháp'
+                v => /^[0-9\+]{3,15}$/.test(v) || 'Chỉ được nhập số, từ 3 - 15 kí tự, (có thể bắt đầu bằng dấu +) '
+            ],
+            changeContactOwner: {
+                dialog: false,
+                value: ''
+            }
         }),
         methods:{
             getAllEmail(){
@@ -946,8 +1002,102 @@
                     console.log(error);
                 }).finally(() => {
                     this.updateLastActivityDate();
-                    this.getDetail();
                 })
+            },
+            updateContactDetailWithCondition(property, value, valid){
+                if (valid){
+                    this.updateContactDetail(property, value);
+                }
+            },
+            confirmUpdateContactOwner(property, value){
+                let role = this.currentUser.authorities;
+                this.changeContactOwner.value = value;
+                this.changeContactOwner.dialog = true;
+                // for (let i = 0; i < role.length;i++){
+                //     if (role[i] == 'ROLE_CONTACT_EDIT_EVERYTHING'){
+                //         this.updateContactDetail(property, value)
+                //     }
+                //     if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+                //         this.changeContactOwner.value = value;
+                //         this.changeContactOwner.dialog = true;
+                //     }
+                // }
+            },
+            updateContactOwner(){
+                let viewRole = '';
+                let contactRole = '';
+                let role = this.currentUser.authorities;
+                for (let i = 0; i < role.length; i++){
+                    if (role[i].includes('VIEW')){
+                        viewRole = role[i];
+                    }
+                    else if (role[i].includes('CONTACT_EDIT')){
+                        contactRole = role[i];
+                    }
+                }
+                
+                if (viewRole.includes('OWNEDONLY')){
+                    // this.updateContactDetail('contactOwner', changeC)
+                    let body = {
+                        properties: [
+                            {
+                                property: 'contactOwner',
+                                value: this.changeContactOwner.value
+                            }
+                        ]
+                    }
+                    this.updateLastActivityDate();
+                    contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                        console.log(result);
+                    }).catch(error => {
+                        console.log(error);
+                    }).finally(() => {
+                        this.$router.go(-1);
+                    })
+                }
+                else {
+                    console.log('done')
+                    console.log(contactRole)
+                    if (contactRole.includes('EVERYTHING')){
+                        let body = {
+                            properties: [
+                                {
+                                    property: 'contactOwner',
+                                    value: this.changeContactOwner.value
+                                }
+                            ]
+                        }
+                        
+                        contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                            console.log(result);
+                        }).catch(error => {
+                            console.log(error);
+                        }).finally(() => {
+                            this.updateLastActivityDate();
+                            this.changeContactOwner.dialog = false;
+                        })
+                    }
+                    else if (contactRole.includes('OWNEDONLY')){
+                        let body = {
+                            properties: [
+                                {
+                                    property: 'contactOwner',
+                                    value: this.changeContactOwner.value
+                                }
+                            ]
+                        }
+                        
+                        contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                            console.log(result);
+                        }).catch(error => {
+                            console.log(error);
+                        }).finally(() => {
+                            this.updateLastActivityDate();
+                            this.access = false;
+                            this.changeContactOwner.dialog = false;
+                        })
+                    }
+                }
             },
             updateLastActivityDate(){
                 let timeToSend = moment().utc().format().substring(0, 19)
@@ -964,6 +1114,8 @@
                     console.log(result);
                 }).catch(error => {
                     console.log(error);
+                }).finally(() => {
+                    this.getDetail();
                 })
             },
             updateBasicInfoContactDetail(firstName, lastName, email){
@@ -988,6 +1140,8 @@
                     this.basicInfoDialog = false;
                 }).catch(error => {
                     console.log(error);
+                }).finally(() => {
+                    this.updateLastActivityDate();
                 })
             },
             getCurrentUser(){
