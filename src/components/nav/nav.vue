@@ -38,6 +38,12 @@
         <v-icon color="white" class="ml-2">mail_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn flat color="#fff" @click="gotoLeadHubPage()">
+        Lead Hub
+        <v-icon color="white" class="ml-2">pregnant_woman</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
+      </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -213,6 +219,10 @@
       },
       goToEmailServicePage(){
         let link = `/contacts/${this.currentUser.accountId}/emailservice`;
+        this.$router.push(link);
+      },
+      gotoLeadHubPage(){
+        let link = `/contacts/${this.currentUser.accountId}/leadhub`;
         this.$router.push(link);
       }
     },

@@ -1,11 +1,13 @@
 import vue from 'vue';
 import vuex from 'vuex';
 import { user } from './user.module'
+import { alert } from './alert.module'
 
 vue.use(vuex)
 export const store = new vuex.Store({
 	modules: {
-		user,
+        user,
+        alert
 	},
 	state:{
         expiredDialog: false,
