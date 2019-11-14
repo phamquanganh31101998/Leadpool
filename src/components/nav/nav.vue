@@ -9,41 +9,40 @@
       > -->
     </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
-      <v-btn depressed :color="background[0]" @click="goToContactsPage(), checkNavColor(0)" style="height: 50px; margin-bottom: 15px;">
+      <v-btn depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
         LEADS 
         <v-icon color="white" class="ml-2">people_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn depressed :color="background[1]" @click="goToListsPage(), checkNavColor(1)" v-if="contactViewEverything" style="height: 50px; margin-bottom: 15px;">
+      <v-btn depressed :color="background[1]" @click="goToListsPage()" v-if="contactViewEverything" style="height: 50px; margin-bottom: 15px;">
         Danh sách 
         <v-icon color="white" class="ml-2">list</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn depressed :color="background[2]" @click="goToMyTaskPage(), checkNavColor(2)" style="height: 50px; margin-bottom: 15px;"> 
+      <v-btn depressed :color="background[2]" @click="goToMyTaskPage()" style="height: 50px; margin-bottom: 15px;"> 
         Công việc 
         <v-icon color="white" class="ml-2">work_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical ></v-divider>
-      <v-btn depressed :color="background[3]" @click="goToSMSServicePage(), checkNavColor(3)" v-if="contactCommunicateEverything" style="height: 50px; margin-bottom: 15px;">
+      <v-btn depressed :color="background[3]" @click="goToSMSServicePage()" v-if="contactCommunicateEverything" style="height: 50px; margin-bottom: 15px;">
         SMS 
         <v-icon color="white" class="ml-2">textsms</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn depressed :color="background[4]" @click="goToEmailServicePage(), checkNavColor(4)" style="height: 50px; margin-bottom: 15px;">
+      <v-btn depressed :color="background[4]" @click="goToEmailServicePage()" style="height: 50px; margin-bottom: 15px;">
         Mẫu Email
         <v-icon color="white" class="ml-2">mail_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
+      <!-- <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
         Lead Hub
         <v-icon color="white" class="ml-2">pregnant_woman</v-icon>
-        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
-      </v-btn>
+      </v-btn> -->
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -169,7 +168,7 @@
       </v-menu> -->
     </v-toolbar-items>
     <v-spacer></v-spacer>
-    <v-btn icon @click="goToSettingsPage(), checkNavColor(6)" style="padding-bottom: 20px;">
+    <v-btn icon @click="goToSettingsPage()" style="padding-bottom: 20px;">
       <v-icon>build</v-icon>
     </v-btn>
     <!-- <loginAgen /> -->
@@ -178,6 +177,7 @@
   </v-toolbar>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   import loginAgen from './loginAgen'
   import user from './user'
   export default {
@@ -191,6 +191,17 @@
     components: {
       loginAgen,
       user
+    },
+    computed: {
+          ...mapGetters({
+              colorNumber: 'colorNumber'
+              // ...
+      })
+    },
+    watch: {
+      colorNumber(){
+        this.checkNavColor(this.colorNumber);
+      }
     },
     methods:{
       checkNavColor(number){

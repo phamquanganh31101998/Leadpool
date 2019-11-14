@@ -68,7 +68,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-layout row>
-                    <v-btn flat icon small color="green">
+                    <!-- <v-btn flat icon small color="green">
                         <v-icon>text_format</v-icon>
                     </v-btn>
                     <v-btn flat icon small color="green">
@@ -79,7 +79,7 @@
                     </v-btn>
                     <v-btn flat icon small color="green">
                         <v-icon>photo</v-icon>
-                    </v-btn>
+                    </v-btn> -->
                     <!-- <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on" class="mt-2 ml-5">
@@ -225,6 +225,9 @@
         created(){
             this.getCurrentContact();
             this.getCurrentUser();
+            eventBus.$on('updateEmail', () => {
+                this.getCurrentContact();
+            })
         }
     }
 </script>

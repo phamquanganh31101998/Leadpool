@@ -38,7 +38,7 @@
         <v-flex xs12 sm12 md12 lg12 xl12>
             <v-textarea class="mt-2" name="input" label="Ghi chú..." v-model="note"></v-textarea>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 xl12>
+        <!-- <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
                 <v-flex>
                     <v-btn flat icon small color="green">
@@ -54,7 +54,7 @@
                         <v-icon>photo</v-icon>
                     </v-btn>
                 </v-flex>
-                <!-- <v-flex class="text-xs-right">
+                <v-flex class="text-xs-right">
                     <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on" class="mt-2 ml-5">
@@ -70,9 +70,9 @@
                             </v-card-title>
                         </v-card>
                     </v-menu>
-                </v-flex> -->
+                </v-flex>
             </v-layout>
-        </v-flex>
+        </v-flex> -->
         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
             <v-divider :divider="divider"></v-divider>
             <v-layout row class="mt-2">
@@ -102,10 +102,10 @@
                         <v-card>
                             <v-card-title>
                                 <v-layout row wrap>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail"></v-text-field>
                                     </v-flex>
-                                    <br>
+                                    <br> -->
                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-select :items="searchedEmail" v-model="chosenEmail"></v-select>
                                     </v-flex>

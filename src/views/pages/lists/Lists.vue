@@ -1,5 +1,5 @@
 <template>
-    <v-content class="mt-5 pl-3 pr-3">
+    <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 class="ml-3"> Quản lý danh sách các Lead</h1>
@@ -15,22 +15,22 @@
                 </v-layout>
             </v-flex>
         </v-layout>
-        
-        <v-divider class="mt-4" :divider="divider" v-if="access"></v-divider>
         <br>
-        <br>
+        <v-divider class="mt-4" :divider="divider"></v-divider>
         
         <v-layout v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
                     :headers="headersLists"
                     :items="lists"
-                    :hide-headers="true"
                     class="elevation-1 mt-6"
                     v-if="!listDetail"
                     >
                     <template v-slot:items="props">
-                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)" style="font-size: 16px;">{{ props.item.name }}</a></td>
+                        <td>{{ props.item.name }}</td>
+                        <td>{{props.item.createdBy}}</td>
+                        <td>{{coverTime(props.item.createdAt)}}</td>
+                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">Xem chi tiết danh sách >> </a></td>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
@@ -56,25 +56,37 @@
             </v-dialog>
         </v-layout>
         <v-layout v-else>
+            
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <v-card flat>
-                    <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
-                        <v-card flat style="background-color: #FDEDEE">
-                            <v-card-title>
-                                <h2>Không có quyền truy cập</h2>
-                            </v-card-title>
-                            <v-card-text>
-                                Bạn phải có quyền Xem tất cả các Lead mới có thể sử dụng chức năng này. Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                <v-layout style="height: 350px;">
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-card flat style="height: 350px; margin-top: 100px;" >
+                            <v-card-text style="height: 350px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
                             </v-card-text>
                         </v-card>
-                    </v-card-text>
-                </v-card>
-                
+                    </v-flex>
+                    <v-flex xs8 sm8 md8 lg8 xl8>
+                        <v-card flat style="height: 500px; margin-top: 100px;">
+                            <v-img alt="ảnh ở đây" width="100%" src="../../../../list.png"></v-img>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
             </v-flex>
         </v-layout>
     </v-content>
 </template>
 <script>
+import moment from 'moment'
 import listService from '../../../services/list.services'
 export default {
     props: {
@@ -88,7 +100,25 @@ export default {
             search: '',
             headersLists: [
                 {
-                    text: 'Dessert (100g serving)',
+                    text: 'TÊN DANH SÁCH',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'NGƯỜI TẠO',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'NGÀY TẠO',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'CHI TIẾT',
                     align: 'left',
                     sortable: false,
                     value: 'name'
@@ -114,6 +144,10 @@ export default {
         }
     },
     methods: {
+        coverTime(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         getList(){
             listService.getList(this.idAccount).then(result => {
                 this.allLists = result.response.reverse();
@@ -149,6 +183,7 @@ export default {
     created(){
         this.getCurrentUser();
         // this.getList();
+        this.$store.state.colorNumber = 1;
     }
 }
 </script>

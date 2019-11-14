@@ -1,8 +1,8 @@
 <template>
-    <v-content class="mt-5 pl-2 pr-3">
+    <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-2">Công việc</h1>
+                <h1 class="ml-3">Công việc</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -77,16 +77,16 @@
                             </v-data-table>
                         </v-flex>
                     </v-layout>
-                    <br>
-                    <v-layout row wrap>
-                        <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                            <v-pagination v-if="length > 0" v-model="pagination.page" :length="length" @input="changePage()"></v-pagination>
-                            <br>
-                            <br>
-                        </v-flex>
-                    </v-layout>
+                    
                 </v-card>
-                
+                <br>
+                <v-layout row wrap>
+                    <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
+                        <v-pagination v-if="length > 0" v-model="pagination.page" :length="length" @input="changePage()"></v-pagination>
+                        <br>
+                        <br>
+                    </v-flex>
+                </v-layout>
             </v-flex>
         </v-layout>
         <!-- <v-dialog v-model="createTask" persistent max-width="700px">
@@ -629,6 +629,7 @@ export default {
         },
     },
     created(){
+        this.$store.state.colorNumber = 2;
         this.getAllEmail();
         this.getMyTask(this.pagination.page, this.status, this.type);
         eventBus.$on('updateTaskList', () => {

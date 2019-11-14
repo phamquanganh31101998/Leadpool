@@ -53,11 +53,24 @@
                             </v-layout>
                             <v-layout row wrap v-if="access == false">
                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                    <v-card flat>
+                                    <v-card flat width="100%">
                                         <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
                                             <v-card flat style="background-color: #FDEDEE">
                                                 <v-card-text style="margin: 0px; padding: 0px;">
                                                     Bạn chỉ có thể xem mà không có quyền thao tác trên Lead này.
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row wrap v-if="access == true && canSendSMS == false">
+                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <v-card flat width="100%">
+                                        <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                                            <v-card flat style="background-color: #FDEDEE">
+                                                <v-card-text style="margin: 0px; padding: 0px;">
+                                                    Bạn chỉ có thể gửi SMS nếu có quyền <span style="font-weight: bold;">Liên lạc tất cả</span> đối với Lead
                                                 </v-card-text>
                                             </v-card>
                                         </v-card-text>
@@ -178,9 +191,20 @@
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
-                                                                <v-icon>textsms</v-icon>
-                                                            </v-btn>
+                                                            <template v-if="access == true">
+                                                                <v-btn fab small color="#E0E0E0" v-on="on" v-if="canSendSMS == true">
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                                <v-btn fab small color="#E0E0E0" v-else disabled>
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <template v-else>
+                                                                <v-btn fab small color="#E0E0E0" disabled>
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -859,6 +883,7 @@
             allEmail: [],
             failDialog: false,
             access: false,
+            canSendSMS: false,
             currentUser: null,
             validPhone: true,
             validEmail: true,
@@ -878,6 +903,12 @@
             }
         }),
         methods:{
+            updateEmail(){
+                eventBus.updateEmail();
+            },
+            updatePhone(){
+                eventBus.updatePhone();
+            },
             getAllEmail(){
                 this.allEmail = [];
                 contact.getAllEmail(this.idAccount).then(result => {
@@ -1010,6 +1041,8 @@
                 if (valid){
                     this.updateContactDetail(property, value);
                 }
+                this.updateEmail();
+                this.updatePhone();
             },
             confirmUpdateContactOwner(property, value){
                 let role = this.currentUser.authorities;
@@ -1175,12 +1208,16 @@
                             this.access = true;
                         }
                     }
+                    if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT' || role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                        this.canSendSMS = true;
+                    }
                 }
             }
         },
         created(){
             this.getAllEmail();
-            this.getDetail()
+            this.getDetail();
+            this.$store.state.colorNumber = 0;
         },
         components: {
             note,

@@ -41,7 +41,7 @@
                                         <template v-slot:activator="{ on }">
                                             <v-btn
                                                 round
-                                                color="primary"
+                                                color="#3E82F7"
                                                 dark
                                                 v-on="on"
                                                 >
@@ -120,7 +120,7 @@
                                     </v-dialog>
                                 </v-flex>
                                 <v-flex xs1 sm1 md1 lg1 xl1>
-                                    <v-btn color="primary" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
+                                    <v-btn dark color="#3E82F7" round @click="createAccountDialog = true"> <v-icon>group_add</v-icon> Thêm tổ chức mới</v-btn>
                                     <v-dialog v-model="createAccountDialog" width="30%" persistent>
                                         <v-card>
                                             <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -854,7 +854,7 @@ export default {
     created(){
         this.getCurrentUser();
         this.getListAccount();
-        
+        this.$store.state.colorNumber = 6;
     }
 }
 </script>

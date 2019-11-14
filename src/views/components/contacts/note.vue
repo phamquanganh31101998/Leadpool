@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>

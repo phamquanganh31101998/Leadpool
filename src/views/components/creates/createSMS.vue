@@ -95,6 +95,7 @@
 <script>
 import contactsService from '../../../services/contacts.service'
 import smsService from '../../../services/sms.service'
+import { eventBus } from '../../../eventBus';
 export default {
     props: {
         idAccount: {
@@ -129,7 +130,9 @@ export default {
             currentContact: null,
             waiting: false,
             successfulDialog: false,
-            failDialog: false
+            failDialog: false,
+            currentUser: null,
+            canSendSMS: false,
         }
     },
     watch: {
@@ -154,8 +157,7 @@ export default {
             }).catch(error => {
                 console.log(error);
             }).finally(() => {
-                this.getAllTemplates()
-                this.getAllDeviceKey()
+                this.getCurrentUser();
             })
         },
         closeSendSMSDialog(){
@@ -180,6 +182,8 @@ export default {
                     this.allDeviceKey.push(obj);
                 }
                 this.deviceKey = this.allDeviceKey[0].value;
+            }).catch(error => {
+                console.log(error);
             })
         },
         getAllTemplates(){
@@ -215,10 +219,27 @@ export default {
             }).finally(() => {
                 this.closeSendSMSDialog();
             })
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT' || role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                    this.canSendSMS = true;
+                }
+            }
+            if (this.canSendSMS == true){
+                this.getAllTemplates()
+                this.getAllDeviceKey()
+            }
         }
     },
     created(){
+        this.getCurrentUser();
         this.getCurrentContact()
+        eventBus.$on('updatePhone', () => {
+            this.getCurrentContact();
+        })
     }
 }
 </script>

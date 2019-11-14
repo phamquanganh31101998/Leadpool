@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -86,10 +86,10 @@
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="call.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = call.dateToPut" v-on="on" v-if="access">
                                                 </v-text-field>
-                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="call.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = call.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>

@@ -631,6 +631,7 @@ export default {
     },
     created(){
         this.getCurrentUser();
+        this.$store.state.colorNumber = 1;
     }
 }
 </script>

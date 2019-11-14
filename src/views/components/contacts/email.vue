@@ -125,7 +125,7 @@
                 <v-progress-circular
                     :size="70"
                     :width="7"
-                    color="grey"
+                    color="#3E82F7"
                     indeterminate
                 ></v-progress-circular>
             </v-flex>
@@ -203,10 +203,10 @@
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="emailLog.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="emailLog.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = emailLog.dateToPut" v-on="on" v-if="access">
                                                 </v-text-field>
-                                                <v-text-field v-model="emailLog.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="emailLog.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = emailLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
@@ -218,9 +218,9 @@
                                         <v-dialog ref="dialog" v-model="emailLog.modal2Log" :return-value.sync="timeLog" persistent lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="emailLog.timeLog" label="Giờ"
+                                                <v-text-field readonly v-model="emailLog.timeLog" label="Giờ"
                                                     prepend-icon="access_time" readonly v-on="on" v-if="access"></v-text-field >
-                                                    <v-text-field v-model="emailLog.timeLog" label="Giờ"
+                                                    <v-text-field readonly v-model="emailLog.timeLog" label="Giờ"
                                                     prepend-icon="access_time" readonly v-else></v-text-field >
                                             </template>
                                             <v-time-picker v-if="emailLog.modal2Log" v-model="emailLog.timeLog" full-width>

@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -78,10 +78,10 @@
                                                 <v-card>
                                                     <v-card-title>
                                                         <v-layout row wrap>
-                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                                                 <v-text-field append-icon="search" label="Tìm kiếm" single-line hide-details v-model="searchEmail" ></v-text-field>
                                                             </v-flex>
-                                                            <br>
+                                                            <br> -->
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
                                                                 <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo)"></v-select>
                                                             </v-flex>
@@ -425,10 +425,10 @@
                                                             <v-card>
                                                                 <v-card-title>
                                                                     <v-layout row wrap>
-                                                                        <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                                                             <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail" ></v-text-field>
                                                                         </v-flex>
-                                                                        <br>
+                                                                        <br> -->
                                                                         <v-flex xs12 sm12 md12 lg12 xl12>
                                                                             <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo)"></v-select>
                                                                         </v-flex>

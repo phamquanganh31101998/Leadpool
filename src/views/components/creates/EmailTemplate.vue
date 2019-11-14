@@ -321,6 +321,9 @@ export default {
         this.getCurrentContact();
         this.getEmailTemplate();
         this.getCurrentUser();
+        eventBus.$on('updateEmail', () => {
+            this.getCurrentContact();
+        })
     }
 }
 </script>

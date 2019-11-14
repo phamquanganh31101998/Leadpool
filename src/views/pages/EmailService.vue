@@ -1,5 +1,5 @@
 <template>
-    <v-content class="mt-5 pl-3 pr-3">
+    <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <!-- <h3 style="position: absolute; font-size: 36px;" class="ml-3">Quản lý mẫu email</h3> -->
@@ -32,7 +32,7 @@
             </v-flex> -->
             <v-flex xs12 sm12 md12 lg12 xl12 v-if="page=='manage'">
                 <v-layout row>
-                    <v-flex xs12 sm12 md12 lg12 xl12 class="ml-3 mt-3">
+                    <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card>
                             <v-card-title>
                                 <!-- <h2 style="font-size: 20px;">Nội dung mẫu: </h2> -->
@@ -769,6 +769,7 @@ export default {
     },
 
     created(){
+        this.$store.state.colorNumber = 4;
         this.getEmailTemplate();
         // console.log(result)
         // this.grape()

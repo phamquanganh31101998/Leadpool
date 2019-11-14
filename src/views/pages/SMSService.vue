@@ -1,8 +1,8 @@
 <template>
-    <v-content class="mt-5 pr-3 pd-3 pl-3">
+    <v-content class="mt-4 pr-3 pd-3 pl-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3">Gửi tin nhắn SMS</h1>
+                <h1 class="ml-3">Quản lý tin nhắn SMS</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
@@ -60,7 +60,7 @@
                                         <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-btn block color="primary" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
+                                        <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-flex>
@@ -405,9 +405,9 @@
                                         <span class="mt-4"><strong>Chọn chiến dịch </strong></span>
                                         <span class="ml-4"><v-select :items="saveKey.list" v-model="saveKey.selectedCampaignId" @input="getStatisticAndHistory()"></v-select></span>
                                     </v-card-text>
-                                    <v-divider :divider="divider"></v-divider>
+                                    <v-divider class="mt-4" :divider="divider"></v-divider>
                                     <v-card-actions>
-                                        <v-btn block color="primary" @click="saveKey.createCampaign = true"><v-icon>add</v-icon>Tạo chiến dịch mới</v-btn>
+                                        <v-btn block color="#3E82F7" dark @click="saveKey.createCampaign = true"><v-icon>add</v-icon>Tạo chiến dịch mới</v-btn>
                                         <v-dialog v-model="saveKey.createCampaign" width="30%" persistent>
                                             <v-card>
                                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -593,13 +593,13 @@
                                 <span class="mt-4"><strong>Chọn mẫu </strong></span>
                                 <span class="ml-4"><v-select :disabled="template.creatingTemplate" :items="template.currentTemplates" v-model="template.selectedTemplateId" @input="setTemplateContent()"></v-select></span>
                             </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
+                            <v-divider class="mt-5" :divider="divider"></v-divider>
                             <v-card-text v-if="template.creatingTemplate"> 
                                 <span class="mt-4"><strong>Tên mẫu</strong></span>
                                 <v-text-field label="Nhập tên mẫu" v-model="template.name" ></v-text-field>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn block color="primary" :disabled="template.creatingTemplate" @click="startCreatingTemplate()"><v-icon>add</v-icon>Thêm mẫu mới</v-btn>
+                                <v-btn block dark color="#3E82F7" :disabled="template.creatingTemplate" @click="startCreatingTemplate()"><v-icon>add</v-icon>Tạo mẫu mới</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-flex>
@@ -756,19 +756,29 @@
         </v-layout>
         <v-layout v-else>
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <v-card flat>
-                    <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
-                        <v-card flat style="background-color: #FDEDEE">
-                            <v-card-title>
-                                <h2>Không có quyền truy cập</h2>
-                            </v-card-title>
-                            <v-card-text>
-                                Bạn phải có quyền Liên lạc tất cả đối với Lead thì mới có thể sử dụng chức năng này. Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                <v-layout style="height: 300px;">
+                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-card flat style="height: 300px; margin-top: 100px;" >
+                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
                             </v-card-text>
                         </v-card>
-                    </v-card-text>
-                </v-card>
-                
+                    </v-flex>
+                    <v-flex xs8 sm8 md8 lg8 xl8>
+                        <v-card flat style="height: 500px; margin-top: 100px;">
+                            <v-img alt="ảnh ở đây" width="100%" src="../../../sms2.png"></v-img>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
             </v-flex>
         </v-layout>
     </v-content>
@@ -1335,7 +1345,7 @@ export default {
         createCampaign(){
             let body = {
                 name: this.saveKey.createData.name,
-                apiKey: this.saveKey.createData.key,
+                apikey: this.saveKey.createData.key,
                 campaign: this.saveKey.createData.campaign,
             }
             SMSService.createDeviceKey(this.idAccount, body).then(result => {
@@ -1708,6 +1718,7 @@ export default {
         // this.getListDeviceKey();
         // // this.getAllContact();
         // this.getSchedule();
+        this.$store.state.colorNumber = 3;
         this.getCurrentUser();
         this.send.dateFormatted = this.formatDate(new Date().toISOString().substr(0, 10))
     }

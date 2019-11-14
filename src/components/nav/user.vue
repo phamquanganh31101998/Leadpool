@@ -22,7 +22,7 @@
                 <v-divider class="mt-2"></v-divider>
                 <v-list-tile>
                     <v-list-tile-content>
-                        <v-list-tile-title>ADSPLUS.VN</v-list-tile-title>
+                        <v-list-tile-title>{{accountId}}</v-list-tile-title>
                         <!-- <v-list-tile-sub-title>3385135</v-list-tile-sub-title> -->
                     </v-list-tile-content>
                 </v-list-tile>
@@ -56,10 +56,10 @@
                 </v-list-tile> -->
                 <v-list-tile-action>
                     <v-layout row class="mt-2">
-                        <v-flex>
+                        <!-- <v-flex>
                             <a href="#" color="success">Thông tin</a>
-                        </v-flex>
-                        <v-flex class="text-xs-right">
+                        </v-flex> -->
+                        <v-flex>
                             <a @click="logout()" color="error">Đăng xuất</a>
                         </v-flex>
                     </v-layout>
@@ -96,6 +96,7 @@
             divider: true,
             name: '',
             email: '',
+            accountId: ''
         }),
         computed: {
             ...mapGetters({
@@ -108,6 +109,7 @@
                 let a = JSON.parse(localStorage.getItem('user'));
                 this.name = a.displayName
                 this.email = a.username
+                this.accountId = a.accountId;
             },
             logout() {
                 this.$store.dispatch('turnOffExpiredDialog');
