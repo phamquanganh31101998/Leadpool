@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -79,17 +79,17 @@
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-layout row class="pl-4">
                                     <v-flex xs4 sm4 md4 lg3 xl3>
-                                        <v-select :items="items" label="Outcome" v-model="call.status" :readonly="!access"></v-select>
+                                        <v-select :items="items" label="Kết quả cuộc gọi" v-model="call.status" :readonly="!access"></v-select>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg1 offset-xl1>
                                         <v-menu ref="menu1" v-model="call.menu1Log" :close-on-content-click="false"
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="call.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = call.dateToPut" v-on="on" v-if="access">
                                                 </v-text-field>
-                                                <v-text-field v-model="call.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="call.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = call.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
@@ -268,9 +268,12 @@
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogCallList();
                     this.deleteLogDialog.id = '';
                     this.deleteLogDialog.dialog = false;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             
@@ -283,6 +286,7 @@
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     console.log(result);
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogCallList();
                 }).catch(error => {
                     console.log(error);

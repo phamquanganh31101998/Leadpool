@@ -4,7 +4,7 @@
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-textarea name="input" label="Ghi chú tại đây..." v-model="note"></v-textarea>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg12 xl12>
+            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-layout row>
                     <v-btn flat icon small color="green">
                         <v-icon>text_format</v-icon>
@@ -18,7 +18,7 @@
                     <v-btn flat icon small color="green">
                         <v-icon>photo</v-icon>
                     </v-btn>
-                    <!-- <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
+                    <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on" class="mt-2 ml-5">
                                 Associated with 1 record
@@ -32,9 +32,9 @@
                                 </v-layout>
                             </v-card-title>
                         </v-card>
-                    </v-menu> -->
+                    </v-menu>
                 </v-layout>
-            </v-flex>
+            </v-flex> -->
         </v-layout>
         <br>
         <v-layout wrap>
@@ -115,6 +115,7 @@
                     this.successfulDialog = true;
                     this.note = '';
                     eventBus.updateNoteList();
+                    this.$emit('updateLastActivityDate');
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);

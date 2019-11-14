@@ -180,18 +180,18 @@ const router = new Router({
                 return props
             },
           },
-          {
-            path: '/contacts/:idAccount/leadhub',
-            name: 'leadhub',
-            component: leadhub,
-            props(route) {
-                const props = {
-                    ...route.params
-                }
-                props.idAccount
-                return props
-            },
-          },
+          // {
+          //   path: '/contacts/:idAccount/leadhub',
+          //   name: 'leadhub',
+          //   component: leadhub,
+          //   props(route) {
+          //       const props = {
+          //           ...route.params
+          //       }
+          //       props.idAccount
+          //       return props
+          //   },
+          // },
           {
             path: '/contacts/:idAccount/setting',
             name: 'settingGroupbtn',

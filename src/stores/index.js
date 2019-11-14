@@ -11,7 +11,8 @@ export const store = new vuex.Store({
 	},
 	state:{
         expiredDialog: false,
-        forbiddenDialog: false
+        forbiddenDialog: false,
+        colorNumber: 0,
     },
     actions:{
         turnOnExpiredDialog({commit}){
@@ -47,6 +48,9 @@ export const store = new vuex.Store({
         }, 
         forbiddenDialog: state => {
             return state.forbiddenDialog
+        },
+        colorNumber: state => {
+            return state.colorNumber;
         }
     }
 })

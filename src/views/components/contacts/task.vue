@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -30,15 +30,16 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-3">
                             <v-layout row>
-                                <v-btn small fab dark color="grey lighten-1" @click="updateTask(task.taskId, 'status', 'COMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
+                                <v-btn style="fontSize: 10px;" small fab dark color="grey lighten-1" @click="updateTask(task.taskId, 'status', 'COMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
                                 <v-btn small fab dark color="grey lighten-1" v-else><v-icon>done</v-icon></v-btn>
-                                <strong class="mt-3" style="width: 100%">
+                                <strong style="width: 90%">
                                     <v-text-field
                                         :readonly="!access"
                                         style="fontSize: 18px;"
                                         v-model="task.title"
-                                        solo
                                         flat
+                                        class="ml-5"
+                                        label="Tên công việc"
                                         @change="updateTask(task.taskId, 'title', task.title)"
                                     ></v-text-field>
                                 </strong>
@@ -77,10 +78,10 @@
                                                 <v-card>
                                                     <v-card-title>
                                                         <v-layout row wrap>
-                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                                                 <v-text-field append-icon="search" label="Tìm kiếm" single-line hide-details v-model="searchEmail" ></v-text-field>
                                                             </v-flex>
-                                                            <br>
+                                                            <br> -->
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
                                                                 <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo)"></v-select>
                                                             </v-flex>
@@ -144,8 +145,9 @@
                                     <br>
                                     <v-text-field
                                         v-model="task.note"
-                                        solo
                                         flat
+                                        style="width: 96%"
+                                        label="Nội dung công việc"
                                         :readonly="!access"
                                         @change="updateTask(task.taskId, 'note', task.note)"
                                     ></v-text-field>
@@ -167,22 +169,22 @@
                                             <v-layout row>
                                                 <v-flex xs12 sm12 md12 lg10 xl8>
                                                     <v-layout row>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
                                                             <span>Kiểu</span>
                                                         </v-flex>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
                                                             <span>Nhắc nhở</span>
                                                         </v-flex>
                                                         <!-- <v-flex v-if="task.emailReminder != null" xs2 sm2 md2 lg2 xl2>
                                                             <span>Time</span>
                                                         </v-flex> -->
-                                                        <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 v-if="task.emailReminder != null">
                                                             <span>Thời gian</span>
                                                         </v-flex>
                                                         <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <span>Thứ tự</span>
                                                         </v-flex> -->
-                                                        <v-flex xs4 sm4 md4 lg4 xl4>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
                                                             <span>Người tạo</span>
                                                         </v-flex>
                                                     </v-layout>
@@ -193,7 +195,7 @@
                                             <v-layout row>
                                                 <v-flex xs12 sm12 md12 lg10 xl8>
                                                     <v-layout row >
-                                                        <v-flex xs2 sm2 md2 lg2 xl2 >
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 >
                                                             <span>
                                                                 <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                     <template v-slot:activator="{ on }">
@@ -218,7 +220,7 @@
                                                                 </v-menu>
                                                             </span>
                                                         </v-flex>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
                                                             <v-layout row wrap>
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
                                                                     <v-menu :close-on-content-click="false" :nudge-width="90" top offset-y>
@@ -268,7 +270,7 @@
                                                             
                                                         
                                                         </v-flex>
-                                                        <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                        <v-flex xs3 sm3 md3 lg3 xl3 v-if="task.emailReminder != null">
                                                             <span>
                                                                 <v-menu :close-on-content-click="false" offset-y>
                                                                     <template v-slot:activator="{ on }">
@@ -315,7 +317,7 @@
                                                         <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                             <span>None</span>
                                                         </v-flex> -->
-                                                        <v-flex xs4 sm4 md4 lg4 xl4>
+                                                        <v-flex xs3 sm3 md3 lg3 xl3>
                                                             <span>{{task.createdByUser}}</span>
                                                         </v-flex>
                                                     </v-layout>
@@ -343,13 +345,15 @@
                     <v-layout row wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-1">
                             <v-layout row>
-                                <v-btn small fab dark color="success" @click="updateTask(task.taskId, 'status', 'NOTCOMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
+                                <v-btn  small fab dark color="success" @click="updateTask(task.taskId, 'status', 'NOTCOMPLETED')" v-if="access"><v-icon>done</v-icon></v-btn>
                                 <v-btn small fab dark color="success" v-else><v-icon>done</v-icon></v-btn>
-                                <strong class="mt-3" style="width: 100%">
+                                <strong style="width: 100%">
                                     <v-text-field
                                         :readonly="!access"
                                         v-model="task.title"
-                                        solo
+                                        label="Tên công việc"
+                                        class="ml-5"
+                                        style="fontSize: 18px; width: 90%;"
                                         flat
                                         @change="updateTask(task.taskId, 'title', task.title)"
                                     ></v-text-field>
@@ -421,10 +425,10 @@
                                                             <v-card>
                                                                 <v-card-title>
                                                                     <v-layout row wrap>
-                                                                        <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                                                             <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail" ></v-text-field>
                                                                         </v-flex>
-                                                                        <br>
+                                                                        <br> -->
                                                                         <v-flex xs12 sm12 md12 lg12 xl12>
                                                                             <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo)"></v-select>
                                                                         </v-flex>
@@ -483,14 +487,15 @@
                                         <v-list-tile-content>
                                             <v-layout row style="width: 100%">
                                                 <v-flex xs12 sm12 md12 lg12 xl12 style="width: 100%">
-                                                    <br>
                                                     <v-text-field
+                                                    class="mt-2"
+                                                        label="Nội dung công việc"
                                                         v-model="task.note"
-                                                        solo
                                                         flat
                                                         @change="updateTask(task.taskId, 'note', task.note)"
-                                                        style="width: 100%"
+                                                        style="width: 96%"
                                                     ></v-text-field>
+                                                    <br>
                                                 </v-flex>
                                             </v-layout>
                                         </v-list-tile-content>
@@ -501,19 +506,19 @@
                                                 <v-layout row>
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <span>Kiểu</span>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <span>Nhắc nhở</span>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                            <v-flex xs3 sm3 md3 lg3 xl3 v-if="task.emailReminder != null">
                                                                 <span>Giờ</span>
                                                             </v-flex>
                                                             <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>Thứ tự</span>
                                                             </v-flex> -->
-                                                            <v-flex xs4 sm4 md4 lg4 xl4>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <span>Người tạo</span>
                                                             </v-flex>
                                                         </v-layout>
@@ -524,7 +529,7 @@
                                                 <v-layout row>
                                                     <v-flex xs12 sm12 md12 lg10 xl8>
                                                         <v-layout row>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <span>
                                                                     <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                         <template v-slot:activator="{ on }">
@@ -549,7 +554,7 @@
                                                                     </v-menu>
                                                                 </span>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                                                         <v-menu :close-on-content-click="false" :nudge-width="90" top offset-y>
@@ -596,7 +601,7 @@
                                                                     </v-flex> -->
                                                                 </v-layout>
                                                             </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2 v-if="task.emailReminder != null">
+                                                            <v-flex xs3 sm3 md3 lg3 xl3 v-if="task.emailReminder != null">
                                                                 <span>
                                                                     <v-menu :close-on-content-click="false" offset-y>
                                                                         <template v-slot:activator="{ on }">
@@ -619,7 +624,7 @@
                                                             <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                                                 <span>None</span>
                                                             </v-flex> -->
-                                                            <v-flex xs4 sm4 md4 lg4 xl4>
+                                                            <v-flex xs3 sm3 md3 lg3 xl3>
                                                                 <span>{{task.createdByUser}}</span>
                                                             </v-flex>
                                                         </v-layout>
@@ -783,6 +788,7 @@
                     "value": value,
                 }
                 taskService.updateTask(this.idAccount, this.idContact, taskId, body).then(result => {
+                    this.$emit('updateLastActivityDate');
                     console.log(result);
                     eventBus.updateTaskList();
                 }).catch(error => {

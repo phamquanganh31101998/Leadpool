@@ -35,7 +35,7 @@
             <v-divider :divider="divider"></v-divider>
             <v-textarea class="mt-2" name="input" label="Mô tả cuộc họp..." v-model="log"></v-textarea>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 xl12>
+        <!-- <v-flex xs12 sm12 md12 lg12 xl12>
             <v-layout row>
                 <v-flex>
                     <v-btn flat icon small color="green">
@@ -69,7 +69,7 @@
                     </v-menu>
                 </v-flex>
             </v-layout>
-        </v-flex>
+        </v-flex> -->
         <br>
         <br>
         <v-layout wrap>
@@ -184,6 +184,7 @@
                     this.successfulDialog = true;
                     this.log = '';
                     eventBus.updateLogMeetList();
+                    this.$emit('updateLastActivityDate');
                 }).catch(error => {
                     this.failDialog = true;
                     console.log(error);
