@@ -211,7 +211,7 @@ export default {
                 ],
                 property: '',
                 button: false
-            }
+            },
         }
     },
     methods: {
@@ -283,9 +283,11 @@ export default {
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
                 console.log(result);
                 this.successfulDialog = true;
-                this.closeEmailTemplateDialog();
-                eventBus.updateEmailList();
                 this.waiting = false;
+                this.$emit('updateLastActivityDate');
+                this.$emit('updateLastContacted');
+                eventBus.updateEmailList();
+                this.closeEmailTemplateDialog();
             }).catch(error => {
                 this.failDialog = true;
                 this.closeEmailTemplateDialog();
@@ -319,6 +321,9 @@ export default {
         this.getCurrentContact();
         this.getEmailTemplate();
         this.getCurrentUser();
+        eventBus.$on('updateEmail', () => {
+            this.getCurrentContact();
+        })
     }
 }
 </script>

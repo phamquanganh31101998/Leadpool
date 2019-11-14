@@ -68,7 +68,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-layout row>
-                    <v-btn flat icon small color="green">
+                    <!-- <v-btn flat icon small color="green">
                         <v-icon>text_format</v-icon>
                     </v-btn>
                     <v-btn flat icon small color="green">
@@ -79,7 +79,7 @@
                     </v-btn>
                     <v-btn flat icon small color="green">
                         <v-icon>photo</v-icon>
-                    </v-btn>
+                    </v-btn> -->
                     <!-- <v-menu :close-on-content-click="false" :nudge-width="200" offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on" class="mt-2 ml-5">
@@ -105,7 +105,7 @@
                     @click="closeCreateEmailDialog()">Đóng</v-btn>
             </v-flex>
             <v-dialog v-model="emailTemplateDialog" width="90%">
-                <emailTemplate @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                <emailTemplate @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
             </v-dialog>
         </v-layout>
         <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
@@ -189,6 +189,12 @@
                 this.emailTemplateDialog = false;
                 this.$emit('closeCreateEmailDialog');
             },
+            updateLastActivityDate(){
+                this.$emit('updateLastActivityDate');
+            },
+            updateLastContacted(){
+                this.$emit('updateLastContacted');
+            },
             sendEmail(){
                 let body = {
                     "from": this.currentUser.username,
@@ -200,14 +206,16 @@
                 this.waiting = true;
                 emailServices.sendEmail(this.idAccount, this.idContact, body).then(result => {
                     this.successfulDialog = true;
-                    this.closeCreateEmailDialog();
-                    eventBus.updateEmailList();
                     this.waiting = false;
+                    this.updateLastActivityDate()
+                    this.updateLastContacted();
+                    eventBus.updateEmailList();
+                    this.closeCreateEmailDialog();
                 }).catch(error => {
                     this.failDialog = true;
-                    this.closeCreateEmailDialog();
                     console.log(error);
                     this.waiting = false;
+                    this.closeCreateEmailDialog();
                 })
             },
             getCurrentUser(){
@@ -217,6 +225,9 @@
         created(){
             this.getCurrentContact();
             this.getCurrentUser();
+            eventBus.$on('updateEmail', () => {
+                this.getCurrentContact();
+            })
         }
     }
 </script>

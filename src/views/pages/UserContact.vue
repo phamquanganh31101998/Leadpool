@@ -53,11 +53,24 @@
                             </v-layout>
                             <v-layout row wrap v-if="access == false">
                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                    <v-card flat>
+                                    <v-card flat width="100%">
                                         <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
                                             <v-card flat style="background-color: #FDEDEE">
                                                 <v-card-text style="margin: 0px; padding: 0px;">
                                                     Bạn chỉ có thể xem mà không có quyền thao tác trên Lead này.
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row wrap v-if="access == true && canSendSMS == false">
+                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <v-card flat width="100%">
+                                        <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
+                                            <v-card flat style="background-color: #FDEDEE">
+                                                <v-card-text style="margin: 0px; padding: 0px;">
+                                                    Bạn chỉ có thể gửi SMS nếu có quyền <span style="font-weight: bold;">Liên lạc tất cả</span> đối với Lead
                                                 </v-card-text>
                                             </v-card>
                                         </v-card-text>
@@ -94,13 +107,16 @@
                                                         </v-layout>
 
                                                         <v-layout row>
-                                                            <v-text-field :readonly="!access" label="Email" outline v-model="detail.email"></v-text-field>
+                                                            <v-form v-model="basicInfoValid" style="width: 100%;">
+                                                                <v-text-field style="width: 100%;" :rules="emailRules" :readonly="!access" label="Email" outline v-model="detail.email"></v-text-field>
+                                                            </v-form>
+                                                            
                                                         </v-layout>
 
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
                                                             <v-btn flat @click="basicInfoDialog = false" color="red">Đóng</v-btn>
-                                                            <v-btn :disabled="!access" color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
+                                                            <v-btn :disabled="!access || !basicInfoValid" color="primary" flat @click="updateBasicInfoContactDetail(detail.firstName, detail.lastName, detail.email)">Lưu lại</v-btn>
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
@@ -125,9 +141,7 @@
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Ghi chú</span>
                                                             </v-card-title>
-                                                            <v-card-text>
-                                                                <newNote @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                                                            </v-card-text>
+                                                            <newNote @updateLastActivityDate="updateLastActivityDate()" @closeCreateNoteDialog = "createNote = false" :idAccount="this.idAccount" :idContact="this.idContact"/>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
                                                     </v-dialog>
@@ -155,7 +169,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
+                                                                <newEmail @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -177,9 +191,20 @@
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
-                                                                <v-icon>textsms</v-icon>
-                                                            </v-btn>
+                                                            <template v-if="access == true">
+                                                                <v-btn fab small color="#E0E0E0" v-on="on" v-if="canSendSMS == true">
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                                <v-btn fab small color="#E0E0E0" v-else disabled>
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <template v-else>
+                                                                <v-btn fab small color="#E0E0E0" disabled>
+                                                                    <v-icon>textsms</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -190,7 +215,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newSMS :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
+                                                                <newSMS @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -234,7 +259,7 @@
                                                                 <span class="headline">Lưu thông tin cuộc gọi</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogCall :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
+                                                                <newLogCall @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogCallDialog="createLogCall = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -244,7 +269,7 @@
                                                                 <span class="headline">Lưu thông tin email</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogEmail :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
+                                                                <newLogEmail @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateLogEmailDialog="createLogEmail = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -254,7 +279,7 @@
                                                                 <span class="headline">Lưu thông tin cuộc họp</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newLogMeet :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
+                                                                <newLogMeet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"  @closeCreateLogMeetDialog="createLogMeet = false"/>
                                                             </v-card-text>
                                                         </v-card>
                                                     </v-dialog>
@@ -278,7 +303,7 @@
                                                                 <span class="headline">Công việc</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newTask :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
+                                                                <newTask @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
                                                             </v-card-text>
                                                             <!-- <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
@@ -526,11 +551,11 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -854,9 +879,11 @@
             detail: null,
             expandDetail: [true],
             basicInfoDialog: false,
+            basicInfoValid: true,
             allEmail: [],
             failDialog: false,
             access: false,
+            canSendSMS: false,
             currentUser: null,
             validPhone: true,
             validEmail: true,
@@ -876,6 +903,12 @@
             }
         }),
         methods:{
+            updateEmail(){
+                eventBus.updateEmail();
+            },
+            updatePhone(){
+                eventBus.updatePhone();
+            },
             getAllEmail(){
                 this.allEmail = [];
                 contact.getAllEmail(this.idAccount).then(result => {
@@ -1008,6 +1041,8 @@
                 if (valid){
                     this.updateContactDetail(property, value);
                 }
+                this.updateEmail();
+                this.updatePhone();
             },
             confirmUpdateContactOwner(property, value){
                 let role = this.currentUser.authorities;
@@ -1109,7 +1144,24 @@
                         }
                     ]
                 }
-                console.log(body)
+                contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
+                    console.log(result);
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    this.getDetail();
+                })
+            },
+            updateLastContacted(){
+                let timeToSend = moment().utc().format().substring(0, 19)
+                let body = {
+                    properties: [
+                        {
+                            property: 'lastContacted',
+                            value: timeToSend
+                        }
+                    ]
+                }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
                 }).catch(error => {
@@ -1156,12 +1208,16 @@
                             this.access = true;
                         }
                     }
+                    if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT' || role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                        this.canSendSMS = true;
+                    }
                 }
             }
         },
         created(){
             this.getAllEmail();
-            this.getDetail()
+            this.getDetail();
+            this.$store.state.colorNumber = 0;
         },
         components: {
             note,
