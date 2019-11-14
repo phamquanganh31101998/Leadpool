@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -84,10 +84,10 @@
                                             :nudge-right="40" lazy transition="scale-transition" offset-y full-width
                                             max-width="290px" min-width="290px">
                                             <template v-slot:activator="{ on }">
-                                                <v-text-field v-model="meetLog.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="meetLog.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = meetLog.dateToPut" v-on="on" v-if="access">
                                                 </v-text-field>
-                                                <v-text-field v-model="meetLog.dateLog" label="Ngày" persistent-hint
+                                                <v-text-field readonly v-model="meetLog.dateLog" label="Ngày" persistent-hint
                                                     prepend-icon="event" @blur="date = meetLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
@@ -212,7 +212,10 @@
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
                     console.log(result);
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogMeetList();
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             confirmDeleteLog(id){
@@ -221,9 +224,12 @@
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateLogMeetList();
                     this.deleteLogDialog.id = '';
                     this.deleteLogDialog.dialog = false;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             getMeetLogsList(){

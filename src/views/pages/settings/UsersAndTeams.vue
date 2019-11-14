@@ -50,8 +50,11 @@
                         <v-card>
                             <v-card-title>
                                 <v-layout>
-                                    <v-flex xs9 sm9 md9 lg9 xl9>
+                                    <v-flex xs3 sm3 md3 lg3 xl3>
                                         <h2 class="mt-4">Các tài khoản trong tổ chức</h2>
+                                    </v-flex>
+                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                        <v-btn class="mt-3" color="#3E82F7" dark round v-if="isAdmin" @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm tài khoản</v-btn>
                                     </v-flex>
                                     <v-flex xs3 sm3 md3 lg3 xl3>
                                         <v-text-field style="width: 100%" v-model="search" append-icon="search" label="Tìm kiếm tài khoản theo tên" single-line hide-details></v-text-field>
@@ -69,7 +72,7 @@
                                 </v-data-table>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn color="primary" round v-if="isAdmin" @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm tài khoản vào tổ chức</v-btn>
+                                
                                 <br>
                                 <br>
                             </v-card-actions>
@@ -599,6 +602,7 @@ export default {
     },
     
     created(){
+        this.$store.state.colorNumber = 6;
         this.getCurrentUser();
         this.findUserByAccount()
     }

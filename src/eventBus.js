@@ -28,6 +28,12 @@ export const eventBus = new Vue({
       },
       updateEmailList(){
         this.$emit('updateEmailList');
+      },
+      updateEmail(){
+        this.$emit('updateEmail');
+      },
+      updatePhone(){
+        this.$emit('updatePhone');
       }
     }
   })

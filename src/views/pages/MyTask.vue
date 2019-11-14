@@ -1,8 +1,8 @@
 <template>
-    <v-content class="mt-5 pl-2 pr-3">
+    <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-2">Công việc</h1>
+                <h1 class="ml-3">Công việc</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -45,39 +45,44 @@
                 <!-- <v-select v-model="status" :items="statusToChoose" label="Status" style="width: 60%;" class="ml-2"></v-select> -->
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10>
-                <v-layout row wrap>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table :headers="headers" :items="displayTasks" hide-actions no-data-text="Không có công việc nào">
-                            <template v-slot:items="props">
-                                <td v-if="props.item.status == 'NOTCOMPLETED'">
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn small fab dark color="grey lighten-1" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'COMPLETED')" v-on="on"><v-icon>done</v-icon></v-btn>
-                                        </template>
-                                        <span>Đánh dấu đã hoàn thành</span>
-                                    </v-tooltip>
-                                </td>
-                                <td v-if="props.item.status == 'COMPLETED'">
-                                     <v-tooltip top>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn v-on="on" small fab dark color="success" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'NOTCOMPLETED')" ><v-icon>done</v-icon></v-btn>
-                                        </template>
-                                        <span>Đánh dấu chưa hoàn thành</span>
-                                    </v-tooltip>
-                                </td>
-                                <td><a @click="getTaskById(props.item.taskId)">{{ props.item.title }}</a></td>
-                                <td>{{ returnType(props.item.type) }}</td>
-                                <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
-                                <!-- <td>
-                                    <v-btn color="primary" round outline flat @click.stop="getTaskById(props.item.taskId)">Xem chi tiết</v-btn>
-                                </td> -->
-                            </template>
-                        </v-data-table>
-                    </v-flex>
-                </v-layout>
+                <v-card width="100%">
+                    <v-layout row wrap>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            
+                            <v-data-table :headers="headers" :items="displayTasks" hide-actions no-data-text="Không có công việc nào">
+                                <template v-slot:items="props">
+                                    <td v-if="props.item.status == 'NOTCOMPLETED'">
+                                        <v-tooltip top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn small fab dark color="grey lighten-1" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'COMPLETED')" v-on="on"><v-icon>done</v-icon></v-btn>
+                                            </template>
+                                            <span>Đánh dấu đã hoàn thành</span>
+                                        </v-tooltip>
+                                    </td>
+                                    <td v-if="props.item.status == 'COMPLETED'">
+                                        <v-tooltip top>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" small fab dark color="success" @click="updateTask(props.item.taskId, props.item.contactId, 'status', 'NOTCOMPLETED')" ><v-icon>done</v-icon></v-btn>
+                                            </template>
+                                            <span>Đánh dấu chưa hoàn thành</span>
+                                        </v-tooltip>
+                                    </td>
+                                    <td><a @click="getTaskById(props.item.taskId)">{{ props.item.title }}</a></td>
+                                    <td>{{ returnType(props.item.type) }}</td>
+                                    <td>{{ coverTimeTooltip(props.item.dueDate) }}</td>
+                                    <!-- <td>
+                                        <v-btn color="primary" round outline flat @click.stop="getTaskById(props.item.taskId)">Xem chi tiết</v-btn>
+                                    </td> -->
+                                </template>
+                            </v-data-table>
+                        </v-flex>
+                    </v-layout>
+                    
+                </v-card>
+                <br>
                 <v-layout row wrap>
                     <v-flex offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-pagination v-model="pagination.page" :length="length" @input="changePage()"></v-pagination>
+                        <v-pagination v-if="length > 0" v-model="pagination.page" :length="length" @input="changePage()"></v-pagination>
                         <br>
                         <br>
                     </v-flex>
@@ -394,7 +399,7 @@ export default {
                     value: 'status'
                 },
                 {
-                    text: 'TÊN CÔNG VIỆC (CLICK VÀO ĐỂ XEM CHI TIẾT)',
+                    text: 'TÊN CÔNG VIỆC (CLICK ĐỂ XEM CHI TIẾT)',
                     align: 'left',
                     sortable: false,
                     value: 'title'
@@ -624,6 +629,7 @@ export default {
         },
     },
     created(){
+        this.$store.state.colorNumber = 2;
         this.getAllEmail();
         this.getMyTask(this.pagination.page, this.status, this.type);
         eventBus.$on('updateTaskList', () => {

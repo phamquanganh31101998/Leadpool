@@ -4,7 +4,7 @@
             <v-progress-circular
                 :size="70"
                 :width="7"
-                color="grey"
+                color="#3E82F7"
                 indeterminate
             ></v-progress-circular>
         </v-flex>
@@ -151,9 +151,13 @@ export default {
     methods: {
         deleteNote(noteId){
             noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
+                this.$emit('updateLastActivityDate');
                 eventBus.updateNoteList();
                 this.deleteNoteDialog.id = '';
                 this.deleteNoteDialog.dialog = false;
+                
+            }).catch(error => {
+                console.log(error)
             });
         },
         confirmDeleteNote(id){
@@ -191,7 +195,10 @@ export default {
                     "note": note
                 }
                 noteService.updateNote(this.idAccount, this.idContact, body, noteId).then(result => {
+                    this.$emit('updateLastActivityDate');
                     eventBus.updateNoteList();
+                }).catch(error => {
+                    console.log(error);
                 });
             }
         },

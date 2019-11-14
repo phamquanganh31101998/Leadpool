@@ -62,11 +62,40 @@
             <v-btn color="red" small flat
                 @click="closeSendSMSDialog()">Đóng</v-btn>
         </v-layout>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Gửi tin nhắn SMS thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi gửi tin nhắn. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-card-text>
 </template>
 <script>
 import contactsService from '../../../services/contacts.service'
 import smsService from '../../../services/sms.service'
+import { eventBus } from '../../../eventBus';
 export default {
     props: {
         idAccount: {
@@ -98,7 +127,12 @@ export default {
             allTemplates: [],
             allDeviceKey: [],
             deviceKey: '',
-            currentContact: null
+            currentContact: null,
+            waiting: false,
+            successfulDialog: false,
+            failDialog: false,
+            currentUser: null,
+            canSendSMS: false,
         }
     },
     watch: {
@@ -112,7 +146,6 @@ export default {
         }
     },
     methods: {
-        
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
         },
@@ -124,8 +157,7 @@ export default {
             }).catch(error => {
                 console.log(error);
             }).finally(() => {
-                this.getAllTemplates()
-                this.getAllDeviceKey()
+                this.getCurrentUser();
             })
         },
         closeSendSMSDialog(){
@@ -150,6 +182,8 @@ export default {
                     this.allDeviceKey.push(obj);
                 }
                 this.deviceKey = this.allDeviceKey[0].value;
+            }).catch(error => {
+                console.log(error);
             })
         },
         getAllTemplates(){
@@ -176,13 +210,36 @@ export default {
             }
             smsService.sendSMS(this.idAccount, body).then(result => {
                 console.log(result);
+                this.successfulDialog = true;
+                this.$emit('updateLastActivityDate');
+                this.$emit('updateLastContacted');
             }).catch(error => {
                 console.log(error);
+                this.failDialog = true;
+            }).finally(() => {
+                this.closeSendSMSDialog();
             })
+        },
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT' || role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                    this.canSendSMS = true;
+                }
+            }
+            if (this.canSendSMS == true){
+                this.getAllTemplates()
+                this.getAllDeviceKey()
+            }
         }
     },
     created(){
+        this.getCurrentUser();
         this.getCurrentContact()
+        eventBus.$on('updatePhone', () => {
+            this.getCurrentContact();
+        })
     }
 }
 </script>
