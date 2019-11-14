@@ -18,6 +18,7 @@ import EmailService from './views/pages/EmailService.vue'
 import Sorry from './views/pages/Sorry.vue'
 import leadhub from './views/pages/leadhub.vue'
 import settingGroupbtn from './views/pages/settingBtn.vue'
+import updateGroupbtn from './views/pages/updateBtn.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -201,6 +202,19 @@ const router = new Router({
                     ...route.params
                 }
                 props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/update/:idGroupBtn',
+            name: 'updateGroupbtn',
+            component: updateGroupbtn,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                props.idGroupBtn
                 return props
             },
           },

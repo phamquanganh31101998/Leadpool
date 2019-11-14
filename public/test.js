@@ -4,7 +4,6 @@ function f() {
     var acId = ''
     var btnId = ''
     var scripts = document.getElementsByTagName("script");
-    console.log(scripts[0].src)
     for (let i = 0; i < scripts.length; i++) {
         var src = scripts[i].src.split('?')[1]
         if (src.indexOf('&gBtnId') > 0) {
@@ -21,30 +20,20 @@ function f() {
             'Content-Type': 'application/json'
         })
     }).then(handle).then(result => {
-        console.log(result)
-        // var callBtn = result.response.listButton[1]
-        // var formBtn = result.response.listButton[0]
-        // var number = callBtn.phoneNumber
-        // var opTb = 'bottom'
-        // var opLr = 'left'
-        // var x = callBtn.style.bottom
-        // var y = callBtn.style.left
-        // var x1 = formBtn.style.bottom
-        // var y1 = formBtn.style.bottom
-        // var height = callBtn.style.size
-        // var width = callBtn.style.size
-        // var tOb = `${opTb}:${x};`
-        // var lOr = `${opLr}:${y};`
-        // var call = callBtn.description
-        // var color = callBtn.buttonColor
-        // var colorForm = formBtn.buttonColor
-        // console.log(result.response)
-        // writeHtml(number, width, height, tOb, lOr, color, colorForm, x1, y1, opTb, opLr, call)
         var style = result.response.style
         var vertical = result.response.vertical
-        var styleBtnCall = result.response.listButton[1]
-        var styleBtnForm = result.response.listButton[0]
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall)
+        var styleBtnCall = null
+        var styleBtnForm = null
+        var properties = null
+        for (let i = 0; i < result.response.listButton.length; i++) {
+            if (result.response.listButton[i].type == "CALL") {
+                styleBtnCall = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "FORM") {
+                styleBtnForm = result.response.listButton[i]
+                properties = result.response.listButton[i].properties
+            }
+        }
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
     })
 }
 
@@ -59,230 +48,162 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId) {
     var html = ''
+    var call = ''
+    var form = ''
+    var form1 = ''
+    var phone = ''
+    var email = ''
+    var name = ''
+    var city = ''
+    var bussiness = ''
+    for (let i = 0; i < properties.length; i++) {
+        if (properties[i] == 'email') {
+            email = `<input type="email" placeholder="Nhập email" name="email" required>`
+        }else if(properties[i] == 'lastName'){
+            name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
+        }else if(properties[i] == 'phone'){
+            phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
+        }else if(properties[i] == 'city'){
+            city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
+        }else if(properties[i] == 'bussiness'){
+            bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
+        }
+    }
+    var css = `<style>
+                    .adstech-group-btn {
+                        position: fixed;
+                        bottom: ${style.bottom}%;
+                        left: ${style.left}%;
+                        right: ${style.right}%;
+                        top:${style.top}%;
+                        
+                    }
+
+                    .adstech-btn {
+                        border: none;
+                        color: white;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        margin: 4px 2px;
+                        border-radius: 50%;
+                        width: ${style.size}px;
+                        height:${style.size}px
+                    }
+
+                    .adstech-form {
+                        display: none;
+                        position: fixed;
+                        bottom: 60px;
+                        right: 35%;
+                        border: 3px solid #f1f1f1;
+                        z-index: 999999;
+                    }
+
+                    /* Add styles to the form container */
+                    .form-container {
+                        max-width: 300px;
+                        padding: 10px;
+                        background-color: white;
+                    }
+
+                    /* Full-width input fields */
+                    .form-container input[type=text],
+                    .form-container input[type=email], 
+                    .form-container input[type=number]{
+                        width: 90%;
+                        padding: 15px;
+                        margin: 5px 0 22px 0;
+                        border: none;
+                        background: #f1f1f1;
+                    }
+
+                    /* When the inputs get focus, do something */
+                    .form-container input[type=text]:focus,
+                    .form-container input[type=password]:focus {
+                        background-color: #ddd;
+                        outline: none;
+                    }
+
+                    /* Set a style for the submit/login button */
+                    .form-container .btn {
+                        background-color: #4CAF50;
+                        color: white;
+                        padding: 16px 20px;
+                        border: none;
+                        cursor: pointer;
+                        width: 50%;
+                        margin-bottom: 10px;
+                        opacity: 0.8;
+                        float: left;
+                    }
+
+                    /* Add a red background color to the cancel button */
+                    .form-container .cancel {
+                        background-color: #999;
+                    }
+
+                    /* Add some hover effects to buttons */
+                    .form-container .btn:hover,
+                    .open-button:hover {
+                        opacity: 1;
+                    }
+                </style>`
+    if (styleBtnCall == null || styleBtnCall == '') {
+        return call
+    }else{
+        call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
+                    <a href="tel:${styleBtnCall.phoneNumber}">
+                        <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
+                    </a>
+                </button>`
+    }
+    if (styleBtnForm == null || styleBtnForm == '') {
+        form = ''
+        form1 = ''
+    }else{
+        form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+                    <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
+                </button>`
+        form1 = `<div class="adstech-form" id="myForm">
+                    <form class="form-container" method="POST>
+                        <h3>${styleBtnForm.title}</h3>
+                        ${name}
+                        ${phone}
+                        ${email}
+                        ${city}
+                        ${bussiness}
+                        <div>
+                            <button type="submit" class="btn">Xác nhận</button>
+                            <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
+                        </div>
+                    </form>
+                </div>`
+    }
     if (vertical == false) {
         html = `<div class="adstech-group-btn">
-    <button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
-        <a href="tel:${styleBtnCall.phoneNumber}">
-            <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
-        </a>
-    </button>
-    <br />
-    <button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-        <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
-    </button>
-</div>
-<div class="adstech-form" id="myForm">
-    <form action="#" class="form-container">
-        <h1>${styleBtnForm.title}</h1>
-
-        <input type="text" placeholder="Nhập tên của bạn" name="name" required>
-
-        <input type="text" placeholder="Nhập số điện thoại" name="phone" required>
-
-        <input type="text" placeholder="Nhập email" name="email" required>
-
-        <input type="text" placeholder="Nhập địa chỉ" name="address" required>
-
-        <div>
-            <button type="submit" class="btn">Xác nhận</button>
-            <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
-        </div>
-    </form>
-</div>
-<style>
-    .adstech-group-btn {
-        position: fixed;
-        bottom: ${style.bottom}%;
-        left: ${style.left}%;
-        right: ${style.right}%;
-        top:${style.top}%;
-        
-    }
-
-    .adstech-btn {
-        border: none;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        margin: 4px 2px;
-        border-radius: 50%;
-        width: ${style.size}px;
-        height:${style.size}px
-    }
-
-    .adstech-form {
-        display: none;
-        position: fixed;
-        bottom: 60px;
-        right: 35%;
-        border: 3px solid #f1f1f1;
-        z-index: 9;
-    }
-
-    /* Add styles to the form container */
-    .form-container {
-        max-width: 300px;
-        padding: 10px;
-        background-color: white;
-    }
-
-    /* Full-width input fields */
-    .form-container input[type=text],
-    .form-container input[type=password] {
-        width: 90%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-    }
-
-    /* When the inputs get focus, do something */
-    .form-container input[type=text]:focus,
-    .form-container input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-
-    /* Set a style for the submit/login button */
-    .form-container .btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 50%;
-        margin-bottom: 10px;
-        opacity: 0.8;
-        float: left;
-    }
-
-    /* Add a red background color to the cancel button */
-    .form-container .cancel {
-        background-color: #999;
-    }
-
-    /* Add some hover effects to buttons */
-    .form-container .btn:hover,
-    .open-button:hover {
-        opacity: 1;
-    }
-</style>`
+                    ${call}
+                    <br />
+                    ${form}
+                </div>
+                ${form1}
+                ${css}`
     } else {
         html = `<div class="adstech-group-btn">
-    <button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
-        <a href="tel:${styleBtnCall.phoneNumber}">
-            <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
-        </a>
-    </button>
-    <button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-        <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
-    </button>
-</div>
-<div class="adstech-form" id="myForm">
-    <form action="#" class="form-container">
-        <h1>${styleBtnForm.title}</h1>
-
-        <input type="text" placeholder="Nhập tên của bạn" name="name" required>
-
-        <input type="text" placeholder="Nhập số điện thoại" name="phone" required>
-
-        <input type="text" placeholder="Nhập email" name="email" required>
-
-        <input type="text" placeholder="Nhập địa chỉ" name="address" required>
-
-        <div>
-            <button type="submit" class="btn">Xác nhận</button>
-            <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
-        </div>
-    </form>
-</div>
-<style>
-    .adstech-group-btn {
-        position: fixed;
-        bottom: ${style.bottom}%;
-        left: ${style.left}%;
-        right: ${style.right}%;
-        top:${style.top}%
-    }
-
-    .adstech-btn {
-        border: none;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        margin: 4px 2px;
-        border-radius: 50%;
-        width: ${style.size}px;
-        height:${style.size}px
-    }
-
-    .adstech-form {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 45px;
-        border: 3px solid #f1f1f1;
-        z-index: 9;
-    }
-
-    /* Add styles to the form container */
-    .form-container {
-        max-width: 300px;
-        padding: 10px;
-        background-color: white;
-    }
-
-    /* Full-width input fields */
-    .form-container input[type=text],
-    .form-container input[type=password] {
-        width: 90%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-    }
-
-    /* When the inputs get focus, do something */
-    .form-container input[type=text]:focus,
-    .form-container input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-
-    /* Set a style for the submit/login button */
-    .form-container .btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 50%;
-        margin-bottom: 10px;
-        opacity: 0.8;
-        float: left;
-    }
-
-    /* Add a red background color to the cancel button */
-    .form-container .cancel {
-        background-color: #999;
-    }
-
-    /* Add some hover effects to buttons */
-    .form-container .btn:hover,
-    .open-button:hover {
-        opacity: 1;
-    }
-</style>`
+                    ${call}
+                    ${form}
+                </div>
+                ${form1}
+                ${css}`
     }
 
     var div = document.createElement("div");
     div.id = "call";
     document.body.appendChild(div);
     document.getElementById("call").innerHTML = html;
+    send(acId)
 }
 
 function openForm() {
@@ -291,4 +212,59 @@ function openForm() {
 
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
+}
+function send(acId) {
+    document.querySelector('form').addEventListener('submit', (e) => {
+        const formData = new FormData(e.target)
+        var email = formData.get('email')
+        var name = formData.get('name')
+        var phone = formData.get('phone')
+        var city = formData.get('city')
+        var bussiness = formData.get('bussiness')
+        var body = [
+            {
+                property: 'accountId',
+                value: acId
+            },{
+                property: 'email',
+                value: email
+            }]
+        if (name != undefined && name != '' && name != null){
+            let a = {
+                property: 'name',
+                value: name
+            }
+            body.push(a)
+        }
+        if (phone != undefined && phone != '' && phone != null){
+            let a = {
+                property: 'phone',
+                value: phone
+            }
+            body.push(a)
+        }
+        if (city != undefined && city != '' && city != null){
+            let a = {
+                property: 'city',
+                value: city
+            }
+            body.push(a)
+        }
+        if (bussiness != undefined && bussiness != '' && bussiness != null){
+            let a = {
+                property: 'bussiness',
+                value: bussiness
+            }
+            body.push(a)
+        }
+        
+        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
+        method: 'POST',
+        headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify(body)
+        })
+      });
 }

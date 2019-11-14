@@ -24,10 +24,17 @@
                                     <v-list-tile :key="item.leadHubButtonGroupId" avatar ripple @click="choise(item)">
                                         <v-list-tile-content>
                                             <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                                            <v-list-tile-sub-title>{{item.createdAt}}</v-list-tile-sub-title>
                                         </v-list-tile-content>
 
                                         <v-list-tile-action>
-                                            <v-list-tile-action-text>{{ item.createdAt }}</v-list-tile-action-text>
+                                            <v-btn flat icon color="warning"
+                                                @click="updatedGbtn(item.leadHubButtonGroupId)">
+                                                <v-icon>edit</v-icon>
+                                            </v-btn>
+                                            <v-btn flat icon color="red" @click="deleteGbtn(item.leadHubButtonGroupId)">
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
                                         </v-list-tile-action>
 
                                     </v-list-tile>
@@ -48,12 +55,11 @@
                                         trong thẻ body trong mã nguồn website của bạn</p>
                                 </v-layout>
                                 <v-layout row>
-                                    <v-flex lg9 class="ml-5">
+                                    <v-flex lg9 class="ml-5 pt-2">
                                         <input style="width:100%; height:38px; border:1px solid #bebebe" type="text"
-                                            :value="scrpitText"
-                                            id="copy">
+                                            :value="scrpitText" id="copy">
                                     </v-flex>
-                                    <v-flex lg22>
+                                    <v-flex lg2>
                                         <v-btn class=" ml-2" tile outlined color="success" @click="copy()">
                                             <v-icon left>file_copy</v-icon> Copy
                                         </v-btn>
@@ -74,26 +80,23 @@
                                 </v-tabs>
                                 <v-tabs-items v-model="tab">
                                     <v-tab-item>
-                                        <v-card flat>
-                                            <v-img src="../../../mobile.png" height="500px" style="position:relative; width:290px">
-                                                <div style="position: absolute; bottom: 6px; left: 13px;z-index: 999999"
-                                                    v-if="show && selected.vertical == false">
-                                                    <v-btn class="" fab dark small :color="styleBtnCall.buttonColor">
+                                        <v-card flat style="padding-left:32%">
+                                            <v-img src="../../../mobile.png" height="600px"
+                                                style="position:relative; width:290px">
+                                                <div :style="styleBtn" v-if="show && selected.vertical == false">
+                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn style="" fab dark small :color="styleBtnForm.buttonColor"
-                                                        class="">
+                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
-                                                <div style="position: absolute; bottom: 6px; left: 0;z-index: 999999"
-                                                    v-if="show && selected.vertical == true">
-                                                    <v-btn class="" fab dark small :color="styleBtnCall.buttonColor">
+                                                <div :style="styleBtn" v-if="show && selected.vertical == true">
+                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn style="top:0; left: 0" fab dark small :color="styleBtnForm.buttonColor"
-                                                        class="">
+                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
@@ -103,24 +106,20 @@
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-img src="../../../desktop.png" height="500px" style="position:relative">
-                                                <div style="position: absolute; bottom: 50px; left: 30px;z-index: 999999"
-                                                    v-if="show && selected.vertical == false">
-                                                    <v-btn class="" fab dark small :color="styleBtnCall.buttonColor">
+                                                <div :style="styleBtnDesktop" v-if="show && selected.vertical == false">
+                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn style="top:0; left: 0" fab dark small :color="styleBtnForm.buttonColor"
-                                                        class="">
+                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor" class="">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
-                                                <div style="position: absolute; bottom: 6px; left: 0;z-index: 999999"
-                                                    v-if="show && selected.vertical == true">
-                                                    <v-btn class="" fab dark small :color="styleBtnCall.buttonColor">
+                                                <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
+                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn style="top:0; left: 0" fab dark small :color="styleBtnForm.buttonColor"
-                                                        class="">
+                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor" class="">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
@@ -160,16 +159,43 @@
                 tab: null,
                 show: false,
                 styleBtnCall: null,
-                styleBtnForm: null
+                styleBtnForm: null,
+                styleBtn: '',
+                styleBtnDesktop: ''
             }
         },
         watch: {
             selected() {
                 this.show = true
+                if (this.selected.style.bottom == "5" && this.selected.style.left == "2" && this.selected.style
+                    .top == null && this.selected.style.right == null) {
+                    this.styleGroupBtn("bottom:5%", "left:4%")
+                    this.styleGroupBtnDesk("bottom:10%", "left:4%")
+                } else if (this.selected.style.bottom == "5" && this.selected.style.left == "45" && this.selected
+                    .style.top == null && this.selected.style.right == null) {
+                    this.styleGroupBtn("bottom:5%", "left:30%")
+                    this.styleGroupBtnDesk("bottom:10%", "left:43%")
+                } else if (this.selected.style.bottom == "5" && this.selected.style.left == null && this.selected
+                    .style.top == null && this.selected.style.right == "2") {
+                    this.styleGroupBtn("bottom:5%", "right:10%")
+                    this.styleGroupBtnDesk("bottom:10%", "right:4%")
+                } else if (this.selected.style.bottom == null && this.selected.style.left == "2" && this.selected
+                    .style.top == "45" && this.selected.style.right == null) {
+                    this.styleGroupBtn("top:45%", "left:4%")
+                    this.styleGroupBtnDesk("top:45%", "left:4%")
+                } else if (this.selected.style.bottom == null && this.selected.style.left == null && this.selected
+                    .style.top == "45" && this.selected.style.right == "2") {
+                    this.styleGroupBtn("top:45%", "right:10%")
+                    this.styleGroupBtnDesk("top:45%", "right:4%")
+                } else if (this.selected.style.bottom == "5" && this.selected.style.left == null && this.selected
+                    .style.top == null && this.selected.style.right == "2") {
+                    this.styleGroupBtn("bottom:5%", "right:10%")
+                    this.styleGroupBtnDesk("bottom:10%", "right:4%")
+                }
             }
         },
-        computed:{
-            scrpitText(){
+        computed: {
+            scrpitText() {
                 return `<script src="${process.env.VUE_APP_BASE_URL}test.js?accId=${this.selected.accountId}&gBtnId=${this.selected.leadHubButtonGroupId}" type="text/javascript" async><\/script>`
             }
         },
@@ -190,21 +216,42 @@
             choise(key) {
                 this.selected = key
                 for (let i = 0; i < key.listButton.length; i++) {
-                    if(key.listButton[i].type == "CALL"){
+                    if (key.listButton[i].type == "CALL") {
                         this.styleBtnCall = key.listButton[i]
-                    }else if (key.listButton[i].type == "FORM") {
+                    } else if (key.listButton[i].type == "FORM") {
                         this.styleBtnForm = key.listButton[i]
                     }
                 }
-                console.log(this.selected)
             },
-            getAllGroupBtn(){
-                leadhubService.getListGbtn(this.idAccount).then(result =>{
+            getAllGroupBtn() {
+                leadhubService.getListGbtn(this.idAccount).then(result => {
                     this.items = result.response
                 })
+            },
+            updatedGbtn(GBtnId) {
+                router.replace(`/contacts/${this.idAccount}/update/${GBtnId}`)
+            },
+            deleteGbtn(gBtnId) {
+                leadhubService.deleteGbtn(this.idAccount, gBtnId).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    if (result.code == "SUCCESS") {
+                        dispatch('alert/success', result.message)
+                    } else {
+                        dispatch('alert/error', result.message)
+                    }
+                    this.getAllGroupBtn()
+                })
+            },
+            styleGroupBtn(tOb, lOr) {
+                this.styleBtn = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
+            },
+            styleGroupBtnDesk(tOb, lOr) {
+                this.styleBtnDesktop = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
             }
         },
-        created(){
+        created() {
             this.getAllGroupBtn()
         },
         components: {

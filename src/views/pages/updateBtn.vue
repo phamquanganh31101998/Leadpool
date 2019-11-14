@@ -146,7 +146,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" dark text @click="checkCall()">
+                                    <v-btn color="green darken-1" text @click="checkCall()">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -163,15 +163,15 @@
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
-                                            <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
-                                                <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
-                                                <v-select v-model="properti.value" :items="input" item-text="label"
-                                                    item-value="value" label="Chọn trường nhập" outline></v-select>
-                                                <v-btn class="mt-2 ml-3" color="error" flat icon
-                                                    @click="removeInput(key)">
-                                                    <v-icon>clear</v-icon>
-                                                </v-btn>
-                                            </v-layout>
+                                            <template v-for="(item, key) in input">
+                                                <v-layout :key="key" xs12>
+                                                    <v-text-field v-model="item.value" outlined dense></v-text-field>
+                                                    <v-btn class="mt-2 ml-3" color="error" flat icon
+                                                        @click="removeInput(key)">
+                                                        <v-icon>clear</v-icon>
+                                                    </v-btn>
+                                                </v-layout>
+                                            </template>
                                         </v-flex>
                                         <v-flex xs12>
                                             <v-btn class="mt-2 mr-5" color="primary" @click="addInput()">Thêm trường
@@ -189,7 +189,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark
+                                    <v-btn color="green darken-1" text
                                         @click="form = true, alertSuccess('Lưu nút form thành công')">
                                         Lưu
                                     </v-btn>
@@ -277,23 +277,21 @@
         </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
-                <v-card-title>
-                    <h1>{{nameForm}}</h1>
-                </v-card-title>
-                <v-card-text class="py-2">
+                <v-card-title :background-color="colorForm">{{nameForm}}</v-card-title>
+                <v-card-text class="mt-3">
                     <v-layout row wrap>
-                        <template v-for="(item,key) in numberProperties">
+                        <template v-for="(item,key) in input">
                             <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
                             </v-text-field>
                         </template>
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
-                    <v-flex class="text-xs-left">
+                    <v-flex class="text-lefy">
                         <v-btn color="error" text @click="showForDialog = false">Hủy bỏ</v-btn>
                     </v-flex>
                     <v-flex class="text-xs-right">
-                        <v-btn color="green darken-1" dark text @click="showForDialog = false">Xác nhận</v-btn>
+                        <v-btn color="green darken-1" text @click="showForDialog = false">Xác nhận</v-btn>
                     </v-flex>
                 </v-card-actions>
             </v-card>
@@ -311,6 +309,10 @@
                 type: String,
                 default: null,
             },
+            idGroupBtn: {
+                type: String,
+                default: null
+            }
         },
         data() {
             return {
@@ -322,10 +324,6 @@
                 }],
                 color: '#8E00FF',
                 colorForm: '#8E00FF',
-                hideCanvas: false,
-                hideInputs: false,
-                hideModeSwitch: false,
-                showSwatches: false,
                 dialog: false,
                 dialog1: false,
                 colorText: '#000',
@@ -347,21 +345,15 @@
                 showForDialog: false,
                 nameBtn: '',
                 input: [{
-                    value: 'email',
-                    label: 'Địa chỉ Mail'
-                }, {
-                    value: 'lastName',
-                    label: 'Họ và Tên'
-                }, {
-                    value: 'city',
-                    label: 'Thành phố'
-                }, {
-                    value: 'business',
-                    label: 'Nghề nghiệp'
-                }, {
-                    value: 'phone',
-                    label: 'Số điện thoại'
-                }],
+                        value: 'Họ và tên'
+                    },
+                    {
+                        value: 'Số điện thoại'
+                    },
+                    {
+                        value: 'Email'
+                    }
+                ],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
                 xy: true,
@@ -373,8 +365,7 @@
                 top: null,
                 left: null,
                 right: null,
-                properties: [],
-                numberProperties: []
+                properties: []
             }
         },
         watch: {
@@ -386,7 +377,7 @@
             },
             displayDialog() {
                 this.showForDisplay()
-            },
+            }
         },
         methods: {
             showDisplay() {
@@ -480,12 +471,12 @@
                 let a = {
                     value: ''
                 }
-                this.numberProperties.push(a)
-                this.numberProperties = [...this.numberProperties]
+                this.input.push(a)
+                this.input = [...this.input]
             },
             removeInput(data) {
-                this.numberProperties.splice(data, 1)
-                this.numberProperties = [...this.numberProperties]
+                this.input.splice(data, 1)
+                this.input = [...this.input]
             },
             createGbtn() {
                 if (this.small == true) {
@@ -495,8 +486,8 @@
                 } else {
                     this.sizeButton = 70
                 }
-                for (let i = 0; i < this.numberProperties.length; i++) {
-                    this.properties.push(this.numberProperties[i].value)
+                for (let i = 0; i < this.input.length; i++) {
+                    this.properties.push(this.input[i].value)
                 }
                 let form = {
                     buttonColor: this.colorForm,
@@ -511,15 +502,18 @@
                 let call = {
                     buttonColor: this.color,
                     description: "",
-                    formMessage: "Gọingay",
+                    formMessage: "Gọi ngay",
                     phoneNumber: this.text,
                     title: "Vui lòng để lại số điện thoại, chúng tôi sẽ gọi lại ngay sau 5 phút.",
                     type: "CALL",
                 }
+
                 if (this.call == true && this.form == true) {
                     let btn = {
                         name: this.nameBtn,
                         vertical: this.xy,
+                        leadHubButtonGroupId: this.idGroupBtn,
+                        accountId: this.idAccount,
                         listButton: [
                             form,
                             call
@@ -533,28 +527,13 @@
                             size: `${this.sizeButton}`,
                         }
                     }
-                    this.callApiCreate(btn)
-                } else if (this.call == false && this.form == true) {
-                    let btn = {
-                        name: this.nameBtn,
-                        vertical: this.xy,
-                        listButton: [
-                            form
-                        ],
-                        style: {
-                            bottom: this.bottom,
-                            top: this.top,
-                            right: this.right,
-                            color: this.colorText,
-                            left: this.left,
-                            size: `${this.sizeButton}`,
-                        }
-                    }
-                    this.callApiCreate(btn)
+                    this.updateGbtn(btn)
                 } else if (this.call == true && this.form == false) {
                     let btn = {
                         name: this.nameBtn,
                         vertical: this.xy,
+                        leadHubButtonGroupId: this.idGroupBtn,
+                        accountId: this.idAccount,
                         listButton: [
                             call
                         ],
@@ -567,20 +546,87 @@
                             size: `${this.sizeButton}`,
                         }
                     }
-                    this.callApiCreate(btn)
+                    this.updateGbtn(btn)
+                } else if (this.call == false && this.form == true) {
+                    let btn = {
+                        name: this.nameBtn,
+                        vertical: this.xy,
+                        leadHubButtonGroupId: this.idGroupBtn,
+                        accountId: this.idAccount,
+                        listButton: [
+                            form
+                        ],
+                        style: {
+                            bottom: this.bottom,
+                            top: this.top,
+                            right: this.right,
+                            color: this.colorText,
+                            left: this.left,
+                            size: `${this.sizeButton}`,
+                        }
+                    }
+                    this.updateGbtn(btn)
                 } else {
-                    this.alertError("Bạn chưa chọn nút cần tạo")
+                    this.alertError("Chưa chọn nút")
                 }
             },
-            callApiCreate(btn) {
-                leadhubService.createGbtn(this.idAccount, btn).then(result => {
+            updateGbtn(btn) {
+                leadhubService.updateGbtn(this.idAccount, btn).then(result => {
                     if (result.code == "SUCCESS") {
-                        this.alertSuccess('Thêm nút thành công')
+                        this.alertSuccess('Sửa thành công')
                     } else {
                         this.alertError(result.message)
                     }
                 })
+            },
+            getBtnInfo() {
+                leadhubService.getInfoBtn(this.idAccount, this.idGroupBtn).then(result => {
+                    this.nameBtn = result.response.name
+                    this.xy = result.response.vertical
+                    for (let i = 0; i < result.response.listButton.length; i++) {
+                        if (result.response.listButton[i].type == "CALL") {
+                            this.call = true
+                            this.color = result.response.listButton[i].buttonColor
+                            this.text = result.response.listButton[i].phoneNumber
+                        } else if (result.response.listButton[i].type == "FORM") {
+                            this.form = true
+                            this.colorForm = result.response.listButton[i].buttonColor
+                        }
+                    }
+                    if (result.response.style.size == "40") {
+                        this.small = true
+                        this.large = false
+                    } else if (result.response.style.size == "52") {
+                        this.small = false
+                        this.large = false
+                    } else if (result.response.style.size == "70") {
+                        this.large = true
+                        this.small = false
+                    }
+                    if (result.response.style.bottom == "5" && result.response.style.left == "2" && result
+                        .response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == "45" &&
+                        result.response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:45%")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == "2" &&
+                        result.response.style.top == "45" && result.response.style.right == null) {
+                        this.styleForBtn("top:45%", "left:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == null &&
+                        result.response.style.top == "45" && result.response.style.right == "2") {
+                        this.styleForBtn("top:45%", "right:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    }
+                })
             }
+        },
+        created() {
+            this.getBtnInfo()
         },
         components: {
             alert
