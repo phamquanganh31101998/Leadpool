@@ -24,7 +24,7 @@
                                     <v-list-tile :key="item.leadHubButtonGroupId" avatar ripple @click="choise(item)">
                                         <v-list-tile-content>
                                             <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                                            <v-list-tile-sub-title>{{item.createdAt}}</v-list-tile-sub-title>
+                                            <v-list-tile-sub-title>{{returnTime(item.createdAt)}}</v-list-tile-sub-title>
                                         </v-list-tile-content>
 
                                         <v-list-tile-action>
@@ -140,6 +140,7 @@
     import router from '@/router'
     import alert from '@/components/alert'
     import leadhubService from '@/services/leadhub.service.js'
+    import moment from 'moment'
     export default {
         props: {
             idAccount: {
@@ -200,6 +201,9 @@
             }
         },
         methods: {
+            returnTime(data){
+                return moment(data).lang('vi').format('llll')
+            },
             gotoSetting() {
                 router.replace(`/contacts/${this.idAccount}/setting`)
             },

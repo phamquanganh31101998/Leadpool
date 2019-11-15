@@ -134,6 +134,12 @@
                                                 outlined dense>
                                             </v-text-field>
                                         </v-flex>
+                                        <v-flex xs12 class="mt-3">
+                                            <h4>Thông điệp nút</h4>
+                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút"
+                                                outlined dense>
+                                            </v-text-field>
+                                        </v-flex>
                                         <v-flex xs12>
                                             <h4>Màu nền</h4>
                                             <v-btn class="mt-2" :color="color" @click="dialog = true" dark>Chọn màu sắc
@@ -162,12 +168,14 @@
                                         <v-flex xs12>
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                            <h3>Thông báo</h3>
+                                            <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
                                                 <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
                                                 <v-select v-model="properti.value" :items="input" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
-                                                <v-btn class="mt-2 ml-3" color="error" flat icon
+                                                <v-btn class="mt-2 ml-3" color="error" v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'" flat icon
                                                     @click="removeInput(key)">
                                                     <v-icon>clear</v-icon>
                                                 </v-btn>
@@ -374,7 +382,15 @@
                 left: null,
                 right: null,
                 properties: [],
-                numberProperties: []
+                numberProperties: [{
+                    value: 'lastName'
+                },{
+                    value: 'email'
+                },{
+                    value: 'phone'
+                }],
+                alertFinish: 'Đăng ký thành công',
+                textCall: 'Để lại số điện thoại của bạn'
             }
         },
         watch: {
@@ -501,8 +517,8 @@
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
-                    formMessage: "Để lại lời nhắn hello",
-                    formMessageReturn: "Gửi thành công!",
+                    formMessage: "Để lại lời nhắn",
+                    formMessageReturn: this.alertFinish,
                     title: this.nameForm,
                     type: "FORM",
                     properties: this.properties,
@@ -511,63 +527,121 @@
                 let call = {
                     buttonColor: this.color,
                     description: "",
-                    formMessage: "Gọingay",
+                    formMessage: "Gọi ngay",
                     phoneNumber: this.text,
-                    title: "Vui lòng để lại số điện thoại, chúng tôi sẽ gọi lại ngay sau 5 phút.",
+                    title: this.textCall,
                     type: "CALL",
                 }
                 if (this.call == true && this.form == true) {
-                    let btn = {
-                        name: this.nameBtn,
-                        vertical: this.xy,
-                        listButton: [
-                            form,
-                            call
-                        ],
-                        style: {
-                            bottom: this.bottom,
-                            top: this.top,
-                            right: this.right,
-                            color: this.colorText,
-                            left: this.left,
-                            size: `${this.sizeButton}`,
+                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                form,
+                                call
+                            ],
+                            style: {
+                                bottom: 5,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: 2,
+                                size: `${this.sizeButton}`,
+                            }
                         }
+                        this.callApiCreate(btn)
+                    } else {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                form,
+                                call
+                            ],
+                            style: {
+                                bottom: this.bottom,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: this.left,
+                                size: `${this.sizeButton}`,
+                            }
+                        }
+                        this.callApiCreate(btn)
                     }
-                    this.callApiCreate(btn)
                 } else if (this.call == false && this.form == true) {
-                    let btn = {
-                        name: this.nameBtn,
-                        vertical: this.xy,
-                        listButton: [
-                            form
-                        ],
-                        style: {
-                            bottom: this.bottom,
-                            top: this.top,
-                            right: this.right,
-                            color: this.colorText,
-                            left: this.left,
-                            size: `${this.sizeButton}`,
+                    if (this.bottom == null && this.top == null && this.left == null && this.right) {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                form
+                            ],
+                            style: {
+                                bottom: 5,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: 2,
+                                size: `${this.sizeButton}`,
+                            }
                         }
+                        this.callApiCreate(btn)
+                    } else {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                form
+                            ],
+                            style: {
+                                bottom: this.bottom,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: this.left,
+                                size: `${this.sizeButton}`,
+                            }
+                        }
+                        this.callApiCreate(btn)
                     }
-                    this.callApiCreate(btn)
                 } else if (this.call == true && this.form == false) {
-                    let btn = {
-                        name: this.nameBtn,
-                        vertical: this.xy,
-                        listButton: [
-                            call
-                        ],
-                        style: {
-                            bottom: this.bottom,
-                            top: this.top,
-                            right: this.right,
-                            color: this.colorText,
-                            left: this.left,
-                            size: `${this.sizeButton}`,
+                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                call
+                            ],
+                            style: {
+                                bottom: 5,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: 2,
+                                size: `${this.sizeButton}`,
+                            }
                         }
+                        this.callApiCreate(btn)
+                    } else {
+                        let btn = {
+                            name: this.nameBtn,
+                            vertical: this.xy,
+                            listButton: [
+                                call
+                            ],
+                            style: {
+                                bottom: this.bottom,
+                                top: this.top,
+                                right: this.right,
+                                color: this.colorText,
+                                left: this.left,
+                                size: `${this.sizeButton}`,
+                            }
+                        }
+                        this.callApiCreate(btn)
                     }
-                    this.callApiCreate(btn)
                 } else {
                     this.alertError("Bạn chưa chọn nút cần tạo")
                 }
@@ -576,6 +650,7 @@
                 leadhubService.createGbtn(this.idAccount, btn).then(result => {
                     if (result.code == "SUCCESS") {
                         this.alertSuccess('Thêm nút thành công')
+                        router.replace(`/contacts/${this.idAccount}/leadhub`)
                     } else {
                         this.alertError(result.message)
                     }

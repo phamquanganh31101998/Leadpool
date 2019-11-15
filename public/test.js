@@ -33,7 +33,7 @@ function f() {
                 properties = result.response.listButton[i].properties
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId)
     })
 }
 
@@ -48,7 +48,7 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId) {
     var html = ''
     var call = ''
     var form = ''
@@ -61,13 +61,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
     for (let i = 0; i < properties.length; i++) {
         if (properties[i] == 'email') {
             email = `<input type="email" placeholder="Nhập email" name="email" required>`
-        }else if(properties[i] == 'lastName'){
+        } else if (properties[i] == "lastName") {
             name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
-        }else if(properties[i] == 'phone'){
+        } else if (properties[i] == 'phone') {
             phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
-        }else if(properties[i] == 'city'){
+        } else if (properties[i] == 'city') {
             city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
-        }else if(properties[i] == 'bussiness'){
+        } else if (properties[i] == 'bussiness') {
             bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
         }
     }
@@ -150,10 +150,22 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
                     .open-button:hover {
                         opacity: 1;
                     }
+                    #alert {
+                        padding: 20px;
+                        background-color:${styleBtnForm.buttonColor}; /* Red */
+                        color: white;
+                        margin-bottom: 15px;
+                        display: none;
+                        width:20%;
+                        position: fixed;
+                        bottom:30%;
+                        left:40%;
+                        text-align:center
+                      }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
         return call
-    }else{
+    } else {
         call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
                         <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
@@ -163,12 +175,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
     if (styleBtnForm == null || styleBtnForm == '') {
         form = ''
         form1 = ''
-    }else{
+    } else {
         form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
                     <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
                 </button>`
         form1 = `<div class="adstech-form" id="myForm">
-                    <form class="form-container" method="POST>
+                    <form class="form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
                         ${name}
                         ${phone}
@@ -180,6 +192,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties,acId)
                             <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
                         </div>
                     </form>
+                </div> 
+                <div id="alert">
+                    ${styleBtnForm.formMessageReturn}
                 </div>`
     }
     if (vertical == false) {
@@ -213,58 +228,73 @@ function openForm() {
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
+
+function openAlert() {
+    document.getElementById("alert").style.display = "block";
+}
+function closeAlert() {
+    document.getElementById("alert").style.display = "none";
+}
 function send(acId) {
-    document.querySelector('form').addEventListener('submit', (e) => {
+    const form = document.querySelector('form')
+    form.addEventListener('submit', e => {
+
         const formData = new FormData(e.target)
         var email = formData.get('email')
         var name = formData.get('name')
         var phone = formData.get('phone')
         var city = formData.get('city')
         var bussiness = formData.get('bussiness')
-        var body = [
-            {
-                property: 'accountId',
-                value: acId
-            },{
-                property: 'email',
-                value: email
-            }]
-        if (name != undefined && name != '' && name != null){
+        var body = [{
+            property: 'accountId',
+            value: acId
+        }, {
+            property: 'email',
+            value: email
+        }]
+        if (name != undefined && name != '' && name != null) {
             let a = {
-                property: 'name',
+                property: 'lastName',
                 value: name
             }
             body.push(a)
         }
-        if (phone != undefined && phone != '' && phone != null){
+        if (phone != undefined && phone != '' && phone != null) {
             let a = {
                 property: 'phone',
                 value: phone
             }
             body.push(a)
         }
-        if (city != undefined && city != '' && city != null){
+        if (city != undefined && city != '' && city != null) {
             let a = {
                 property: 'city',
                 value: city
             }
             body.push(a)
         }
-        if (bussiness != undefined && bussiness != '' && bussiness != null){
+        if (bussiness != undefined && bussiness != '' && bussiness != null) {
             let a = {
                 property: 'bussiness',
                 value: bussiness
             }
             body.push(a)
         }
-        
         fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
-        method: 'POST',
-        headers: new Headers({
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(body)
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then(handle).then(result => {
+                openAlert()
+            setTimeout(function () {
+                closeAlert()
+            },2000)
         })
-      });
+        e.preventDefault()
+        closeForm()
+    })
+
 }
