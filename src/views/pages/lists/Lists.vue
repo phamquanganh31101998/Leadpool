@@ -30,7 +30,7 @@
                         <td>{{ props.item.name }}</td>
                         <td>{{props.item.createdBy}}</td>
                         <td>{{coverTime(props.item.createdAt)}}</td>
-                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">Xem chi tiết danh sách >> </a></td>
+                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">Xem chi tiết danh sách </a></td>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
