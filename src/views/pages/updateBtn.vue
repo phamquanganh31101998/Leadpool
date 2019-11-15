@@ -152,7 +152,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" dark text @click="checkCall()">
+                                    <v-btn color="green darken-1" text @click="checkCall()">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -171,7 +171,7 @@
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
-                                            <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
+                                            <v-layout v-for="(properti,key) in properties" :key="key" xs12>
                                                 <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
                                                 <v-select v-model="properti.value" :items="input" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
@@ -197,7 +197,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark
+                                    <v-btn color="green darken-1" text
                                         @click="form = true, alertSuccess('Lưu nút form thành công')">
                                         Lưu
                                     </v-btn>
@@ -285,19 +285,17 @@
         </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
-                <v-card-title>
-                    <h1>{{nameForm}}</h1>
-                </v-card-title>
+                <v-card-title :background-color="colorForm"><h2>{{nameForm}}</h2></v-card-title>
                 <v-card-text class="py-2">
                     <v-layout row wrap>
-                        <template v-for="(item,key) in numberProperties">
+                        <template v-for="(item,key) in properties">
                             <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
                             </v-text-field>
                         </template>
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
-                    <v-flex class="text-xs-left">
+                    <v-flex class="text-lefy">
                         <v-btn color="error" text @click="showForDialog = false">Hủy bỏ</v-btn>
                     </v-flex>
                     <v-flex class="text-xs-right">
@@ -319,6 +317,10 @@
                 type: String,
                 default: null,
             },
+            idGroupBtn: {
+                type: String,
+                default: null
+            }
         },
         data() {
             return {
@@ -330,10 +332,6 @@
                 }],
                 color: '#8E00FF',
                 colorForm: '#8E00FF',
-                hideCanvas: false,
-                hideInputs: false,
-                hideModeSwitch: false,
-                showSwatches: false,
                 dialog: false,
                 dialog1: false,
                 colorText: '#000',
@@ -382,15 +380,8 @@
                 left: null,
                 right: null,
                 properties: [],
-                numberProperties: [{
-                    value: 'lastName'
-                },{
-                    value: 'email'
-                },{
-                    value: 'phone'
-                }],
-                alertFinish: 'Đăng ký thành công',
-                textCall: 'Để lại số điện thoại của bạn'
+                textCall: '',
+                alertFinish: ''
             }
         },
         watch: {
@@ -402,7 +393,7 @@
             },
             displayDialog() {
                 this.showForDisplay()
-            },
+            }
         },
         methods: {
             showDisplay() {
@@ -496,12 +487,12 @@
                 let a = {
                     value: ''
                 }
-                this.numberProperties.push(a)
-                this.numberProperties = [...this.numberProperties]
+                this.input.push(a)
+                this.input = [...this.input]
             },
             removeInput(data) {
-                this.numberProperties.splice(data, 1)
-                this.numberProperties = [...this.numberProperties]
+                this.input.splice(data, 1)
+                this.input = [...this.input]
             },
             createGbtn() {
                 if (this.small == true) {
@@ -517,8 +508,8 @@
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
-                    formMessage: "Để lại lời nhắn",
-                    formMessageReturn: this.alertFinish,
+                    formMessage: "Để lại lời nhắn hello",
+                    formMessageReturn: "Gửi thành công!",
                     title: this.nameForm,
                     type: "FORM",
                     properties: this.properties,
@@ -527,9 +518,9 @@
                 let call = {
                     buttonColor: this.color,
                     description: "",
-                    formMessage: "Gọi ngay",
+                    formMessage: "Gọingay",
                     phoneNumber: this.text,
-                    title: this.textCall,
+                    title: "Vui lòng để lại số điện thoại, chúng tôi sẽ gọi lại ngay sau 5 phút.",
                     type: "CALL",
                 }
                 if (this.call == true && this.form == true) {
@@ -550,7 +541,7 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     } else {
                         let btn = {
                             name: this.nameBtn,
@@ -568,7 +559,7 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     }
                 } else if (this.call == false && this.form == true) {
                     if (this.bottom == null && this.top == null && this.left == null && this.right) {
@@ -587,7 +578,7 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     } else {
                         let btn = {
                             name: this.nameBtn,
@@ -604,7 +595,7 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     }
                 } else if (this.call == true && this.form == false) {
                     if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
@@ -623,7 +614,7 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     } else {
                         let btn = {
                             name: this.nameBtn,
@@ -640,22 +631,78 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     }
                 } else {
                     this.alertError("Bạn chưa chọn nút cần tạo")
                 }
             },
-            callApiCreate(btn) {
-                leadhubService.createGbtn(this.idAccount, btn).then(result => {
+            updateGbtn(btn) {
+                leadhubService.updateGbtn(this.idAccount, btn).then(result => {
                     if (result.code == "SUCCESS") {
-                        this.alertSuccess('Thêm nút thành công')
+                        this.alertSuccess('Sửa thành công')
                         router.replace(`/contacts/${this.idAccount}/leadhub`)
                     } else {
                         this.alertError(result.message)
                     }
                 })
+            },
+            getBtnInfo() {
+                leadhubService.getInfoBtn(this.idAccount, this.idGroupBtn).then(result => {
+                    this.nameBtn = result.response.name
+                    this.xy = result.response.vertical
+                    for (let i = 0; i < result.response.listButton.length; i++) {
+                        if (result.response.listButton[i].type == "CALL") {
+                            this.call = true
+                            this.color = result.response.listButton[i].buttonColor
+                            this.text = result.response.listButton[i].phoneNumber
+                            this.textCall = result.response.listButton[i].title
+                        } else if (result.response.listButton[i].type == "FORM") {
+                            this.form = true
+                            this.colorForm = result.response.listButton[i].buttonColor
+                            this.alertFinish = result.response.listButton[i].formMessageReturn
+                            for (let index = 0; index < result.response.listButton[i].properties.length; index++) {
+                                let a = {
+                                    value: result.response.listButton[i].properties[index]
+                                }
+                                this.properties.push(a)
+                            }
+                        }
+                    }
+                    if (result.response.style.size == "40") {
+                        this.small = true
+                        this.large = false
+                    } else if (result.response.style.size == "52") {
+                        this.small = false
+                        this.large = false
+                    } else if (result.response.style.size == "70") {
+                        this.large = true
+                        this.small = false
+                    }
+                    if (result.response.style.bottom == "5" && result.response.style.left == "2" && result
+                        .response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == "45" &&
+                        result.response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:45%")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == "2" &&
+                        result.response.style.top == "45" && result.response.style.right == null) {
+                        this.styleForBtn("top:45%", "left:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == null &&
+                        result.response.style.top == "45" && result.response.style.right == "2") {
+                        this.styleForBtn("top:45%", "right:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    }
+                })
             }
+        },
+        created() {
+            this.getBtnInfo()
         },
         components: {
             alert
