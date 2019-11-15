@@ -124,7 +124,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
                             <v-card>
                                 <v-card-title>
-                                    Cài đặt nút gọi
+                                    <h3>Cài đặt nút gọi</h3>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -152,7 +152,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text @click="checkCall()">
+                                    <v-btn color="green darken-1" dark text @click="checkCall()">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -295,7 +295,7 @@
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
-                    <v-flex class="text-lefy">
+                    <v-flex class="text-xs-left">
                         <v-btn color="error" text @click="showForDialog = false">Hủy bỏ</v-btn>
                     </v-flex>
                     <v-flex class="text-xs-right">
@@ -381,7 +381,8 @@
                 right: null,
                 properties: [],
                 textCall: '',
-                alertFinish: ''
+                alertFinish: '',
+                propertiesbtn: []
             }
         },
         watch: {
@@ -502,8 +503,8 @@
                 } else {
                     this.sizeButton = 70
                 }
-                for (let i = 0; i < this.numberProperties.length; i++) {
-                    this.properties.push(this.numberProperties[i].value)
+                for (let i = 0; i < this.properties.length; i++) {
+                    this.propertiesbtn.push(this.properties[i].value)
                 }
                 let form = {
                     buttonColor: this.colorForm,
@@ -512,7 +513,7 @@
                     formMessageReturn: "Gửi thành công!",
                     title: this.nameForm,
                     type: "FORM",
-                    properties: this.properties,
+                    properties: this.propertiesbtn,
 
                 }
                 let call = {
@@ -528,6 +529,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 form,
                                 call
@@ -546,6 +548,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 form,
                                 call
@@ -566,6 +569,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 form
                             ],
@@ -583,6 +587,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 form
                             ],
@@ -602,6 +607,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 call
                             ],
@@ -619,6 +625,7 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
                             listButton: [
                                 call
                             ],
