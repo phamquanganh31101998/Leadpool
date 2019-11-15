@@ -774,7 +774,7 @@
             allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
                 'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
                 'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
-                'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Khác'],
+                'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Nông, Lâm, Thủy sản', 'Khác'],
             divider: true,
             dialog: false,
             createNote: false,
@@ -876,7 +876,28 @@
                     dialog: false,
                 }
             ],
-            detail: null,
+            detail: {
+                "contactId": "",
+                "accountId": "",
+                "teamId": null,
+                "email": "",
+                "firstName": "",
+                "lastName": "",
+                "phone": "",
+                "contactOwner": "",
+                "lifecycleStage": "",
+                "leadStatus": null,
+                "city": "",
+                "bussiness": "",
+                "lastActivityDate": null,
+                "lastContacted": null,
+                "sourceFromMar": null,
+                "createdAt": "",
+                "updateAt": "",
+                "createdBy": "",
+                "updateBy": "",
+                "customValue": {}
+            },
             expandDetail: [true],
             basicInfoDialog: false,
             basicInfoValid: true,
@@ -946,7 +967,7 @@
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.detail = result.response
-                    console.log(this.detail)
+                    // console.log(this.detail)
                     this.items = [{
                             title: 'Vòng đời',
                             description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -1041,8 +1062,14 @@
                 if (valid){
                     this.updateContactDetail(property, value);
                 }
-                this.updateEmail();
-                this.updatePhone();
+                if (property == 'email'){
+                    this.updateEmail();
+                }
+                else if (property == 'phone'){
+                    this.updatePhone();
+                }
+                
+                
             },
             confirmUpdateContactOwner(property, value){
                 let role = this.currentUser.authorities;
@@ -1215,8 +1242,8 @@
             }
         },
         created(){
-            this.getAllEmail();
             this.getDetail();
+            this.getAllEmail();
             this.$store.state.colorNumber = 0;
         },
         components: {

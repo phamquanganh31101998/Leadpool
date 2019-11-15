@@ -340,7 +340,7 @@ import contact from '../../../services/contacts.service'
                         this.access = true;
                     }
                     if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
-                        if (this.detail.contactOwner == this.currentUser.username){
+                        if (this.currentContact.contactOwner == this.currentUser.username){
                             this.access = true;
                         }
                     }
@@ -422,7 +422,7 @@ import contact from '../../../services/contacts.service'
                         result.response[i].showDetail = false;
                     }
                     this.emails = result.response.reverse();
-                    console.log(this.emails);
+                    // console.log(this.emails);
                 }).catch(error => {
                     console.log(error);
                 })

@@ -219,7 +219,7 @@ export default {
                     this.access = true;
                 }
                 if(role[i] == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
-                    if (this.detail.contactOwner == this.currentUser.username){
+                    if (this.currentContact.contactOwner == this.currentUser.username){
                         this.access = true;
                     }
                 }

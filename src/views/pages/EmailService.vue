@@ -50,7 +50,7 @@
                                             <td>{{props.item.text}}</td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
-                                            <td class="text-xs-center"><a @click="templateId = props.item.value, setChosenTemplate()">Xem nội dung mẫu >></a></td>
+                                            <td class="text-xs-center"><a @click="templateId = props.item.value, setChosenTemplate()">Xem nội dung mẫu</a></td>
                                         </tr>
                                     </template>
                                 </v-data-table>
@@ -735,13 +735,13 @@ export default {
 
             // Do something on response
             this.editor.on('asset:upload:response', (response) => {
-                alert('hú');
+                // alert('hú');
             });
 
             console.log(this.editor)
         },
         alerting(){
-            alert('hú');
+            // alert('hú');
         },
         createNewTemplate(){
             let html = localStorage.getItem('gjs-html');

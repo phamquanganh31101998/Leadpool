@@ -218,7 +218,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="forbiddenDialog" @click:outside="$store.dispatch('turnOffForbiddenDialog')" transition="dialog-bottom-transition" scrollable width="30%">
+        <v-dialog v-model="forbiddenDialog" persistent @click:outside="$store.dispatch('turnOffForbiddenDialog')" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="red">
                     <v-toolbar-title>Không có quyền truy cập</v-toolbar-title>
@@ -228,7 +228,7 @@
                     Bạn phải là Quản lý và có quyền chỉnh sửa tài khoản mới có thể truy cập vào trang này.
                 </v-card-text>
                 <v-card-actions>
-                <v-btn flat color="red" @click="$store.dispatch('turnOffForbiddenDialog')">OK</v-btn>
+                <v-btn flat color="red" @click="$store.dispatch('turnOffForbiddenDialog'), $router.go(-1)">OK</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

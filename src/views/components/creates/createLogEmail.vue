@@ -7,7 +7,7 @@
                     <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" :nudge-right="40" lazy
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="dateFormatted" label="Ngày" persistent-hint prepend-icon="event"
+                            <v-text-field readonly v-model="dateFormatted" label="Ngày" persistent-hint prepend-icon="event"
                                 @blur="date = parseDate(dateFormatted)" v-on="on">
                             </v-text-field>
                         </template>
@@ -24,8 +24,8 @@
                         </template>
                         <v-time-picker v-if="modal2" v-model="time" full-width>
                             <v-spacer></v-spacer>
-                            <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
-                            <v-btn flat color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
+                            <v-btn flat color="red" @click="modal2 = false">Đóng</v-btn>
+                            <v-btn flat color="primary" @click="$refs.dialog.save(time)">Chọn</v-btn>
                         </v-time-picker>
                     </v-dialog>
                 </v-flex>

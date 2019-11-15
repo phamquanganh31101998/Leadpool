@@ -10,7 +10,7 @@
                     <v-menu ref="menu1" v-model="menu1" :close-on-content-click="false" lazy
                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                         <template v-slot:activator="{ on }">
-                            <v-text-field v-model="dateFormatted" label="Ngày hết hạn" persistent-hint prepend-icon="event"
+                            <v-text-field readonly v-model="dateFormatted" label="Ngày hết hạn" persistent-hint prepend-icon="event"
                                 v-on="on">
                             </v-text-field>
                         </template>
