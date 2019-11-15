@@ -115,7 +115,7 @@
                                     <v-menu ref="menu1" v-model="viewTask.task.menu1" :close-on-content-click="false" lazy
                                         transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                         <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Ngày hết hạn" persistent-hint prepend-icon="event"
+                                            <v-text-field v-model="viewTask.task.dueDateDate" label="Ngày hết hạn" persistent-hint prepend-icon="event" readonly
                                                 v-on="on">
                                             </v-text-field>
                                         </template>
@@ -135,7 +135,7 @@
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-textarea class="mt-2" name="input" label="Ghi chú..." v-model="viewTask.task.note" @change="updateTask(viewTask.task.taskId, 'a', 'note', viewTask.task.note)"></v-textarea>
                         </v-flex>
-                        <v-flex xs12 sm12 md12 lg12 xl12>
+                        <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                             <v-layout row>
                                 <v-flex>
                                     <v-btn flat icon small color="green">
@@ -152,7 +152,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                        </v-flex>
+                        </v-flex> -->
                         <v-flex xs12 sm12 md12 lg12 xl12 class="mt-2">
                             <v-divider :divider="divider"></v-divider>
                             <v-layout row class="mt-2">
@@ -583,7 +583,7 @@ export default {
             }
             taskService.updateTask(this.idAccount, contactId, taskId, body).then(result => {
                 console.log(result);
-                eventBus.updateTaskList();
+                // eventBus.updateTaskList();
                 this.getMyTask(this.pagination.page, this.status, this.type);
             }).catch(error => {
                 console.log(error);
@@ -632,9 +632,9 @@ export default {
         this.$store.state.colorNumber = 2;
         this.getAllEmail();
         this.getMyTask(this.pagination.page, this.status, this.type);
-        eventBus.$on('updateTaskList', () => {
-            this.getMyTask(this.pagination.page, this.status, this.type);
-        })
+        // eventBus.$on('updateTaskList', () => {
+        //     this.getMyTask(this.pagination.page, this.status, this.type);
+        // })
     }
 }
 </script>

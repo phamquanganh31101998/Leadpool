@@ -1,5 +1,33 @@
 <template>
     <v-card v-if="!createEmailTemplate.dialog">
+        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi gửi email. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Gửi email thành công
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-card-title style="background-color:#1E88E5;color:#fff; padding: 16px;">
             <span class="headline">Gửi email theo mẫu</span>
         </v-card-title>
@@ -44,7 +72,7 @@
             <v-btn flat color="red" @click="closeEmailTemplateDialog()">Đóng</v-btn>
         </v-card-actions>
     </v-card>
-    <v-card v-else width="100%">
+    <!-- <v-card v-else width="100%">
         <v-card-title style="background-color:#1E88E5;color:#fff; padding: 16px;">
             <span class="headline">Tạo mẫu email</span>
         </v-card-title>
@@ -78,35 +106,9 @@
             <v-btn flat color="green" @click="createTemplate()" :disabled="!createEmailTemplate.button">Tạo mẫu</v-btn>
             <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Quay lại</v-btn>
         </v-card-actions>
-        <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
-            <v-card tile>
-                <v-toolbar card dark color="#00C853">
-                    <v-toolbar-title>Thành công</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-card-text>
-                    Gửi email thành công
-                </v-card-text>
-                <v-card-actions>
-                <v-btn flat color="#00C853" @click="successfulDialog = false">OK</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
-            <v-card tile>
-                <v-toolbar card dark color="red">
-                    <v-toolbar-title>Thất bại</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-card-text>
-                    Đã có lỗi xảy ra khi gửi email. Xin hãy thử lại.
-                </v-card-text>
-                <v-card-actions>
-                <v-btn flat color="red" @click="failDialog = false">OK</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </v-card>
+        
+        
+    </v-card> -->
 </template>
 <script>
 import {eventBus} from '../../../eventBus'
@@ -215,10 +217,10 @@ export default {
         }
     },
     methods: {
-        createNewTemplateSection(){
-            document.getElementById("templateBody").innerHTML = '';
-            this.createEmailTemplate.dialog = true
-        },
+        // createNewTemplateSection(){
+        //     document.getElementById("templateBody").innerHTML = '';
+        //     this.createEmailTemplate.dialog = true
+        // },
         setChosenTemplate(){
             let obj = null;
             for (let i = 0; i < this.templates.length; i++){
@@ -231,20 +233,20 @@ export default {
             console.log(this.htmlText)
             document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
 
-            document.getElementById("call").innerHTML = '';
+            // document.getElementById("call").innerHTML = '';
         },
         logging(){
             console.log(this.templates)
             console.log(this.templateId)
             console.log(this.chosenTemplate);
         },
-        clickTranslate(){
-            try {
-                document.getElementById("call").innerHTML = this.createEmailTemplate.htmlText;
-            } catch (error) {
-                console.log(error)
-            }
-        },
+        // clickTranslate(){
+        //     try {
+        //         document.getElementById("call").innerHTML = this.createEmailTemplate.htmlText;
+        //     } catch (error) {
+        //         console.log(error)
+        //     }
+        // },
         closeEmailTemplateDialog(){
             this.$emit('closeEmailTemplateDialog');
         },
