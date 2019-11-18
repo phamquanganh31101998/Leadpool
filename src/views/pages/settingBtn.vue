@@ -7,11 +7,6 @@
                         <v-flex lg4 xl4>
                             <v-layout row wrap class="">
                                 <v-flex xs12>
-                                    <h3>Nhập tên nút</h3>
-                                    <v-text-field v-model="nameBtn" class="mt-3" :rules="rule" style="width:100%"
-                                        placeholder="Tên nút" outlined dense></v-text-field>
-                                </v-flex>
-                                <v-flex xs12>
                                     <h3>Các tiện ích tương tác</h3>
                                 </v-flex>
                                 <v-flex xs12 class="mt-3">
@@ -43,14 +38,14 @@
                                 <v-flex xs12>
                                     <strong>Màu chữ</strong>
                                     <v-radio-group v-model="colorText" row>
-                                        <v-radio label="Sáng" value="#000"></v-radio>
-                                        <v-radio label="Tối" value="#fff"></v-radio>
+                                        <v-radio label="Sáng" value="#fff"></v-radio>
+                                        <v-radio label="Tối" value="#000"></v-radio>
                                     </v-radio-group>
                                 </v-flex>
                                 <v-flex xs12>
                                     <strong>Kích cỡ</strong>
                                 </v-flex>
-                                <v-layout row class="mt-5 pl-5">
+                                <v-layout row class="pl-5">
                                     <v-btn fab class="mt-2" @click="small = true; large = false" small>X0,5</v-btn>
                                     <v-btn fab class="mt-1 ml-5" @click="small = false; large = false">X1</v-btn>
                                     <v-btn fab large class="ml-5" @click="small = false; large = true">X1.5</v-btn>
@@ -59,39 +54,43 @@
                                     <strong>Vị trí</strong>
                                 </v-flex>
                                 <v-layout row v-if="xy" style="width:100%">
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-2">Bottom-Left
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                            Bottom-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="pa-2">
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="py-2 pl-2">
                                             Bottom-Center
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-2">Bottom-Right
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                            Bottom-Right
                                         </v-card>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row v-else>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('top:45%','left:0')" class="pa-2">Mid-Left
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('top:45%','left:0')" class="py-2 pl-2">Mid-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('top:45%','right:0')" class="pa-2">Mid-Right
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('top:45%','right:0')" class="py-2 pl-2">Mid-Right
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-2">Bottom-Left
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                            Bottom-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-2">Bottom-Right
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                            Bottom-Right
                                         </v-card>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout row wrap class="mt-3" style="width:100%">
+                                <v-layout row wrap class="mt-1" style="width:100%">
                                     <v-flex xs12>
                                         <strong>Phương hướng</strong>
                                     </v-flex>
@@ -136,8 +135,8 @@
                                         </v-flex>
                                         <v-flex xs12 class="mt-3">
                                             <h4>Thông điệp nút</h4>
-                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút"
-                                                outlined dense>
+                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút" outlined
+                                                dense>
                                             </v-text-field>
                                         </v-flex>
                                         <v-flex xs12>
@@ -175,8 +174,9 @@
                                                 <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
                                                 <v-select v-model="properti.value" :items="input" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
-                                                <v-btn class="mt-2 ml-3" color="error" v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'" flat icon
-                                                    @click="removeInput(key)">
+                                                <v-btn class="mt-2 ml-3" color="error"
+                                                    v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
+                                                    flat icon @click="removeInput(key)">
                                                     <v-icon>clear</v-icon>
                                                 </v-btn>
                                             </v-layout>
@@ -210,10 +210,10 @@
                 <v-card-actions>
                     <v-layout row class="pb-3">
                         <v-flex xs6 class="text-xs-left px-5">
-                            <v-btn color="grey" to="/setting">Hủy bỏ</v-btn>
+                            <v-btn color="grey" @click="cancel()">Hủy bỏ</v-btn>
                         </v-flex>
                         <v-flex xs6 class="pr-5 text-xs-center">
-                            <v-btn color="success" @click="saveBtn()">Lưu</v-btn>
+                            <v-btn color="success" @click="dialogNameBtn = true">Lưu</v-btn>
                         </v-flex>
                     </v-layout>
                 </v-card-actions>
@@ -241,17 +241,20 @@
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                    <div class="flex-grow-1"></div>
-                    <v-btn color="gray" text @click="dialog = false">
-                        Đóng
-                    </v-btn>
-                    <v-btn color="green darken-1" text @click="dialog = false">
-                        Xác nhận
-                    </v-btn>
+                    <v-flex class="text-xs-left">
+                        <v-btn color="gray" text @click="dialog = false">
+                            Đóng
+                        </v-btn>
+                    </v-flex>
+                    <v-flex class="text-xs-right">
+                        <v-btn color="green darken-1" dark text @click="dialog = false">
+                            Xác nhận
+                        </v-btn>
+                    </v-flex>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="dialog1" max-width="400">
+        <v-dialog v-model="dialog1" max-width="500">
             <v-card>
                 <v-card-title>
                     Màu sắc
@@ -273,13 +276,16 @@
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                    <div class="flex-grow-1"></div>
-                    <v-btn color="gray" text @click="dialog1 = false">
-                        Đóng
-                    </v-btn>
-                    <v-btn color="green darken-1" text @click="dialog1 = false">
-                        Xác nhận
-                    </v-btn>
+                    <v-flex class="text-xs-left">
+                        <v-btn color="gray" text @click="dialog1 = false">
+                            Đóng
+                        </v-btn>
+                    </v-flex>
+                    <v-flex class="text-xs-right">
+                        <v-btn color="green darken-1" dark text @click="dialog1 = false">
+                            Xác nhận
+                        </v-btn>
+                    </v-flex>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -304,6 +310,27 @@
                         <v-btn color="green darken-1" dark text @click="showForDialog = false">Xác nhận</v-btn>
                     </v-flex>
                 </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogNameBtn" max-width="400">
+            <v-card>
+                <v-card-title>
+
+                </v-card-title>
+                <v-card-text>
+                    <v-flex xs12>
+                        <h2>Nhập tên nút</h2>
+                        <v-text-field v-model="nameBtn" class="mt-3" :rules="rule" style="width:100%"
+                            placeholder="Tên nút" outlined dense></v-text-field>
+                    </v-flex>
+                </v-card-text>
+                <v-card-action>
+                    <v-layout row class="pb-3">
+                        <v-flex xs12 class="pr-2 text-xs-right">
+                            <v-btn color="success" @click="saveBtn()">Lưu</v-btn>
+                        </v-flex>
+                    </v-layout>
+                </v-card-action>
             </v-card>
         </v-dialog>
         <alert />
@@ -336,7 +363,7 @@
                 showSwatches: false,
                 dialog: false,
                 dialog1: false,
-                colorText: '#000',
+                colorText: '#fff',
                 text: null,
                 name: '',
                 display: 'mobile',
@@ -384,13 +411,14 @@
                 properties: [],
                 numberProperties: [{
                     value: 'lastName'
-                },{
+                }, {
                     value: 'email'
-                },{
+                }, {
                     value: 'phone'
                 }],
                 alertFinish: 'Đăng ký thành công',
-                textCall: 'Để lại số điện thoại của bạn'
+                textCall: 'Để lại số điện thoại của bạn',
+                dialogNameBtn: false
             }
         },
         watch: {
@@ -655,6 +683,9 @@
                         this.alertError(result.message)
                     }
                 })
+            },
+            cancel() {
+                router.replace(`/contacts/${this.idAccount}/leadhub`)
             }
         },
         components: {

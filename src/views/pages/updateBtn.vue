@@ -7,11 +7,6 @@
                         <v-flex lg4 xl4>
                             <v-layout row wrap class="">
                                 <v-flex xs12>
-                                    <h3>Nhập tên nút</h3>
-                                    <v-text-field v-model="nameBtn" class="mt-3" :rules="rule" style="width:100%"
-                                        placeholder="Tên nút" outlined dense></v-text-field>
-                                </v-flex>
-                                <v-flex xs12>
                                     <h3>Các tiện ích tương tác</h3>
                                 </v-flex>
                                 <v-flex xs12 class="mt-3">
@@ -50,7 +45,7 @@
                                 <v-flex xs12>
                                     <strong>Kích cỡ</strong>
                                 </v-flex>
-                                <v-layout row class="mt-5 pl-5">
+                                <v-layout row class="pl-5">
                                     <v-btn fab class="mt-2" @click="small = true; large = false" small>X0,5</v-btn>
                                     <v-btn fab class="mt-1 ml-5" @click="small = false; large = false">X1</v-btn>
                                     <v-btn fab large class="ml-5" @click="small = false; large = true">X1.5</v-btn>
@@ -59,35 +54,39 @@
                                     <strong>Vị trí</strong>
                                 </v-flex>
                                 <v-layout row v-if="xy" style="width:100%">
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-2">Bottom-Left
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pr-1 py-2">
+                                            Bottom-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="pa-2">
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="pa-1 py-2">
                                             Bottom-Center
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-2">Bottom-Right
+                                    <v-flex xs4 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
+                                            Bottom-Right
                                         </v-card>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row v-else>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('top:45%','left:0')" class="pa-2">Mid-Left
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('top:45%','left:0')" class="pa-1 py-2">Mid-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('top:45%','right:0')" class="pa-2">Mid-Right
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('top:45%','right:0')" class="pa-1 py-2">Mid-Right
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-2">Bottom-Left
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-1 py-2">
+                                            Bottom-Left
                                         </v-card>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-2">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-2">Bottom-Right
+                                    <v-flex xs6 class="pa-1">
+                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
+                                            Bottom-Right
                                         </v-card>
                                     </v-flex>
                                 </v-layout>
@@ -136,8 +135,8 @@
                                         </v-flex>
                                         <v-flex xs12 class="mt-3">
                                             <h4>Thông điệp nút</h4>
-                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút"
-                                                outlined dense>
+                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút" outlined
+                                                dense>
                                             </v-text-field>
                                         </v-flex>
                                         <v-flex xs12>
@@ -172,11 +171,11 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in properties" :key="key" xs12>
-                                                <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
                                                 <v-select v-model="properti.value" :items="input" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
-                                                <v-btn class="mt-2 ml-3" color="error" v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'" flat icon
-                                                    @click="removeInput(key)">
+                                                <v-btn class="mt-2 ml-3" color="error"
+                                                    v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
+                                                    flat icon @click="removeInput(key)">
                                                     <v-icon>clear</v-icon>
                                                 </v-btn>
                                             </v-layout>
@@ -197,7 +196,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text
+                                    <v-btn color="green darken-1" text dark
                                         @click="form = true, alertSuccess('Lưu nút form thành công')">
                                         Lưu
                                     </v-btn>
@@ -210,10 +209,10 @@
                 <v-card-actions>
                     <v-layout row class="pb-3">
                         <v-flex xs6 class="text-xs-left px-5">
-                            <v-btn color="grey" to="/setting">Hủy bỏ</v-btn>
+                            <v-btn color="grey" @click="cancel()">Hủy bỏ</v-btn>
                         </v-flex>
                         <v-flex xs6 class="pr-5 text-xs-center">
-                            <v-btn color="success" @click="saveBtn()">Lưu</v-btn>
+                            <v-btn color="success" @click="dialogNameBtn = true">Lưu</v-btn>
                         </v-flex>
                     </v-layout>
                 </v-card-actions>
@@ -285,7 +284,9 @@
         </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
-                <v-card-title :background-color="colorForm"><h2>{{nameForm}}</h2></v-card-title>
+                <v-card-title :background-color="colorForm">
+                    <h2>{{nameForm}}</h2>
+                </v-card-title>
                 <v-card-text class="py-2">
                     <v-layout row wrap>
                         <template v-for="(item,key) in properties">
@@ -301,6 +302,25 @@
                     <v-flex class="text-xs-right">
                         <v-btn color="green darken-1" dark text @click="showForDialog = false">Xác nhận</v-btn>
                     </v-flex>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogNameBtn" max-width="400">
+            <v-card>
+                <v-card-title></v-card-title>
+                <v-card-text>
+                    <h2>Nhập tên menu</h2>
+                    <v-flex xs12>
+                        <v-text-field v-model="nameBtn" class="mt-3" :rules="rule" style="width:100%"
+                            placeholder="Tên nút" outlined dense></v-text-field>
+                    </v-flex>
+                </v-card-text>
+                <v-card-actions>
+                    <v-layout row class="pb-3">
+                        <v-flex xs12 class="pr-2 text-xs-right">
+                            <v-btn color="success" @click="saveBtn()">Lưu</v-btn>
+                        </v-flex>
+                    </v-layout>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -382,7 +402,8 @@
                 properties: [],
                 textCall: '',
                 alertFinish: '',
-                propertiesbtn: []
+                propertiesbtn: [],
+                dialogNameBtn: false
             }
         },
         watch: {
@@ -421,17 +442,17 @@
             styleForBtn(tOb, lOr) {
                 this.styleBtn = `position: fixed; ${tOb}; ${lOr};z-index: 999999;-webkit-backface-visibility: hidden;`
                 if (tOb == "bottom:10px" && lOr == 'left:0') {
-                    this.bottom = 5
+                    this.bottom = 2
                     this.left = 2
                     this.top = null
                     this.right = null
                 } else if (tOb == "bottom:10px" && lOr == 'left:45%') {
-                    this.bottom = 5
+                    this.bottom = 2
                     this.left = 45
                     this.top = null
                     this.right = null
                 } else if (tOb == "bottom:10px" && lOr == 'right:0') {
-                    this.bottom = 5
+                    this.bottom = 2
                     this.left = null
                     this.top = null
                     this.right = 2
@@ -446,7 +467,7 @@
                     this.top = 45
                     this.right = 2
                 } else if (tOb == "bottom:10px" && lOr == 'right:0') {
-                    this.bottom = 5
+                    this.bottom = 2
                     this.left = null
                     this.top = null
                     this.right = 2
@@ -488,12 +509,12 @@
                 let a = {
                     value: ''
                 }
-                this.input.push(a)
-                this.input = [...this.input]
+                this.properties.push(a)
+                this.properties = [...this.properties]
             },
             removeInput(data) {
-                this.input.splice(data, 1)
-                this.input = [...this.input]
+                this.properties.splice(data, 1)
+                this.properties = [...this.properties]
             },
             createGbtn() {
                 if (this.small == true) {
@@ -530,6 +551,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form,
                                 call
@@ -549,6 +571,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form,
                                 call
@@ -570,6 +593,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form
                             ],
@@ -588,6 +612,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form
                             ],
@@ -608,6 +633,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 call
                             ],
@@ -626,6 +652,7 @@
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 call
                             ],
@@ -668,7 +695,8 @@
                             this.form = true
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
-                            for (let index = 0; index < result.response.listButton[i].properties.length; index++) {
+                            for (let index = 0; index < result.response.listButton[i].properties
+                                .length; index++) {
                                 let a = {
                                     value: result.response.listButton[i].properties[index]
                                 }
@@ -706,6 +734,9 @@
                         this.styleForBtn("bottom:10px", "right:0")
                     }
                 })
+            },
+            cancel() {
+                router.replace(`/contacts/${this.idAccount}/leadhub`)
             }
         },
         created() {
