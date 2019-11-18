@@ -5,8 +5,8 @@ function f() {
     var btnId = ''
     var scripts = document.getElementsByTagName("script");
     for (let i = 0; i < scripts.length; i++) {
-        var src = scripts[i].src.split('?')[1]
-        if (src.indexOf('&gBtnId=') > 0) {
+        if (scripts[i].src.indexOf('&gBtnId=') > 0) {
+            var src = scripts[i].src.split('?')[1]
             var accid = src.split('&')[0]
             acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
