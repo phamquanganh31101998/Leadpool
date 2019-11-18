@@ -59,8 +59,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var css = `<style>
                     .adstech-group-btn {
                         position: fixed;
-                        bottom: ${style.bottom - 3}%;
-                        left: ${style.left - 1}%;
+                        bottom: ${style.bottom}%;
+                        left: ${style.left}%;
                         right: ${style.right}%;
                         top:${style.top}%;
                         
@@ -171,15 +171,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     } else {
         for (let i = 0; i < styleBtnForm.properties.length; i++) {
             if (styleBtnForm.properties[i] == 'email') {
-                email = `<input type="email" placeholder="Nhập email" name="email" required>`
+                email = `<input type="email" placeholder="Địa chỉ email" name="email" required>`
             } else if (styleBtnForm.properties[i] == "lastName") {
-                name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
+                name = `<input type="text" placeholder="Họ và tên" name="name" required>`
             } else if (styleBtnForm.properties[i] == 'phone') {
-                phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
+                phone = `<input type="number" placeholder="Số điện thoại" name="phone" required>`
             } else if (styleBtnForm.properties[i] == 'city') {
-                city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
+                city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
             } else if (styleBtnForm.properties[i] == 'bussiness') {
-                bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
+                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required`
             }
         }
         if (style.color == "#fff") {

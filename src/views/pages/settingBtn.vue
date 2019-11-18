@@ -449,9 +449,9 @@
             },
             colorTxt() {
                 if (this.colorText == '#000') {
-                    return this.dark = true
+                    this.dark = false
                 } else if (this.colorText == '#fff') {
-                    return this.dark = false
+                    this.dark = true
                 }
             },
             styleForBtn(tOb, lOr) {
