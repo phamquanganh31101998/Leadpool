@@ -6,7 +6,7 @@ function f() {
     var scripts = document.getElementsByTagName("script");
     for (let i = 0; i < scripts.length; i++) {
         var src = scripts[i].src.split('?')[1]
-        if (src.indexOf('&gBtnId') > 0) {
+        if (src.indexOf('&gBtnId=') > 0) {
             var accid = src.split('&')[0]
             acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
@@ -24,7 +24,6 @@ function f() {
         var vertical = result.response.vertical
         var styleBtnCall = null
         var styleBtnForm = null
-        var properties = null
         for (let i = 0; i < result.response.listButton.length; i++) {
             if (result.response.listButton[i].type == "CALL") {
                 styleBtnCall = result.response.listButton[i]
@@ -61,7 +60,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     .adstech-group-btn {
                         position: fixed;
                         bottom: ${style.bottom - 3}%;
-                        left: ${style.left}%;
+                        left: ${style.left - 1}%;
                         right: ${style.right}%;
                         top:${style.top}%;
                         
@@ -136,7 +135,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     .open-button:hover {
                         opacity: 1;
                     }
-                    #alert {
+                    #adstech-alert {
                         padding: 20px;
                         background-color:#e09900; /* Red */
                         color: white;
@@ -206,7 +205,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         </div>
                     </form>
                 </div> 
-                <div id="alert">
+                <div id="adstech-alert">
                     ${styleBtnForm.formMessageReturn}
                 </div>`
     }
@@ -228,10 +227,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     }
 
     var div = document.createElement("div");
-    div.id = "call";
+    div.id = "adstech-group-btn";
     document.body.appendChild(div);
-    document.getElementById("call").innerHTML = html;
-    send(acId)
+    document.getElementById("adstech-group-btn").innerHTML = html;
+    if (styleBtnForm != null && styleBtnForm != '') {
+        send(acId)
+    }
 }
 
 function openForm() {
@@ -243,10 +244,10 @@ function closeForm() {
 }
 
 function openAlert() {
-    document.getElementById("alert").style.display = "block";
+    document.getElementById("adstech-alert").style.display = "block";
 }
 function closeAlert() {
-    document.getElementById("alert").style.display = "none";
+    document.getElementById("adstech-alert").style.display = "none";
 } 
 function send(acId) {
     const form = document.querySelector('form')
@@ -307,5 +308,4 @@ function send(acId) {
         e.preventDefault()
         closeForm()
     })
-
 }
