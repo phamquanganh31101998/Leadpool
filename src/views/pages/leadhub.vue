@@ -20,11 +20,12 @@
                         <v-divider class="mt-3"></v-divider>
                         <v-layout row>
                             <v-list two-line style="width:100%">
-                                <template v-for="(item, index) in items">
+                                <v-progress-linear :indeterminate="true" v-if="checkData"></v-progress-linear>
+                                <template v-for="(item, index) in items" v-else>
                                     <v-list-tile :key="item.leadHubButtonGroupId" avatar ripple @click="choise(item)">
                                         <v-list-tile-content>
                                             <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                                            <v-list-tile-sub-title>{{returnTime(item.createdAt)}}</v-list-tile-sub-title>
+                                            <v-list-tile-sub-title>{{returnTime(item.updateAt)}}</v-list-tile-sub-title>
                                         </v-list-tile-content>
 
                                         <v-list-tile-action>
@@ -46,7 +47,7 @@
                 </v-card>
             </v-flex>
             <v-flex lg8>
-                <v-layout row>
+                <v-layout row class="mb-2" v-if="showCall === true || showForm == true">
                     <v-flex xs12>
                         <v-card style="width:100%">
                             <v-card-text>
@@ -69,7 +70,7 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout row class="mt-3">
+                <v-layout row>
                     <v-flex xs12>
                         <v-card style="width:100%">
                             <v-card-text>
@@ -84,19 +85,19 @@
                                             <v-img src="../../../mobile.png" height="600px"
                                                 style="position:relative; width:290px">
                                                 <div :style="styleBtn" v-if="show && selected.vertical == false">
-                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtn" v-if="show && selected.vertical == true">
-                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
@@ -107,19 +108,19 @@
                                         <v-card flat>
                                             <v-img src="../../../desktop.png" height="500px" style="position:relative">
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == false">
-                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor" class="">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
-                                                    <v-btn fab dark small :color="styleBtnCall.buttonColor">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab dark small :color="styleBtnForm.buttonColor" class="">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                 </div>
@@ -162,7 +163,11 @@
                 styleBtnCall: null,
                 styleBtnForm: null,
                 styleBtn: '',
-                styleBtnDesktop: ''
+                styleBtnDesktop: '',
+                showCall: false,
+                showForm: false,
+                checkData: true,
+                dark: true
             }
         },
         watch: {
@@ -219,17 +224,27 @@
             },
             choise(key) {
                 this.selected = key
+                this.showCall = false
+                this.showForm = false
                 for (let i = 0; i < key.listButton.length; i++) {
                     if (key.listButton[i].type == "CALL") {
                         this.styleBtnCall = key.listButton[i]
+                        this.showCall = true
                     } else if (key.listButton[i].type == "FORM") {
                         this.styleBtnForm = key.listButton[i]
+                        this.showForm = true
                     }
+                }
+                if (key.style.color == "#fff") {
+                    this.dark = true
+                }else if(key.style.color == "#000"){
+                    this.dark = false
                 }
             },
             getAllGroupBtn() {
                 leadhubService.getListGbtn(this.idAccount).then(result => {
                     this.items = result.response
+                    this.checkData = false
                 })
             },
             updatedGbtn(GBtnId) {
@@ -241,7 +256,7 @@
                         dispatch
                     } = this.$store;
                     if (result.code == "SUCCESS") {
-                        dispatch('alert/success', result.message)
+                        dispatch('alert/success', 'Xóa bộ nút thành công')
                     } else {
                         dispatch('alert/error', result.message)
                     }

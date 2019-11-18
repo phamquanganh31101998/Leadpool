@@ -30,10 +30,9 @@ function f() {
                 styleBtnCall = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FORM") {
                 styleBtnForm = result.response.listButton[i]
-                properties = result.response.listButton[i].properties
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId)
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId)
     })
 }
 
@@ -48,7 +47,7 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var html = ''
     var call = ''
     var form = ''
@@ -58,23 +57,10 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
     var name = ''
     var city = ''
     var bussiness = ''
-    for (let i = 0; i < properties.length; i++) {
-        if (properties[i] == 'email') {
-            email = `<input type="email" placeholder="Nhập email" name="email" required>`
-        } else if (properties[i] == "lastName") {
-            name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
-        } else if (properties[i] == 'phone') {
-            phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
-        } else if (properties[i] == 'city') {
-            city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
-        } else if (properties[i] == 'bussiness') {
-            bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
-        }
-    }
     var css = `<style>
                     .adstech-group-btn {
                         position: fixed;
-                        bottom: ${style.bottom}%;
+                        bottom: ${style.bottom - 3}%;
                         left: ${style.left}%;
                         right: ${style.right}%;
                         top:${style.top}%;
@@ -152,7 +138,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
                     }
                     #alert {
                         padding: 20px;
-                        background-color:${styleBtnForm.buttonColor}; /* Red */
+                        background-color:#e09900; /* Red */
                         color: white;
                         margin-bottom: 15px;
                         display: none;
@@ -164,21 +150,48 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
                       }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
-        return call
+        call = ''
     } else {
-        call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
+        if (style.color == "#fff") {
+            call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
+                        <img src="http://localhost:8080/call-white.png" alt="Gọi điện thoại" width="${style.size - 20}px">
                     </a>
                 </button>`
+        }else if(style.color == "#000"){
+            call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
+                    <a href="tel:${styleBtnCall.phoneNumber}">
+                        <img src="http://localhost:8080/call-black.png" alt="Gọi điện thoại" width="${style.size - 20}px">
+                    </a>
+                </button>`
+        }
     }
     if (styleBtnForm == null || styleBtnForm == '') {
         form = ''
         form1 = ''
     } else {
-        form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
+        for (let i = 0; i < styleBtnForm.properties.length; i++) {
+            if (styleBtnForm.properties[i] == 'email') {
+                email = `<input type="email" placeholder="Nhập email" name="email" required>`
+            } else if (styleBtnForm.properties[i] == "lastName") {
+                name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
+            } else if (styleBtnForm.properties[i] == 'phone') {
+                phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
+            } else if (styleBtnForm.properties[i] == 'city') {
+                city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
+            } else if (styleBtnForm.properties[i] == 'bussiness') {
+                bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
+            }
+        }
+        if (style.color == "#fff") {
+            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+                    <img src="http://localhost:8080/mail-white.png" alt="Đăng ký ngay" width="${style.size - 20}px">
                 </button>`
+        }else if(style.color == "#000"){
+            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+                    <img src="http://localhost:8080/mail-black.png" alt="Đăng ký ngay" width="${style.size - 20}px">
+                </button>`
+        }
         form1 = `<div class="adstech-form" id="myForm">
                     <form class="form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
@@ -199,9 +212,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
     }
     if (vertical == false) {
         html = `<div class="adstech-group-btn">
-                    ${call}
-                    <br />
                     ${form}
+                    <br />
+                    ${call}
                 </div>
                 ${form1}
                 ${css}`
@@ -234,7 +247,7 @@ function openAlert() {
 }
 function closeAlert() {
     document.getElementById("alert").style.display = "none";
-}
+} 
 function send(acId) {
     const form = document.querySelector('form')
     form.addEventListener('submit', e => {
@@ -289,9 +302,7 @@ function send(acId) {
             body: JSON.stringify(body)
         }).then(handle).then(result => {
                 openAlert()
-            setTimeout(function () {
-                closeAlert()
-            },2000)
+            setTimeout(function () { closeAlert() },3000)
         })
         e.preventDefault()
         closeForm()
