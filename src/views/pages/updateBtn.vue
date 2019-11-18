@@ -38,8 +38,8 @@
                                 <v-flex xs12>
                                     <strong>Màu chữ</strong>
                                     <v-radio-group v-model="colorText" row>
-                                        <v-radio label="Sáng" value="#000"></v-radio>
-                                        <v-radio label="Tối" value="#fff"></v-radio>
+                                        <v-radio label="Sáng" value="#fff"></v-radio>
+                                        <v-radio label="Tối" value="#000"></v-radio>
                                     </v-radio-group>
                                 </v-flex>
                                 <v-flex xs12>
@@ -434,15 +434,15 @@
             },
             colorTxt() {
                 if (this.colorText == '#000') {
-                    return this.dark = true
+                    this.dark = false
                 } else if (this.colorText == '#fff') {
-                    return this.dark = false
+                    this.dark = true
                 }
             },
             styleForBtn(tOb, lOr) {
                 this.styleBtn = `position: fixed; ${tOb}; ${lOr};z-index: 999999;-webkit-backface-visibility: hidden;`
                 if (tOb == "bottom:10px" && lOr == 'left:0') {
-                    this.bottom = 2
+                    this.bottom = 5
                     this.left = 2
                     this.top = null
                     this.right = null
@@ -452,7 +452,7 @@
                     this.top = null
                     this.right = null
                 } else if (tOb == "bottom:10px" && lOr == 'right:0') {
-                    this.bottom = 2
+                    this.bottom = 5
                     this.left = null
                     this.top = null
                     this.right = 2
@@ -467,7 +467,7 @@
                     this.top = 45
                     this.right = 2
                 } else if (tOb == "bottom:10px" && lOr == 'right:0') {
-                    this.bottom = 2
+                    this.bottom = 5
                     this.left = null
                     this.top = null
                     this.right = 2
@@ -588,7 +588,7 @@
                         this.updateGbtn(btn)
                     }
                 } else if (this.call == false && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right) {
+                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
@@ -704,6 +704,7 @@
                             }
                         }
                     }
+                    this.colorText = result.response.style.color
                     if (result.response.style.size == "40") {
                         this.small = true
                         this.large = false
@@ -733,6 +734,7 @@
                         result.response.style.top == null && result.response.style.right == "2") {
                         this.styleForBtn("bottom:10px", "right:0")
                     }
+                    this.colorTxt()
                 })
             },
             cancel() {
