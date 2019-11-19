@@ -171,8 +171,12 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in properties" :key="key" xs12>
-                                                <v-select v-model="properti.value" :items="input" item-text="label"
+                                                <v-select v-model="properti.value" :items="input"
+                                                    v-if="key == 0 || key ==1 || key ==2" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
+                                                <v-select v-model="properti.value" :items="input1"
+                                                    v-if="key == 3 || key == 4" item-text="label" item-value="value"
+                                                    label="Chọn trường nhập" outline></v-select>
                                                 <v-btn class="mt-2 ml-3" color="error"
                                                     v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
                                                     flat icon @click="removeInput(key)">
@@ -197,7 +201,7 @@
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties} trường`)">
+                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties.length} trường`)">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -288,11 +292,15 @@
                     <h2>{{nameForm}}</h2>
                 </v-card-title>
                 <v-card-text class="py-2">
-                    <v-layout row wrap>
-                        <template v-for="(item,key) in properties">
-                            <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
-                            </v-text-field>
-                        </template>
+                    <v-layout row wrap v-for="(item,key) in properties" :key="key"
+                        style="border:1px solid #999; border-radius:10px" class="pa-2 mt-2">
+                        <!-- <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
+                        </v-text-field> -->
+                        <p class="ml-2 mt-1" v-if="item.value == 'lastName'"><strong>Họ và tên</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'phone'"><strong>Số điện thoại</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'email'"><strong>Đại chỉ email</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'city'"><strong>Thành phố</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'business'"><strong>nghề nghiệp</strong></p>
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
@@ -379,14 +387,15 @@
                     value: 'lastName',
                     label: 'Họ và Tên'
                 }, {
+                    value: 'phone',
+                    label: 'Số điện thoại'
+                }],
+                input1:[{
                     value: 'city',
                     label: 'Thành phố'
                 }, {
                     value: 'business',
                     label: 'Nghề nghiệp'
-                }, {
-                    value: 'phone',
-                    label: 'Số điện thoại'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
@@ -399,9 +408,15 @@
                 top: null,
                 left: null,
                 right: null,
-                properties: [],
+                properties: [{
+                    value: 'lastName'
+                }, {
+                    value: 'email'
+                }, {
+                    value: 'phone'
+                }],
                 textCall: '',
-                alertFinish: '',
+                alertFinish: 'Đăng ký thành công',
                 propertiesbtn: [],
                 dialogNameBtn: false
             }
@@ -447,7 +462,7 @@
                     this.top = null
                     this.right = null
                 } else if (tOb == "bottom:10px" && lOr == 'left:45%') {
-                    this.bottom = 2
+                    this.bottom = 5
                     this.left = 45
                     this.top = null
                     this.right = null
@@ -506,11 +521,15 @@
                 }
             },
             addInput() {
-                let a = {
-                    value: ''
+                if (this.properties.length >= 5) {
+                    this.alertError(`Được phép tạo tối đa 5 trường bạn đã tạo ${this.properties.length}`)
+                } else {
+                    let a = {
+                        value: ''
+                    }
+                    this.properties.push(a)
+                    this.properties = [...this.properties]
                 }
-                this.properties.push(a)
-                this.properties = [...this.properties]
             },
             removeInput(data) {
                 this.properties.splice(data, 1)
@@ -693,6 +712,7 @@
                             this.textCall = result.response.listButton[i].title
                         } else if (result.response.listButton[i].type == "FORM") {
                             this.form = true
+                            this.properties = []
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
                             for (let index = 0; index < result.response.listButton[i].properties

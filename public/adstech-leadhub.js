@@ -13,7 +13,7 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetch(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -58,9 +58,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var bussiness = ''
     var css = `<style>
                     .adstech-group-btn {
-                        position: fixed;
+                        position:fixed;
                         bottom: ${style.bottom}%;
-                        left: ${style.left}%;
+                        left: ${parseInt(style.left)+2}%;
                         right: ${style.right}%;
                         top:${style.top}%;
                         
@@ -77,12 +77,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         width: ${style.size}px;
                         height:${style.size}px
                     }
-
+                    
                     .adstech-form {
                         display: none;
                         position: fixed;
-                        bottom: 60px;
-                        right: 35%;
+                        top: 30%;
+                        left: 42%;
                         border: 3px solid #f1f1f1;
                         z-index: 999999;
                     }
@@ -295,7 +295,7 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
+        fetch(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
