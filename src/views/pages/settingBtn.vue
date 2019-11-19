@@ -54,38 +54,38 @@
                                     <strong>Vị trí</strong>
                                 </v-flex>
                                 <v-layout row v-if="xy" style="width:100%">
-                                    <v-flex xs4 class="">
-                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="pr-1 py-2">
                                             Bottom-Left
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="">
-                                        <v-btn @click="styleForBtn('bottom:10px','left:45%')" class="py-2 pl-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:45%')" class="pa-1 py-2">
                                             Bottom-Center
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="">
-                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
                                             Bottom-Right
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row v-else>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-btn @click="styleForBtn('top:45%','left:0')" class="py-2 pl-2">Mid-Left
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('top:45%','left:0')" class="pa-1 py-2">Mid-Left
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-btn @click="styleForBtn('top:45%','right:0')" class="py-2 pl-2">Mid-Right
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('top:45%','right:0')" class="pa-1 py-2">Mid-Right
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="pa-1 py-2">
                                             Bottom-Left
                                         </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
                                             Bottom-Right
                                         </v-btn>
                                     </v-flex>

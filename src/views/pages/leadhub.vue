@@ -29,13 +29,15 @@
                                         </v-list-tile-content>
 
                                         <v-list-tile-action>
-                                            <v-btn flat icon color="warning"
+                                            <v-layout row>
+                                                <v-btn flat icon color="warning"
                                                 @click="updatedGbtn(item.leadHubButtonGroupId)">
                                                 <v-icon>edit</v-icon>
                                             </v-btn>
-                                            <v-btn flat icon color="red" @click="deleteGbtn(item.leadHubButtonGroupId)">
+                                            <v-btn flat icon color="red" @click="deleteConfirm = true">
                                                 <v-icon>delete</v-icon>
                                             </v-btn>
+                                            </v-layout>
                                         </v-list-tile-action>
 
                                     </v-list-tile>
@@ -134,6 +136,22 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="deleteConfirm" max-width="500">
+            <v-card>
+                <v-card-title></v-card-title>
+                <v-card-text class="pl-4">
+                    <h2>Bạn có chắn chắn muốn xóa bộ nút: {{selected.name}}</h2>
+                    <p>Được tạo ngày: {{returnTime(selected.updateAt)}}</p>
+                    <p v-if="deleteConfirm">Gồm có: {{selected.listButton.length}} nút</p>
+                </v-card-text>
+                <v-card-actions>
+          
+          <v-btn color="gray" flat @click="deleteConfirm = false">Hủy bỏ</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" flat @click="deleteGbtn()">Đồng ý</v-btn>
+        </v-card-actions>
+            </v-card>
+        </v-dialog>
         <alert />
     </v-content>
 </template>
@@ -167,12 +185,14 @@
                 showCall: false,
                 showForm: false,
                 checkData: true,
-                dark: true
+                dark: true,
+                deleteConfirm: false,
             }
         },
         watch: {
             selected() {
                 this.show = true
+                console.log(this.selected)
                 if (this.selected.style.bottom == "5" && this.selected.style.left == "2" && this.selected.style
                     .top == null && this.selected.style.right == null) {
                     this.styleGroupBtn("bottom:5%", "left:4%")
@@ -250,15 +270,17 @@
             updatedGbtn(GBtnId) {
                 router.replace(`/contacts/${this.idAccount}/update/${GBtnId}`)
             },
-            deleteGbtn(gBtnId) {
-                leadhubService.deleteGbtn(this.idAccount, gBtnId).then(result => {
+            deleteGbtn() {
+                leadhubService.deleteGbtn(this.idAccount, this.selected.leadHubButtonGroupId).then(result => {
                     const {
                         dispatch
                     } = this.$store;
                     if (result.code == "SUCCESS") {
-                        dispatch('alert/success', 'Xóa bộ nút thành công')
+                        dispatch('alert/success', `Xóa bộ nút ${this.selected.name} thành công`)
                         this.showForm = false
                         this.showCall = false
+                        this.deleteConfirm = false
+                        this.selected = {}
                     } else {
                         dispatch('alert/error', result.message)
                     }

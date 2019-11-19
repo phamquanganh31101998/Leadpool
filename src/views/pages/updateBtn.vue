@@ -197,7 +197,7 @@
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties} trường`)">
+                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties.length} trường`)">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -399,9 +399,15 @@
                 top: null,
                 left: null,
                 right: null,
-                properties: [],
+                properties: [{
+                    value: 'lastName'
+                }, {
+                    value: 'email'
+                }, {
+                    value: 'phone'
+                }],
                 textCall: '',
-                alertFinish: '',
+                alertFinish: 'Đăng ký thành công',
                 propertiesbtn: [],
                 dialogNameBtn: false
             }
@@ -447,7 +453,7 @@
                     this.top = null
                     this.right = null
                 } else if (tOb == "bottom:10px" && lOr == 'left:45%') {
-                    this.bottom = 2
+                    this.bottom = 5
                     this.left = 45
                     this.top = null
                     this.right = null
