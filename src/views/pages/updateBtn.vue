@@ -54,40 +54,40 @@
                                     <strong>Vị trí</strong>
                                 </v-flex>
                                 <v-layout row v-if="xy" style="width:100%">
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pr-1 py-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="pr-1 py-2">
                                             Bottom-Left
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="pa-1 py-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:45%')" class="pa-1 py-2">
                                             Bottom-Center
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
+                                    <v-flex xs4>
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
                                             Bottom-Right
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row v-else>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('top:45%','left:0')" class="pa-1 py-2">Mid-Left
-                                        </v-card>
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('top:45%','left:0')" class="pa-1 py-2">Mid-Left
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('top:45%','right:0')" class="pa-1 py-2">Mid-Right
-                                        </v-card>
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('top:45%','right:0')" class="pa-1 py-2">Mid-Right
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="pa-1 py-2">
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="pa-1 py-2">
                                             Bottom-Left
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
+                                    <v-flex xs6>
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="pa-1 py-2">
                                             Bottom-Right
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row wrap class="mt-3" style="width:100%">
@@ -197,7 +197,7 @@
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess('Lưu nút form thành công')">
+                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties} trường`)">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>

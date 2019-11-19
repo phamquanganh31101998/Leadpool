@@ -85,12 +85,12 @@
                                             <v-img src="../../../mobile.png" height="600px"
                                                 style="position:relative; width:290px">
                                                 <div :style="styleBtn" v-if="show && selected.vertical == false">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
-                                                        <v-icon>phone_in_talk</v-icon>
-                                                    </v-btn>
-                                                    <br>
                                                     <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
+                                                    </v-btn>
+                                                    <br>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                        <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtn" v-if="show && selected.vertical == true">
@@ -108,12 +108,12 @@
                                         <v-card flat>
                                             <v-img src="../../../desktop.png" height="500px" style="position:relative">
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == false">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
-                                                        <v-icon>phone_in_talk</v-icon>
-                                                    </v-btn>
-                                                    <br>
                                                     <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
+                                                    </v-btn>
+                                                    <br>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                        <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
@@ -202,7 +202,7 @@
         },
         computed: {
             scrpitText() {
-                return `<script src="${process.env.VUE_APP_BASE_URL}test.js?accId=${this.selected.accountId}&gBtnId=${this.selected.leadHubButtonGroupId}" type="text/javascript" async><\/script>`
+                return `<script src="${process.env.VUE_APP_BASE_URL}adstech-leadhub.js?accId=${this.selected.accountId}&gBtnId=${this.selected.leadHubButtonGroupId}" type="text/javascript" async><\/script>`
             }
         },
         methods: {

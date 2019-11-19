@@ -154,13 +154,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         if (style.color == "#fff") {
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size - 20}px">
+                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }else if(style.color == "#000"){
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size - 20}px">
+                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }
@@ -184,11 +184,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         }
         if (style.color == "#fff") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size - 20}px">
+                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }else if(style.color == "#000"){
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size - 20}px">
+                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         form1 = `<div class="adstech-form" id="myForm">
@@ -233,6 +233,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     if (styleBtnForm != null && styleBtnForm != '') {
         send(acId)
     }
+    
 }
 
 function openForm() {

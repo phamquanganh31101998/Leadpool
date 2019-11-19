@@ -54,40 +54,40 @@
                                     <strong>Vị trí</strong>
                                 </v-flex>
                                 <v-layout row v-if="xy" style="width:100%">
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                    <v-flex xs4 class="">
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
                                             Bottom-Left
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:45%')" class="py-2 pl-2">
+                                    <v-flex xs4 class="">
+                                        <v-btn @click="styleForBtn('bottom:10px','left:45%')" class="py-2 pl-2">
                                             Bottom-Center
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
-                                    <v-flex xs4 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                    <v-flex xs4 class="">
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
                                             Bottom-Right
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row v-else>
                                     <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('top:45%','left:0')" class="py-2 pl-2">Mid-Left
-                                        </v-card>
+                                        <v-btn @click="styleForBtn('top:45%','left:0')" class="py-2 pl-2">Mid-Left
+                                        </v-btn>
                                     </v-flex>
                                     <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('top:45%','right:0')" class="py-2 pl-2">Mid-Right
-                                        </v-card>
+                                        <v-btn @click="styleForBtn('top:45%','right:0')" class="py-2 pl-2">Mid-Right
+                                        </v-btn>
                                     </v-flex>
                                     <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
+                                        <v-btn @click="styleForBtn('bottom:10px','left:0')" class="py-2 pl-2">
                                             Bottom-Left
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
                                     <v-flex xs6 class="pa-1">
-                                        <v-card @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
+                                        <v-btn @click="styleForBtn('bottom:10px','right:0')" class="py-2 pl-2">
                                             Bottom-Right
-                                        </v-card>
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row wrap class="mt-1" style="width:100%">
@@ -171,7 +171,6 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
-                                                <!-- <v-text-field v-model="item.value" outlined dense></v-text-field> -->
                                                 <v-select v-model="properti.value" :items="input" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
                                                 <v-btn class="mt-2 ml-3" color="error"
@@ -198,7 +197,7 @@
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess('Lưu nút form thành công')">
+                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${numberProperties.length} trường`)">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -324,13 +323,13 @@
                             placeholder="Tên nút" outlined dense></v-text-field>
                     </v-flex>
                 </v-card-text>
-                <v-card-action>
+                <v-card-actions>
                     <v-layout row class="pb-3">
                         <v-flex xs12 class="pr-2 text-xs-right">
                             <v-btn color="success" @click="saveBtn()">Lưu</v-btn>
                         </v-flex>
                     </v-layout>
-                </v-card-action>
+                </v-card-actions>
             </v-card>
         </v-dialog>
         <alert />
