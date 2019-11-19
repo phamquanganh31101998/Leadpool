@@ -100,7 +100,7 @@
                                 </v-flex>
                                 <v-flex xs1 sm1 md1 lg1 xl1 >
                                     <!-- <v-btn color="primary" round @click="inviteUser.dialog = true"> <v-icon>person_add</v-icon> Thêm người vào tổ chức này</v-btn> -->
-                                    <v-dialog v-model="inviteUser.dialog" width="30%" persistent>
+                                    <v-dialog v-model="inviteUser.dialog" width="50%" persistent>
                                         <v-card>
                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                 <span class="headline">Thêm người vào tổ chức</span>
@@ -110,6 +110,115 @@
                                                 <v-form v-model="inviteUser.valid">
                                                     <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
                                                 </v-form>
+                                            </v-card-text>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <v-card-text>
+                                                <span class="mt-4"><strong>Thiết lập quyền cho tài khoản này </strong></span>
+                                                <v-layout>
+                                                    <v-flex xs12 sm12 md6 xl6 lg6>
+                                                        <div>
+                                                            <div>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs3 sm3 md3 lg3 xl3 class="mt-4">
+                                                                        <h4>Quyền Lead</h4>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </div>
+                                                        <template>
+                                                                <div class="mt-4">
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
+                                                                            Xem
+                                                                        </v-flex>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
+                                                                            <v-select :items="contactAccessLevels" v-model="inviteUser.contactPer.view"></v-select>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
+                                                                            Liên lạc (gửi email, sms...)
+                                                                        </v-flex>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4">
+                                                                            <v-select :items="contactAccessLevels" v-model="inviteUser.contactPer.communicate"></v-select>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="mt-4 pl-4">
+                                                                            Sửa
+                                                                        </v-flex>
+                                                                        <v-flex xs6 sm6 md6 lg6 xl6 class="pr-4"> 
+                                                                            <v-select :items="contactAccessLevels" v-model="inviteUser.contactPer.edit"></v-select>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                        </template>
+                                                        </div>
+                                                        
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md6 xl6 lg6>
+                                                        <div>
+                                                            <div>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs3 sm3 md3 lg3 xl3 class="mt-4">
+                                                                        <h4>Quyền Admin</h4>
+                                                                    </v-flex>
+                                                                    <v-flex xs9 sm9 md9 lg9 xl9>
+                                                                        <v-switch v-model="inviteUser.adminPer.isAdmin"></v-switch>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </div>
+                                                            <template v-if="inviteUser.adminPer.isAdmin">
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
+                                                                            Thêm & tùy chỉnh Tài khoản
+                                                                        </v-flex>
+                                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                                            <v-switch v-model="inviteUser.adminPer.AddAndEditUsers"></v-switch>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
+                                                                            Thêm & tùy chỉnh nhóm
+                                                                        </v-flex>
+                                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                                            <v-switch v-model="inviteUser.adminPer.AddAndEditTeam"></v-switch>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
+                                                                            Chia theo nhóm
+                                                                        </v-flex>
+                                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                                            <v-switch v-model="inviteUser.adminPer.PartitionsByTeams"></v-switch>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                                <div>
+                                                                    <v-layout row wrap>
+                                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="mt-4 pl-4">
+                                                                            Chỉnh sửa tổ chức mặc định
+                                                                        </v-flex>
+                                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                                            <v-switch v-model="inviteUser.adminPer.EditAccountDefaults"></v-switch>
+                                                                        </v-flex>
+                                                                    </v-layout>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                        
+                                                        
+                                                            
+                                                    </v-flex>
+                                                </v-layout>
                                             </v-card-text>
                                             <v-divider :divider="divider"></v-divider>
                                             <v-card-actions>
@@ -513,7 +622,19 @@ export default {
                 ],
                 valid: false,
                 success: false,
-                fail: false
+                fail: false,
+                contactPer: {
+                    view: 'OwnedOnly',
+                    communicate: 'OwnedOnly',
+                    edit: 'OwnedOnly'
+                },
+                adminPer: {
+                    isAdmin: false,
+                    AddAndEditUsers: true,
+                    AddAndEditTeam: false,
+                    PartitionsByTeams: false,
+                    EditAccountDefaults: false
+                }
             },
             newAccount: {
                 listAccount: [],
@@ -588,9 +709,38 @@ export default {
         },
 
         inviteUserToAccount(){
-            let body = {
-                email: this.inviteUser.email
+            let email = this.inviteUser.email;
+            let accountId = this.currentAccountId;
+            let groupPermissions = ["5d2556cf77201a4516f5b901"];
+            let contactPer = this.inviteUser.contactPer;
+            let permissions = {
+                "5d1dd9c7f0aa6114b40507b3": contactPer.view,
+                "5d1dd9d9f0aa6114b40507b4": contactPer.communicate,
+                "5d1dd9e5f0aa6114b40507b5": contactPer.edit
             }
+            let adminPer = this.inviteUser.adminPer;
+            if (adminPer.isAdmin == true){
+                groupPermissions.push('5d255b0c77201a474d72eacd');
+                if (adminPer.AddAndEditUsers == true){
+                    permissions["5d2559f577201a474d72eac9"] = "Accept";
+                }
+                if (adminPer.AddAndEditTeam == true){
+                    permissions["5d255a0d77201a474d72eaca"] = "Accept";
+                }
+                if (adminPer.PartitionsByTeams == true){
+                    permissions["5d255a5077201a474d72eacb"] = "Accept";
+                }
+                if (adminPer.EditAccountDefaults == true){
+                    permissions["5d255a8477201a474d72eacc"] = "Accept";
+                }
+            }
+            let body = {
+                email: email,
+                accountId: accountId,
+                groupPermissions: groupPermissions,
+                permissions: permissions
+            }
+            console.log(body);
             accountService.inviteUser(this.currentAccountId, body).then(result => {
                 console.log(result);
                 this.inviteUser.success = true;
