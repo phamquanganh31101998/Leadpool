@@ -95,7 +95,7 @@
     <v-layout row>
       <v-flex xs12 sm4 md2 lg2 xl2>
         <v-list>
-          <v-list-tile @click="getAllContact(), section = 'allContact', page = 1, search=''">
+          <v-list-tile v-if="viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING'  || isSysAdmin == true" @click="getAllContact(), section = 'allContact', page = 1, search=''">
             <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
           </v-list-tile>
           <v-list-tile @click="getMyContact(), section = 'myContact', page = 1, search=''">
@@ -502,16 +502,16 @@
         'Other'
       ],
       cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-      'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-      'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-      'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-      'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+        'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+        'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+        'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+        'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
       ],
       city: 'Hà Nội',
       allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
-      'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
-      'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
-      'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Khác'],
+        'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
+        'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
+        'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Nông, Lâm, Thủy sản', 'Khác'],
       bussiness: 'Khác',
       divider: true,
       dialog: false,
@@ -714,6 +714,7 @@
         dialog: false,
         id: ''
       },
+      editRole: '',
       viewRole: '',
       isSysAdmin: false
     }),
@@ -762,10 +763,10 @@
         return result;
       },
       canDelete(email){
-        if (this.viewRole == 'ROLE_CONTACT_EDIT_EVERYTHING' || this.isSysAdmin == true){
+        if (this.editRole == 'ROLE_CONTACT_EDIT_EVERYTHING' || this.isSysAdmin == true){
           return true;
         }
-        else if (this.viewRole == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
+        else if (this.editRole == 'ROLE_CONTACT_EDIT_OWNEDONLY'){
           if (email == this.currentUser.username){
             return true;
           }
@@ -779,11 +780,21 @@
         let role = this.currentUser.authorities;
         for (let i = 0; i < role.length; i++){
           if (role[i].includes('ROLE_CONTACT_EDIT')){
-            this.viewRole = role[i];
+            this.editRole = role[i];
           }
           if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
             this.isSysAdmin = true;
           }
+          if (role[i].includes('ROLE_CONTACT_VIEW')){
+            this.viewRole = role[i];
+          }
+        }
+        if(this.viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING' || this.isSysAdmin == true){
+          this.getAllContact();
+        }
+        else {
+          this.section = 'myContact';
+          this.getMyContact();
         }
       },
       getPropertyName(value){
@@ -1141,7 +1152,8 @@
       // this.getList();
       this.getCurrentUser();
       this.$store.state.colorNumber = 0;
-      this.getAllEmail();
+      // this.getAllEmail();
+      // this.getAllContact();
     }
   }
 </script>
