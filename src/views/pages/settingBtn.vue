@@ -171,8 +171,12 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
-                                                <v-select v-model="properti.value" :items="input" item-text="label"
+                                                <v-select v-model="properti.value" :items="input"
+                                                    v-if="key == 0 || key ==1 || key ==2" item-text="label"
                                                     item-value="value" label="Chọn trường nhập" outline></v-select>
+                                                <v-select v-model="properti.value" :items="input1"
+                                                    v-if="key == 3 || key == 4" item-text="label" item-value="value"
+                                                    label="Chọn trường nhập" outline></v-select>
                                                 <v-btn class="mt-2 ml-3" color="error"
                                                     v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
                                                     flat icon @click="removeInput(key)">
@@ -294,11 +298,15 @@
                     <h1>{{nameForm}}</h1>
                 </v-card-title>
                 <v-card-text class="py-2">
-                    <v-layout row wrap>
-                        <template v-for="(item,key) in numberProperties">
-                            <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
-                            </v-text-field>
-                        </template>
+                    <v-layout row wrap v-for="(item,key) in numberProperties" :key="key"
+                        style="border:1px solid #999; border-radius:10px" class="pa-2 mt-2">
+                        <!-- <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
+                        </v-text-field> -->
+                        <p class="ml-2 mt-1" v-if="item.value == 'lastName'"><strong>Họ và tên</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'phone'"><strong>Số điện thoại</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'email'"><strong>Đại chỉ email</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'city'"><strong>Thành phố</strong></p>
+                        <p class="ml-2 mt-1" v-if="item.value == 'business'"><strong>nghề nghiệp</strong></p>
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
@@ -387,14 +395,15 @@
                     value: 'lastName',
                     label: 'Họ và Tên'
                 }, {
+                    value: 'phone',
+                    label: 'Số điện thoại'
+                }],
+                input1: [{
                     value: 'city',
                     label: 'Thành phố'
                 }, {
                     value: 'business',
                     label: 'Nghề nghiệp'
-                }, {
-                    value: 'phone',
-                    label: 'Số điện thoại'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
@@ -520,11 +529,15 @@
                 }
             },
             addInput() {
-                let a = {
-                    value: ''
+                if (this.numberProperties.length >= 5) {
+                    this.alertError(`Được phép tạo tối đa 5 trường bạn đã tạo ${this.numberProperties.length}`)
+                } else {
+                    let a = {
+                        value: ''
+                    }
+                    this.numberProperties.push(a)
+                    this.numberProperties = [...this.numberProperties]
                 }
-                this.numberProperties.push(a)
-                this.numberProperties = [...this.numberProperties]
             },
             removeInput(data) {
                 this.numberProperties.splice(data, 1)
@@ -598,7 +611,7 @@
                         this.callApiCreate(btn)
                     }
                 } else if (this.call == false && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right) {
+                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
