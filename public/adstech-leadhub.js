@@ -13,7 +13,7 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetch(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -295,7 +295,7 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
+        fetch(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
