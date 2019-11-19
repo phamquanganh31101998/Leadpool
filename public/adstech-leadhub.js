@@ -233,6 +233,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     if (styleBtnForm != null && styleBtnForm != '') {
         send(acId)
     }
+    
 }
 
 function openForm() {
