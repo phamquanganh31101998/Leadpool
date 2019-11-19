@@ -266,7 +266,8 @@
         <template v-else>
           <br>
           <br>
-          <v-menu v-model="createFirstCondition.firstConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="300">
+          <!-- first condition -->
+          <v-menu v-model="createFirstCondition.firstConditionMenu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
               <template v-slot:activator="{ on }">
                   <a v-on="on" style="color: #1976D2"><v-icon>add</v-icon> Tìm kiếm Lead theo điều kiện</a>
               </template>
@@ -278,10 +279,117 @@
                           </v-flex>
                           <br>
                           <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="createFirstCondition.conditionConstants" label="Chọn điều kiện" v-model="createFirstCondition.chosenConstant"></v-select>
+                              <v-select v-if="createFirstCondition.chosenProperty == 'lifecycle_stage' || createFirstCondition.chosenProperty == 'city' || createFirstCondition.chosenProperty == 'bussiness'" 
+                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
+                                label="Chọn điều kiện lọc" v-model="createFirstCondition.chosenConstant"></v-select>
+                              <v-select v-if="createFirstCondition.chosenProperty == 'contact_owner' || createFirstCondition.chosenProperty == 'phone_number' || createFirstCondition.chosenProperty == 'email'" 
+                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
+                                label="Chọn điều kiện lọc" v-model="createFirstCondition.chosenConstant"></v-select>
                           </v-flex>
                           <br>
-                          <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                          <template v-if="createFirstCondition.chosenProperty == 'lifecycle_stage'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="createFirstCondition.chosenLifecycleStageValue"></v-select>
+                                  <v-btn :disabled="createFirstCondition.chosenLifecycleStageValue.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('lifecycle_stage', 'IN', createFirstCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('lifecycle_stage', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select :items="lifecycleStages" v-model="createFirstCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
+                                  <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('lifecycle_stage', createFirstCondition.chosenConstant, createFirstCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'contact_owner'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập các tài khoản cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('contact_owner', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('contact_owner', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'phone_number'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone_number', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone_number', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'email'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập các email cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('email', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('email', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'city'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select>
+                                  <v-btn :disabled="createFirstCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'IN', createFirstCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select>
+                                  <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'bussiness'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select label="Chọn giá trị" :items="allBussiness" multiple chips v-model="createFirstCondition.chosenBussinesses"></v-select>
+                                  <v-btn :disabled="createFirstCondition.chosenBussinesses.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('bussiness', 'IN', createFirstCondition.chosenBussinesses, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('bussiness', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select :items="allBussiness" v-model="createFirstCondition.chosenBussiness" label="Chọn giá trị"></v-select>
+                                  <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('bussiness', createFirstCondition.chosenConstant, createFirstCondition.chosenBussiness, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
+                          <!-- <template v-if="createFirstCondition.chosenConstant == 'IN'">
                             <template v-if="createFirstCondition.chosenProperty == 'lifecycle_stage'">
                               <v-flex xs12 sm12 md12 lg12 xl12>
                                   <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="createFirstCondition.chosenLifecycleStageValue"></v-select>
@@ -298,7 +406,6 @@
                           <template v-else>
                             <template v-if="createFirstCondition.chosenProperty == 'lifecycle_stage'">
                               <v-flex xs12 sm12 md12 lg12 xl12>
-                                  <!-- <v-text-field v-model="newCondition.value" label="Giá trị"></v-text-field> -->
                                   <v-select label="Chọn giá trị" :items="lifecycleStages" v-model="createFirstCondition.chosenLifecycleStage"></v-select>
                                   <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
@@ -309,24 +416,7 @@
                                   <v-btn :disabled="createFirstCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
                             </template>
-                          </template>
-                          <!-- <v-flex xs12 sm12 md12 lg12 xl12 v-if="createFirstCondition.chosenConstant == 'IN' && createFirstCondition.chosenProperty == 'lifecycle_stage'">
-                              <v-select :items="lifecycleStages" multiple chips v-model="createFirstCondition.chosenLifecycleStageValue"></v-select>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, 'IN', createFirstCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                          </v-flex>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-if="createFirstCondition.chosenConstant != 'IN' && createFirstCondition.chosenProperty == 'lifecycle_stage'">
-                          
-                              <v-select :items="lifecycleStages" v-model="createFirstCondition.chosenLifecycleStage"></v-select>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                          </v-flex>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-if="createFirstCondition.chosenConstant == 'IN' && createFirstCondition.chosenProperty != 'lifecycle_stage'">
-                              <v-text-field v-model="createFirstCondition.vchipTextField" label="Nhập từ khóa" placeholder="Phân tách nhau bằng dấu phẩy"></v-text-field>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, 'IN', createFirstCondition.vchipTextField, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                          </v-flex>
-                          <v-flex xs12 sm12 md12 lg12 xl12 v-if="createFirstCondition.chosenConstant != 'IN' && createFirstCondition.chosenProperty != 'lifecycle_stage'">
-                              <v-text-field v-model="createFirstCondition.value" label="Giá trị"></v-text-field>
-                              <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                          </v-flex> -->
+                          </template> -->
                       </v-layout>
                   </v-card-text>
               </v-card>
@@ -694,9 +784,13 @@
             },
         ],
         chosenProperty: 'lifecycle_stage',
-        chosenConstant: 'EQUAL',
+        chosenConstant: 'LIKE',
         chosenLifecycleStage: 'Lead',
         chosenLifecycleStageValue: [],
+        chosenCities: [],
+        chosenCity: 'Hà Nội',
+        chosenBussiness: 'Khác',
+        chosenBussinesses: [],
         value: '',
         vchipTextField: '',
         vchipValue: [],
@@ -941,9 +1035,16 @@
       },
       deleteContact(idContact){
         contacts.deleteContact(this.idUser, idContact).then(result => {
-          this.getAllContact();
           this.deleteContactDialog.id = '';
-          
+          if (this.section == 'allContact'){
+            this.getAllContact()
+          }
+          else if(this.section == 'myContact') {
+            this.getMyContact()
+          }
+          else if (this.section == 'search'){
+            this.searchContact();
+          }
         }).catch(error => {
           console.log(error);
           this.cannotDeleteDialog = true;
@@ -981,11 +1082,11 @@
             }
             else{
               var conditionToAdd = {
-                conditionId: null,
+                conditionId: null, 
                 object: "Contact",
                 property: property,
                 condition: conditionConstant,
-                value: value.split(",")
+                value: value.replace(/\s/g, "").split(",")
               }
             }
           }
@@ -1022,7 +1123,7 @@
               object: "Contact",
               property: property,
               condition: conditionConstant,
-              value: value.split(",")
+              value: value.replace(/\s/g, "").split(",")
             }
           }
         }

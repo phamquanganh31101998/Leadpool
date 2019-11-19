@@ -1013,7 +1013,7 @@
                         {
                             title: 'Thời gian liên lạc gần nhất',
                             description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: result.response.lastContacted,
+                            value: this.coverTimeTooltip(result.response.lastContacted),
                             dialog: false,
                             property: 'lastContacted'
                         },

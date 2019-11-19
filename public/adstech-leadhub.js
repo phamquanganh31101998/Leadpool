@@ -5,8 +5,8 @@ function f() {
     var btnId = ''
     var scripts = document.getElementsByTagName("script");
     for (let i = 0; i < scripts.length; i++) {
-        var src = scripts[i].src.split('?')[1]
-        if (src.indexOf('&gBtnId') > 0) {
+        if (scripts[i].src.indexOf('&gBtnId=') > 0) {
+            var src = scripts[i].src.split('?')[1]
             var accid = src.split('&')[0]
             acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
@@ -24,16 +24,14 @@ function f() {
         var vertical = result.response.vertical
         var styleBtnCall = null
         var styleBtnForm = null
-        var properties = null
         for (let i = 0; i < result.response.listButton.length; i++) {
             if (result.response.listButton[i].type == "CALL") {
                 styleBtnCall = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FORM") {
                 styleBtnForm = result.response.listButton[i]
-                properties = result.response.listButton[i].properties
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId)
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId)
     })
 }
 
@@ -48,7 +46,7 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var html = ''
     var call = ''
     var form = ''
@@ -58,19 +56,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
     var name = ''
     var city = ''
     var bussiness = ''
-    for (let i = 0; i < properties.length; i++) {
-        if (properties[i] == 'email') {
-            email = `<input type="email" placeholder="Nhập email" name="email" required>`
-        } else if (properties[i] == "lastName") {
-            name = `<input type="text" placeholder="Nhập tên của bạn" name="name" required>`
-        } else if (properties[i] == 'phone') {
-            phone = `<input type="number" placeholder="Nhập số điện thoại" name="phone" required>`
-        } else if (properties[i] == 'city') {
-            city = `<input type="text" placeholder="Nhập địa chỉ" name="city" required>`
-        } else if (properties[i] == 'bussiness') {
-            bussiness = `<input type="text" placeholder="Nhập nghề nghiệp của bạn" name="bussiness" required`
-        }
-    }
     var css = `<style>
                     .adstech-group-btn {
                         position: fixed;
@@ -150,9 +135,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
                     .open-button:hover {
                         opacity: 1;
                     }
-                    #alert {
+                    #adstech-alert {
                         padding: 20px;
-                        background-color:${styleBtnForm.buttonColor}; /* Red */
+                        background-color:#e09900; /* Red */
                         color: white;
                         margin-bottom: 15px;
                         display: none;
@@ -164,21 +149,48 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
                       }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
-        return call
+        call = ''
     } else {
-        call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
+        if (style.color == "#fff") {
+            call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://staging.adstech.vn:8181/icon.png" alt="Gọi điện thoại" width="30px">
+                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
+        }else if(style.color == "#000"){
+            call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
+                    <a href="tel:${styleBtnCall.phoneNumber}">
+                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    </a>
+                </button>`
+        }
     }
     if (styleBtnForm == null || styleBtnForm == '') {
         form = ''
         form1 = ''
     } else {
-        form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://staging.adstech.vn:8181/form.png" alt="Đăng ký ngay" width="30px">
+        for (let i = 0; i < styleBtnForm.properties.length; i++) {
+            if (styleBtnForm.properties[i] == 'email') {
+                email = `<input type="email" placeholder="Địa chỉ email" name="email" required>`
+            } else if (styleBtnForm.properties[i] == "lastName") {
+                name = `<input type="text" placeholder="Họ và tên" name="name" required>`
+            } else if (styleBtnForm.properties[i] == 'phone') {
+                phone = `<input type="number" placeholder="Số điện thoại" name="phone" required>`
+            } else if (styleBtnForm.properties[i] == 'city') {
+                city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
+            } else if (styleBtnForm.properties[i] == 'bussiness') {
+                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required`
+            }
+        }
+        if (style.color == "#fff") {
+            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+        }else if(style.color == "#000"){
+            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                </button>`
+        }
         form1 = `<div class="adstech-form" id="myForm">
                     <form class="form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
@@ -193,15 +205,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
                         </div>
                     </form>
                 </div> 
-                <div id="alert">
+                <div id="adstech-alert">
                     ${styleBtnForm.formMessageReturn}
                 </div>`
     }
     if (vertical == false) {
         html = `<div class="adstech-group-btn">
-                    ${call}
-                    <br />
                     ${form}
+                    <br />
+                    ${call}
                 </div>
                 ${form1}
                 ${css}`
@@ -215,10 +227,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, properties, acId
     }
 
     var div = document.createElement("div");
-    div.id = "call";
+    div.id = "adstech-group-btn";
     document.body.appendChild(div);
-    document.getElementById("call").innerHTML = html;
-    send(acId)
+    document.getElementById("adstech-group-btn").innerHTML = html;
+    if (styleBtnForm != null && styleBtnForm != '') {
+        send(acId)
+    }
+    
 }
 
 function openForm() {
@@ -230,11 +245,11 @@ function closeForm() {
 }
 
 function openAlert() {
-    document.getElementById("alert").style.display = "block";
+    document.getElementById("adstech-alert").style.display = "block";
 }
 function closeAlert() {
-    document.getElementById("alert").style.display = "none";
-}
+    document.getElementById("adstech-alert").style.display = "none";
+} 
 function send(acId) {
     const form = document.querySelector('form')
     form.addEventListener('submit', e => {
@@ -289,12 +304,9 @@ function send(acId) {
             body: JSON.stringify(body)
         }).then(handle).then(result => {
                 openAlert()
-            setTimeout(function () {
-                closeAlert()
-            },2000)
+            setTimeout(function () { closeAlert() },3000)
         })
         e.preventDefault()
         closeForm()
     })
-
 }
