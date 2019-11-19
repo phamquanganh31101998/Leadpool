@@ -257,6 +257,8 @@
                     } = this.$store;
                     if (result.code == "SUCCESS") {
                         dispatch('alert/success', 'Xóa bộ nút thành công')
+                        this.showForm = false
+                        this.showCall = false
                     } else {
                         dispatch('alert/error', result.message)
                     }
