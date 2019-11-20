@@ -56,15 +56,26 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var name = ''
     var city = ''
     var bussiness = ''
+    var position = ''
+    if (style.left == '45') {
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom -3}%;
+            left: ${parseInt(style.left)+2}%;
+            right: ${style.right}%;
+            top:${style.top}%;
+        }`
+    }else{
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom - 3}%;
+            left: ${parseInt(style.left) -1}%;
+            right: ${parseInt(style.right) -1}%;
+            top:${style.top}%;
+        }`
+    }
     var css = `<style>
-                    .adstech-group-btn {
-                        position:fixed;
-                        bottom: ${style.bottom}%;
-                        left: ${parseInt(style.left)+2}%;
-                        right: ${style.right}%;
-                        top:${style.top}%;
-                        
-                    }
+                    ${position}
 
                     .adstech-btn {
                         border: none;
@@ -75,29 +86,33 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         margin: 4px 2px;
                         border-radius: 50%;
                         width: ${style.size}px;
-                        height:${style.size}px
+                        height:${style.size}px;
+                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
                     }
                     
                     .adstech-form {
                         display: none;
                         position: fixed;
-                        top: 30%;
-                        left: 42%;
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%,-50%);
                         border: 3px solid #f1f1f1;
                         z-index: 999999;
+                        background-color:#fff;
                     }
 
                     /* Add styles to the form container */
                     .form-container {
                         max-width: 300px;
                         padding: 10px;
-                        background-color: white;
+                        background-color: #fff;
                     }
 
                     /* Full-width input fields */
                     .form-container input[type=text],
                     .form-container input[type=email], 
-                    .form-container input[type=number]{
+                    .form-container input[type=tel]{
                         width: 90%;
                         padding: 15px;
                         margin: 5px 0 22px 0;
@@ -107,7 +122,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
 
                     /* When the inputs get focus, do something */
                     .form-container input[type=text]:focus,
-                    .form-container input[type=password]:focus {
+                    .form-container input[type=email]:focus,
+                    .form-container input[type=tel]:focus {
                         background-color: #ddd;
                         outline: none;
                     }
@@ -116,13 +132,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     .form-container .btn {
                         background-color: #4CAF50;
                         color: white;
-                        padding: 16px 20px;
                         border: none;
                         cursor: pointer;
                         width: 50%;
                         margin-bottom: 10px;
                         opacity: 0.8;
                         float: left;
+                        z-index: initial;
+                        height:40px;
                     }
 
                     /* Add a red background color to the cancel button */
@@ -137,15 +154,17 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     }
                     #adstech-alert {
                         padding: 20px;
-                        background-color:#e09900; /* Red */
+                        background-color:#e09000;
                         color: white;
                         margin-bottom: 15px;
                         display: none;
                         width:20%;
                         position: fixed;
-                        bottom:30%;
-                        left:40%;
-                        text-align:center
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        z-index: 999999;
+                        transform: translate(-50%,-50%);
                       }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
@@ -154,13 +173,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         if (style.color == "#fff") {
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }else if(style.color == "#000"){
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }
@@ -171,24 +190,24 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     } else {
         for (let i = 0; i < styleBtnForm.properties.length; i++) {
             if (styleBtnForm.properties[i] == 'email') {
-                email = `<input type="email" placeholder="Địa chỉ email" name="email" required>`
+                email = `<input type="email" placeholder="Địa chỉ email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$" title="Nhập đúng email của bạn" required>`
             } else if (styleBtnForm.properties[i] == "lastName") {
                 name = `<input type="text" placeholder="Họ và tên" name="name" required>`
             } else if (styleBtnForm.properties[i] == 'phone') {
-                phone = `<input type="number" placeholder="Số điện thoại" name="phone" required>`
+                phone = `<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phone" required>`
             } else if (styleBtnForm.properties[i] == 'city') {
                 city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
             } else if (styleBtnForm.properties[i] == 'bussiness') {
-                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required`
+                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required>`
             }
         }
         if (style.color == "#fff") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }else if(style.color == "#000"){
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         form1 = `<div class="adstech-form" id="myForm">
@@ -199,7 +218,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         ${email}
                         ${city}
                         ${bussiness}
-                        <div>
+                        <div style="padding:0px 14px 0px 14px">
                             <button type="submit" class="btn">Xác nhận</button>
                             <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
                         </div>

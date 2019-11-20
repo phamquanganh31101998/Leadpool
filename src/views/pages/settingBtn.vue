@@ -123,7 +123,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
                             <v-card>
                                 <v-card-title>
-                                    Cài đặt nút gọi
+                                    <h2>Cài đặt nút gọi</h2>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -160,7 +160,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogForm">
                             <v-card>
                                 <v-card-title>
-                                    <h1>Cài đặt nút nhập form</h1>
+                                    <h2>Cài đặt nút nhập form</h2>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -171,9 +171,9 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
-                                                <v-select v-model="properti.value" :items="input"
+                                                <v-select v-model="properti.value" disabled :items="input"
                                                     v-if="key == 0 || key ==1 || key ==2" item-text="label"
-                                                    item-value="value" label="Chọn trường nhập" outline></v-select>
+                                                    item-value="value" label="Trường bắt buộc" outline></v-select>
                                                 <v-select v-model="properti.value" :items="input1"
                                                     v-if="key == 3 || key == 4" item-text="label" item-value="value"
                                                     label="Chọn trường nhập" outline></v-select>
@@ -200,10 +200,11 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark
+                                    <!-- <v-btn color="green darken-1" text dark
                                         @click="form = true, alertSuccess(`Lưu nút form thành công với ${numberProperties.length} trường`)">
                                         Lưu
-                                    </v-btn>
+                                    </v-btn> -->
+                                    <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-flex>
@@ -402,7 +403,7 @@
                     value: 'city',
                     label: 'Thành phố'
                 }, {
-                    value: 'business',
+                    value: 'bussiness',
                     label: 'Nghề nghiệp'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
@@ -426,7 +427,8 @@
                 }],
                 alertFinish: 'Đăng ký thành công',
                 textCall: 'Để lại số điện thoại của bạn',
-                dialogNameBtn: false
+                dialogNameBtn: false,
+                requestApi: true
             }
         },
         watch: {
@@ -543,7 +545,21 @@
                 this.numberProperties.splice(data, 1)
                 this.numberProperties = [...this.numberProperties]
             },
+            checkForm() {
+                this.properties = []
+                for (let i = 0; i < this.numberProperties.length; i++) {
+                    this.properties.push(this.numberProperties[i].value)
+                }
+                if (this.properties.indexOf('') > 0) {
+                    this.alertError(`Trường ${this.properties.indexOf('') + 1} bị rỗng`)
+                    this.requestApi = false
+                } else {
+                    this.alertSuccess(`Lưu nút form thành công với ${this.properties.length} trường`)
+                    this.requestApi = true
+                }
+            },
             createGbtn() {
+                this.checkForm()
                 if (this.small == true) {
                     this.sizeButton = 40
                 } else if (this.small == false && this.large == false) {
@@ -551,9 +567,12 @@
                 } else {
                     this.sizeButton = 70
                 }
-                for (let i = 0; i < this.numberProperties.length; i++) {
-                    this.properties.push(this.numberProperties[i].value)
-                }
+                const output = []
+                this.properties.forEach((element) => {
+	                    if (!output.includes(element)){
+    	                output.push(element)
+                    }
+                });
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
@@ -562,7 +581,6 @@
                     title: this.nameForm,
                     type: "FORM",
                     properties: this.properties,
-
                 }
                 let call = {
                     buttonColor: this.color,
@@ -573,42 +591,46 @@
                     type: "CALL",
                 }
                 if (this.call == true && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                form,
-                                call
-                            ],
-                            style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: 2,
-                                size: `${this.sizeButton}`,
-                            }
-                        }
-                        this.callApiCreate(btn)
+                    if (this.text == null || this.text == '') {
+                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
                     } else {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                form,
-                                call
-                            ],
-                            style: {
-                                bottom: this.bottom,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: this.left,
-                                size: `${this.sizeButton}`,
+                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                listButton: [
+                                    form,
+                                    call
+                                ],
+                                style: {
+                                    bottom: 5,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: 2,
+                                    size: `${this.sizeButton}`,
+                                }
                             }
+                            this.callApiCreate(btn)
+                        } else {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                listButton: [
+                                    form,
+                                    call
+                                ],
+                                style: {
+                                    bottom: this.bottom,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: this.left,
+                                    size: `${this.sizeButton}`,
+                                }
+                            }
+                            this.callApiCreate(btn)
                         }
-                        this.callApiCreate(btn)
                     }
                 } else if (this.call == false && this.form == true) {
                     if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
@@ -647,47 +669,53 @@
                         this.callApiCreate(btn)
                     }
                 } else if (this.call == true && this.form == false) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                call
-                            ],
-                            style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: 2,
-                                size: `${this.sizeButton}`,
-                            }
-                        }
-                        this.callApiCreate(btn)
+                    if (this.text == null || this.text == '') {
+                        this.alertError('Chưa điền số điện thoại ở nút Click to Call')
                     } else {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                call
-                            ],
-                            style: {
-                                bottom: this.bottom,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: this.left,
-                                size: `${this.sizeButton}`,
+                        this.requestApi = true
+                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                listButton: [
+                                    call
+                                ],
+                                style: {
+                                    bottom: 5,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: 2,
+                                    size: `${this.sizeButton}`,
+                                }
                             }
+                            this.callApiCreate(btn)
+                        } else {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                listButton: [
+                                    call
+                                ],
+                                style: {
+                                    bottom: this.bottom,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: this.left,
+                                    size: `${this.sizeButton}`,
+                                }
+                            }
+                            this.callApiCreate(btn)
                         }
-                        this.callApiCreate(btn)
                     }
                 } else {
                     this.alertError("Bạn chưa chọn nút cần tạo")
                 }
             },
             callApiCreate(btn) {
-                leadhubService.createGbtn(this.idAccount, btn).then(result => {
+                if (this.requestApi == true) {
+                    leadhubService.createGbtn(this.idAccount, btn).then(result => {
                     if (result.code == "SUCCESS") {
                         this.alertSuccess('Thêm nút thành công')
                         router.replace(`/contacts/${this.idAccount}/leadhub`)
@@ -695,6 +723,7 @@
                         this.alertError(result.message)
                     }
                 })
+                }
             },
             cancel() {
                 router.replace(`/contacts/${this.idAccount}/leadhub`)

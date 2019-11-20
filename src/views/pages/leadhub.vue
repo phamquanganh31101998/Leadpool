@@ -230,7 +230,7 @@
                 return moment(data).lang('vi').format('llll')
             },
             gotoSetting() {
-                router.replace(`/contacts/${this.idAccount}/setting`)
+                router.push(`/contacts/${this.idAccount}/setting`)
             },
             copy() {
                 /* Get the text field */
@@ -268,7 +268,7 @@
                 })
             },
             updatedGbtn(GBtnId) {
-                router.replace(`/contacts/${this.idAccount}/update/${GBtnId}`)
+                router.push(`/contacts/${this.idAccount}/update/${GBtnId}`)
             },
             deleteGbtn() {
                 leadhubService.deleteGbtn(this.idAccount, this.selected.leadHubButtonGroupId).then(result => {

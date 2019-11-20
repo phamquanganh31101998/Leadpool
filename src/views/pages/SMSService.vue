@@ -95,7 +95,7 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                        <v-data-table  dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                             <template v-slot:items="props">
                                                 <tr>
                                                     <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -126,7 +126,7 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                        <v-data-table dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
+                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
                                             <template v-slot:items="props">
                                                 <tr>
                                                     <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -524,7 +524,7 @@
                                         <br>
                                     </template>
                                      -->
-                                    <v-data-table style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
+                                    <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
                                         <template v-slot:items="props">
                                             <tr>
                                                 <td>{{props.item.phoneNumber}}</td>
@@ -555,7 +555,7 @@
                                         <br>
                                     </template>
                                      -->
-                                    <v-data-table style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
+                                    <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
                                         <template v-slot:items="props">
                                             <tr>
                                                 <td>{{props.item.phoneNumber}}</td>
@@ -678,7 +678,7 @@
                 <v-layout row v-if="page=='schedule'">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
-                            <v-data-table :headers="schedule.headers" :items="schedule.list">
+                            <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.headers" :items="schedule.list">
                                 <template v-slot:items="props">
                                     <tr>
                                         <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -734,7 +734,7 @@
                                 <p>Nội dung tin nhắn: </p>
                                 <v-textarea v-model="schedule.detail.content" readonly rows="2" box></v-textarea>
                                 <br>
-                                <v-data-table hide-actions :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
+                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
                                     <template v-slot:items="props">
                                         <tr>
                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
