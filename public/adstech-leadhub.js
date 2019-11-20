@@ -60,7 +60,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     if (style.left == '45') {
         position = `.adstech-group-btn {
             position:fixed;
-            bottom: ${style.bottom -2}%;
+            bottom: ${style.bottom -3}%;
             left: ${parseInt(style.left)+2}%;
             right: ${style.right}%;
             top:${style.top}%;
@@ -68,9 +68,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     }else{
         position = `.adstech-group-btn {
             position:fixed;
-            bottom: ${style.bottom - 2}%;
-            left: ${parseInt(style.left)}%;
-            right: ${style.right}%;
+            bottom: ${style.bottom - 3}%;
+            left: ${parseInt(style.left) -1}%;
+            right: ${parseInt(style.right) -1}%;
             top:${style.top}%;
         }`
     }
@@ -110,7 +110,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     /* Full-width input fields */
                     .form-container input[type=text],
                     .form-container input[type=email], 
-                    .form-container input[type=number]{
+                    .form-container input[type=tel]{
                         width: 90%;
                         padding: 15px;
                         margin: 5px 0 22px 0;
@@ -120,7 +120,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
 
                     /* When the inputs get focus, do something */
                     .form-container input[type=text]:focus,
-                    .form-container input[type=password]:focus {
+                    .form-container input[type=email]:focus,
+                    .form-container input[type=tel]:focus {
                         background-color: #ddd;
                         outline: none;
                     }
@@ -189,11 +190,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
             } else if (styleBtnForm.properties[i] == "lastName") {
                 name = `<input type="text" placeholder="Họ và tên" name="name" required>`
             } else if (styleBtnForm.properties[i] == 'phone') {
-                phone = `<input type="number" placeholder="Số điện thoại" name="phone" required>`
+                phone = `<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" name="phone" required>`
             } else if (styleBtnForm.properties[i] == 'city') {
                 city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
             } else if (styleBtnForm.properties[i] == 'bussiness') {
-                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required`
+                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required>`
             }
         }
         if (style.color == "#fff") {

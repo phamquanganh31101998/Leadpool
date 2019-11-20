@@ -123,7 +123,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
                             <v-card>
                                 <v-card-title>
-                                    Cài đặt nút gọi
+                                    <h2>Cài đặt nút gọi</h2>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -160,7 +160,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogForm">
                             <v-card>
                                 <v-card-title>
-                                    <h1>Cài đặt nút nhập form</h1>
+                                    <h2>Cài đặt nút nhập form</h2>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
