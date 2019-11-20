@@ -78,14 +78,14 @@
             <v-layout row class="mt-2">
                 <v-flex>
                     <p>Loại</p>
-                    <v-menu :close-on-content-click="false" top offset-y>
+                    <v-menu v-model="typeMenu" :close-on-content-click="false" top offset-y>
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{returnType(type)}}
                             </a>
                         </template>
                         <v-list>
-                            <v-list-tile v-for="(item, index) in types" :key="index" @click="choisE(item)">
+                            <v-list-tile v-for="(item, index) in types" :key="index" @click="choisE(item), typeMenu = false">
                                 <v-list-tile-title>{{ returnType(item) }}</v-list-tile-title>
                             </v-list-tile>
                         </v-list>
@@ -93,7 +93,7 @@
                 </v-flex>
                 <v-flex>
                     <p>Giao cho</p>
-                    <v-menu :close-on-content-click="false" offset-y max-width="300">
+                    <v-menu v-model="assignMenu" :close-on-content-click="false" offset-y max-width="300">
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{chosenName}}
@@ -107,7 +107,7 @@
                                     </v-flex>
                                     <br> -->
                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-select :items="searchedEmail" v-model="chosenEmail"></v-select>
+                                        <v-select :items="searchedEmail" v-model="chosenEmail" @input="assignMenu = false"></v-select>
                                     </v-flex>
                                 </v-layout>
                                 <!-- <v-layout>
@@ -134,7 +134,7 @@
                     <p>Email nhắc nhở</p>
                     <v-layout row>
                         <v-flex>
-                            <v-menu :close-on-content-click="false" top offset-y>
+                            <v-menu v-model="reminderMenu" :close-on-content-click="false" top offset-y>
                                 <template v-slot:activator="{ on }">
                                     <span>
                                         <a color="indigo" v-on="on">
@@ -144,13 +144,13 @@
                                     
                                 </template>
                                 <v-list>
-                                    <v-list-tile @click="day = 'The day of'">
+                                    <v-list-tile @click="day = 'The day of', reminderMenu = false">
                                         <v-list-tile-title>Trong ngày</v-list-tile-title>
                                     </v-list-tile>
-                                    <v-list-tile @click="day = 'The day before'">
+                                    <v-list-tile @click="day = 'The day before', reminderMenu = false">
                                         <v-list-tile-title>Trước một ngày</v-list-tile-title>
                                     </v-list-tile>
-                                    <v-list-tile @click="day = 'The week before'">
+                                    <v-list-tile @click="day = 'The week before', reminderMenu = false">
                                         <v-list-tile-title>Trước một tuần</v-list-tile-title>
                                     </v-list-tile>
                                     <v-menu :close-on-content-click="false" offset-y v-model="emailReminder.dateMenu">
@@ -159,10 +159,10 @@
                                                 <v-list-tile-title>Chọn ngày</v-list-tile-title>
                                             </v-list-tile>
                                         </template>
-                                        <v-date-picker v-model="emailReminder.date" no-title @input="emailReminder.dateMenu = false"></v-date-picker>
+                                        <v-date-picker v-model="emailReminder.date" no-title @input="emailReminder.dateMenu = false, reminderMenu = false"></v-date-picker>
                                     </v-menu>
                                     
-                                    <v-list-tile @click="day = 'No reminder'">
+                                    <v-list-tile @click="day = 'No reminder', reminderMenu = false">
                                         <v-list-tile-title>Không nhắc trước</v-list-tile-title>
                                     </v-list-tile>
                                     <!-- <v-list-tile v-for="(item, index) in days" :key="index" @click="choiseD(item)">
@@ -177,7 +177,7 @@
                 </v-flex>
                 <v-flex v-if="day!='No reminder'">
                     <p>Giờ</p>
-                    <v-menu :close-on-content-click="false" lazy
+                    <v-menu v-model="timeMenu" :close-on-content-click="false" lazy
                         transition="scale-transition" offset-y full-width >
                         <template v-slot:activator="{ on }">
                             <!-- <v-text-field v-model="emailReminder.time" prepend-icon="access_time" readonly v-on="on">
@@ -188,7 +188,7 @@
                                 </a>
                             </span>
                         </template>
-                        <v-select v-model="emailReminder.time" :items="timeToChoose" style="backgroundColor: white; padding: 0px 10px; width: 100px;"></v-select>
+                        <v-select @input="timeMenu = false" v-model="emailReminder.time" :items="timeToChoose" style="backgroundColor: white; padding: 0px 10px; width: 100px;"></v-select>
                     </v-menu>
                     <!-- <v-dialog ref="emailReminderDialog" :return-value.sync="emailReminder.time" lazy full-width
                         width="290px" v-if="!(day == 'No reminder')">
@@ -343,6 +343,10 @@
                 time: '08:00',
                 modal2: false,
             },
+            typeMenu: false,
+            assignMenu: false,
+            reminderMenu: false,
+            timeMenu: false,
             successfulDialog: false,
             failDialog: false
         }),

@@ -69,8 +69,9 @@
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
+                    rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                     no-data-text="Không có kết quả nào phù hợp"
-                    >
+                >
                     <template v-slot:items="props">
                         <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.firstName }} {{props.item.lastName}}</a></td>
                         <td>{{ props.item.email }}</td>
