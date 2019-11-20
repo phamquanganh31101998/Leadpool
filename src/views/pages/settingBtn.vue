@@ -403,7 +403,7 @@
                     value: 'city',
                     label: 'Thành phố'
                 }, {
-                    value: 'business',
+                    value: 'bussiness',
                     label: 'Nghề nghiệp'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
