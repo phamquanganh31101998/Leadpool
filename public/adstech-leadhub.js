@@ -151,7 +151,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     }
                     #adstech-alert {
                         padding: 20px;
-                        background-color:#e09900
+                        background-color:#e09000;
                         color: white;
                         margin-bottom: 15px;
                         display: none;
