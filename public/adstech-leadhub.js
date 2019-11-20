@@ -86,7 +86,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         margin: 4px 2px;
                         border-radius: 50%;
                         width: ${style.size}px;
-                        height:${style.size}px
+                        height:${style.size}px;
+                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
                     }
                     
                     .adstech-form {
@@ -98,13 +99,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         transform: translate(-50%,-50%);
                         border: 3px solid #f1f1f1;
                         z-index: 999999;
+                        background-color:#fff;
                     }
 
                     /* Add styles to the form container */
                     .form-container {
                         max-width: 300px;
                         padding: 10px;
-                        background-color: white;
+                        background-color: #fff;
                     }
 
                     /* Full-width input fields */
@@ -130,13 +132,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     .form-container .btn {
                         background-color: #4CAF50;
                         color: white;
-                        padding: 16px 20px;
                         border: none;
                         cursor: pointer;
                         width: 50%;
                         margin-bottom: 10px;
                         opacity: 0.8;
                         float: left;
+                        z-index: initial;
+                        height:40px;
                     }
 
                     /* Add a red background color to the cancel button */
@@ -160,6 +163,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         text-align:center;
                         left: 50%;
                         top: 50%;
+                        z-index: 999999;
                         transform: translate(-50%,-50%);
                       }
                 </style>`
@@ -186,11 +190,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     } else {
         for (let i = 0; i < styleBtnForm.properties.length; i++) {
             if (styleBtnForm.properties[i] == 'email') {
-                email = `<input type="email" placeholder="Địa chỉ email" name="email" required>`
+                email = `<input type="email" placeholder="Địa chỉ email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$" title="Nhập đúng email của bạn" required>`
             } else if (styleBtnForm.properties[i] == "lastName") {
                 name = `<input type="text" placeholder="Họ và tên" name="name" required>`
             } else if (styleBtnForm.properties[i] == 'phone') {
-                phone = `<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" name="phone" required>`
+                phone = `<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phone" required>`
             } else if (styleBtnForm.properties[i] == 'city') {
                 city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
             } else if (styleBtnForm.properties[i] == 'bussiness') {
@@ -214,7 +218,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         ${email}
                         ${city}
                         ${bussiness}
-                        <div>
+                        <div style="padding:0px 14px 0px 14px">
                             <button type="submit" class="btn">Xác nhận</button>
                             <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
                         </div>
