@@ -81,13 +81,13 @@
                                 <v-card-text class="text-xs-center">
                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-btn fab dark large color="blue-grey">
-                                            {{detail.firstName}}
+                                            {{basicInfo.lastName[0]}}{{basicInfo.firstName[0]}}
                                         </v-btn>
                                     </v-flex>
                                     <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-layout row>
                                             <v-flex xs8 sm8 md7 lg7 xl7 class="text-xs-right">
-                                                <h3 class="mt-2">{{detail.lastName}} {{detail.firstName}}</h3>
+                                                <h3 class="mt-2">{{basicInfo.lastName}} {{basicInfo.firstName}}</h3>
                                             </v-flex>
                                             <v-flex xs4 sm4 md5 lg5 xl5 class="text-xs-right">
                                                 <v-menu :close-on-content-click="false" :width="100" offset-x v-model="basicInfoDialog">
@@ -876,6 +876,11 @@
                     dialog: false,
                 }
             ],
+            basicInfo: {
+                firstName: '',
+                lastName: '',
+                email: ''
+            },
             detail: {
                 "contactId": "",
                 "accountId": "",
@@ -966,6 +971,9 @@
             },
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    this.basicInfo.firstName = result.response.firstName;
+                    this.basicInfo.lastName = result.response.lastName;
+                    this.basicInfo.email = result.response.email;
                     this.detail = result.response
                     // console.log(this.detail)
                     this.items = [{

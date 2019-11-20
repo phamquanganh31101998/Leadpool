@@ -264,7 +264,7 @@
                                 <v-card-text>
                                     <v-layout row wrap>
                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-data-table :headers="headers" :items="users" no-data-text="Tổ chức này chưa có tài khoản nào">
+                                            <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="users" no-data-text="Tổ chức này chưa có tài khoản nào">
                                                 <template v-slot:items="props">
                                                     <td><a @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
                                                     <td>{{ props.item.userEmail }}</td>

@@ -152,11 +152,11 @@
                                 <v-card style="width: 100%;">
                                     <v-card-text>
                                         <v-layout row wrap>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty"></v-select>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE'"></v-select>
                                             </v-flex>
                                             <br>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
                                                 <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness'" 
                                                   :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                                   label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
@@ -302,11 +302,11 @@
               <v-card style="width: 100%;">
                   <v-card-text>
                       <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty"></v-select>
+                          <v-flex xs6 sm6 md6 lg6 xl6>
+                              <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE'"></v-select>
                           </v-flex>
                           <br>
-                          <v-flex xs12 sm12 md12 lg12 xl12>
+                          <v-flex xs6 sm6 md6 lg6 xl6>
                               <v-select v-if="createFirstCondition.chosenProperty == 'lifecycle_stage' || createFirstCondition.chosenProperty == 'city' || createFirstCondition.chosenProperty == 'bussiness'" 
                                 :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                 label="Chọn điều kiện lọc" v-model="createFirstCondition.chosenConstant"></v-select>
@@ -726,7 +726,7 @@
             },
         ],
         chosenProperty: 'lifecycle_stage',
-        chosenConstant: 'Like',
+        chosenConstant: 'LIKE',
         chosenLifecycleStage: 'Lead',
         chosenLifecycleStageValue: [],
         chosenCities: [],
@@ -992,38 +992,6 @@
         }).catch(error => {
           console.log(error);
         })
-        // let currentEmail = JSON.parse(localStorage.getItem('user')).username;
-        // let conditions = [
-        //   [
-        //     {
-        //       conditionId: null,
-        //       object: "Contact",
-        //       property: "createdBy",
-        //       condition: "EQUAL",
-        //       value: currentEmail
-        //     }
-        //   ]
-        // ]
-        // listService.findContactByCondition(this.idUser, conditions).then(result => {
-        //   this.allContacts = result.response;
-        //   this.contacts = this.allContacts;
-        //   this.page = 1;
-        //   this.pages = 1;
-        // }).catch(error => {
-        //   this.failDialog = true;
-        //   console.log(error);
-        // })
-        // contacts.getAllContact(this.idUser, this.page).then(result => {
-        //   const res = result.response.results;
-        //   const email = JSON.parse(localStorage.getItem("user")).username;
-        //   for(let i = 0; i<res.length;i++){
-        //     if(res[i].createdBy == email){
-        //       this.allContacts.push(res[i]);
-        //     }
-        //   }
-        //   this.contacts = this.allContacts;
-        //   this.pages = result.response.totalPage
-        // })
 
       },
       covertime(time) {
@@ -1149,13 +1117,6 @@
         this.createFirstCondition.firstConditionMenu = false;
         this.firstConditionMenu = false;
       },
-      // getList(){
-      //   listService.getList(this.idUser).then(result => {
-      //     this.lists = result.response;
-      //   }).catch(error => {
-      //     console.log(error)
-      //   })
-      // },
       setChosenList(index){
         this.conditions = [];
         this.conditions = this.lists[index].conditions;
@@ -1170,23 +1131,6 @@
       },
       filter(){
         let conditions = this.conditions;
-        // let user = JSON.parse(localStorage.getItem('user'));
-        // let canViewEverything = false;
-        // for (let i = 0; i < user.authorities.length; i++){
-        //   if(user.authorities[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
-        //     canViewEverything = true;
-        //   }
-        // }
-        // if(!canViewEverything){
-        //   let ownerCheck = {
-        //     conditionId: null,
-        //     object: "Contact",
-        //     property: "createdBy",
-        //     condition: "EQUAL",
-        //     value: user.username
-        //   }
-        //   conditions[0].push(ownerCheck);
-        // }
         console.log(conditions)
         listService.findContactByCondition(this.idUser, conditions).then(result => {
           this.allContacts = result.response;
@@ -1198,19 +1142,6 @@
           console.log(error);
         })
       },
-      // createFilter(name, conditions){
-      //   let body = {
-      //     name: name,
-      //     conditions: conditions
-      //   }
-      //   listService.createNewList(this.idUser, body).then(result => {
-      //     this.getList();
-      //     this.saveFilter.name = '';
-      //     this.saveFilter.dialog = false;
-      //   }).catch(error => {
-      //     console.log(error);
-      //   })
-      // },
       normalText(str){
           return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
       },
@@ -1242,13 +1173,6 @@
         
       },
       search(){
-        // this.contacts = [];
-        // for (let i = 0; i < this.allContacts.length; i++){
-        //   const name = this.allContacts[i].firstName + ' ' + this.allContacts[i].lastName;
-        //   if(this.normalText(name.toLowerCase()).includes(this.normalText(this.search.toLowerCase()))){
-        //     this.contacts.push(this.allContacts[i]);
-        //   }
-        // }
       },
 
     },

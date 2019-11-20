@@ -77,17 +77,17 @@
                                                 <v-card style="width: 100%;">
                                                     <v-card-text>
                                                         <v-layout row wrap>
-                                                            <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty"></v-select>
+                                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE'"></v-select>
                                                             </v-flex>
                                                             <br>
-                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                            <v-flex xs6 sm6 md6 lg6 xl6>
                                                                 <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness'" 
-                                                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
-                                                                label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
+                                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
+                                                                    label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
                                                                 <v-select v-if="newCondition.chosenProperty == 'contact_owner' || newCondition.chosenProperty == 'phone_number' || newCondition.chosenProperty == 'email'" 
-                                                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
-                                                                label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
+                                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
+                                                                    label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
                                                             </v-flex>
                                                             <br>
                                                             <template v-if="newCondition.chosenProperty == 'lifecycle_stage'">
@@ -210,11 +210,11 @@
                                     <v-card style="width: 100%;">
                                         <v-card-text>
                                             <v-layout row wrap>
-                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty"></v-select>
+                                                <v-flex xs6 sm6 md6 lg6 xl6>
+                                                    <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty" @input="newOrCondition.chosenConstant = 'LIKE'"></v-select>
                                                 </v-flex>
                                                 <br>
-                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-flex xs6 sm6 md6 lg6 xl6>
                                                     <v-select v-if="newOrCondition.chosenProperty == 'lifecycle_stage' || newOrCondition.chosenProperty == 'city' || newOrCondition.chosenProperty == 'bussiness'" 
                                                     :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                                     label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
@@ -342,11 +342,11 @@
                         <v-card style="width: 100%;">
                             <v-card-text>
                                 <v-layout row wrap>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty"></v-select>
+                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                        <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE'"></v-select>
                                     </v-flex>
                                     <br>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                    <v-flex xs6 sm6 md6 lg6 xl6>
                                         <v-select v-if="createFirstCondition.chosenProperty == 'lifecycle_stage' || createFirstCondition.chosenProperty == 'city' || createFirstCondition.chosenProperty == 'bussiness'" 
                                             :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                             label="Chọn điều kiện lọc" v-model="createFirstCondition.chosenConstant"></v-select>
@@ -465,12 +465,12 @@
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-data-table
+                    rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                     no-data-text="Không có kết quả nào phù hợp"
                     :headers="headersLists"
                     :items="contacts"
                     class="elevation-1 mt-6"
-                    hide-actions
-                    >
+                >
                     <template v-slot:items="props">
                         <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.firstName }} {{props.item.lastName}}</a></td>
                         <td>{{ props.item.email }}</td>
@@ -896,7 +896,7 @@ export default {
                     }
                 }
                 else {
-                    var conditionToAdd = {
+                    conditionToAdd = {
                         conditionId: null,
                         object: "Contact",
                         property: property,
@@ -935,7 +935,7 @@ export default {
                     }
                 }
                 else {
-                    var conditionToAdd = {
+                    conditionToAdd = {
                         conditionId: null,
                         object: "Contact",
                         property: property,
@@ -972,7 +972,7 @@ export default {
                     }
                 }
                 else {
-                    var conditionToAdd = {
+                    conditionToAdd = {
                         conditionId: null,
                         object: "Contact",
                         property: property,

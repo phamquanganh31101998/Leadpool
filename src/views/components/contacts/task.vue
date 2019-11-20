@@ -197,7 +197,7 @@
                                                     <v-layout row >
                                                         <v-flex xs3 sm3 md3 lg3 xl3 >
                                                             <span>
-                                                                <v-menu :close-on-content-click="false" :nudge-width="75" top offset-y>
+                                                                <v-menu v-model="task.typeMenu" :close-on-content-click="false" :nudge-width="75" top offset-y>
                                                                     <template v-slot:activator="{ on }">
                                                                         <a color="indigo" v-on="on" v-if="access">
                                                                             {{returnType(task.type)}}
@@ -208,13 +208,13 @@
                                                                     </template>
                                                                     <!-- <v-select :items="['To-do', 'Email', 'Call']" v-model="task.type" 
                                                                     style="backgroundColor: white; padding: 20px;" @change="updateTask(task.taskId, 'type', task.type)"></v-select> -->
-                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'To-do')" style="backgroundColor: white;">
+                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'To-do'), task.typeMenu = false" style="backgroundColor: white;">
                                                                         <v-list-tile-title>Công việc</v-list-tile-title>
                                                                     </v-list-tile>
-                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'Email')" style="backgroundColor: white;">
+                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'Email'), task.typeMenu = false" style="backgroundColor: white;">
                                                                         <v-list-tile-title>Gửi Email</v-list-tile-title>
                                                                     </v-list-tile>
-                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'Call')" style="backgroundColor: white;">
+                                                                    <v-list-tile @click="changeType(task.taskId, task.type, 'Call'), task.typeMenu = false" style="backgroundColor: white;">
                                                                         <v-list-tile-title>Gọi điện</v-list-tile-title>
                                                                     </v-list-tile>
                                                                 </v-menu>
@@ -748,7 +748,10 @@
                             result.response[i].emailReminderTime = '08:00';
                             result.response[i].emailReminderChoice = 'No reminder'
                         }
-                        
+                        result.response.typeMenu = false;
+                        result.response.assignMenu = false;
+                        result.response.reminderMenu = false;
+                        result.response.timeMenu = false;
                     }
                     this.tasks = result.response.reverse();
                 }).catch(error => {

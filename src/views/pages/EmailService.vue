@@ -44,7 +44,7 @@
                             <v-card-text>
                                 <span class="ml-4"><v-btn color="#3E82F7" dark @click="create.editorDialog = true"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
-                                <v-data-table :headers="headers" :items="templateSelect">
+                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
                                         <tr>
                                             <td>{{props.item.text}}</td>
