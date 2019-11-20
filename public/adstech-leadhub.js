@@ -13,7 +13,7 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetch(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -56,15 +56,26 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
     var name = ''
     var city = ''
     var bussiness = ''
+    var position = ''
+    if (style.left == '45') {
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom -2}%;
+            left: ${parseInt(style.left)+2}%;
+            right: ${style.right}%;
+            top:${style.top}%;
+        }`
+    }else{
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom - 2}%;
+            left: ${parseInt(style.left)}%;
+            right: ${style.right}%;
+            top:${style.top}%;
+        }`
+    }
     var css = `<style>
-                    .adstech-group-btn {
-                        position:fixed;
-                        bottom: ${style.bottom}%;
-                        left: ${parseInt(style.left)+2}%;
-                        right: ${style.right}%;
-                        top:${style.top}%;
-                        
-                    }
+                    ${position}
 
                     .adstech-btn {
                         border: none;
@@ -81,8 +92,10 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     .adstech-form {
                         display: none;
                         position: fixed;
-                        top: 30%;
-                        left: 42%;
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%,-50%);
                         border: 3px solid #f1f1f1;
                         z-index: 999999;
                     }
@@ -137,15 +150,16 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                     }
                     #adstech-alert {
                         padding: 20px;
-                        background-color:#e09900; /* Red */
+                        background-color:#e09900
                         color: white;
                         margin-bottom: 15px;
                         display: none;
                         width:20%;
                         position: fixed;
-                        bottom:30%;
-                        left:40%;
-                        text-align:center
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%,-50%);
                       }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
@@ -295,7 +309,7 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
+        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

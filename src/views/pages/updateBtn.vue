@@ -171,9 +171,9 @@
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
                                             <v-layout v-for="(properti,key) in properties" :key="key" xs12>
-                                                <v-select v-model="properti.value" :items="input"
+                                                <v-select v-model="properti.value" disabled :items="input"
                                                     v-if="key == 0 || key ==1 || key ==2" item-text="label"
-                                                    item-value="value" label="Chọn trường nhập" outline></v-select>
+                                                    item-value="value" label="Trường bắt buộc" outline></v-select>
                                                 <v-select v-model="properti.value" :items="input1"
                                                     v-if="key == 3 || key == 4" item-text="label" item-value="value"
                                                     label="Chọn trường nhập" outline></v-select>
@@ -200,8 +200,7 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${properties.length} trường`)">
+                                    <v-btn color="green darken-1" text dark @click="form = true, checkForm()">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -390,7 +389,7 @@
                     value: 'phone',
                     label: 'Số điện thoại'
                 }],
-                input1:[{
+                input1: [{
                     value: 'city',
                     label: 'Thành phố'
                 }, {
@@ -418,7 +417,8 @@
                 textCall: '',
                 alertFinish: 'Đăng ký thành công',
                 propertiesbtn: [],
-                dialogNameBtn: false
+                dialogNameBtn: false,
+                requestApi: true
             }
         },
         watch: {
@@ -535,7 +535,21 @@
                 this.properties.splice(data, 1)
                 this.properties = [...this.properties]
             },
+            checkForm() {
+                this.propertiesbtn = []
+                for (let i = 0; i < this.properties.length; i++) {
+                    this.propertiesbtn.push(this.properties[i].value)
+                }
+                if (this.propertiesbtn.indexOf('') > 0) {
+                    this.alertError(`Trường ${this.propertiesbtn.indexOf('') + 1} bị rỗng`)
+                    this.requestApi = false
+                } else {
+                    this.alertSuccess(`Lưu nút form thành công với ${this.propertiesbtn.length} trường`)
+                    this.requestApi = true
+                }
+            },
             createGbtn() {
+                this.checkForm()
                 if (this.small == true) {
                     this.sizeButton = 40
                 } else if (this.small == false && this.large == false) {
@@ -543,17 +557,15 @@
                 } else {
                     this.sizeButton = 70
                 }
-                for (let i = 0; i < this.properties.length; i++) {
-                    this.propertiesbtn.push(this.properties[i].value)
-                }
+                const output = [...new Set(this.propertiesbtn)]
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
-                    formMessage: "Để lại lời nhắn hello",
-                    formMessageReturn: "Gửi thành công!",
+                    formMessage: "Để lại lời nhắn",
+                    formMessageReturn: this.alertFinish,
                     title: this.nameForm,
                     type: "FORM",
-                    properties: this.propertiesbtn,
+                    properties: output,
 
                 }
                 let call = {
@@ -565,46 +577,50 @@
                     type: "CALL",
                 }
                 if (this.call == true && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            leadHubButtonGroupId: this.idGroupBtn,
-                            accountId: this.idAccount,
-                            listButton: [
-                                form,
-                                call
-                            ],
-                            style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: 2,
-                                size: `${this.sizeButton}`,
-                            }
-                        }
-                        this.updateGbtn(btn)
+                    if (this.text == null || this.text == '') {
+                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
                     } else {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            leadHubButtonGroupId: this.idGroupBtn,
-                            accountId: this.idAccount,
-                            listButton: [
-                                form,
-                                call
-                            ],
-                            style: {
-                                bottom: this.bottom,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: this.left,
-                                size: `${this.sizeButton}`,
+                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
+                                listButton: [
+                                    form,
+                                    call
+                                ],
+                                style: {
+                                    bottom: 5,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: 2,
+                                    size: `${this.sizeButton}`,
+                                }
                             }
+                            this.updateGbtn(btn)
+                        } else {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
+                                listButton: [
+                                    form,
+                                    call
+                                ],
+                                style: {
+                                    bottom: this.bottom,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: this.left,
+                                    size: `${this.sizeButton}`,
+                                }
+                            }
+                            this.updateGbtn(btn)
                         }
-                        this.updateGbtn(btn)
                     }
                 } else if (this.call == false && this.form == true) {
                     if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
@@ -647,58 +663,65 @@
                         this.updateGbtn(btn)
                     }
                 } else if (this.call == true && this.form == false) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            leadHubButtonGroupId: this.idGroupBtn,
-                            accountId: this.idAccount,
-                            listButton: [
-                                call
-                            ],
-                            style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: 2,
-                                size: `${this.sizeButton}`,
-                            }
-                        }
-                        this.updateGbtn(btn)
+                    if (this.text == null || this.text == '') {
+                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
                     } else {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            leadHubButtonGroupId: this.idGroupBtn,
-                            accountId: this.idAccount,
-                            listButton: [
-                                call
-                            ],
-                            style: {
-                                bottom: this.bottom,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: this.left,
-                                size: `${this.sizeButton}`,
+                        this.requestApi = true
+                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
+                                listButton: [
+                                    call
+                                ],
+                                style: {
+                                    bottom: 5,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: 2,
+                                    size: `${this.sizeButton}`,
+                                }
                             }
+                            this.updateGbtn(btn)
+                        } else {
+                            let btn = {
+                                name: this.nameBtn,
+                                vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
+                                listButton: [
+                                    call
+                                ],
+                                style: {
+                                    bottom: this.bottom,
+                                    top: this.top,
+                                    right: this.right,
+                                    color: this.colorText,
+                                    left: this.left,
+                                    size: `${this.sizeButton}`,
+                                }
+                            }
+                            this.updateGbtn(btn)
                         }
-                        this.updateGbtn(btn)
                     }
                 } else {
                     this.alertError("Bạn chưa chọn nút cần tạo")
                 }
             },
             updateGbtn(btn) {
-                leadhubService.updateGbtn(this.idAccount, btn).then(result => {
-                    if (result.code == "SUCCESS") {
-                        this.alertSuccess('Sửa thành công')
-                        router.replace(`/contacts/${this.idAccount}/leadhub`)
-                    } else {
-                        this.alertError(result.message)
-                    }
-                })
+                if (this.requestApi == true) {
+                    leadhubService.updateGbtn(this.idAccount, btn).then(result => {
+                        if (result.code == "SUCCESS") {
+                            this.alertSuccess('Sửa thành công')
+                            router.replace(`/contacts/${this.idAccount}/leadhub`)
+                        } else {
+                            this.alertError(result.message)
+                        }
+                    })
+                }
             },
             getBtnInfo() {
                 leadhubService.getInfoBtn(this.idAccount, this.idGroupBtn).then(result => {
@@ -715,6 +738,7 @@
                             this.properties = []
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
+                            this.nameForm = result.response.listButton[i].title
                             for (let index = 0; index < result.response.listButton[i].properties
                                 .length; index++) {
                                 let a = {
