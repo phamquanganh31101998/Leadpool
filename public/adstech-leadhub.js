@@ -13,7 +13,7 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetch(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -173,13 +173,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         if (style.color == "#fff") {
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }else if(style.color == "#000"){
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }
@@ -203,11 +203,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         }
         if (style.color == "#fff") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }else if(style.color == "#000"){
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         form1 = `<div class="adstech-form" id="myForm">
@@ -314,7 +314,7 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
+        fetch(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
