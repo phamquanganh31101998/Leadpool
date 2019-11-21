@@ -3,7 +3,7 @@
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <!-- <h3 style="position: absolute; font-size: 36px;" class="ml-3">Quản lý mẫu email</h3> -->
-                <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý mẫu email</h1>
+                <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý email</h1>
                 <br>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
@@ -19,28 +19,31 @@
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
         <v-layout row wrap>
-            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+            <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <v-list-tile @click="page = 'manage'">
                         <v-list-tile-content :style="fontWeight[0]">
                             Quản lý mẫu email
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="page = 'createSchedule'">
+                        <v-list-tile-content :style="fontWeight[1]">
+                            Đặt lịch gửi email
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="page = 'manageSchedule'">
+                        <v-list-tile-content :style="fontWeight[2]">
+                            Quản lý lịch gửi email
+                        </v-list-tile-content>
+                    </v-list-tile>
                 </v-list>
                 <br>
                 <v-divider :divider="divider"></v-divider>
-            </v-flex> -->
-            <v-flex xs12 sm12 md12 lg12 xl12 v-if="page=='manage'">
+            </v-flex>
+            <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
                 <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card>
-                            <v-card-title>
-                                <!-- <h2 style="font-size: 20px;">Nội dung mẫu: </h2> -->
-                                <!-- <span class="ml-4"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span> -->
-                                <!-- <h2 style="padding-top: 20px; position: absolute; font-size: 18px;">Nội dung mẫu: </h2>
-                                <span class="ml-4" style="padding-top: 20px; position: absolute; padding-left: 120px; font-size: 18px;"><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span> -->
-                                
-                            </v-card-title>
                             <v-card-text>
                                 <span class="ml-4"><v-btn color="#3E82F7" dark @click="create.editorDialog = true"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
@@ -59,10 +62,132 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='create'">
-                <br>
-                <br>
-                <br>
+            <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='createSchedule'">
+                <v-layout row>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-layout row>
+                            <v-flex xs12 sm12 md3 lg3 xl3>
+                                <v-card>
+                                    <v-card-text>
+                                        <span class="ml-4"><v-select prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
+                                        <v-divider :divider="divider"></v-divider>
+                                        <v-select prepend-icon="people" :items="createSchedule.list" label="Chọn danh sách gửi" v-model="createSchedule.selectedListToSendSMS"></v-select>
+                                        <v-divider :divider="divider"></v-divider>
+                                        <span class="ml-4">
+                                            <v-menu ref="menu1" v-model="createSchedule.menu1" :close-on-content-click="false" lazy
+                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                                <template v-slot:activator="{ on }">
+                                                    <v-text-field v-model="createSchedule.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
+                                                        v-on="on">
+                                                    </v-text-field>
+                                                </template>
+                                                <v-date-picker v-model="createSchedule.date"  no-title @input="createSchedule.menu1 = false"></v-date-picker>
+                                            </v-menu>
+                                        </span>
+                                        <span class="ml-4">
+                                            <v-select prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
+                                        </span>
+                                    </v-card-text>
+                                </v-card>
+                                <v-card>
+                                    <v-card-text>
+                                        <h4>Đã chọn {{createSchedule.numberOfRecipient}} người nhận</h4>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn dark block color="#3E82F7" @click="sendEmail()">Đặt lịch gửi</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                            <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
+                                <v-card v-if="createSchedule.displayContacts.length > 0">
+                                    <v-card-title>
+                                        <v-layout row wrap>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <h2>Danh sách</h2>
+                                            </v-flex>
+                                            <!-- <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
+                                            </v-flex> -->
+                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
+                                            </v-flex> -->
+                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                <v-btn color="success" @click="markAllContact()">
+                                                    Chọn tất cả
+                                                </v-btn>
+                                            </v-flex>
+                                            
+                                            <v-flex xs2 sm2 md2 lg2 xl2>
+                                                <v-btn @click="unmarkAllContact()">
+                                                    Bỏ chọn tất cả
+                                                </v-btn>
+                                            </v-flex> -->
+                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.emailToSend.length}} người nhận)</v-alert>
+                                            </v-flex> -->
+                                        </v-layout>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                            <template v-slot:items="props">
+                                                <tr>
+                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                            v-model="props.item.chosen" 
+                                                            @change="getEmailToSend()"
+                                                            >
+                                                            </v-checkbox></td>
+                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                    <td>{{ props.item.email }}</td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                        <br>
+                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                        <br>
+
+                                    
+                                    </v-card-text>
+                                </v-card>
+                                <v-card class="mt-3" v-if="createSchedule.additionalContacts.length > 0">
+                                    <v-card-title>
+                                        <v-layout row wrap>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <h2>Chọn thêm người nhận</h2>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
+                                            <template v-slot:items="props">
+                                                <tr>
+                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                            v-model="props.item.chosen" 
+                                                            @change="getEmailToSend()"
+                                                            >
+                                                            </v-checkbox></td>
+                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                    <td>{{ props.item.email }}</td>
+                                                </tr>
+                                            </template>
+                                        </v-data-table>
+                                        <br>
+                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                        <br>
+
+                                    
+                                    </v-card-text>
+                                </v-card>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+            <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manageSchedule'">
+                
             </v-flex>
         </v-layout>
         <v-dialog v-model="create.dialog" width="30%" persistent>
@@ -171,13 +296,17 @@
     </v-content>
 </template>
 <script>
+import listService from '../../services/list.services'
 import moment from 'moment'
+import contactService from '../../services/contacts.service'
 import emailService from '../../services/email.service'
 export default {
     data(){
         return{
+            currentUser: null,
+            access: true,
             page: 'manage',
-            fontWeight: ['font-weight: bold', ''],
+            fontWeight: ['font-weight: bold', '', ''],
             templates: [],
             templateSelect: [],
             templateId: '',
@@ -220,7 +349,70 @@ export default {
                 successfulDialog: false,
                 failDialog: false
             },
-            viewDialog: false
+            viewDialog: false,
+            createSchedule: {
+                displayContacts: [],
+                allContacts: [],
+                additionalContacts: [],
+                chosenContacts: [],
+                chosenCampaign: '',
+                chosenContentId: '',
+                chosenContent: '',
+                list: [],
+                selectedListWithOptions: 'all',
+                headers: [
+                    {
+                        text: 'CHỌN',
+                        align: 'left',
+                        value: 'name',
+                        sortable: false
+                    },
+                    {
+                        text: 'TÊN LEAD',
+                        align: 'left',
+                        value: 'calories',
+                        sortable: false
+                    },
+                    {
+                        text: 'EMAIL',
+                        align: 'left',
+                        value: 'fat',
+                        sortable: false
+                    },
+                ],
+                page: 1,
+                //lưu id của list được chọn
+                selectedListToSendSMS: '',
+                pages: 1,
+                remain: 10,
+                emailToSend: [],
+                numberOfRecipient: 0,
+                exceedRecipientAlert: false,
+                date: new Date().toISOString().substr(0, 10),
+                // dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+                dateFormatted: '',
+                menu1: false,
+                time: '08:00',
+                menu2: false,
+                modal2: false,
+                timeToChoose: [
+                    '00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', 
+                    '02:00', '02:15', '02:30', '02:45', '03:00', '03:15', '03:30', '03:45',
+                    '04:00', '04:15', '04:30', '04:45', '05:00', '05:15', '05:30', '05:45',
+                    '06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45',
+                    '08:00', '08:15', '08:30', '08:45', '09:00', '09:15', '09:30', '09:45',
+                    '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '11:45',
+                    '12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30', '13:45',
+                    '14:00', '14:15', '14:30', '14:45', '15:00', '15:15', '15:30', '15:45',
+                    '16:00', '16:15', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45',
+                    '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45',
+                    '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
+                    '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
+                ],
+            },
+            manageSchedule: {
+
+            }
         }
     },
     props: {
@@ -231,12 +423,15 @@ export default {
     },
     watch: {
         page(){
-            this.fontWeight = ['',''];
+            this.fontWeight = ['','',''];
             if(this.page == 'manage'){
                 this.fontWeight[0] = 'font-weight: bold';
             }
-            else {
+            else if (this.page == 'createSchedule'){
                 this.fontWeight[1] = 'font-weight: bold';
+            }
+            else {
+                this.fontWeight[2] = 'font-weight: bold'
             }
         },
         'create.editorDialog'(){
@@ -244,9 +439,41 @@ export default {
                 this.grape()
             }
             this.counter = this.counter + 1 ;
-        }
+        },
+        'createSchedule.selectedListToSendSMS'(){
+            this.createSchedule.displayContacts = [];
+            this.createSchedule.additionalContacts = [];
+            //lấy danh sách các contact để hiển thị
+            for (let i = 0; i < this.createSchedule.list.length; i++){
+                if (this.createSchedule.selectedListToSendSMS == this.createSchedule.list[i].value){
+                    this.createSchedule.displayContacts = this.createSchedule.list[i].contact;
+                }
+            }
+            for (let i = 0; i < this.createSchedule.displayContacts.length; i++){
+                this.createSchedule.displayContacts[i].chosen = true;
+            }
+            //lấy danh sách các contact để chọn thêm
+            for (let k = 0; k < this.createSchedule.allContacts.length; k++){
+                let found = false;
+                for (let j = 0; j < this.createSchedule.displayContacts.length; j++){
+                    if(this.createSchedule.displayContacts[j].contactId == this.createSchedule.allContacts[k].contactId){
+                        found = true;
+                    }
+                }
+                if (found == false){
+                    this.createSchedule.additionalContacts.push(this.createSchedule.allContacts[k])
+                }
+            }
+            for (let i = 0; i < this.createSchedule.additionalContacts.length; i++){
+                this.createSchedule.additionalContacts[i].chosen = false;
+            }
+            this.createSchedule.additionalContacts = [...this.createSchedule.additionalContacts];
+            this.createSchedule.displayContacts = [...this.createSchedule.displayContacts]
+            this.getEmailToSend()
+        },
     },
     methods: {
+        //manage template
         covertime(time) {
             if (_.isNull(time)) return '';
             return moment(time).format('DD/MM/YYYY HH:mm:ss')
@@ -765,12 +992,158 @@ export default {
                 this.create.editorDialog = false;
                 this.getEmailTemplate()
             })
+        },
+
+
+
+
+
+        //create schedule
+        getList(){
+            listService.getList(this.idAccount).then(result => {
+                let res = result.response;
+                for (let i = 0; i < res.length; i++){
+                    listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
+                        let obj = {
+                            text: res[i].name,
+                            value: res[i].contactConditionGroupId
+                        }
+                        for (let k = 0; k < result.response.length; k++){
+                            result.response[k].chosen = true;
+                        }
+                        obj.contact = result.response;
+                        this.createSchedule.list.push(obj);
+                    })
+                }
+                // console.log(this.createSchedule.list);
+            }).then(() => {
+                this.getAllContact()
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        getAllContact(){
+            contactService.getAllContact(this.idAccount, 1).then(result => {
+                for (let i = 1; i <= result.response.totalPage;i++){
+                    contactService.getAllContact(this.idAccount, i).then(result => {
+                        for(let k = 0; k < result.response.results.length; k++){
+                            result.response.results[k].chosen = true;
+                            this.createSchedule.allContacts.push(result.response.results[k]);
+                        }
+                    })
+                }
+                // console.log(this.createSchedule.allContacts.length)
+                let obj = {
+                    text: 'Tất cả các Lead',
+                    value: 'all',
+                    contact: this.createSchedule.allContacts
+                }
+                this.createSchedule.list.unshift(obj);
+                console.log(this.createSchedule.list)
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        getChosenContactFromListByListId(id){
+            let result = []
+            let allContactArray = [];
+            //Lấy mảng tất cả các contact
+            if(id == 'additional'){
+                allContactArray = this.createSchedule.additionalContacts;
+            }
+            else {
+                for (let i = 0; i < this.createSchedule.list.length;i++){
+                    if(id == this.createSchedule.list[i].value){
+                        allContactArray = this.createSchedule.list[i].contact
+                    }
+                }
+            }
+            //Lấy các contact được chọn từ mảng tất cả các contact
+            for (let i = 0; i < allContactArray.length;i++){
+                if(allContactArray[i].chosen == true){
+                    result.push(allContactArray[i]);
+                }
+            }
+            return result;
+        },
+        getEmailToSend(){
+            let contactToSend = [];
+            this.createSchedule.emailToSend = []
+            let id = this.createSchedule.selectedListToSendSMS;
+            contactToSend = [...this.getChosenContactFromListByListId(id), ...this.getChosenContactFromListByListId('additional')]
+            let uniqueContact = [];
+            for (let k = 0; k < contactToSend.length;k++){
+                let found = false;
+                for (let j = 0; j < uniqueContact.length; j++){
+                    if(uniqueContact[j].contactId == contactToSend[k].contactId){
+                        found = true;
+                    }
+                }
+                if(found == false){
+                    uniqueContact.push(contactToSend[k]);
+                }
+            }
+            for (let index = 0; index < uniqueContact.length; index++){
+                let object = {
+                    email: uniqueContact[index].email,
+                    contactId: uniqueContact[index].contactId
+                }
+                this.createSchedule.emailToSend.push(object);
+            }
+            console.log(this.createSchedule.emailToSend);
+            this.createSchedule.numberOfRecipient = this.createSchedule.emailToSend.length;
+        },
+        sendEmail(){
+            let timeString = this.createSchedule.date + 'T' + this.createSchedule.time
+            let timeToSend = moment(timeString).utc().format().substring(0, 19)
+            // let listPhone = [];
+            // for (let i = 0; i < this.createSchedule.emailToSend.length;i++){
+            //     let obj = {
+            //         phoneNumber: this.createSchedule.emailToSend[i]
+            //     }
+            //     listPhone.push(obj)
+            // }
+            let body = {
+                emailTemplateId: this.createSchedule.chosenContentId,
+                timeToSend: timeToSend,
+                emailScheduleDetails: this.createSchedule.emailToSend
+            }
+            console.log(body)
+            // SMSService.createSchedule(this.idAccount, body).then(result => {
+            //     console.log(result);
+            //     this.getSchedule();
+            //     this.page = 'schedule'
+            // }).catch(error => {
+            //     console.log(error)
+            // })
+        },
+
+        
+        //manage schedule
+
+
+
+
+
+
+        getCurrentUser(){
+            this.currentUser = JSON.parse(localStorage.getItem('user'));
+            let role = this.currentUser.authorities;
+            for (let i = 0; i < role.length;i++){
+                if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+                    this.access = true;
+                }
+            }
+            if (this.access == true){
+                this.getEmailTemplate();
+                this.getList();
+            }
         }
     },
 
     created(){
         this.$store.state.colorNumber = 4;
-        this.getEmailTemplate();
+        this.getCurrentUser();
         // console.log(result)
         // this.grape()
     }

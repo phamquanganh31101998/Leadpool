@@ -208,12 +208,17 @@ const router = new Router({
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
         if (role) {
-          let user = JSON.parse(localStorage.getItem('user'));
-          if(user.accountId){
-            next()
+          if (role == 'USER_NOT_ACTIVE'){
+            next('/login');
           }
           else {
-            next('/sorry')
+            let user = JSON.parse(localStorage.getItem('user'));
+              if(user.accountId){
+                next();
+              }
+              else {
+                next('/sorry');
+              }
           }
         } else {
           next('/login')

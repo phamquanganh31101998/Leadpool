@@ -51,7 +51,7 @@
                                     </v-layout>
                                 </v-card-text>
                             </v-layout>
-                            <v-layout row wrap v-if="access == false">
+                            <v-layout row wrap v-if="cannotEdit">
                                 <v-flex xs12 sm12 md12 lg12 xl12>
                                     <v-card flat width="100%">
                                         <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
@@ -397,7 +397,7 @@
                                                                 
                                                             </template>
                                                             <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access">
+                                                                <v-text-field :label="item.title" v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
                                                             
@@ -725,6 +725,7 @@
         },
         data: () => ({
             actionLog: {
+                
                 failDialog: false,
                 dialog: false,
                 changeArray: [],
@@ -752,6 +753,7 @@
                 ],
                 title: ''
             },
+            cannotEdit: false,
             lifecycleStages: [
                 'Lead',
                 'Subscriber',
@@ -928,6 +930,11 @@
                 value: ''
             }
         }),
+        watch: {
+            // access(){
+            //     this.cannotEdit = !this.access;
+            // }
+        },
         methods:{
             updateEmail(){
                 eventBus.updateEmail();
@@ -1259,6 +1266,9 @@
                     if (role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT' || role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
                         this.canSendSMS = true;
                     }
+                }
+                if (this.access == false){
+                    this.cannotEdit = true;
                 }
             }
         },

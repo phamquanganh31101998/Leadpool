@@ -765,7 +765,7 @@
                                         <h2>Không có quyền truy cập</h2>
                                     </v-card-title>
                                     <v-card-text>
-                                        Bạn phải có quyền <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> và <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
                                         <br>
                                         Hãy liên hệ với Quản lý để được cấp quyền truy cập.
                                     </v-card-text>
@@ -1153,30 +1153,8 @@ export default {
                     value: 'all',
                     contact: this.send.allContacts
                 }
-                
                 this.send.list.unshift(obj);
-                // console.log(this.send.list)
-                // this.send.displayContacts = this.send.allContacts;
-                // this.send.allContacts.filter(e => {
-                //     console.log(e)
-                //     this.send.phoneNumberToSend.push(e.phone)
-                // })
-                // for (let i = 0; i < this.send.allContacts.length; i++){
-                //     // console.log(i)
-                //     this.send.phoneNumberToSend.push(this.send.allContacts[i].phone)
-                // }
-                // // console.log(this.send.phoneNumberToSend)
-                
-                // if (this.send.phoneNumberToSend.length > this.send.remain){
-                //     console.log('lon hon')
-                //     this.send.exceedRecipientAlert = true;
-                // }
-                // else {
-                //     console.log('nho hon')
-                //     this.send.exceedRecipientAlert = false;
-                // }
             })
-            // console.log(this.send.pages);
         },
         checkIncludeContact(array, id){
             let result = false;
@@ -1576,31 +1554,6 @@ export default {
             })
         },
         openScheduleDetailDialog(id){
-            // SMSService.getSchedule(this.idAccount).then(result => {
-            //     console.log(result);
-            //     let tempArr = []
-            //     let data = result.response;
-            //     for (let i = 0; i < data.length; i++){
-            //         let name = '';
-            //         if (data[i].device.campaign == null){
-            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
-            //         }
-            //         else{
-            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-            //         }
-            //         let obj = {
-            //             content: data[i].content,
-            //             campaign: name,
-            //             time: this.coverTime(data[i].timeToSend),
-            //             status: data[i].status,
-            //             listPhone: data[i].listPhone,
-            //             number: i,
-            //             id: data[i].smsScheduleId
-            //         }
-            //         tempArr.push(obj);
-            //     }
-            //     this.schedule.list = [...tempArr]
-            // })
             let obj = null;
             SMSService.getSchedule(this.idAccount).then(result => {
                 console.log(result);
@@ -1633,43 +1586,12 @@ export default {
                     console.log(error)
                 })
             }
-            // SMSService.getSchedule(this.idAccount).then(result => {
-            //     console.log(result);
-            //     let tempArr = [];
-            //     let data = result.response;
-            //     for (let i = 0; i < data.length; i++){
-            //         let name = '';
-            //         if (data[i].device.campaign == null){
-            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
-            //         }
-            //         else{
-            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-            //         }
-            //         let obj = {
-            //             content: data[i].content,
-            //             campaign: name,
-            //             time: this.coverTime2(data[i].timeToSend),
-            //             status: data[i].status,
-            //             listPhone: data[i].listPhone,
-            //             number: i,
-            //             id: data[i].smsScheduleId
-            //         }
-            //         tempArr.push(obj);
-            //     }
-            //     // for(let i = 0; i < tempArr.length; i++){
-            //     //     if (this.schedule.list[i] != tempArr[i]){
-            //     //         this.schedule.list[i] = tempArr[i];
-            //     //     }
-            //     // }
-                
-            //     this.schedule.list = [...tempArr];
-            // })
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
             for (let i = 0; i < role.length;i++){
-                if (role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
+                if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
                     this.access = true;
                 }
             }
