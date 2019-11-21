@@ -4,6 +4,10 @@ function f() {
     var acId = ''
     var btnId = ''
     var scripts = document.getElementsByTagName("script");
+    let a = localStorage.getItem('lead')
+    if (a != null || a!= undefined || a != '') {
+        createLead(a)
+    }
     for (let i = 0; i < scripts.length; i++) {
         if (scripts[i].src.indexOf('&gBtnId=') > 0) {
             var src = scripts[i].src.split('?')[1]
@@ -13,13 +17,13 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         })
-    }).then(handle).then(result => {
+    },4).then(result => {
         var style = result.response.style
         var vertical = result.response.vertical
         var styleBtnCall = null
@@ -34,7 +38,20 @@ function f() {
         writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId)
     })
 }
+async function fetchRetry (url, options, n) {
+    for (let i = 0; i < n; i++) {
 
+        try
+        {
+            return await fetch(url, options).then(handle).then(result => { return result })
+        }
+        catch (err)
+        {
+            const isLastAttempt = i + 1 === n;
+            if (isLastAttempt) throw err;
+        }
+    }
+}
 function handle(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -272,7 +289,6 @@ function closeAlert() {
 function send(acId) {
     const form = document.getElementById("form-adstech")
     form.addEventListener('submit', e => {
-        
         const formData = new FormData(e.target)
         var email = formData.get('email')
         var name = formData.get('name')
@@ -314,18 +330,27 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
+        createLead(body)
+        e.preventDefault()
+        closeForm()
+    })
+}
+function createLead(body) {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body)
-        }).then(handle).then(result => {
+        },4).then(result => {
+            if (result.status == "200") {
                 openAlert()
-            setTimeout(function () { closeAlert() },3000)
+                setTimeout(function () { closeAlert() },3000)
+            }else{
+                localStorage.setItem('lead'.JSON.stringify(body))
+                openAlert()
+                setTimeout(function () { closeAlert() },3000)
+            }
         })
-        e.preventDefault()
-        closeForm()
-    })
 }
