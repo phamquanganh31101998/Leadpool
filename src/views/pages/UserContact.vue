@@ -969,45 +969,58 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('DD/MM/YYYY, HH:mm:ss')
             },
+            checkString(str){
+                if (str == null || str == undefined){
+                    return ''
+                }
+                else {
+                    return str;
+                }
+            },
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+                    result.response.firstName = this.checkString(result.response.firstName);
+                    result.response.lastName = this.checkString(result.response.lastName);
+                    result.response.email = this.checkString(result.response.email);
+
                     this.basicInfo.firstName = result.response.firstName;
                     this.basicInfo.lastName = result.response.lastName;
                     this.basicInfo.email = result.response.email;
                     this.detail = result.response
                     // console.log(this.detail)
+                    
                     this.items = [{
                             title: 'Vòng đời',
                             description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
-                            value: result.response.lifecycleStage,
+                            value: this.checkString(result.response.lifecycleStage),
                             dialog: false,
                             property: 'lifecycleStage'
                         },
                         {
                             title: 'Trạng thái',
                             description: "The contact's sales, prospecting or outreach status",
-                            value: result.response.leadStatus,
+                            value: this.checkString(result.response.leadStatus),
                             dialog: false,
                             property: 'leadStatus'
                         },
                         {
                             title: 'Thuộc sở hữu',
                             description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
-                            value: result.response.contactOwner,
+                            value: this.checkString(result.response.contactOwner),
                             dialog: false,
                             property: 'contactOwner'
                         },
                         {
                             title: 'Số điện thoại',
                             description: "A contact's primary phone number",
-                            value: result.response.phone,
+                            value: this.checkString(result.response.phone),
                             dialog: false,
                             property: 'phone'
                         },
                         {
                             title: 'Email',
                             description: "A contact's email address",
-                            value: result.response.email,
+                            value: this.checkString(result.response.email),
                             dialog: false,
                             property: 'email'
                         },
@@ -1028,14 +1041,14 @@
                         {
                             title: 'Thành phố',
                             description: 'Thành phố',
-                            value: result.response.city,
+                            value: this.checkString(result.response.city),
                             dialog: false,
                             property: 'city'
                         },
                         {
                             title: 'Ngành nghề',
                             description: 'phân loại ngành nghề',
-                            value: result.response.bussiness,
+                            value: this.checkString(result.response.bussiness),
                             dialog: false,
                             property: 'bussiness'
                         }]
@@ -1252,6 +1265,7 @@
         created(){
             this.getDetail();
             this.getAllEmail();
+            // this.getCurrentUser()
             this.$store.state.colorNumber = 0;
         },
         components: {
