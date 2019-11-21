@@ -272,7 +272,7 @@ function closeAlert() {
 function send(acId) {
     const form = document.querySelector('form')
     form.addEventListener('submit', e => {
-
+        e.preventDefault()
         const formData = new FormData(e.target)
         var email = formData.get('email')
         var name = formData.get('name')
@@ -325,7 +325,6 @@ function send(acId) {
                 openAlert()
             setTimeout(function () { closeAlert() },3000)
         })
-        e.preventDefault()
         closeForm()
     })
 }
