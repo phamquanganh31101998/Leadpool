@@ -70,7 +70,9 @@
                             <v-flex xs12 sm12 md3 lg3 xl3>
                                 <v-card>
                                     <v-card-text>
-                                        <span class="ml-4"><v-select :items="this.templateSelect" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
+                                        <span class="ml-4"><v-select prepend-icon="account_box" :items="allEmail" v-model="createSchedule.from" label="Chọn tài khoản gửi email"></v-select></span>
+                                        <span class="ml-4"><v-text-field prepend-icon="title" v-model="createSchedule.title" label="Tiêu đề"></v-text-field></span>
+                                        <span class="ml-4"><v-select :items="templateSelect" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
 
                                         <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate()">Xem mẫu email </a></span>
                                         <br>
@@ -90,7 +92,7 @@
                                             </v-menu>
                                         </span>
                                         <span class="ml-4">
-                                            <v-select prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
+                                            <v-select  prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
                                         </span>
                                     </v-card-text>
                                 </v-card>
@@ -99,7 +101,7 @@
                                         <h4>Đã chọn {{createSchedule.numberOfRecipient}} người nhận</h4>
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-btn dark block color="#3E82F7" @click="sendEmail()">Đặt lịch gửi</v-btn>
+                                        <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-flex>
@@ -360,6 +362,34 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="createSchedule.successfulDialog" @click:outside="createSchedule.successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="#00C853">
+                    <v-toolbar-title>Thành công</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Tạo lịch gửi thành công
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn flat color="#00C853" @click="createSchedule.successfulDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="createSchedule.failDialog" @click:outside="createSchedule.failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Thất bại</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Đã có lỗi xảy ra khi tạo lịch gửi. Xin hãy thử lại.
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn flat color="red" @click="createSchedule.failDialog = false">OK</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-content>
 </template>
 <script>
@@ -370,6 +400,7 @@ import emailService from '../../services/email.service'
 export default {
     data(){
         return{
+            allEmail: [],
             currentUser: null,
             access: true,
             page: 'manage',
@@ -414,10 +445,12 @@ export default {
                 btn: true,
                 editorDialog: false,
                 successfulDialog: false,
-                failDialog: false
+                failDialog: false,
             },
             viewDialog: false,
             createSchedule: {
+                successfulDialog: false,
+                failDialog: false,
                 displayContacts: [],
                 allContacts: [],
                 additionalContacts: [],
@@ -476,6 +509,8 @@ export default {
                     '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
                 ],
+                from: '',
+                title: ''
             },
             manageSchedule: {
                 headers: [
@@ -517,13 +552,13 @@ export default {
                     listEmail: [],
                     headers: [
                         {
-                            text: 'ĐỊA CHỈ GỬI',
+                            text: 'NGƯỜI NHẬN',
                             align: 'left',
                             value: 'name',
                             sortable: false
                         },
                         {
-                            text: 'THỜI GIAN GỬI',
+                            text: 'THỜI GIAN NHẬN',
                             align: 'left',
                             value: 'calories',
                             sortable: false
@@ -1148,6 +1183,20 @@ export default {
                 console.log(error);
             })
         },
+        getAllEmail(){
+            this.allEmail = [];
+            emailService.getAllEmail(this.idAccount).then(result => {
+                result.response.filter(e => {
+                    const obj = {
+                        text: e.name + ' (' + e.email + ')',
+                        value: e.email,
+                        name: e.name
+                    }
+                    this.allEmail.push(obj);
+                });
+                console.log(this.allEmail)
+            })
+        },
         getAllContact(){
             contactService.getAllContact(this.idAccount, 1).then(result => {
                 for (let i = 1; i <= result.response.totalPage;i++){
@@ -1224,6 +1273,8 @@ export default {
             let timeToSend = moment(timeString).utc().format().substring(0, 19)
             
             let body = {
+                from: this.createSchedule.from,
+                title: this.createSchedule.title,
                 emailTemplateId: this.createSchedule.chosenContentId,
                 timeToSend: timeToSend,
                 emailScheduleDetails: this.createSchedule.emailToSend
@@ -1231,8 +1282,14 @@ export default {
 
             console.log(body)
             emailService.createEmailSchedule(this.idAccount, body).then(result => {
-                console.log(result)
+                console.log(result);
+                this.createSchedule.successfulDialog = true;
+                this.getSchedule();
+
+                this.page = 'manageSchedule';
+                
             }).catch(error => {
+                this.createSchedule.failDialog = true;
                 console.log(error);
             })
         },
@@ -1282,7 +1339,7 @@ export default {
             this.manageSchedule.list = [];
             emailService.getEmailSchedule(this.idAccount).then(result => {
                 console.log(result);
-                let data = result.response;
+                let data = result.response.reverse();
                 for (let i = 0; i < data.length; i++){
                     
                     let obj = {
@@ -1335,7 +1392,7 @@ export default {
             let name = '';
             for(let i = 0; i < this.templateSelect.length; i++){
                 if (this.templateSelect[i].value == id){
-                    console.log(id + '---' + this.templateSelect[i].value)
+                    // console.log(id + '---' + this.templateSelect[i].value)
                     return this.templateSelect[i].text;
                 }
             }
@@ -1350,6 +1407,7 @@ export default {
                 }
             }
             if (this.access == true){
+                this.getAllEmail()
                 this.getEmailTemplate();
                 this.getList();
                 // this.getSchedule();
