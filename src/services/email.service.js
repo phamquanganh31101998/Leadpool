@@ -5,7 +5,16 @@ import { responseService } from './response.service'
 export default {
     sendEmail, createEmailTemplate, getEmailTemplate, 
     sendEmailViaTemplate, getEmailHistory, createEmailSchedule,
-    getEmailSchedule, activateSchedule, deactivateSchedule
+    getEmailSchedule, activateSchedule, deactivateSchedule,
+    getAllEmail
+}
+function getAllEmail(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/user/getAllEmail`
+    return responseService.fetchRetry(endpoint, request, 1)
 }
 
 function sendEmail(idAccount, idContact, body){
