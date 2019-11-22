@@ -1022,7 +1022,7 @@ export default {
             schedule: {
                 headers: [
                     {
-                        text: 'TÊN CHIẾN DỊCH',
+                        text: 'TÊN MẪU TIN NHẮN',
                         align: 'left',
                         value: 'name',
                         sortable: false
@@ -1044,7 +1044,7 @@ export default {
                         align: 'right',
                         value: 'fat',
                         sortable: false
-                    }
+                    },
                 ],
                 list: [],
                 detail: {
@@ -1087,7 +1087,7 @@ export default {
     },
     methods: {
         returnTime(data) {
-            return moment(data).lang('vi').format('HH:mm:ss DD/MM/YYYY')
+            return moment(data).format('HH:mm:ss DD/MM/YYYY')
         },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
@@ -1567,7 +1567,6 @@ export default {
                     }
                 }
             })
-            
         },
         changeScheduleStatus(number, status){
             let obj = this.schedule.list[number];
