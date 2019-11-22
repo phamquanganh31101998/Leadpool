@@ -34,7 +34,7 @@
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
       <v-btn depressed :color="background[4]" @click="goToEmailServicePage()" style="height: 50px; margin-bottom: 15px;">
-        Mẫu Email
+        Email
         <v-icon color="white" class="ml-2">mail_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>

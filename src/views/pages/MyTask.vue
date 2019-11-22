@@ -109,7 +109,7 @@
                                                 v-on="on">
                                             </v-text-field>
                                         </template>
-                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @change="updateTaskTime(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate, viewTask.task.dueDateTime)"></v-date-picker>
+                                        <v-date-picker v-model="viewTask.task.dueDateDate" no-title @change="updateTaskTime(viewTask.task.taskId, 'a', 'dueDate', viewTask.task.dueDateDate, viewTask.task.dueDateTime), viewTask.task.menu1 = false"></v-date-picker>
                                     </v-menu>
                                 </v-flex>
                                 <v-flex xs4 sm3 md2 lg2 xl2>
@@ -565,6 +565,7 @@ export default {
         updateTaskTime(id, contactId, property, date, time){
             let timeString = date + 'T' + time;
             let timeToSend = moment(timeString).utc().format().substring(0, 19);
+            console.log(timeToSend)
             this.updateTask(id, contactId, property, timeToSend);
         },
         updateTask(taskId, contactId, property, value){
@@ -594,12 +595,12 @@ export default {
                 result.response.createdByUser = this.getNameFromEmail(result.response.createdBy);
                 result.response.menu1 = false;
                 result.response.time1 = false;
-                result.response.dueDateDate = result.response.dueDate.substring(0, 10);
+                result.response.dueDateDate = this.coverTimeDateOnly(result.response.dueDate)
                 result.response.dueDateTime = this.coverTimeHourOnly(result.response.dueDate)
                 result.response.menu2 = false;
                 result.response.time2 = false;
                 if(result.response.emailReminder != null){
-                    result.response.emailReminderDate = result.response.emailReminder.substring(0, 10);
+                    result.response.emailReminderDate = this.coverTimeDateOnly(result.response.emailReminder)
                     result.response.emailReminderTime = this.coverTimeHourOnly(result.response.emailReminder)
                     result.response.emailReminderChoice = 'Chọn ngày'
                 }
@@ -621,6 +622,10 @@ export default {
         coverTimeHourOnly(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm')
+        },
+        coverTimeDateOnly(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('YYYY-MM-DD')
         },
     },
     created(){
