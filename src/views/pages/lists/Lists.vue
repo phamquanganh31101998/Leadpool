@@ -169,7 +169,7 @@ export default {
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
             for (let i = 0; i < role.length;i++){
-                if (role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING'){
+                if (role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING' || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
                     this.access = true;
                 }
             }

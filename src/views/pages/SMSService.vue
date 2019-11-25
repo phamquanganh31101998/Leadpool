@@ -1589,10 +1589,13 @@ export default {
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
-            for (let i = 0; i < role.length;i++){
-                if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.access = true;
-                }
+            // for (let i = 0; i < role.length;i++){
+            //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+            //         this.access = true;
+            //     }
+            // }
+            if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
+                this.access = true;
             }
             if (this.access == true){
                 this.getList();
