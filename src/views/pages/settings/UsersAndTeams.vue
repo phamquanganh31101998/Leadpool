@@ -698,17 +698,28 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            for(let i = 0; i < this.currentUser.authorities.length;i++){
-                if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.enableSetting = true;
-                    this.isAdmin = true;
-                }
+            let role = this.currentUser.authorities;
+            if(role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')){
+                this.enableSetting = true;
+                this.isAdmin = true;
+                this.isSysadmin = true;
             }
-            for(let i = 0; i < this.currentUser.authorities.length;i++){
-                if(this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.isSysadmin = true;
-                }
+            else if (role.includes('ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT')){
+                this.enableSetting = true;
+                this.isAdmin = true;
             }
+            // for(let i = 0; i < this.currentUser.authorities.length;i++){
+            //     if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+            //         this.enableSetting = true;
+            //         this.isAdmin = true;
+            //     }
+            // }
+            // for(let i = 0; i < this.currentUser.authorities.length;i++){
+            //     if(this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+            //         this.isSysadmin = true;
+            //     }
+            // }
+            
         },
         closePermissionDialog(){
             const tempArray = [];
