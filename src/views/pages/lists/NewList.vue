@@ -78,7 +78,7 @@
                                                     <v-card-text>
                                                         <v-layout row wrap>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE'"></v-select>
+                                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE', newCondition.value = ''"></v-select>
                                                             </v-flex>
                                                             <br>
                                                             <v-flex xs6 sm6 md6 lg6 xl6>
@@ -125,18 +125,21 @@
                                                             </template>
                                                             </template>
                                                             <template v-else-if="newCondition.chosenProperty == 'phone'">
-                                                            <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else>
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
+                                                                <template v-if="newCondition.chosenConstant == 'IN'">
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-form v-model="newCondition.checkValidInPhone">
+                                                                            <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
+                                                                        </v-form>
+                                                                        
+                                                                        <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    </v-flex>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-text-field type="number" label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                        <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    </v-flex>
+                                                                </template>
                                                             </template>
                                                             <template v-else-if="newCondition.chosenProperty == 'email'">
                                                             <template v-if="newCondition.chosenConstant == 'IN'">
@@ -211,16 +214,16 @@
                                         <v-card-text>
                                             <v-layout row wrap>
                                                 <v-flex xs6 sm6 md6 lg6 xl6>
-                                                    <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty" @input="newOrCondition.chosenConstant = 'LIKE'"></v-select>
+                                                    <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty" @input="newOrCondition.chosenConstant = 'LIKE', newOrCondition.value = ''"></v-select>
                                                 </v-flex>
                                                 <br>
                                                 <v-flex xs6 sm6 md6 lg6 xl6>
                                                     <v-select v-if="newOrCondition.chosenProperty == 'lifecycle_stage' || newOrCondition.chosenProperty == 'city' || newOrCondition.chosenProperty == 'bussiness'" 
-                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
-                                                    label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
+                                                        :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
+                                                        label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
                                                     <v-select v-if="newOrCondition.chosenProperty == 'contact_owner' || newOrCondition.chosenProperty == 'phone' || newOrCondition.chosenProperty == 'email'" 
-                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
-                                                    label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
+                                                        :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
+                                                        label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
                                                 </v-flex>
                                                 <br>
                                                 <template v-if="newOrCondition.chosenProperty == 'lifecycle_stage'">
@@ -260,13 +263,16 @@
                                                 <template v-else-if="newOrCondition.chosenProperty == 'phone'">
                                                     <template v-if="newOrCondition.chosenConstant == 'IN'">
                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            <v-form v-model="newOrCondition.checkValidInPhone">
+                                                                <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
+                                                            </v-form>
+                                                            
+                                                            <v-btn :disabled="!newOrCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                         </v-flex>
                                                     </template>
                                                     <template v-else>
                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                            <v-text-field type="number" label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
                                                             <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                         </v-flex>
                                                     </template>
@@ -343,7 +349,7 @@
                             <v-card-text>
                                 <v-layout row wrap>
                                     <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE'"></v-select>
+                                        <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE', createFirstCondition.value = ''"></v-select>
                                     </v-flex>
                                     <br>
                                     <v-flex xs6 sm6 md6 lg6 xl6>
@@ -391,16 +397,19 @@
                                     </template>
                                     <template v-else-if="createFirstCondition.chosenProperty == 'phone'">
                                         <template v-if="createFirstCondition.chosenConstant == 'IN'">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
-                                            <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                        </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-form v-model="createFirstCondition.checkValidInPhone">
+                                                    <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
+                                                </v-form>
+                                                
+                                                <v-btn :disabled="!createFirstCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            </v-flex>
                                         </template>
                                         <template v-else>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
-                                            <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                        </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-text-field type="number" label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                                <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            </v-flex>
                                         </template>
                                     </template>
                                     <template v-else-if="createFirstCondition.chosenProperty == 'email'">
@@ -569,6 +578,10 @@ export default {
     },
     data(){
         return {
+            phoneSearchInRules: [
+                v => !!v || 'Không được để trống',
+                v => /^[0-9\+,]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
+            ],
             access: false,
             failDialog: false,
             currentUser: null,
@@ -622,6 +635,7 @@ export default {
             ],
             list: null,
             newCondition: {
+                checkValidInPhone: false,
                 contactProperties: [
                     {
                         text: 'Vòng đời',
@@ -685,6 +699,7 @@ export default {
                 menu: false,
             },
             newOrCondition: {
+                checkValidInPhone: false,
                 contactProperties: [
                     {
                         text: 'Vòng đời',
@@ -750,6 +765,7 @@ export default {
             conditions: [],
             newListName: '',
             createFirstCondition: {
+                checkValidInPhone: false,
                 contactProperties: [
                     {
                         text: 'Vòng đời',

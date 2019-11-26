@@ -1430,13 +1430,16 @@ export default {
             else if (status == 'DONE'){
                 result = 'Đã gửi'
             }
+            else if (status == 'TIMEOUT'){
+                result = 'Bị dừng (do mất quá nhiều thời gian xử lý)'
+            }
             return result;
         },
         returnStatusColor(status){
             if (status == 'DONE'){
                 return 'color: green;'
             }
-            else if (status == 'STOP' || status == 'ERROR' || status == 'FAIL'){
+            else if (status == 'STOP' || status == 'ERROR' || status == 'FAIL' || status == 'TIMEOUT'){
                 return 'color: red;'
             }
             else {

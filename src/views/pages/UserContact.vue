@@ -702,6 +702,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-content>
 </template>
 <script>
@@ -723,6 +724,7 @@
     import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
+    import alert from '@/components/alert'
     export default {
         props: {
             idAccount: {
@@ -1081,6 +1083,9 @@
                 })
             },
             updateContactDetail(property, value){
+                const {
+                    dispatch
+                } = this.$store;
                 let body = {
                     properties: [
                         {
@@ -1089,7 +1094,6 @@
                         }
                     ]
                 }
-                console.log(body)
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
                     
@@ -1306,7 +1310,8 @@
             newLogEmail,
             newLogCall,
             newLogMeet,
-            newSMS
+            newSMS,
+            alert
         }
     }
     // đã làm được phần lấy list thuộc tính

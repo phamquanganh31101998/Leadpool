@@ -214,7 +214,7 @@
                                                     prepend-icon="event" @blur="date = emailLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
-                                            <v-date-picker v-model="emailLog.dateLog" no-title @input="emailLog.menu1Log = false"></v-date-picker>
+                                            <v-date-picker v-model="emailLog.dateLog" no-title @input="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId), emailLog.menu1Log = false"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
@@ -223,13 +223,13 @@
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field readonly v-model="emailLog.timeLog" label="Giờ"
-                                                    prepend-icon="access_time" readonly v-on="on" v-if="access"></v-text-field >
+                                                    prepend-icon="access_time" v-on="on" v-if="access"></v-text-field >
                                                     <v-text-field readonly v-model="emailLog.timeLog" label="Giờ"
-                                                    prepend-icon="access_time" readonly v-else></v-text-field >
+                                                    prepend-icon="access_time" v-else></v-text-field >
                                             </template>
                                             <v-time-picker v-if="emailLog.modal2Log" v-model="emailLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="emailLog.modal2Log = false">Chọn</v-btn>
+                                                <v-btn flat color="primary" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId), emailLog.modal2Log = false">Chọn</v-btn>
                                                 <!-- <v-btn flat color="red" @click="emailLog.modal2Log = false">Đóng</v-btn> -->
                                                 
                                             </v-time-picker>
@@ -253,9 +253,9 @@
                             <v-flex xs7 sm8 md8 lg9 xl9>
                                 <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã lưu thông tin về email</p>
                             </v-flex>
-                            <v-flex xs1 sm1 md1 lg1 xl1>
+                            <!-- <v-flex xs1 sm1 md1 lg1 xl1>
                                 <v-btn v-if="hover && access" @click="updateLog(emailLog.dateLog, emailLog.timeLog, emailLog.logId)" outlined>Lưu lại</v-btn>
-                            </v-flex>
+                            </v-flex> -->
                         </v-layout>
                     </v-card>
                 </v-hover>
@@ -289,16 +289,21 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-layout>
     
 </template>
 <script>
+import alert from '@/components/alert'
 import moment from 'moment'
 import logService from '../../../services/log.service'
 import { eventBus } from '../../../eventBus';
 import emailService from '../../../services/email.service';
 import contact from '../../../services/contacts.service'
     export default {
+        components: {
+            alert
+        },
         props: {
             idAccount: {
                 type: String,
@@ -341,6 +346,10 @@ import contact from '../../../services/contacts.service'
             }
         },
         methods: {
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
                     this.currentContact = result.response
@@ -399,10 +408,21 @@ import contact from '../../../services/contacts.service'
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
-                    this.$emit('updateLastActivityDate');
-                    eventBus.updateLogEmailList();
-                    this.deleteLogDialog.id = '';
-                    this.deleteLogDialog.dialog = false;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateLogEmailList();
+                        this.deleteLogDialog.id = '';
+                        this.deleteLogDialog.dialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 })
@@ -415,8 +435,19 @@ import contact from '../../../services/contacts.service'
                     "value": timeToSend
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
-                    this.$emit('updateLastActivityDate');
-                    eventBus.updateLogEmailList();
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let timeChange = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(timeChange)}`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateLogEmailList();
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 })

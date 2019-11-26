@@ -163,7 +163,7 @@
                                     <v-card-text>
                                         <v-layout row wrap>
                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE'"></v-select>
+                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE', newCondition.value = ''"></v-select>
                                             </v-flex>
                                             <br>
                                             <v-flex xs6 sm6 md6 lg6 xl6>
@@ -212,13 +212,16 @@
                                             <template v-else-if="newCondition.chosenProperty == 'phone'">
                                               <template v-if="newCondition.chosenConstant == 'IN'">
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
-                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                  <v-form v-model="newCondition.checkValidInPhone">
+                                                    <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
+                                                  </v-form>
+                                                    
+                                                    <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
                                               <template v-else>
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                    <v-text-field type="number" label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
                                                     <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
@@ -313,7 +316,7 @@
                   <v-card-text>
                       <v-layout row wrap>
                           <v-flex xs6 sm6 md6 lg6 xl6>
-                              <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE'"></v-select>
+                              <v-select :items="createFirstCondition.contactProperties" label="Chọn thuộc tính" v-model="createFirstCondition.chosenProperty" @input="createFirstCondition.chosenConstant = 'LIKE', createFirstCondition.value = ''"></v-select>
                           </v-flex>
                           <br>
                           <v-flex xs6 sm6 md6 lg6 xl6>
@@ -362,14 +365,16 @@
                           <template v-else-if="createFirstCondition.chosenProperty == 'phone'">
                             <template v-if="createFirstCondition.chosenConstant == 'IN'">
                               <v-flex xs12 sm12 md12 lg12 xl12>
-                                  <v-text-field label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
-                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'IN', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                <v-form v-model="createFirstCondition.checkValidInPhone">
+                                  <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="createFirstCondition.value"></v-text-field>
+                                </v-form>
+                                <v-btn :disabled="!createFirstCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
                             </template>
                             <template v-else>
                               <v-flex xs12 sm12 md12 lg12 xl12>
-                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
-                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('phone', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                  <v-text-field label="Nhập từ khóa" type="number" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
                             </template>
                           </template>
@@ -513,7 +518,7 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-    <v-dialog v-model="createFailDialog" @click:outside="createFailDialog = false, createFailResponse = 'Đã có lỗi xảy ra khi tạo Lead. Xin hãy thử lại'" transition="dialog-bottom-transition" scrollable width="30%">
+    <v-dialog v-model="createFailDialog" @click:outside="createFailDialog = false, createFailResponse = ''" transition="dialog-bottom-transition" scrollable width="30%">
         <v-card tile>
             <v-toolbar card dark color="red">
                 <v-toolbar-title>Thất bại</v-toolbar-title>
@@ -523,7 +528,7 @@
                 {{createFailResponse}}
             </v-card-text>
             <v-card-actions>
-            <v-btn flat color="red" @click="createFailDialog = false, createFailResponse = 'Đã có lỗi xảy ra khi tạo Lead. Xin hãy thử lại'">OK</v-btn>
+            <v-btn flat color="red" @click="createFailDialog = false, createFailResponse = ''">OK</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -621,6 +626,10 @@
       notifications: false,
       sound: true,
       phone: '',
+      phoneSearchInRules: [
+        v => !!v || 'Không được để trống',
+        v => /^[0-9\+,]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
+      ],
       phoneRules: [
         v => !!v || 'Chưa nhập số điện thoại',
         // v => v.length > 2 || 'Tối thiểu 3 kí tự',
@@ -737,6 +746,7 @@
                 value: 'IN'
             },
         ],
+        checkValidInPhone: false,
         chosenProperty: 'lifecycle_stage',
         chosenConstant: 'LIKE',
         chosenLifecycleStage: 'Lead',
@@ -810,6 +820,7 @@
         value: '',
         vchipTextField: '',
         vchipValue: [],
+        checkValidInPhone: false,
         firstConditionMenu: false
       },
       firstConditionMenu: true,
@@ -973,6 +984,7 @@
           this.createWaiting = false;
         }).catch(error => {
           console.log(error);
+          this.createFailResponse = error.response.status;
           this.createFailDialog = true;
           this.checkInfo = false;
           this.createWaiting = false;

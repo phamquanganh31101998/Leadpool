@@ -91,7 +91,7 @@
                                                     prepend-icon="event" @blur="date = meetLog.dateToPut" v-else>
                                                 </v-text-field>
                                             </template>
-                                            <v-date-picker v-model="meetLog.dateLog" no-title @input="meetLog.menu1Log = false"></v-date-picker>
+                                            <v-date-picker v-model="meetLog.dateLog" no-title @input="meetLog.menu1Log = false, updateTimeLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
@@ -106,7 +106,7 @@
                                             </template>
                                             <v-time-picker v-if="meetLog.modal2Log" v-model="meetLog.timeLog" full-width>
                                                 <v-spacer></v-spacer>
-                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false">Chọn</v-btn>
+                                                <v-btn flat color="primary" @click="meetLog.modal2Log = false, updateTimeLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)">Chọn</v-btn>
                                                 <!-- <v-btn flat color="primary" @click="$refs.dialog.save(timeLog)">OK</v-btn> -->
                                                 <!-- <v-btn flat color="red" @click="meetLog.modal2Log = false">Chọn</v-btn> -->
                                             </v-time-picker>
@@ -130,9 +130,9 @@
                             <v-flex xs7 sm8 md8 lg9 xl9>
                                 <p class="mt-2 pt-2"><strong>{{meetLog.createdBy}} </strong> đã lưu lại thông tin cuộc họp</p>
                             </v-flex>
-                            <v-flex xs1 sm1 md1 lg1 xl1>
+                            <!-- <v-flex xs1 sm1 md1 lg1 xl1>
                                 <v-btn v-if="hover && access" @click="updateLog(meetLog.dateLog, meetLog.timeLog, meetLog.logId)" outlined>Lưu</v-btn>
-                            </v-flex>
+                            </v-flex> -->
                         </v-layout>
                     </v-card>
                 </v-hover>
@@ -155,14 +155,19 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-layout>
 </template>
 <script>
+    import alert from '@/components/alert'
     import contact from '../../../services/contacts.service'
     import moment from 'moment'
     import logService from '../../../services/log.service'
     import { eventBus } from '../../../eventBus';
     export default {
+        components: {
+            alert
+        },
         props: {
             idAccount: {
                 type: String,
@@ -203,17 +208,35 @@
             }
         },
         methods: {
-            updateLog(date, time, idLog){
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
+            updateTimeLog(date, time, idLog){
                 let timeString = date + 'T' + time
                 let timeToSend = moment(timeString).utc().format().substring(0, 19)
+                this.updateLog('time', timeToSend, idLog)
+            },
+
+            updateLog(property, value, idLog){
                 let body = {
-                    "property": "time",
-                    "value": timeToSend
+                    "property": property,
+                    "value": value
                 }
                 logService.updateLog(this.idAccount, this.idContact, body, idLog).then(result => {
-                    console.log(result);
-                    this.$emit('updateLastActivityDate');
-                    eventBus.updateLogMeetList();
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let timeChange = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(timeChange)}`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateLogCallList();
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 })
@@ -224,10 +247,21 @@
             },
             deleteLog(idLog){
                 logService.deleteLog(this.idAccount, this.idContact, idLog).then(result => {
-                    this.$emit('updateLastActivityDate');
-                    eventBus.updateLogMeetList();
-                    this.deleteLogDialog.id = '';
-                    this.deleteLogDialog.dialog = false;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateLogMeetList();
+                        this.deleteLogDialog.id = '';
+                        this.deleteLogDialog.dialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 })
