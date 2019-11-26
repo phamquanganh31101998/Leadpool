@@ -641,14 +641,19 @@
                 </v-card>
             </template>
         </v-flex>
+        <alert/>
     </v-layout>
 </template>
 <script>
+import alert from '@/components/alert'
     import moment from 'moment'
     import contact from '../../../services/contacts.service'
     import taskService from '../../../services/task.service'
     import { eventBus } from '../../../eventBus';
     export default {
+        components: {
+            alert
+        },
         props: {
             idAccount: {
                 type: String,
@@ -723,6 +728,10 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('YYYY-MM-DD')
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             coverTimeTooltip(time){
                 if (_.isNull(time)) return '';
                 return moment(time).format('DD/MM/YYYY HH:mm:ss')
@@ -795,9 +804,19 @@
                     "value": value,
                 }
                 taskService.updateTask(this.idAccount, this.idContact, taskId, body).then(result => {
-                    this.$emit('updateLastActivityDate');
-                    console.log(result);
-                    eventBus.updateTaskList();
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(time)}`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateTaskList();
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 })

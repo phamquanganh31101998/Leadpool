@@ -39,7 +39,7 @@
 </script>
 
 <template>
-    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :multi-line="mode === 'multi-line'">
+    <v-snackbar :top="top" v-model="snackbar" :color="color" :timeout="timeout" :multi-line="mode === 'multi-line'">
         {{ text }}
         <v-btn color="#fff" flat icon @click="snackbar = false">
             <v-icon>clear</v-icon>

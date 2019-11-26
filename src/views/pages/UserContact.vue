@@ -378,7 +378,18 @@
                                                                 <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'bussiness'">
-                                                                <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-select v-if="!item.otherBussiness" :readonly="!access && !item.otherBussiness" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                    </v-flex>
+                                                                    <v-flex xs7 sm7 md7 lg7 xl7>
+                                                                        <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác: "></v-checkbox>
+                                                                    </v-flex>
+                                                                    <v-flex xs5 sm5 md5 lg5 xl5>
+                                                                        <v-text-field :readonly="!access" v-if="item.otherBussiness" v-model="item.value" label="Nhập ngành nghề" @change="updateContactDetail(item.property, item.value)"></v-text-field>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                                
                                                             </template>
                                                             <template v-else-if="item.property == 'phone'">
                                                                 <v-form v-model="validPhone">
@@ -691,6 +702,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-content>
 </template>
 <script>
@@ -712,6 +724,7 @@
     import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
+    import alert from '@/components/alert'
     export default {
         props: {
             idAccount: {
@@ -1057,8 +1070,10 @@
                             description: 'phân loại ngành nghề',
                             value: this.checkString(result.response.bussiness),
                             dialog: false,
-                            property: 'bussiness'
-                        }]
+                            property: 'bussiness',
+                            otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
+                        }
+                    ]
                     // console.log(result)
                 }).catch(error => {
                     this.failDialog = true;
@@ -1068,6 +1083,9 @@
                 })
             },
             updateContactDetail(property, value){
+                const {
+                    dispatch
+                } = this.$store;
                 let body = {
                     properties: [
                         {
@@ -1076,7 +1094,6 @@
                         }
                     ]
                 }
-                console.log(body)
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
                     console.log(result);
                     
@@ -1293,7 +1310,8 @@
             newLogEmail,
             newLogCall,
             newLogMeet,
-            newSMS
+            newSMS,
+            alert
         }
     }
     // đã làm được phần lấy list thuộc tính

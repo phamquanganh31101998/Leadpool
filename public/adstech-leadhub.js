@@ -4,6 +4,10 @@ function f() {
     var acId = ''
     var btnId = ''
     var scripts = document.getElementsByTagName("script");
+    let a = localStorage.getItem('lead')
+    if (a != null || a!= undefined || a != '') {
+        createLead(a)
+    }
     for (let i = 0; i < scripts.length; i++) {
         if (scripts[i].src.indexOf('&gBtnId=') > 0) {
             var src = scripts[i].src.split('?')[1]
@@ -13,13 +17,13 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetch(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         })
-    }).then(handle).then(result => {
+    },4).then(result => {
         var style = result.response.style
         var vertical = result.response.vertical
         var styleBtnCall = null
@@ -34,7 +38,20 @@ function f() {
         writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId)
     })
 }
+async function fetchRetry (url, options, n) {
+    for (let i = 0; i < n; i++) {
 
+        try
+        {
+            return await fetch(url, options).then(handle).then(result => { return result })
+        }
+        catch (err)
+        {
+            const isLastAttempt = i + 1 === n;
+            if (isLastAttempt) throw err;
+        }
+    }
+}
 function handle(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -173,13 +190,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         if (style.color == "#fff") {
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }else if(style.color == "#000"){
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
                     <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="http://dev.adstech.vn:8090/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                     </a>
                 </button>`
         }
@@ -203,11 +220,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
         }
         if (style.color == "#fff") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }else if(style.color == "#000"){
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
-                    <img src="http://dev.adstech.vn:8090/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         form1 = `<div class="adstech-form" id="myForm">
@@ -270,9 +287,8 @@ function closeAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 } 
 function send(acId) {
-    const form = document.querySelector('form')
+    const form = document.getElementById("form-adstech")
     form.addEventListener('submit', e => {
-
         const formData = new FormData(e.target)
         var email = formData.get('email')
         var name = formData.get('name')
@@ -314,18 +330,27 @@ function send(acId) {
             }
             body.push(a)
         }
-        fetch(`http://dev.adstech.vn:9000/leadhub/contacts`, {
+        createLead(body)
+        e.preventDefault()
+        closeForm()
+    })
+}
+function createLead(body) {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/contacts`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body)
-        }).then(handle).then(result => {
+        },4).then(result => {
+            if (result.status == "200") {
                 openAlert()
-            setTimeout(function () { closeAlert() },3000)
+                setTimeout(function () { closeAlert() },3000)
+            }else{
+                localStorage.setItem('lead'.JSON.stringify(body))
+                openAlert()
+                setTimeout(function () { closeAlert() },3000)
+            }
         })
-        e.preventDefault()
-        closeForm()
-    })
 }
