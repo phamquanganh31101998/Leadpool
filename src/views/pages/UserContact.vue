@@ -378,7 +378,18 @@
                                                                 <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'bussiness'">
-                                                                <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-select v-if="!item.otherBussiness" :readonly="!access && !item.otherBussiness" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                    </v-flex>
+                                                                    <v-flex xs7 sm7 md7 lg7 xl7>
+                                                                        <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác: "></v-checkbox>
+                                                                    </v-flex>
+                                                                    <v-flex xs5 sm5 md5 lg5 xl5>
+                                                                        <v-text-field :readonly="!access" v-if="item.otherBussiness" v-model="item.value" label="Nhập ngành nghề" @change="updateContactDetail(item.property, item.value)"></v-text-field>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                                
                                                             </template>
                                                             <template v-else-if="item.property == 'phone'">
                                                                 <v-form v-model="validPhone">
@@ -1057,8 +1068,10 @@
                             description: 'phân loại ngành nghề',
                             value: this.checkString(result.response.bussiness),
                             dialog: false,
-                            property: 'bussiness'
-                        }]
+                            property: 'bussiness',
+                            otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
+                        }
+                    ]
                     // console.log(result)
                 }).catch(error => {
                     this.failDialog = true;
