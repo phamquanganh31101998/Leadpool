@@ -34,7 +34,7 @@ function updateGbtn(accountId,body) {
 }
 function deleteGbtn(accountId,gBtnId) {
     let request = {
-        method: 'GET',
+        method: 'DELETE',
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${accountId}/group-buttons/${gBtnId}`
@@ -45,7 +45,7 @@ function getInfoBtn(accountId,gBtnId) {
         method: 'GET',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${accountId}/group-buttons${gBtnId}`
+    let endpoint = `${config.apiContact}/${accountId}/group-buttons/${gBtnId}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 function getInfoBtnForOrderWeb(accountId,gBtnId) {

@@ -39,10 +39,11 @@
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <!-- <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
+      <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
         Lead Hub
-        <v-icon color="white" class="ml-2">pregnant_woman</v-icon>
-      </v-btn> -->
+        <v-icon color="white" class="ml-2">device_hub</v-icon>
+      </v-btn>
+
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">

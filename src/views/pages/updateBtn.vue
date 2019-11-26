@@ -90,7 +90,7 @@
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout row wrap class="mt-1" style="width:100%">
+                                <v-layout row wrap class="mt-3" style="width:100%">
                                     <v-flex xs12>
                                         <strong>Phương hướng</strong>
                                     </v-flex>
@@ -123,7 +123,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
                             <v-card>
                                 <v-card-title>
-                                    <h2>Cài đặt nút gọi</h2>
+                                    <h3>Cài đặt nút gọi</h3>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -160,7 +160,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogForm">
                             <v-card>
                                 <v-card-title>
-                                    <h2>Cài đặt nút nhập form</h2>
+                                    <h1>Cài đặt nút nhập form</h1>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -170,7 +170,7 @@
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
-                                            <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
+                                            <v-layout v-for="(properti,key) in properties" :key="key" xs12>
                                                 <v-select v-model="properti.value" disabled :items="input"
                                                     v-if="key == 0 || key ==1 || key ==2" item-text="label"
                                                     item-value="value" label="Trường bắt buộc" outline></v-select>
@@ -200,11 +200,9 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <!-- <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${numberProperties.length} trường`)">
+                                    <v-btn color="green darken-1" text dark @click="form = true, checkForm()">
                                         Lưu
-                                    </v-btn> -->
-                                    <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu</v-btn>
+                                    </v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-flex>
@@ -245,20 +243,17 @@
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                    <v-flex class="text-xs-left">
-                        <v-btn color="gray" text @click="dialog = false">
-                            Đóng
-                        </v-btn>
-                    </v-flex>
-                    <v-flex class="text-xs-right">
-                        <v-btn color="green darken-1" dark text @click="dialog = false">
-                            Xác nhận
-                        </v-btn>
-                    </v-flex>
+                    <div class="flex-grow-1"></div>
+                    <v-btn color="gray" text @click="dialog = false">
+                        Đóng
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                        Xác nhận
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="dialog1" max-width="500">
+        <v-dialog v-model="dialog1" max-width="400">
             <v-card>
                 <v-card-title>
                     Màu sắc
@@ -280,26 +275,23 @@
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
-                    <v-flex class="text-xs-left">
-                        <v-btn color="gray" text @click="dialog1 = false">
-                            Đóng
-                        </v-btn>
-                    </v-flex>
-                    <v-flex class="text-xs-right">
-                        <v-btn color="green darken-1" dark text @click="dialog1 = false">
-                            Xác nhận
-                        </v-btn>
-                    </v-flex>
+                    <div class="flex-grow-1"></div>
+                    <v-btn color="gray" text @click="dialog1 = false">
+                        Đóng
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="dialog1 = false">
+                        Xác nhận
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
-                <v-card-title>
-                    <h1>{{nameForm}}</h1>
+                <v-card-title :background-color="colorForm">
+                    <h2>{{nameForm}}</h2>
                 </v-card-title>
                 <v-card-text class="py-2">
-                    <v-layout row wrap v-for="(item,key) in numberProperties" :key="key"
+                    <v-layout row wrap v-for="(item,key) in properties" :key="key"
                         style="border:1px solid #999; border-radius:10px" class="pa-2 mt-2">
                         <!-- <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
                         </v-text-field> -->
@@ -322,12 +314,10 @@
         </v-dialog>
         <v-dialog v-model="dialogNameBtn" max-width="400">
             <v-card>
-                <v-card-title>
-
-                </v-card-title>
+                <v-card-title></v-card-title>
                 <v-card-text>
+                    <h2>Nhập tên menu</h2>
                     <v-flex xs12>
-                        <h2>Nhập tên nút</h2>
                         <v-text-field v-model="nameBtn" class="mt-3" :rules="rule" style="width:100%"
                             placeholder="Tên nút" outlined dense></v-text-field>
                     </v-flex>
@@ -354,6 +344,10 @@
                 type: String,
                 default: null,
             },
+            idGroupBtn: {
+                type: String,
+                default: null
+            }
         },
         data() {
             return {
@@ -365,13 +359,9 @@
                 }],
                 color: '#8E00FF',
                 colorForm: '#8E00FF',
-                hideCanvas: false,
-                hideInputs: false,
-                hideModeSwitch: false,
-                showSwatches: false,
                 dialog: false,
                 dialog1: false,
-                colorText: '#fff',
+                colorText: '#000',
                 text: null,
                 name: '',
                 display: 'mobile',
@@ -417,16 +407,16 @@
                 top: null,
                 left: null,
                 right: null,
-                properties: [],
-                numberProperties: [{
+                properties: [{
                     value: 'lastName'
                 }, {
                     value: 'email'
                 }, {
                     value: 'phone'
                 }],
+                textCall: '',
                 alertFinish: 'Đăng ký thành công',
-                textCall: 'Để lại số điện thoại của bạn',
+                propertiesbtn: [],
                 dialogNameBtn: false,
                 requestApi: true
             }
@@ -440,7 +430,7 @@
             },
             displayDialog() {
                 this.showForDisplay()
-            },
+            }
         },
         methods: {
             showDisplay() {
@@ -531,30 +521,30 @@
                 }
             },
             addInput() {
-                if (this.numberProperties.length >= 5) {
-                    this.alertError(`Được phép tạo tối đa 5 trường bạn đã tạo ${this.numberProperties.length}`)
+                if (this.properties.length >= 5) {
+                    this.alertError(`Được phép tạo tối đa 5 trường bạn đã tạo ${this.properties.length}`)
                 } else {
                     let a = {
                         value: ''
                     }
-                    this.numberProperties.push(a)
-                    this.numberProperties = [...this.numberProperties]
+                    this.properties.push(a)
+                    this.properties = [...this.properties]
                 }
             },
             removeInput(data) {
-                this.numberProperties.splice(data, 1)
-                this.numberProperties = [...this.numberProperties]
+                this.properties.splice(data, 1)
+                this.properties = [...this.properties]
             },
             checkForm() {
-                this.properties = []
-                for (let i = 0; i < this.numberProperties.length; i++) {
-                    this.properties.push(this.numberProperties[i].value)
+                this.propertiesbtn = []
+                for (let i = 0; i < this.properties.length; i++) {
+                    this.propertiesbtn.push(this.properties[i].value)
                 }
-                if (this.properties.indexOf('') > 0) {
-                    this.alertError(`Trường ${this.properties.indexOf('') + 1} bị rỗng`)
+                if (this.propertiesbtn.indexOf('') > 0) {
+                    this.alertError(`Trường ${this.propertiesbtn.indexOf('') + 1} bị rỗng`)
                     this.requestApi = false
                 } else {
-                    this.alertSuccess(`Lưu nút form thành công với ${this.properties.length} trường`)
+                    this.alertSuccess(`Lưu nút form thành công với ${this.propertiesbtn.length} trường`)
                     this.requestApi = true
                 }
             },
@@ -567,12 +557,7 @@
                 } else {
                     this.sizeButton = 70
                 }
-                const output = []
-                this.properties.forEach((element) => {
-	                    if (!output.includes(element)){
-    	                output.push(element)
-                    }
-                });
+                const output = [...new Set(this.propertiesbtn)]
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
@@ -580,14 +565,15 @@
                     formMessageReturn: this.alertFinish,
                     title: this.nameForm,
                     type: "FORM",
-                    properties: this.properties,
+                    properties: output,
+
                 }
                 let call = {
                     buttonColor: this.color,
                     description: "",
-                    formMessage: "Gọi ngay",
+                    formMessage: "Gọingay",
                     phoneNumber: this.text,
-                    title: this.textCall,
+                    title: "Vui lòng để lại số điện thoại, chúng tôi sẽ gọi lại ngay sau 5 phút.",
                     type: "CALL",
                 }
                 if (this.call == true && this.form == true) {
@@ -598,6 +584,8 @@
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
                                 listButton: [
                                     form,
                                     call
@@ -611,11 +599,13 @@
                                     size: `${this.sizeButton}`,
                                 }
                             }
-                            this.callApiCreate(btn)
+                            this.updateGbtn(btn)
                         } else {
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
                                 listButton: [
                                     form,
                                     call
@@ -629,7 +619,7 @@
                                     size: `${this.sizeButton}`,
                                 }
                             }
-                            this.callApiCreate(btn)
+                            this.updateGbtn(btn)
                         }
                     }
                 } else if (this.call == false && this.form == true) {
@@ -637,6 +627,8 @@
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form
                             ],
@@ -649,11 +641,13 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     } else {
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
+                            leadHubButtonGroupId: this.idGroupBtn,
+                            accountId: this.idAccount,
                             listButton: [
                                 form
                             ],
@@ -666,17 +660,19 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.callApiCreate(btn)
+                        this.updateGbtn(btn)
                     }
                 } else if (this.call == true && this.form == false) {
                     if (this.text == null || this.text == '') {
-                        this.alertError('Chưa điền số điện thoại ở nút Click to Call')
+                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
                     } else {
                         this.requestApi = true
                         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
                                 listButton: [
                                     call
                                 ],
@@ -689,11 +685,13 @@
                                     size: `${this.sizeButton}`,
                                 }
                             }
-                            this.callApiCreate(btn)
+                            this.updateGbtn(btn)
                         } else {
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
+                                leadHubButtonGroupId: this.idGroupBtn,
+                                accountId: this.idAccount,
                                 listButton: [
                                     call
                                 ],
@@ -706,28 +704,89 @@
                                     size: `${this.sizeButton}`,
                                 }
                             }
-                            this.callApiCreate(btn)
+                            this.updateGbtn(btn)
                         }
                     }
                 } else {
                     this.alertError("Bạn chưa chọn nút cần tạo")
                 }
             },
-            callApiCreate(btn) {
+            updateGbtn(btn) {
                 if (this.requestApi == true) {
-                    leadhubService.createGbtn(this.idAccount, btn).then(result => {
-                    if (result.code == "SUCCESS") {
-                        this.alertSuccess('Thêm nút thành công')
-                        router.replace(`/contacts/${this.idAccount}/leadhub`)
-                    } else {
-                        this.alertError(result.message)
-                    }
-                })
+                    leadhubService.updateGbtn(this.idAccount, btn).then(result => {
+                        if (result.code == "SUCCESS") {
+                            this.alertSuccess('Sửa thành công')
+                            router.replace(`/contacts/${this.idAccount}/leadhub`)
+                        } else {
+                            this.alertError(result.message)
+                        }
+                    })
                 }
+            },
+            getBtnInfo() {
+                leadhubService.getInfoBtn(this.idAccount, this.idGroupBtn).then(result => {
+                    this.nameBtn = result.response.name
+                    this.xy = result.response.vertical
+                    for (let i = 0; i < result.response.listButton.length; i++) {
+                        if (result.response.listButton[i].type == "CALL") {
+                            this.call = true
+                            this.color = result.response.listButton[i].buttonColor
+                            this.text = result.response.listButton[i].phoneNumber
+                            this.textCall = result.response.listButton[i].title
+                        } else if (result.response.listButton[i].type == "FORM") {
+                            this.form = true
+                            this.properties = []
+                            this.colorForm = result.response.listButton[i].buttonColor
+                            this.alertFinish = result.response.listButton[i].formMessageReturn
+                            this.nameForm = result.response.listButton[i].title
+                            for (let index = 0; index < result.response.listButton[i].properties
+                                .length; index++) {
+                                let a = {
+                                    value: result.response.listButton[i].properties[index]
+                                }
+                                this.properties.push(a)
+                            }
+                        }
+                    }
+                    this.colorText = result.response.style.color
+                    if (result.response.style.size == "40") {
+                        this.small = true
+                        this.large = false
+                    } else if (result.response.style.size == "52") {
+                        this.small = false
+                        this.large = false
+                    } else if (result.response.style.size == "70") {
+                        this.large = true
+                        this.small = false
+                    }
+                    if (result.response.style.bottom == "5" && result.response.style.left == "2" && result
+                        .response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == "45" &&
+                        result.response.style.top == null && result.response.style.right == null) {
+                        this.styleForBtn("bottom:10px", "left:45%")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == "2" &&
+                        result.response.style.top == "45" && result.response.style.right == null) {
+                        this.styleForBtn("top:45%", "left:0")
+                    } else if (result.response.style.bottom == null && result.response.style.left == null &&
+                        result.response.style.top == "45" && result.response.style.right == "2") {
+                        this.styleForBtn("top:45%", "right:0")
+                    } else if (result.response.style.bottom == "5" && result.response.style.left == null &&
+                        result.response.style.top == null && result.response.style.right == "2") {
+                        this.styleForBtn("bottom:10px", "right:0")
+                    }
+                    this.colorTxt()
+                })
             },
             cancel() {
                 router.replace(`/contacts/${this.idAccount}/leadhub`)
             }
+        },
+        created() {
+            this.getBtnInfo()
         },
         components: {
             alert
