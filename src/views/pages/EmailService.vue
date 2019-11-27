@@ -46,7 +46,7 @@
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card>
                             <v-card-text>
-                                <span class="ml-4"><v-btn color="#3E82F7" dark @click="create.editorDialog = true"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
+                                <span class="ml-4"><v-btn color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
                                 <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
@@ -54,6 +54,9 @@
                                             <td>{{props.item.text}}</td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
+                                            <td>{{props.item.updatedBy}}</td>
+                                            <td>{{props.item.updatedAt}}</td>
+                                            
                                             <v-menu>
                                                 <template v-slot:activator="{ on }">
                                                     <td class="text-xs-right"><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn></td>
@@ -61,6 +64,9 @@
                                                 <v-list>
                                                     <v-list-tile @click="templateId = props.item.value, setChosenTemplate()">
                                                         <v-list-tile-content>Xem nội dung mẫu</v-list-tile-content>
+                                                    </v-list-tile>
+                                                    <v-list-tile @click="createBtn = false, templateId = props.item.value, getHTMLAndCSS(props.item.value)">
+                                                        <v-list-tile-content>Chỉnh sửa mẫu</v-list-tile-content>
                                                     </v-list-tile>
                                                     <v-list-tile @click="confirmDeleteEmailTemplate(props.item.value)">
                                                         <v-list-tile-content>Xóa</v-list-tile-content>
@@ -272,22 +278,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="create.dialog" width="30%" persistent>
-            <v-card>
-                <v-card-title style="background-color:#1E88E5;color:#fff">
-                    <span class="headline">Tạo mẫu email mới</span>
-                </v-card-title>
-                <v-card-text>
-                    <span class="mt-4"><strong>Tên mẫu </strong></span>
-                    <span class="ml-4"><v-text-field v-model="create.name"></v-text-field></span>
-                </v-card-text>
-                <v-divider :divider="divider"></v-divider>
-                <v-card-actions>
-                    <v-btn flat color="primary" @click="createNewTemplate()" :disabled="create.name == ''">Tạo</v-btn>
-                    <v-btn flat color="red" @click="create.dialog = false">Đóng</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        
         <v-dialog v-model="viewDialog" persistent>
             <v-card>
                 <v-toolbar dark color="primary">
@@ -314,7 +305,7 @@
                     </v-btn>
                     <v-toolbar-title>Tạo mẫu email mới</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-toolbar-items>
+                    <!-- <v-toolbar-items>
                         <v-tooltip top v-if="!create.btn">
                             <template v-slot:activator="{ on }">
                                 <v-icon color="primary" dark v-on="on">help</v-icon>
@@ -322,10 +313,10 @@
                             <span>Kéo các thành phần vào ở cột bên trái, chỉnh sửa thuộc tính của thành phần ở cột bên phải</span>
                             <span></span>
                         </v-tooltip>
-                    </v-toolbar-items>
+                    </v-toolbar-items> -->
                     <v-toolbar-items>
-                        
-                        <v-btn dark flat @click="create.dialog = true">Lưu lại</v-btn>
+                        <v-btn dark flat v-if="createBtn" @click="create.dialog = true">Tạo</v-btn>
+                        <v-btn dark flat v-else @click="updateTemplate(templateId)">Lưu lại</v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-layout>
@@ -345,6 +336,22 @@
                         </div>
                     </v-flex>
                 </v-layout>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="create.dialog" width="30%" persistent>
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                    <span class="headline">Tạo mẫu email mới</span>
+                </v-card-title>
+                <v-card-text>
+                    <span class="mt-4"><strong>Tên mẫu </strong></span>
+                    <span class="ml-4"><v-text-field v-model="create.name"></v-text-field></span>
+                </v-card-text>
+                <v-divider :divider="divider"></v-divider>
+                <v-card-actions>
+                    <v-btn flat color="primary" @click="createNewTemplate()" :disabled="create.name == ''">Tạo</v-btn>
+                    <v-btn flat color="red" @click="create.dialog = false">Đóng</v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
         <v-dialog v-model="create.successfulDialog" @click:outside="create.successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
@@ -418,7 +425,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <alert/>
     </v-content>
 </template>
 <script>
@@ -433,6 +439,8 @@ export default {
     },
     data(){
         return{
+            createBtn: true,
+            title: 'Tạo mẫu email mới',
             allEmail: [],
             currentUser: null,
             access: true,
@@ -461,6 +469,18 @@ export default {
                 },
                 {
                     text: 'THỜI GIAN TẠO',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'NGƯỜI CHỈNH SỬA LẦN CUỐI',
+                    align: 'left',
+                    sortable: false,
+                    value: 'name'
+                },
+                {
+                    text: 'THỜI GIAN CHỈNH SỬA CUỐI CÙNG',
                     align: 'left',
                     sortable: false,
                     value: 'name'
@@ -670,6 +690,14 @@ export default {
         },
     },
     methods: {
+        startCreatingTemplate(){
+            this.createBtn = true;
+            localStorage.setItem('gjs-html', '');
+            localStorage.setItem('gjs-css', '');
+            this.load()
+            this.create.editorDialog = true;
+            
+        },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -718,6 +746,8 @@ export default {
                     value: templateArray[i].emailTemplateId,
                     createdBy: templateArray[i].createdBy,
                     createdAt: this.covertime(templateArray[i].createdAt),
+                    updatedBy: templateArray[i].updatedBy,
+                    updatedAt: this.covertime(templateArray[i].updatedAt),
                     content: templateArray[i].content
                 }
                 result.push(obj);
@@ -725,7 +755,6 @@ export default {
             return result;
         },
         setChosenTemplate(){
-            let obj = null;
             for (let i = 0; i < this.templates.length; i++){
                 if(this.templates[i].emailTemplateId == this.templateId){
                     this.chosenTemplate = this.templates[i];
@@ -1208,6 +1237,74 @@ export default {
         alerting(){
             // alert('hú');
         },
+        getHTMLAndCSS(id){
+            try {
+                let obj = {};
+                for (let i = 0; i < this.templates.length; i++){
+                    if(this.templates[i].emailTemplateId == id){
+                        obj = this.templates[i];
+                    }
+                }
+                let regex = /\\\"/gi
+                let newStr = obj.content.replace(regex, "\"");
+                let startHTML = newStr.indexOf('<body>');
+                let endHTML = newStr.lastIndexOf('</body>');
+                let startCSS = newStr.indexOf('<style>');
+                let endCSS = newStr.indexOf('</style>')
+                let HTML = newStr.substring(startHTML + 6, endHTML);
+                let CSS = newStr.substring(startCSS + 7, endCSS);
+                localStorage.setItem('gjs-html', HTML);
+                localStorage.setItem('gjs-css', CSS);
+                
+            } catch (error) {
+                
+            }
+            finally {
+                this.load();
+                this.create.editorDialog = true;    
+                
+            }
+            
+        },
+        load(){
+            this.editor.load();
+        },
+        updateTemplate(id){
+            let obj = {};
+            for (let i = 0; i < this.templates.length; i++){
+                if(this.templates[i].emailTemplateId == id){
+                    obj = this.templates[i];
+                }
+            }
+            let html = localStorage.getItem('gjs-html');
+            let css = localStorage.getItem('gjs-css');
+            let content = `<!DOCTYPE html><html><head><style>` + css + `</style></head><body>` + html + `</body></html>`
+            let body = {
+                emailTemplateId: obj.emailTemplateId,
+                title: obj.title,
+                content: content,
+                status: 'draft',
+                accountId: this.idAccount
+            };
+            emailService.updateEmailTemplate(this.idAccount, body).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                if(result.code == 'SUCCESS'){
+                    let time = moment();
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    
+                }
+                else {
+                    dispatch('alert/error', result.message)
+                }
+            }).catch(error => {
+
+            }).finally(() => {
+                this.create.editorDialog = false;
+                this.getEmailTemplate()
+            })
+        },
         createNewTemplate(){
             let html = localStorage.getItem('gjs-html');
             let css = localStorage.getItem('gjs-css');
@@ -1477,12 +1574,12 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            let role = this.currentUser.authorities;
-            for (let i = 0; i < role.length;i++){
-                if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-                    this.access = true;
-                }
-            }
+            // let role = this.currentUser.authorities;
+            // for (let i = 0; i < role.length;i++){
+            //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+            //         this.access = true;
+            //     }
+            // }
             if (this.access == true){
                 this.getAllEmail()
                 this.getEmailTemplate();
@@ -1495,6 +1592,7 @@ export default {
     created(){
         this.$store.state.colorNumber = 4;
         this.getCurrentUser();
+        this.grape();
         // console.log(result)
         // this.grape()
     }
