@@ -6,7 +6,7 @@ export default {
     sendEmail, createEmailTemplate, getEmailTemplate, 
     sendEmailViaTemplate, getEmailHistory, createEmailSchedule,
     getEmailSchedule, activateSchedule, deactivateSchedule,
-    getAllEmail
+    getAllEmail, deleteEmailTemplate, trackingEmailActivities
 }
 function getAllEmail(idAccount){
     let request = {
@@ -99,5 +99,24 @@ function deactivateSchedule(idAccount, idSchedule){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/email-schedules/${idSchedule}/in-active`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function deleteEmailTemplate(idAccount, idTemplate){
+    let request = {
+        method: 'DELETE',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/emailTemplates/${idTemplate}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function trackingEmailActivities(idAccount, idContact, body){
+    let request = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/email/activities`
     return responseService.fetchRetry(endpoint, request, 1)
 }

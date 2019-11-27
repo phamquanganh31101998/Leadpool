@@ -65,15 +65,29 @@
                             </v-layout>
                         </v-card-title>
                         <v-divider :divider="divider"></v-divider>
-                        <!-- <v-layout row class="mt-2">
+                        <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-btn outline small color="primary" class="ml-4">Đã gửi</v-btn>
-                                <span class="ml-4">Opened: <strong>{{email.open}}</strong></span>
-                                <span class="ml-4">Click: <strong>{{email.click}}</strong></span>
-                                <v-btn outline dark small color="grey" @click="email.showDetail =!email.showDetail">Detail</v-btn>
+                                <template v-if="email.updateDetailBtn">
+                                    <span class="ml-4">Số lượt mở: 
+                                        <strong>{{email.open}}</strong>
+                                    </span>
+                                    <span class="ml-4">Số lượt click: 
+                                        <strong>{{email.click}}</strong>
+                                    </span>
+                                </template>
+                                <v-progress-circular
+                                    :size="20"
+                                    :width="1"
+                                    color="grey"
+                                    indeterminate
+                                    v-else
+                                ></v-progress-circular>
+                                <span class="ml-4"><v-btn v-if="email.updateDetailBtn" outline small dark color="success" @click="trackingEmailActivities(email.emailId)"> <v-icon>cached</v-icon> Cập nhật</v-btn></span>
+                                <!-- <v-btn outline dark small color="grey" @click="email.showDetail =!email.showDetail">Detail</v-btn> -->
                             </v-flex>
                         </v-layout>
-                        <v-divider :divider="divider" class="mt-2"></v-divider>
+                        <!-- <v-divider :divider="divider" class="mt-2"></v-divider>
                         <v-layout row v-show="email.showDetail">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                 <v-timeline dense class="ml-4">
@@ -101,8 +115,9 @@
                                 <!-- <p v-if="email.type == 'text/html'">
                                     
                                 </p> -->
-                                <div :id="email.emailId" v-if="email.type == 'text/html'"></div>
-                                <p v-else>{{email.body}}</p>
+                                <!-- <div :id="email.emailId" v-if="email.type == 'text/html'"></div>
+                                <p v-else>{{email.body}}</p> -->
+                                <p>{{email.body}}</p>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -289,7 +304,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <alert/>
+        <!-- <alert/> -->
     </v-layout>
     
 </template>
@@ -469,16 +484,48 @@ import contact from '../../../services/contacts.service'
                     // console.log(result);
                     for(let i = 0; i < result.response.length; i++){
                         result.response[i].showDetail = false;
-                        if(result.response[i].type == 'text/html'){
-                            console.log('------------------------------------------')
-                            this.setEmailContentDialog(result.response[i].emailId, result.response[i].body)
-                            console.log('------------------------------------------')
-                        }
+                        // if(result.response[i].type == 'text/html'){
+                        //     console.log('------------------------------------------')
+                        //     this.setEmailContentDialog(result.response[i].emailId, result.response[i].body)
+                        //     console.log('------------------------------------------')
+                        // }
+                        result.response[i].updateDetailBtn = true;
                     }
                     this.emails = result.response.reverse();
                     // console.log(this.emails);
                 }).catch(error => {
                     console.log(error);
+                })
+            },
+            getEmailFromEmailId(id){
+                let result = null;
+                for (let i = 0; i < this.emails.length; i++){
+                    if (this.emails[i].emailId == id){
+                        result = this.emails[i];
+                    }
+                }
+                return result;
+            },
+            trackingEmailActivities(id){
+                let email = this.getEmailFromEmailId(id);
+                console.log(email);
+                email.updateDetailBtn = false;
+                let body = {
+                    "limit":"1",
+                    "query": `(Contains(categories,\"${id}\"))`
+                }
+                emailService.trackingEmailActivities(this.idAccount, this.idContact, body).then(result => {
+                    if (result.code == 'SUCCESS'){
+                        if (result.response.messages.length > 0){
+                            let data = result.response.messages[0];
+                            email.open = data.opens_count;
+                            email.click = data.clicks_count;
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                }).finally(() => {
+                    email.updateDetailBtn = true;
                 })
             },
             setEmailContentDialog(id, body){

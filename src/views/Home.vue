@@ -2,17 +2,18 @@
   <v-app>
     <navBar />
     <router-view />
-    
+    <alert/>
   </v-app>
 </template>
 
 <script>
+import alert from '@/components/alert'
   //import HelloWorld from '../components/HelloWorld'
   import navBar from '../components/nav/nav'
   import numberFormat from '../helpers/numberformat'
   export default {
     components: {
-      navBar
+      navBar, alert
     },
     data(){
       return {

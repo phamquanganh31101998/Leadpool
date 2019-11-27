@@ -499,12 +499,18 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-content>
 </template>
 <script>
+import moment from 'moment'
+import alert from '@/components/alert'
 import permissionsService from '../../../services/permissions.service'
 import accountService from '../../../services/accountsetting.service'
 export default {
+    components: {
+        alert
+    },
     props: {
         idAccount: {
             type: String,
@@ -654,6 +660,10 @@ export default {
         }
     },
     methods: {
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         returnRole(role){
             if (role == 'contact'){
                 return 'Lead'
@@ -740,13 +750,20 @@ export default {
                 groupPermissions: groupPermissions,
                 permissions: permissions
             }
-            console.log(body);
             accountService.inviteUser(this.currentAccountId, body).then(result => {
-                console.log(result);
-                this.inviteUser.success = true;
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    dispatch('alert/success', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                    
+                } else {
+                    dispatch('alert/error', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                }
             }).catch(error => {
                 console.log(error);
-                this.inviteUser.fail = true;
+                // this.inviteUser.fail = true;
             }).finally(() => {
                 this.inviteUser.dialog = false;
             })

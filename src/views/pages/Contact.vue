@@ -56,13 +56,14 @@
                           <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-text-field v-model="firstname" :rules="nameRules" label="Họ" required>
+                          <v-text-field v-model="lastname" :rules="nameRules" label="Họ" required>
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-text-field v-model="lastname" :rules="nameRules" label="Tên" required>
+                          <v-text-field v-model="firstname" :rules="nameRules" label="Tên" required>
                           </v-text-field>
                         </v-flex>
+                        
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-text-field v-model="phone" label="Số điện thoại" required :rules="phoneRules">
                           </v-text-field>
@@ -215,8 +216,7 @@
                                                   <v-form v-model="newCondition.checkValidInPhone">
                                                     <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
                                                   </v-form>
-                                                    
-                                                    <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                  <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
                                               <template v-else>
@@ -628,7 +628,7 @@
       phone: '',
       phoneSearchInRules: [
         v => !!v || 'Không được để trống',
-        v => /^[0-9\+,]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
+        v => /^[0-9\+,\s]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
       ],
       phoneRules: [
         v => !!v || 'Chưa nhập số điện thoại',

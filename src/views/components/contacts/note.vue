@@ -117,7 +117,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <alert/>
+        <!-- <alert/> -->
     </v-layout>
 </template>
 <script>
