@@ -580,7 +580,7 @@ export default {
         return {
             phoneSearchInRules: [
                 v => !!v || 'Không được để trống',
-                v => /^[0-9\+,]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
+                v => /^[0-9\+,\s]*$/.test(v) || 'Chỉ được nhập số và dấu phẩy'
             ],
             access: false,
             failDialog: false,

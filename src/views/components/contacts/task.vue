@@ -641,7 +641,7 @@
                 </v-card>
             </template>
         </v-flex>
-        <alert/>
+        <!-- <alert/> -->
     </v-layout>
 </template>
 <script>

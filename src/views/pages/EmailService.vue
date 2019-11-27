@@ -54,7 +54,20 @@
                                             <td>{{props.item.text}}</td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
-                                            <td class="text-xs-center"><a @click="templateId = props.item.value, setChosenTemplate()">Xem nội dung mẫu</a></td>
+                                            <v-menu>
+                                                <template v-slot:activator="{ on }">
+                                                    <td class="text-xs-right"><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn></td>
+                                                </template>
+                                                <v-list>
+                                                    <v-list-tile @click="templateId = props.item.value, setChosenTemplate()">
+                                                        <v-list-tile-content>Xem nội dung mẫu</v-list-tile-content>
+                                                    </v-list-tile>
+                                                    <v-list-tile @click="confirmDeleteEmailTemplate(props.item.value)">
+                                                        <v-list-tile-content>Xóa</v-list-tile-content>
+                                                    </v-list-tile>
+                                                </v-list>
+                                            </v-menu>
+                                            
                                         </tr>
                                     </template>
                                 </v-data-table>
@@ -390,14 +403,34 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="deleteEmailTemplateDialog.dialog" @click:outside="deleteEmailTemplateDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                <v-toolbar-title>Xóa?</v-toolbar-title>
+                <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn có chắc chắn muốn xóa mẫu email này?
+                </v-card-text>
+                <v-card-actions>
+                <v-btn flat color="red" @click="deleteEmailTemplate(deleteEmailTemplateDialog.id)">Xóa</v-btn>
+                <v-btn flat color="primary" @click="deleteEmailTemplateDialog.dialog = false">Quay lại</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <alert/>
     </v-content>
 </template>
 <script>
+import alert from '@/components/alert'
 import listService from '../../services/list.services'
 import moment from 'moment'
 import contactService from '../../services/contacts.service'
 import emailService from '../../services/email.service'
 export default {
+    components: {
+        alert
+    },
     data(){
         return{
             allEmail: [],
@@ -433,8 +466,8 @@ export default {
                     value: 'name'
                 },
                 {
-                    text: 'NỘI DUNG MẪU',
-                    align: 'center',
+                    text: 'HÀNH ĐỘNG',
+                    align: 'right',
                     sortable: false,
                     value: 'name'
                 }
@@ -572,6 +605,10 @@ export default {
                         
                     ],
                 }
+            },
+            deleteEmailTemplateDialog: {
+                dialog: false,
+                id: ''
             }
         }
     },
@@ -633,6 +670,33 @@ export default {
         },
     },
     methods: {
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
+        confirmDeleteEmailTemplate(idTemplate){
+            this.deleteEmailTemplateDialog.dialog = true;
+            this.deleteEmailTemplateDialog.id = idTemplate;
+        },
+        deleteEmailTemplate(id){
+            emailService.deleteEmailTemplate(this.idAccount, id).then(result => {
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                    
+                } else {
+                    dispatch('alert/error', result.message)
+                }
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.deleteEmailTemplateDialog.dialog = false;
+                this.getEmailTemplate();
+            })
+        },
         //manage template
         covertime(time) {
             if (_.isNull(time)) return '';
@@ -829,17 +893,17 @@ export default {
                             activate: true,
                         },
                         {
-                            id: 'firstName',
+                            id: 'lastName',
                             label: '<h2>Họ</h2>',
                             select: true,
-                            content: '<span>{{Contact.firstName}}</span>',
+                            content: '<span>{{Contact.lastName}}</span>',
                             activate: true,
                         },
                         {
-                            id: 'lastName',
+                            id: 'firstName',
                             label: '<h2>Tên</h2>',
                             select: true,
-                            content: '<span>{{Contact.lastName}}</span>',
+                            content: '<span>{{Contact.firstName}}</span>',
                             activate: true,
                         },
                         {
@@ -1078,11 +1142,19 @@ export default {
                             width: 250
                         },
                     ],
-                    uploadText: 'Hiện tại chưa hỗ trợ upload ảnh từ máy tính của bạn (ảnh sẽ không thể hiển thị bên phía người nhận)',
+                    uploadText: 'Hiện tại chưa hỗ trợ upload ảnh từ máy tính của bạn (ảnh sẽ không thể hiển thị bên phía người nhận), bạn có thể lấy link ảnh từ google drive,...',
                     addBtnText: 'Thêm ảnh từ link',
                     handleAdd: (textFromInput) => {
                             // some check...
-                            this.editor.AssetManager.add(textFromInput);
+                            console.log(textFromInput)
+                            if (textFromInput.includes('https://drive.google.com/open?')){
+                                var ggLink = this.getImageFromGGDriveLink(textFromInput);
+                                this.editor.AssetManager.add(ggLink);
+                            }
+                            else {
+                                this.editor.AssetManager.add(textFromInput);
+                            }
+                            
                         }
                     }
             });
@@ -1127,6 +1199,11 @@ export default {
             });
 
             console.log(this.editor)
+        },
+        getImageFromGGDriveLink(link){
+            let result = '';
+            result = link.replace('open?', 'uc?');
+            return result;
         },
         alerting(){
             // alert('hú');
@@ -1479,7 +1556,7 @@ export default {
   justify-content: flex-start;
   align-items: stretch;
   flex-wrap: nowrap;
-  height: 300px;
+  height: 100%;
 }
 
 .editor-canvas {

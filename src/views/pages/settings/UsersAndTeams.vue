@@ -369,13 +369,19 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <alert/>
     </v-content>
 </template>
 <script>
+import moment from 'moment'
+import alert from '@/components/alert'
 import permissionsService from '../../../services/permissions.service'
 import accountService from '../../../services/accountsetting.service'
 import {mapGetters} from 'vuex'
 export default {
+    components: {
+        alert
+    },
     props: {
         idAccount: {
             type: String,
@@ -509,6 +515,10 @@ export default {
         })
     },
     methods: {
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
         },
@@ -555,13 +565,23 @@ export default {
                 groupPermissions: groupPermissions,
                 permissions: permissions
             }
-            console.log(body);
+            // console.log(body);
             accountService.inviteUser(this.idAccount, body).then(result => {
-                console.log(result);
-                this.inviteUser.success = true;
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    dispatch('alert/success', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                    
+                } else {
+                    dispatch('alert/error', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                }
+                // console.log(result);
+                // this.inviteUser.success = true;
             }).catch(error => {
                 console.log(error);
-                this.inviteUser.fail = true;
+                // this.inviteUser.fail = true;
             }).finally(() => {
                 this.inviteUser.dialog = false;
             })

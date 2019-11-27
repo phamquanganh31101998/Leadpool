@@ -380,7 +380,7 @@
                                                             <template v-else-if="item.property == 'bussiness'">
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select v-if="!item.otherBussiness" :readonly="!access && !item.otherBussiness" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                        <v-select v-if="!item.otherBussiness" :readonly="!access && !item.otherBussiness" label="Ngành nghề" :items="allBussiness" v-model="item.value" ></v-select>
                                                                     </v-flex>
                                                                     <v-flex xs7 sm7 md7 lg7 xl7>
                                                                         <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác: "></v-checkbox>
@@ -702,7 +702,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <alert/>
+        <!-- <alert/> -->
     </v-content>
 </template>
 <script>
@@ -944,6 +944,9 @@
             }
         }),
         watch: {
+            'items[8].value'(){
+                alert(this.items[8].value)
+            }
             // access(){
             //     this.cannotEdit = !this.access;
             // }
@@ -1009,7 +1012,8 @@
                     this.detail = result.response
                     // console.log(this.detail)
                     
-                    this.items = [{
+                    this.items = [
+                        {
                             title: 'Vòng đời',
                             description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
                             value: this.checkString(result.response.lifecycleStage),
@@ -1082,6 +1086,10 @@
                     this.getCurrentUser()
                 })
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             updateContactDetail(property, value){
                 const {
                     dispatch
@@ -1095,8 +1103,20 @@
                     ]
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
-                    
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                        // this.$emit('updateLastActivityDate');
+                        // eventBus.updateLogCallList();
+                        // this.deleteLogDialog.id = '';
+                        // this.deleteLogDialog.dialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
