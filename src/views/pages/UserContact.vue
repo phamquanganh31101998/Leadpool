@@ -380,13 +380,14 @@
                                                             <template v-else-if="item.property == 'bussiness'">
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select v-if="!item.otherBussiness" :readonly="!access && !item.otherBussiness" label="Ngành nghề" :items="allBussiness" v-model="item.value" ></v-select>
+                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
+                                           
                                                                     </v-flex>
-                                                                    <v-flex xs7 sm7 md7 lg7 xl7>
-                                                                        <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác: "></v-checkbox>
-                                                                    </v-flex>
-                                                                    <v-flex xs5 sm5 md5 lg5 xl5>
-                                                                        <v-text-field :readonly="!access" v-if="item.otherBussiness" v-model="item.value" label="Nhập ngành nghề" @change="updateContactDetail(item.property, item.value)"></v-text-field>
+                                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác "></v-checkbox>
+                                                                    </v-flex> -->
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-text-field :readonly="!access" v-if="item.otherBussiness" v-model="item.value" label="Nhập ngành nghề khác tại đây" @change="updateContactDetail(item.property, item.value)"></v-text-field>
                                                                     </v-flex>
                                                                 </v-layout>
                                                                 
@@ -944,11 +945,26 @@
             }
         }),
         watch: {
-            'items[8].value'(){
-                alert(this.items[8].value)
-            }
+            // bussinessChoice(){
+            //     alert(this.bussinessChoice)
+            // }
             // access(){
             //     this.cannotEdit = !this.access;
+            // }
+            items(){
+                console.log(this.items[8].value)
+            }
+        },
+        computed: {
+            // bussinessChoice(){
+            //     let result = '';
+            //     for (let i = 0; i < this.items.length;i++){
+            //         if(this.items[i].property == 'bussiness'){
+            //             return this.items[i].value;
+            //         }
+            //     }
+            //     console.log(result);
+            //     return result;
             // }
         },
         methods:{
@@ -1089,6 +1105,15 @@
             coverTimeDetail(time){
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
+            updateBussiness(property, value){
+                if (value != 'Khác'){
+                    this.updateContactDetail(property, value);
+                    this.items[8].otherBussiness = false;
+                }
+                else {
+                    this.items[8].otherBussiness = true;
+                }
             },
             updateContactDetail(property, value){
                 const {
