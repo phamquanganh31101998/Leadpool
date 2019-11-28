@@ -425,7 +425,7 @@
                     <v-btn icon dark @click="create.editorDialog = false">
                         <v-icon>close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>Tạo mẫu email mới</v-toolbar-title>
+                    <v-toolbar-title>Mẫu email</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <!-- <v-toolbar-items>
                         <v-tooltip top v-if="!create.btn">
@@ -826,8 +826,8 @@ export default {
             this.createBtn = true;
             localStorage.setItem('gjs-html', '');
             localStorage.setItem('gjs-css', '');
-            this.load()
             this.create.editorDialog = true;
+            this.load()
             
         },
         coverTimeDetail(time){
@@ -840,15 +840,18 @@ export default {
         },
         deleteEmailTemplate(id){
             emailService.deleteEmailTemplate(this.idAccount, id).then(result => {
-                let time = moment();
                 const {
                     dispatch
                 } = this.$store;
-                if (result.code == "SUCCESS") {
-                    dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
-                    
-                } else {
-                    dispatch('alert/error', result.message)
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    eventBus.updateNoteList();
+                    this.deleteNoteDialog.id = '';
+                    this.deleteNoteDialog.dialog = false;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
                 console.log(error);
@@ -864,10 +867,20 @@ export default {
         },
         getEmailTemplate(){
             emailService.getEmailTemplate(this.idAccount).then(result => {
-                this.templates = result.response.reverse();
-                this.templateSelect = [];
-                this.templateSelect = this.setSelectEmailTemplate(this.templates);
-                // console.log(this.templates);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.templates = result.response.reverse();
+                    this.templateSelect = [];
+                    this.templateSelect = this.setSelectEmailTemplate(this.templates);
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
             })
         },
         setSelectEmailTemplate(templateArray){
@@ -1392,9 +1405,9 @@ export default {
                 
             }
             finally {
-                this.load();
+                // this.load();
                 this.create.editorDialog = true;    
-                
+                this.load()
             }
             
         },
@@ -1426,13 +1439,12 @@ export default {
                 const {
                     dispatch
                 } = this.$store;
+                let time = moment();
                 if(result.code == 'SUCCESS'){
-                    let time = moment();
                     dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
-                    
                 }
                 else {
-                    dispatch('alert/error', result.message)
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
 
@@ -1451,13 +1463,21 @@ export default {
                 status: 'draft'
             };
             emailService.createEmailTemplate(this.idAccount, body).then(result => {
-                console.log(result);
-                this.create.successfulDialog = true;
-                localStorage.removeItem('gjs-html');
-                localStorage.removeItem('gjs-css');
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    localStorage.removeItem('gjs-html');
+                    localStorage.removeItem('gjs-css');
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error);
-                this.create.failDialog = true;
             }).finally(() => {
                 this.create.dialog = false;
                 this.create.editorDialog = false;
@@ -1472,20 +1492,30 @@ export default {
         //create schedule
         getList(){
             listService.getList(this.idAccount).then(result => {
-                let res = result.response;
-                for (let i = 0; i < res.length; i++){
-                    listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
-                        let obj = {
-                            text: res[i].name,
-                            value: res[i].contactConditionGroupId
-                        }
-                        for (let k = 0; k < result.response.length; k++){
-                            result.response[k].chosen = true;
-                        }
-                        obj.contact = result.response;
-                        this.createSchedule.list.push(obj);
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
+                            let obj = {
+                                text: res[i].name,
+                                value: res[i].contactConditionGroupId
+                            }
+                            for (let k = 0; k < result.response.length; k++){
+                                result.response[k].chosen = true;
+                            }
+                            obj.contact = result.response;
+                            this.createSchedule.list.push(obj);
+                        })
+                    }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
                 // console.log(this.createSchedule.list);
             }).then(() => {
                 this.getAllContact()
@@ -1496,35 +1526,63 @@ export default {
         getAllEmail(){
             this.allEmail = [];
             emailService.getAllEmail(this.idAccount).then(result => {
-                result.response.filter(e => {
-                    const obj = {
-                        text: e.name + ' (' + e.email + ')',
-                        value: e.email,
-                        name: e.name
-                    }
-                    this.allEmail.push(obj);
-                });
-                console.log(this.allEmail)
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    result.response.filter(e => {
+                        const obj = {
+                            text: e.name + ' (' + e.email + ')',
+                            value: e.email,
+                            name: e.name
+                        }
+                        this.allEmail.push(obj);
+                    });
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             })
         },
         getAllContact(){
             contactService.getAllContact(this.idAccount, 1).then(result => {
-                for (let i = 1; i <= result.response.totalPage;i++){
-                    contactService.getAllContact(this.idAccount, i).then(result => {
-                        for(let k = 0; k < result.response.results.length; k++){
-                            result.response.results[k].chosen = true;
-                            this.createSchedule.allContacts.push(result.response.results[k]);
-                        }
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 1; i <= result.response.totalPage;i++){
+                        contactService.getAllContact(this.idAccount, i).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                for(let k = 0; k < result.response.results.length; k++){
+                                    result.response.results[k].chosen = true;
+                                    this.createSchedule.allContacts.push(result.response.results[k]);
+                                }
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    }
+                    // console.log(this.createSchedule.allContacts.length)
+                    let obj = {
+                        text: 'Tất cả các Lead',
+                        value: 'all',
+                        contact: this.createSchedule.allContacts
+                    }
+                    this.createSchedule.list.unshift(obj);
                 }
-                // console.log(this.createSchedule.allContacts.length)
-                let obj = {
-                    text: 'Tất cả các Lead',
-                    value: 'all',
-                    contact: this.createSchedule.allContacts
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                this.createSchedule.list.unshift(obj);
-                console.log(this.createSchedule.list)
+                
             }).catch(error => {
                 console.log(error);
             })
@@ -1617,7 +1675,7 @@ export default {
         returnTime(data) {
             return moment(data).format('HH:mm:ss DD/MM/YYYY')
         },
-       returnStatus(status){
+        returnStatus(status){
             let result = ''
             if (status == 'ACTIVE'){
                 result = 'Được kích hoạt'
@@ -1659,19 +1717,29 @@ export default {
         getSchedule(){
             this.manageSchedule.list = [];
             emailService.getEmailSchedule(this.idAccount).then(result => {
-                console.log(result);
-                let data = result.response.reverse();
-                for (let i = 0; i < data.length; i++){
-                    
-                    let obj = {
-                        id: data[i].emailScheduleId,
-                        templateId: data[i].emailTemplateId,
-                        time: this.returnTime(data[i].timeToSend),
-                        status: data[i].status,
-                        createdBy: data[i].createdBy
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response.reverse();
+                    for (let i = 0; i < data.length; i++){
+                        
+                        let obj = {
+                            id: data[i].emailScheduleId,
+                            templateId: data[i].emailTemplateId,
+                            time: this.returnTime(data[i].timeToSend),
+                            status: data[i].status,
+                            createdBy: data[i].createdBy
+                        }
+                        this.manageSchedule.list.push(obj);
                     }
-                    this.manageSchedule.list.push(obj);
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
             })
         },
         changeScheduleStatus(id, status){
@@ -1693,21 +1761,29 @@ export default {
         openScheduleDetailDialog(id){
             let obj = null;
             emailService.getEmailSchedule(this.idAccount).then(result => {
-                let data = result.response;
-                for (let i = 0; i < data.length; i++){
-                    if (id == data[i].emailScheduleId){
-                        obj = data[i];
-                        
-                        this.manageSchedule.detail.listEmail = obj.emailScheduleDetails;
-                        console.log(obj.emailScheduleDetails)
-                        this.manageSchedule.detail.dialog = true;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response;
+                    for (let i = 0; i < data.length; i++){
+                        if (id == data[i].emailScheduleId){
+                            obj = data[i];
+                            
+                            this.manageSchedule.detail.listEmail = obj.emailScheduleDetails;
+                            console.log(obj.emailScheduleDetails)
+                            this.manageSchedule.detail.dialog = true;
+                        }
                     }
                 }
-                
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
             })
         },
-
-
         getTemplateNameFromId(id){
             
             let name = '';
@@ -1728,6 +1804,7 @@ export default {
             //     }
             // }
             if (this.access == true){
+                
                 this.getAllEmail()
                 this.getEmailTemplate();
                 this.getList();

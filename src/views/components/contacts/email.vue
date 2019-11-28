@@ -118,7 +118,7 @@
                                 </p> -->
                                 <!-- <div :id="email.emailId" v-if="email.type == 'text/html'"></div>
                                 <p v-else>{{email.body}}</p> -->
-                                <p>{{email.body}}</p>
+                                <a style="font-size: 16px;" @click.stop="viewEmailContent(email.body)">Xem nội dung email</a>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -362,6 +362,11 @@ import contact from '../../../services/contacts.service'
             }
         },
         methods: {
+            viewEmailContent(body){
+                let regex = /\\\"/gi
+                document.getElementById("templateBody").innerHTML = body.replace(regex, "\"");
+                this.viewEmailContentDialog = true;
+            },
             returnStatus(status){
                 let result = ''
                 if (status == 'SENT'){
@@ -465,16 +470,25 @@ import contact from '../../../services/contacts.service'
             getEmailLogsList(){
                 let type = 'email';
                 logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
-                    for (let i = 0;i < result.response.length; i++){
-                        result.response[i].dateToPut = this.coverTime(result.response[i].time);
-                        result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
-                        result.response[i].menu1Log = false;
-                        result.response[i].modal2Log = false;
-                        result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
-                        result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for (let i = 0;i < result.response.length; i++){
+                            result.response[i].dateToPut = this.coverTime(result.response[i].time);
+                            result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
+                            result.response[i].menu1Log = false;
+                            result.response[i].modal2Log = false;
+                            result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
+                            result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
+                        }
+                        this.emailLogs = result.response.reverse();
+                        this.emailLogs = [...this.emailLogs];
                     }
-                    this.emailLogs = result.response.reverse();
-                    this.emailLogs = [...this.emailLogs];
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     this.progressLog = false;
                 }).catch(error => {
                     console.log(error);
@@ -492,15 +506,15 @@ import contact from '../../../services/contacts.service'
                     } = this.$store;
                     let time = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateLogEmailList();
                         this.deleteLogDialog.id = '';
-                        this.deleteLogDialog.dialog = false;
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
+                    this.deleteLogDialog.dialog = false;
                     
                 }).catch(error => {
                     console.log(error);
@@ -519,12 +533,12 @@ import contact from '../../../services/contacts.service'
                     } = this.$store;
                     let timeChange = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(timeChange)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(timeChange)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateLogEmailList();
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(timeChange)})`)
                     }
                     
                 }).catch(error => {
@@ -545,28 +559,26 @@ import contact from '../../../services/contacts.service'
             },
             getEmail(){
                 emailService.getEmailHistory(this.idAccount, this.idContact).then(result => {
-                    // console.log(result);
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].showDetail = false;
-                        // if(result.response[i].type == 'text/html'){
-                        //     console.log('------------------------------------------')
-                        //     this.setEmailContentDialog(result.response[i].emailId, result.response[i].body)
-                        //     console.log('------------------------------------------')
-                        // }
-                        result.response[i].number = i;
-                        result.response[i].updateDetailBtn = true;
-                        
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for(let i = 0; i < result.response.length; i++){
+                            result.response[i].showDetail = false;
+                            result.response[i].number = i;
+                            result.response[i].updateDetailBtn = true;
+                        }
+                        this.emails = result.response.reverse();
                     }
-                    this.emails = result.response.reverse();
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
                     // console.log(this.emails);
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
-                    // for (let i = 0; i < this.emails.length; i++){
-                    //     if (this.emails[i].click == 0 && this.emails[i].click == 0){
-                    //         this.trackingEmailActivities(this.emails[i].emailId)
-                    //     }
-                    // }
                     this.trackingAllEmailActivities();
                 })
             },

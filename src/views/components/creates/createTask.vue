@@ -530,7 +530,7 @@
                         eventBus.updateTaskList();
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
                     this.$emit('updateLastActivityDate');
                     this.closeCreateTaskDialog();

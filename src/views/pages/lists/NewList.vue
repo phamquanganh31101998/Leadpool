@@ -542,7 +542,7 @@
     </v-content>
 </template>
 <script>
-
+import moment from 'moment'
 import listService from '../../../services/list.services'
 export default {
     props: {
@@ -856,6 +856,10 @@ export default {
         }
     },
     methods: {
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
         },
@@ -878,12 +882,22 @@ export default {
         },
         getThisList(){
             listService.getList(this.idAccount).then(result => {
-                const response = result.response;
-                for (let i = 0; i < response.length; i++){
-                    if(response[i].contactConditionGroupId == this.idList){
-                        this.list = response[i];
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    const response = result.response;
+                    for (let i = 0; i < response.length; i++){
+                        if(response[i].contactConditionGroupId == this.idList){
+                            this.list = response[i];
+                        }
                     }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).then(() => {
                 this.getContacts();
             })
@@ -1027,10 +1041,19 @@ export default {
                 "conditions": conditions
             }
             listService.createNewList(this.idAccount, body).then(result => {
-                console.log(result);
-                this.newListName = '';
-                this.conditions = [];
-                this.goToListPage();
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    this.newListName = '';
+                    this.conditions = [];
+                    this.goToListPage();
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
             })
@@ -1056,8 +1079,17 @@ export default {
             this.allContacts = [];
             this.contacts = [];
             listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
-                this.allContacts = result.response;
-                this.contacts = this.allContacts;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.allContacts = result.response;
+                    this.contacts = this.allContacts;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 this.failDialog = true;
                 console.log(error);

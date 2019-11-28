@@ -19,7 +19,7 @@ async function fetchRetry (url, options, n) {
 
 function handle (response) {
     return response.text().then(text => {
-        // console.log(response)
+        console.log(response)
         const data = text && JSON.parse(text);
 
         if(response.ok) return data;

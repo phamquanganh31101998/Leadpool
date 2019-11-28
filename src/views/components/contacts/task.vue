@@ -742,31 +742,39 @@ import alert from '@/components/alert'
             },
             getTask(){
                 taskService.getTask(this.idAccount, this.idContact).then(result => {
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].assignedToUser = this.getNameFromEmail(result.response[i].assignedTo);
-                        result.response[i].createdByUser = this.getNameFromEmail(result.response[i].createdBy);
-                        result.response[i].menu1 = false;
-                        result.response[i].time1 = false;
-                        result.response[i].dueDateDate = this.coverTimeDateOnly(result.response[i].dueDate);
-                        
-                        result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate)
-                        result.response[i].menu2 = false;
-                        result.response[i].time2 = false;
-                        if(result.response[i].emailReminder != null){
-                            result.response[i].emailReminderDate = this.coverTimeDateOnly(result.response[i].emailReminder);
-                            result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder)
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for(let i = 0; i < result.response.length; i++){
+                            result.response[i].assignedToUser = this.getNameFromEmail(result.response[i].assignedTo);
+                            result.response[i].createdByUser = this.getNameFromEmail(result.response[i].createdBy);
+                            result.response[i].menu1 = false;
+                            result.response[i].time1 = false;
+                            result.response[i].dueDateDate = this.coverTimeDateOnly(result.response[i].dueDate);
+                            result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate)
+                            result.response[i].menu2 = false;
+                            result.response[i].time2 = false;
+                            if(result.response[i].emailReminder != null){
+                                result.response[i].emailReminderDate = this.coverTimeDateOnly(result.response[i].emailReminder);
+                                result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder)
+                            }
+                            else {
+                                result.response[i].emailReminderDate = '';
+                                result.response[i].emailReminderTime = '08:00';
+                                result.response[i].emailReminderChoice = 'No reminder'
+                            }
+                            result.response[i].typeMenu = false;
+                            result.response[i].assignMenu = false;
+                            result.response[i].reminderMenu = false;
+                            result.response[i].timeMenu = false;
                         }
-                        else {
-                            result.response[i].emailReminderDate = '';
-                            result.response[i].emailReminderTime = '08:00';
-                            result.response[i].emailReminderChoice = 'No reminder'
-                        }
-                        result.response[i].typeMenu = false;
-                        result.response[i].assignMenu = false;
-                        result.response[i].reminderMenu = false;
-                        result.response[i].timeMenu = false;
+                        this.tasks = result.response.reverse();
                     }
-                    this.tasks = result.response.reverse();
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
@@ -777,11 +785,20 @@ import alert from '@/components/alert'
                 // this.progress = true;
                 this.allEmail = [];
                 taskService.getAllEmail(this.idAccount).then(result => {
-                    result.response.filter(e => {
-                        e.displayText = e.name + ' (' + e.email + ')'
-                        this.allEmail.push(e);
-                        this.searchedEmail.push(e);
-                    });
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        result.response.filter(e => {
+                            e.displayText = e.name + ' (' + e.email + ')'
+                            this.allEmail.push(e);
+                            this.searchedEmail.push(e);
+                        });
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     this.getTask();
                 }).catch(error => {
                     console.log(error);
@@ -809,12 +826,12 @@ import alert from '@/components/alert'
                     } = this.$store;
                     let time = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(time)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateTaskList();
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
                     
                 }).catch(error => {
@@ -833,37 +850,47 @@ import alert from '@/components/alert'
             updateTaskList(){
                 let tempArray = [];
                 taskService.getTask(this.idAccount, this.idContact).then(result => {
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].assignedToUser = this.getNameFromEmail(result.response[i].assignedTo);
-                        result.response[i].createdByUser = this.getNameFromEmail(result.response[i].createdBy);
-                        result.response[i].menu1 = false;
-                        result.response[i].time1 = false;
-                        result.response[i].dueDateDate = this.coverTimeDateOnly(result.response[i].dueDate);
-                        result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate);
-                        result.response[i].ref = result.response[i].taskId;
-                        result.response[i].menu2 = false;
-                        result.response[i].time2 = false;
-                        if(result.response[i].emailReminder != null){
-                            result.response[i].emailReminderDate = this.coverTimeDateOnly(result.response[i].emailReminder);
-                            result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for(let i = 0; i < result.response.length; i++){
+                            result.response[i].assignedToUser = this.getNameFromEmail(result.response[i].assignedTo);
+                            result.response[i].createdByUser = this.getNameFromEmail(result.response[i].createdBy);
+                            result.response[i].menu1 = false;
+                            result.response[i].time1 = false;
+                            result.response[i].dueDateDate = this.coverTimeDateOnly(result.response[i].dueDate);
+                            result.response[i].dueDateTime = this.coverTimeHourOnly(result.response[i].dueDate);
+                            result.response[i].ref = result.response[i].taskId;
+                            result.response[i].menu2 = false;
+                            result.response[i].time2 = false;
+                            if(result.response[i].emailReminder != null){
+                                result.response[i].emailReminderDate = this.coverTimeDateOnly(result.response[i].emailReminder);
+                                result.response[i].emailReminderTime = this.coverTimeHourOnly(result.response[i].emailReminder);
+                            }
+                            else {
+                                result.response[i].emailReminderDate = '';
+                                result.response[i].emailReminderTime = '08:00';
+                                result.response[i].emailReminderChoice = 'No reminder'
+                            }
+                            result.response[i].typeMenu = false;
+                            result.response[i].assignMenu = false;
+                            result.response[i].reminderMenu = false;
+                            result.response[i].timeMenu = false;
                         }
-                        else {
-                            result.response[i].emailReminderDate = '';
-                            result.response[i].emailReminderTime = '08:00';
-                            result.response[i].emailReminderChoice = 'No reminder'
+                        tempArray = result.response.reverse();
+                        for(let i = 0; i<tempArray.length; i++){
+                            if(tempArray[i] != this.tasks[i]){
+                                this.tasks[i] = tempArray[i];
+                            }
                         }
-                        result.response[i].typeMenu = false;
-                        result.response[i].assignMenu = false;
-                        result.response[i].reminderMenu = false;
-                        result.response[i].timeMenu = false;
+                        this.tasks = [...this.tasks];
                     }
-                    tempArray = result.response.reverse();
-                    for(let i = 0; i<tempArray.length; i++){
-                        if(tempArray[i] != this.tasks[i]){
-                            this.tasks[i] = tempArray[i];
-                        }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
-                    this.tasks = [...this.tasks];
+                    
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {

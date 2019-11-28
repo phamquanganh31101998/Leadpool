@@ -156,6 +156,10 @@
         },
 
         methods: {
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             formatDate(date) {
                 if (!date) return null
 
@@ -181,12 +185,23 @@
                     "type":"meeting",
                 }
                 logService.createLog(this.idAccount, this.idContact, data).then(result => {
-                    this.successfulDialog = true;
-                    this.log = '';
-                    eventBus.updateLogMeetList();
-                    this.$emit('updateLastActivityDate');
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.log = '';
+                        eventBus.updateLogMeetList();
+                        this.$emit('updateLastActivityDate');
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    // this.successfulDialog = true;
+                    
                 }).catch(error => {
-                    this.failDialog = true;
+                    // this.failDialog = true;
                     console.log(error);
                 });
                 this.$emit('closeCreateLogMeetDialog');

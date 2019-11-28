@@ -145,14 +145,27 @@ export default {
         }
     },
     methods: {
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         coverTime(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         getList(){
             listService.getList(this.idAccount).then(result => {
-                this.allLists = result.response.reverse();
-                this.lists = this.allLists;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.allLists = result.response.reverse();
+                    this.lists = this.allLists;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
             })

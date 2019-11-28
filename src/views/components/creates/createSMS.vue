@@ -93,6 +93,7 @@
     </v-card-text>
 </template>
 <script>
+import moment from 'moment'
 import contactsService from '../../../services/contacts.service'
 import smsService from '../../../services/sms.service'
 import { eventBus } from '../../../eventBus';
@@ -166,22 +167,32 @@ export default {
         getAllDeviceKey(){
             this.allDeviceKey = [];
             smsService.getListDeviceKey(this.idAccount).then(result => {
-                let res = result.response.reverse();
-                for (let i = 0; i < res.length;i++){
-                    let name = '';
-                    if (res[i].campaign == null){
-                        name = '*chiến dịch không có tên*' + ' (' + res[i].name + ')'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response.reverse();
+                    for (let i = 0; i < res.length;i++){
+                        let name = '';
+                        if (res[i].campaign == null){
+                            name = '*chiến dịch không có tên*' + ' (' + res[i].name + ')'
+                        }
+                        else{
+                            name = res[i].campaign + ' (' + res[i].name + ')'
+                        }
+                        let obj = {
+                            text: name,
+                            value: res[i].smsDeviceId
+                        }
+                        this.allDeviceKey.push(obj);
                     }
-                    else{
-                        name = res[i].campaign + ' (' + res[i].name + ')'
-                    }
-                    let obj = {
-                        text: name,
-                        value: res[i].smsDeviceId
-                    }
-                    this.allDeviceKey.push(obj);
+                    this.deviceKey = this.allDeviceKey[0].value;
                 }
-                this.deviceKey = this.allDeviceKey[0].value;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error);
             })
@@ -189,18 +200,32 @@ export default {
         getAllTemplates(){
             this.allTemplates = [];
             smsService.getTemplate(this.idAccount).then(result => {
-                let res = result.response.reverse();
-                for (let i = 0; i < res.length;i++){
-                    let obj = {
-                        text: res[i].name,
-                        value: res[i].content
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response.reverse();
+                    for (let i = 0; i < res.length;i++){
+                        let obj = {
+                            text: res[i].name,
+                            value: res[i].content
+                        }
+                        this.allTemplates.push(obj);
                     }
-                    this.allTemplates.push(obj);
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
                 
             }).catch(error => {
                 console.log(error);
             })
+        },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         sendSMS(){
             let body = {
@@ -209,13 +234,20 @@ export default {
                 "smsDeviceId": this.deviceKey
             }
             smsService.sendSMS(this.idAccount, body).then(result => {
-                console.log(result);
-                this.successfulDialog = true;
-                this.$emit('updateLastActivityDate');
-                this.$emit('updateLastContacted');
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    this.$emit('updateLastActivityDate');
+                    this.$emit('updateLastContacted');
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
-                this.failDialog = true;
             }).finally(() => {
                 this.closeSendSMSDialog();
             })

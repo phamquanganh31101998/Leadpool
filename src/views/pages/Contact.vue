@@ -851,6 +851,10 @@
     },
 
     methods: {
+      coverTimeDetail(time){
+          if (_.isNull(time)) return '';
+          return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+      },
       getAllEmail(){
           this.allEmail = [];
           contacts.getAllEmail(this.idAccount).then(result => {
@@ -987,14 +991,15 @@
           }
           else {
             this.createFailResponse = result.response;
-            this.createFailDialog = true;
+            // this.createFailDialog = true;
+            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
           }
           this.getAllContact();
           this.createWaiting = false;
         }).catch(error => {
           console.log(error);
           this.createFailResponse = error.response.status;
-          this.createFailDialog = true;
+          // this.createFailDialog = true;
           this.checkInfo = false;
           this.createWaiting = false;
         }).finally(()=> {
@@ -1006,9 +1011,19 @@
         this.contacts = []
         this.allContacts = [];
         contacts.getAllContact(this.idUser, this.page).then(result => {
-          this.allContacts = result.response.results;
-          this.contacts = this.allContacts;
-          this.pages = result.response.totalPage
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              this.allContacts = result.response.results;
+              this.contacts = this.allContacts;
+              this.pages = result.response.totalPage
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          } 
+          
         }).catch(error => {
           // this.failDialog = true;
           console.log(error);
@@ -1018,10 +1033,19 @@
         this.contacts = []
         this.allContacts = [];
         contacts.getMyContact(this.idUser, this.page).then(result => {
-          console.log(result)
-          this.allContacts = result.response.results;
-          this.contacts = this.allContacts;
-          this.pages = result.response.totalPage
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              this.allContacts = result.response.results;
+              this.contacts = this.allContacts;
+              this.pages = result.response.totalPage
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          } 
+          
         }).catch(error => {
           console.log(error);
         })
@@ -1040,21 +1064,32 @@
       },
       deleteContact(idContact){
         contacts.deleteContact(this.idUser, idContact).then(result => {
-          this.deleteContactDialog.id = '';
-          if (this.section == 'allContact'){
-            this.getAllContact()
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+              this.deleteContactDialog.id = '';
+              if (this.section == 'allContact'){
+                this.getAllContact()
+              }
+              else if(this.section == 'myContact') {
+                this.getMyContact()
+              }
+              else if (this.section == 'search'){
+                this.searchContact();
+              }
           }
-          else if(this.section == 'myContact') {
-            this.getMyContact()
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
           }
-          else if (this.section == 'search'){
-            this.searchContact();
-          }
+          this.deleteContactDialog.dialog = false;
         }).catch(error => {
           console.log(error);
-          this.cannotDeleteDialog = true;
+          // this.cannotDeleteDialog = true;
         }).finally(() => {
-          this.deleteContactDialog.dialog = false;
+          
         })
       },
       deleteOrCondition(orIndex){
@@ -1166,12 +1201,21 @@
         let conditions = this.conditions;
         console.log(conditions)
         listService.findContactByCondition(this.idUser, conditions).then(result => {
-          this.allContacts = result.response;
-          this.contacts = this.allContacts.reverse();
-          this.page = 1;
-          this.pages = 1;
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              this.allContacts = result.response;
+              this.contacts = this.allContacts.reverse();
+              this.page = 1;
+              this.pages = 1;
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
         }).catch(error => {
-          this.failDialog = true;
+          // this.failDialog = true;
           console.log(error);
         })
       },
