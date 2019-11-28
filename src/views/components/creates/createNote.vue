@@ -74,6 +74,7 @@
     </v-container>
 </template>
 <script>
+    import moment from 'moment'
     import {eventBus} from '../../../eventBus'
     import noteService from '../../../services/note.service'
     export default {
@@ -105,6 +106,10 @@
             },
         },
         methods:{
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             createNote(){
                 let note = 
                     {
@@ -112,12 +117,20 @@
                         "note": this.note
                     }
                 noteService.createNote(this.idAccount, this.idContact, note).then(result => {
-                    this.successfulDialog = true;
-                    this.note = '';
-                    eventBus.updateNoteList();
-                    this.$emit('updateLastActivityDate');
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.note = '';
+                        eventBus.updateNoteList();
+                        this.$emit('updateLastActivityDate');
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
-                    this.failDialog = true;
                     console.log(error);
                 });
                 this.$emit('closeCreateNoteDialog');

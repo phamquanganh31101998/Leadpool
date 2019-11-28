@@ -121,7 +121,6 @@
     </v-layout>
 </template>
 <script>
-import alert from '@/components/alert'
 import moment from 'moment'
 import contact from '../../../services/contacts.service'
 import noteService from '../../../services/note.service'
@@ -155,23 +154,20 @@ export default {
     },
     methods: {
         deleteNote(noteId){
-            
             noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
                 const {
                     dispatch
                 } = this.$store;
+                let time = moment();
                 if(result.code == 'SUCCESS'){
-                    let time = moment();
-                    dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                     eventBus.updateNoteList();
                     this.deleteNoteDialog.id = '';
                     this.deleteNoteDialog.dialog = false;
                 }
                 else {
-                    dispatch('alert/error', result.message)
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                
-                
             }).catch(error => {
                 console.log(error)
             });
@@ -194,11 +190,20 @@ export default {
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
-                for (let i = 0;i < result.response.length; i++){
-                    result.response[i].disableSaveButton = true;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0;i < result.response.length; i++){
+                        result.response[i].disableSaveButton = true;
+                    }
+                    this.notes = result.response.reverse();
+                    this.notes = [...this.notes];
                 }
-                this.notes = result.response.reverse();
-                this.notes = [...this.notes];
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
                 this.progress = false;
             }).catch (error => {
                 console.log(error);
@@ -220,11 +225,11 @@ export default {
                         dispatch
                     } = this.$store;
                     if (result.code == "SUCCESS") {
-                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(time)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateNoteList();
                     } else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
                     
                 }).catch(error => {

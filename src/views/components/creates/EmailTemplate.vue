@@ -111,6 +111,7 @@
     </v-card> -->
 </template>
 <script>
+import moment from 'moment'
 import {eventBus} from '../../../eventBus'
 import emailServices from '../../../services/email.service'
 import contactsService from '../../../services/contacts.service'
@@ -235,6 +236,10 @@ export default {
 
             // document.getElementById("call").innerHTML = '';
         },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         logging(){
             console.log(this.templates)
             console.log(this.templateId)
@@ -258,9 +263,19 @@ export default {
         },
         getEmailTemplate(){
             emailServices.getEmailTemplate(this.idAccount).then(result => {
-                this.templates = result.response;
-                this.templateSelect = [];
-                this.templateSelect = this.setSelectEmailTemplate(this.templates);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.templates = result.response;
+                    this.templateSelect = [];
+                    this.templateSelect = this.setSelectEmailTemplate(this.templates);
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
         },
         setSelectEmailTemplate(templateArray){
@@ -283,15 +298,22 @@ export default {
             this.waiting = true;
             console.log(body)
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
-                console.log(result);
-                this.successfulDialog = true;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    this.$emit('updateLastActivityDate');
+                    this.$emit('updateLastContacted');
+                    eventBus.updateEmailList();
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
                 this.waiting = false;
-                this.$emit('updateLastActivityDate');
-                this.$emit('updateLastContacted');
-                eventBus.updateEmailList();
                 this.closeEmailTemplateDialog();
             }).catch(error => {
-                this.failDialog = true;
                 this.closeEmailTemplateDialog();
                 console.log(error);
                 this.waiting = false;

@@ -229,12 +229,12 @@
                     } = this.$store;
                     let timeChange = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `Cập nhật thành công lúc ${this.coverTimeDetail(timeChange)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(timeChange)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateLogCallList();
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(timeChange)})`)
                     }
                     
                 }).catch(error => {
@@ -252,14 +252,14 @@
                     } = this.$store;
                     let time = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `Xóa thành công lúc ${this.coverTimeDetail(time)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateLogMeetList();
                         this.deleteLogDialog.id = '';
                         this.deleteLogDialog.dialog = false;
                     }
                     else {
-                        dispatch('alert/error', result.message)
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
                     
                 }).catch(error => {
@@ -269,16 +269,26 @@
             getMeetLogsList(){
                 let type = 'meeting';
                 logService.getLogsByType(this.idAccount, this.idContact, type).then(result => {
-                    for (let i = 0;i < result.response.length; i++){
-                        result.response[i].dateToPut = this.coverTime(result.response[i].time);
-                        result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
-                        result.response[i].menu1Log = false;
-                        result.response[i].modal2Log = false;
-                        result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
-                        result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for (let i = 0;i < result.response.length; i++){
+                            result.response[i].dateToPut = this.coverTime(result.response[i].time);
+                            result.response[i].timeToPut = this.coverTimeHourOnly(result.response[i].time);
+                            result.response[i].menu1Log = false;
+                            result.response[i].modal2Log = false;
+                            result.response[i].dateLog = new Date(result.response[i].time).toISOString().substr(0, 10);
+                            result.response[i].timeLog = this.coverTimeHourOnly(result.response[i].time);
+                        }
+                        this.meetLogs = result.response.reverse();
+                        this.meetLogs = [...this.meetLogs];
                     }
-                    this.meetLogs = result.response.reverse();
-                    this.meetLogs = [...this.meetLogs];
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
                     this.progressLog = false;
                 }).catch(error => {
                     console.log(error);

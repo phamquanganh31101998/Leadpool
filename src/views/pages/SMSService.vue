@@ -574,10 +574,10 @@
                                                 <v-list-tile @click.stop="openScheduleDetailDialog(props.item.id)">
                                                     <v-list-tile-content>Xem chi tiết</v-list-tile-content>
                                                 </v-list-tile>
-                                                <v-list-tile v-if="props.item.status == 'ACTIVE'" @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">
+                                                <v-list-tile v-if="props.item.status == 'ACTIVE'" @click="changeScheduleStatus(props.item.number, 'INACTIVE')">
                                                     <v-list-tile-content>Tắt lịch gửi</v-list-tile-content>
                                                 </v-list-tile>
-                                                <v-list-tile v-if="props.item.status == 'INACTIVE'" @click="changeScheduleStatus(props.item.number, 'ACTIVE'), props.item.status = 'ACTIVE'">
+                                                <v-list-tile v-if="props.item.status == 'INACTIVE'" @click="changeScheduleStatus(props.item.number, 'ACTIVE')">
                                                     <v-list-tile-content>Kích hoạt lịch gửi</v-list-tile-content>
                                                 </v-list-tile>
                                             </v-list>
@@ -992,19 +992,38 @@ export default {
         },
         getList(){
             listService.getList(this.idAccount).then(result => {
-                let res = result.response;
-                for (let i = 0; i < res.length; i++){
-                    listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
-                        let obj = {
-                            text: res[i].name,
-                            value: res[i].contactConditionGroupId
-                        }
-                        for (let k = 0; k < result.response.length; k++){
-                            result.response[k].chosen = true;
-                        }
-                        obj.contact = result.response;
-                        this.send.list.push(obj);
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                let obj = {
+                                    text: res[i].name,
+                                    value: res[i].contactConditionGroupId
+                                }
+                                for (let k = 0; k < result.response.length; k++){
+                                    result.response[k].chosen = true;
+                                }
+                                obj.contact = result.response;
+                                this.send.list.push(obj);
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            
+                        })
+                    }
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
                 // console.log(this.send.list);
             }).then(() => {
@@ -1013,21 +1032,41 @@ export default {
         },
         getAllContact(){
             contactService.getAllContact(this.idAccount, this.send.page).then(result => {
-                for (let i = 1; i <= result.response.totalPage;i++){
-                    contactService.getAllContact(this.idAccount, i).then(result => {
-                        for(let k = 0; k < result.response.results.length; k++){
-                            result.response.results[k].chosen = true;
-                            this.send.allContacts.push(result.response.results[k]);
-                        }
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 1; i <= result.response.totalPage;i++){
+                        contactService.getAllContact(this.idAccount, i).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                for(let k = 0; k < result.response.results.length; k++){
+                                    result.response.results[k].chosen = true;
+                                    this.send.allContacts.push(result.response.results[k]);
+                                }
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            
+                        })
+                    }
+                    // console.log(this.send.allContacts.length)
+                    let obj = {
+                        text: 'Tất cả các Lead',
+                        value: 'all',
+                        contact: this.send.allContacts
+                    }
+                    this.send.list.unshift(obj);
                 }
-                // console.log(this.send.allContacts.length)
-                let obj = {
-                    text: 'Tất cả các Lead',
-                    value: 'all',
-                    contact: this.send.allContacts
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                this.send.list.unshift(obj);
+                
             })
         },
         checkIncludeContact(array, id){
@@ -1150,24 +1189,33 @@ export default {
         getListDeviceKey(){
             this.saveKey.list = [];
             SMSService.getListDeviceKey(this.idAccount).then(result => {
-                console.log(result)
-                for (let i = 0; i < result.response.length; i++){
-                    let name = '';
-                    if (result.response[i].campaign == null){
-                        name = '*chiến dịch không có tên*' + ' (' + result.response[i].name + ')'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0; i < result.response.length; i++){
+                        let name = '';
+                        if (result.response[i].campaign == null){
+                            name = '*chiến dịch không có tên*' + ' (' + result.response[i].name + ')'
+                        }
+                        else{
+                            name = result.response[i].campaign + ' (' + result.response[i].name + ')'
+                        }
+                        let obj = {
+                            text: name,
+                            value: result.response[i].smsDeviceId
+                        }
+                        this.saveKey.list.push(obj)
                     }
-                    else{
-                        name = result.response[i].campaign + ' (' + result.response[i].name + ')'
-                    }
-                    let obj = {
-                        text: name,
-                        value: result.response[i].smsDeviceId
-                    }
-                    this.saveKey.list.push(obj)
+                    this.saveKey.list = this.saveKey.list.reverse();
+                    this.saveKey.selectedCampaignId = this.saveKey.list[0].value;
+                    this.getStatisticAndHistory();
                 }
-                this.saveKey.list = this.saveKey.list.reverse();
-                this.saveKey.selectedCampaignId = this.saveKey.list[0].value;
-                this.getStatisticAndHistory();
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error)
             })
@@ -1180,32 +1228,61 @@ export default {
                 success: 0,
             }
             SMSService.getInfo(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                this.saveKey.selectedCampaignDetail.total = result.response.smsTotal;
-                this.saveKey.selectedCampaignDetail.remain = result.response.smsRemain;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.saveKey.selectedCampaignDetail.total = result.response.smsTotal;
+                    this.saveKey.selectedCampaignDetail.remain = result.response.smsRemain;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
             SMSService.getStatisticDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                this.saveKey.selectedCampaignDetail.success = result.response.success;
-                this.saveKey.selectedCampaignDetail.fail = result.response.fail;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.saveKey.selectedCampaignDetail.success = result.response.success;
+                    this.saveKey.selectedCampaignDetail.fail = result.response.fail;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             });
             this.saveKey.selectedCampaignHistory.success = [];
             this.saveKey.selectedCampaignHistory.fail = [];
             SMSService.getHistoryDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                result.response = result.response.reverse();
-                for (let i = 0; i < result.response.length; i++){
-                    let obj = {
-                        phoneNumber: result.response[i].phoneNumber,
-                        message: result.response[i].message,
-                        statusMessage: this.returnBug(result.response[i].status),
-                        status: result.response[i].status,
-                        time: this.coverTime(result.response[i].createdAt)
-                    }
-                    if (obj.status == 'SUCCESS'){
-                        this.saveKey.selectedCampaignHistory.success.push(obj);
-                    }
-                    else {
-                        this.saveKey.selectedCampaignHistory.fail.push(obj);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    result.response = result.response.reverse();
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            phoneNumber: result.response[i].phoneNumber,
+                            message: result.response[i].message,
+                            statusMessage: this.returnBug(result.response[i].status),
+                            status: result.response[i].status,
+                            time: this.coverTime(result.response[i].createdAt)
+                        }
+                        if (obj.status == 'SUCCESS'){
+                            this.saveKey.selectedCampaignHistory.success.push(obj);
+                        }
+                        else {
+                            this.saveKey.selectedCampaignHistory.fail.push(obj);
+                        }
                     }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
         },
         createCampaign(){
@@ -1215,19 +1292,38 @@ export default {
                 campaign: this.saveKey.createData.campaign,
             }
             SMSService.createDeviceKey(this.idAccount, body).then(result => {
-                console.log(result);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
             })
             SMSService.getListDeviceKey(this.idAccount).then(result => {
-                let data = result.response.reverse();
-                let newDeviceKey = {
-                    text: data[0].campaign + ' ' + '(' + data[0].name + ')',
-                    value: data[0].smsDeviceId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response.reverse();
+                    let newDeviceKey = {
+                        text: data[0].campaign + ' ' + '(' + data[0].name + ')',
+                        value: data[0].smsDeviceId
+                    }
+                    this.saveKey.list.unshift(newDeviceKey);
+                    this.saveKey.list = [...this.saveKey.list]
+                    this.saveKey.selectedCampaignId = newDeviceKey.value
                 }
-                this.saveKey.list.unshift(newDeviceKey);
-                this.saveKey.list = [...this.saveKey.list]
-                this.saveKey.selectedCampaignId = newDeviceKey.value
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
                 this.saveKey.createCampaign = false;
             }).catch(error => {
                 console.log(error);
@@ -1345,15 +1441,25 @@ export default {
                 status: 'ACTIVE'
             }
             SMSService.createTemplate(this.idAccount, obj).then(result => {
-                console.log(result);
-                let obj = {
-                    text: result.response.name,
-                    content: result.response.content,
-                    value: result.response.smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        let obj = {
+                        text: result.response.name,
+                        content: result.response.content,
+                        value: result.response.smsTemplateId
+                    }
+                    this.template.currentTemplates.unshift(obj);
+                    this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                    this.template.selectedTemplateId = this.template.currentTemplates[0].value;
                 }
-                this.template.currentTemplates.unshift(obj);
-                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
-                this.template.selectedTemplateId = this.template.currentTemplates[0].value;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error);
             })
@@ -1369,19 +1475,30 @@ export default {
         },
         getTemplate(){
             SMSService.getTemplate(this.idAccount).then(result => {
-                console.log(result);
-                for (let i = 0; i < result.response.length; i++){
-                    let obj = {
-                        text: result.response[i].name,
-                        content: result.response[i].content,
-                        value: result.response[i].smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            text: result.response[i].name,
+                            content: result.response[i].content,
+                            value: result.response[i].smsTemplateId
+                        }
+                        this.template.currentTemplates.push(obj)
                     }
-                    this.template.currentTemplates.push(obj)
+                    this.template.currentTemplates = this.template.currentTemplates.reverse();
+                    this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                    this.template.oldContent = this.template.selectedTemplateContent;
+                    this.template.selectedTemplateId = this.template.currentTemplates[0].value
                 }
-                this.template.currentTemplates = this.template.currentTemplates.reverse();
-                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
-                this.template.oldContent = this.template.selectedTemplateContent;
-                this.template.selectedTemplateId = this.template.currentTemplates[0].value
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error)
             })
         },
         updateTemplate(){
@@ -1391,27 +1508,46 @@ export default {
                 content: this.normalText(this.template.selectedTemplateContent)
             }
             SMSService.updateTemplate(this.idAccount, body).then(result => {
-                console.log(result)
-                SMSService.getTemplate(this.idAccount).then(result => {
-                    let tempArr = [];
-                    for (let i = 0; i < result.response.length; i++){
-                        let obj = {
-                            text: result.response[i].name,
-                            content: result.response[i].content,
-                            value: result.response[i].smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    SMSService.getTemplate(this.idAccount).then(result => {
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            let tempArr = [];
+                            for (let i = 0; i < result.response.length; i++){
+                                let obj = {
+                                    text: result.response[i].name,
+                                    content: result.response[i].content,
+                                    value: result.response[i].smsTemplateId
+                                }
+                                tempArr.push(obj)
+                            }
+                            tempArr = tempArr.reverse()
+                            for (let i = 0; i < tempArr.length; i++){
+                                if(this.template.currentTemplates[i] != tempArr[i]){
+                                    this.template.currentTemplates[i] = tempArr[i]
+                                }
+                            }
+                            this.template.currentTemplates = [...this.template.currentTemplates]
+                            this.template.oldContent = this.template.selectedTemplateContent;
                         }
-                        tempArr.push(obj)
-                    }
-                    tempArr = tempArr.reverse()
-                    for (let i = 0; i < tempArr.length; i++){
-                        if(this.template.currentTemplates[i] != tempArr[i]){
-                            this.template.currentTemplates[i] = tempArr[i]
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                         }
-                    }
-                    this.template.currentTemplates = [...this.template.currentTemplates]
-                    this.template.oldContent = this.template.selectedTemplateContent;
-                    this.template.updateTemplateView = false;
-                })
+                        
+                    })
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                this.template.updateTemplateView = false;
             }).catch(error => {
                 console.log(error)
             })
@@ -1421,42 +1557,64 @@ export default {
         getSchedule(){
             this.schedule.list = [];
             SMSService.getSchedule(this.idAccount).then(result => {
-                console.log(result);
-                let data = result.response;
-                for (let i = 0; i < data.length; i++){
-                    let name = '';
-                    if (data[i].device.campaign == null){
-                        name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response;
+                    for (let i = 0; i < data.length; i++){
+                        let name = '';
+                        if (data[i].device.campaign == null){
+                            name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+                        }
+                        else{
+                            name = data[i].device.campaign + ' (' + data[i].device.name + ')'
+                        }
+                        let obj = {
+                            content: data[i].content,
+                            campaign: name,
+                            time: this.returnTime(data[i].timeToSend),
+                            status: data[i].status,
+                            listPhone: data[i].listPhone,
+                            number: i,
+                            id: data[i].smsScheduleId
+                        }
+                        this.schedule.list.push(obj);
                     }
-                    else{
-                        name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-                    }
-                    let obj = {
-                        content: data[i].content,
-                        campaign: name,
-                        time: this.returnTime(data[i].timeToSend),
-                        status: data[i].status,
-                        listPhone: data[i].listPhone,
-                        number: i,
-                        id: data[i].smsScheduleId
-                    }
-                    this.schedule.list.push(obj);
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error);
             })
         },
         openScheduleDetailDialog(id){
             let obj = null;
             SMSService.getSchedule(this.idAccount).then(result => {
-                console.log(result);
-                let data = result.response;
-                for (let i = 0; i < data.length; i++){
-                    if (id == data[i].smsScheduleId){
-                        obj = data[i];
-                        this.schedule.detail.content = obj.content;
-                        this.schedule.detail.listPhone = obj.listPhone;
-                        this.schedule.detail.dialog = true;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response;
+                    for (let i = 0; i < data.length; i++){
+                        if (id == data[i].smsScheduleId){
+                            obj = data[i];
+                            this.schedule.detail.content = obj.content;
+                            this.schedule.detail.listPhone = obj.listPhone;
+                            this.schedule.detail.dialog = true;
+                        }
                     }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error);
             })
         },
         changeScheduleStatus(number, status){
@@ -1464,14 +1622,34 @@ export default {
             let id = obj.id;
             if (status == 'ACTIVE'){
                 SMSService.activateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        obj.status = 'ACTIVE';
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
             }
             else {
                 SMSService.deactivateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`);
+                        obj.status = 'INACTIVE';
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })

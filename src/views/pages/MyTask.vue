@@ -507,11 +507,20 @@ export default {
         getAllEmail(){
             this.viewTask.allEmail = [];
             taskService.getAllEmail(this.idAccount).then(result => {
-                result.response.filter(e => {
-                    e.displayText = e.name + ' (' + e.email + ')'
-                    this.viewTask.allEmail.push(e);
-                    this.viewTask.searchedEmail.push(e);
-                });
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    result.response.filter(e => {
+                        e.displayText = e.name + ' (' + e.email + ')'
+                        this.viewTask.allEmail.push(e);
+                        this.viewTask.searchedEmail.push(e);
+                    });
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
                 this.progress = false;
@@ -541,14 +550,23 @@ export default {
                 }
             }
             taskService.getMyTask(this.idAccount, params).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.tasks = result.response.results
+                    this.tasks = [...this.tasks]
+                    this.displayTasks = this.tasks;
+                    this.length = result.response.totalPage;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
                 this.type = type;
                 this.status = status;
                 this.page = page;
                 this.tasks = []
-                this.tasks = result.response.results
-                this.tasks = [...this.tasks]
-                this.displayTasks = this.tasks;
-                this.length = result.response.totalPage;
                 // this.viewTask.task = this.tasks[0];
             }).catch(error => {
                 // this.failDialog = true;
@@ -597,32 +615,46 @@ export default {
             this.updateTask(id, 'a', 'emailReminder', '');
             this.viewTask.task.emailReminderChoice = 'Không nhắc trước'
         },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         getTaskById(id){
             taskService.getTaskById(this.idAccount, id).then(result => {
-                result.response.assignedToUser = this.getNameFromEmail(result.response.assignedTo);
-                result.response.createdByUser = this.getNameFromEmail(result.response.createdBy);
-                result.response.menu1 = false;
-                result.response.time1 = false;
-                result.response.dueDateDate = this.coverTimeDateOnly(result.response.dueDate)
-                result.response.dueDateTime = this.coverTimeHourOnly(result.response.dueDate)
-                result.response.menu2 = false;
-                result.response.time2 = false;
-                if(result.response.emailReminder != null){
-                    result.response.emailReminderDate = this.coverTimeDateOnly(result.response.emailReminder)
-                    result.response.emailReminderTime = this.coverTimeHourOnly(result.response.emailReminder)
-                    result.response.emailReminderChoice = 'Chọn ngày'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    result.response.assignedToUser = this.getNameFromEmail(result.response.assignedTo);
+                    result.response.createdByUser = this.getNameFromEmail(result.response.createdBy);
+                    result.response.menu1 = false;
+                    result.response.time1 = false;
+                    result.response.dueDateDate = this.coverTimeDateOnly(result.response.dueDate)
+                    result.response.dueDateTime = this.coverTimeHourOnly(result.response.dueDate)
+                    result.response.menu2 = false;
+                    result.response.time2 = false;
+                    if(result.response.emailReminder != null){
+                        result.response.emailReminderDate = this.coverTimeDateOnly(result.response.emailReminder)
+                        result.response.emailReminderTime = this.coverTimeHourOnly(result.response.emailReminder)
+                        result.response.emailReminderChoice = 'Chọn ngày'
+                    }
+                    else {
+                        result.response.emailReminderDate = '';
+                        result.response.emailReminderTime = '08:00';
+                        result.response.emailReminderChoice = 'Không nhắc trước'
+                    }
+                    result.response.typeMenu = false;
+                    result.response.assignMenu = false;
+                    result.response.reminderMenu = false;
+                    result.response.timeMenu = false;
+                    this.viewTask.task = result.response;
+                    this.viewTask.dialog = true;
                 }
                 else {
-                    result.response.emailReminderDate = '';
-                    result.response.emailReminderTime = '08:00';
-                    result.response.emailReminderChoice = 'Không nhắc trước'
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                result.response.typeMenu = false;
-                result.response.assignMenu = false;
-                result.response.reminderMenu = false;
-                result.response.timeMenu = false;
-                this.viewTask.task = result.response;
-                this.viewTask.dialog = true;
+                
             }).catch(error => {
                 console.log(error);
             })

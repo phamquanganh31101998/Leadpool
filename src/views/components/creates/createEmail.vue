@@ -139,6 +139,7 @@
     </v-card-text>
 </template>
 <script>
+    import moment from 'moment'
     import {eventBus} from '../../../eventBus'
     import emailServices from '../../../services/email.service'
     import contactsService from '../../../services/contacts.service'
@@ -183,6 +184,8 @@
                 contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
                     this.currentContact = result.response;
                     this.to = this.currentContact.email;
+                }).catch(error => {
+                    console.log(error);
                 })
             },
             closeCreateEmailDialog(){
@@ -195,6 +198,10 @@
             updateLastContacted(){
                 this.$emit('updateLastContacted');
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             sendEmail(){
                 let body = {
                     "from": this.currentUser.username,
@@ -205,14 +212,26 @@
                 }
                 this.waiting = true;
                 emailServices.sendEmail(this.idAccount, this.idContact, body).then(result => {
-                    this.successfulDialog = true;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        
+                        this.updateLastActivityDate()
+                        this.updateLastContacted();
+                        eventBus.updateEmailList();
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     this.waiting = false;
-                    this.updateLastActivityDate()
-                    this.updateLastContacted();
-                    eventBus.updateEmailList();
                     this.closeCreateEmailDialog();
+                    // this.successfulDialog = true;
+                    
                 }).catch(error => {
-                    this.failDialog = true;
+                    // this.failDialog = true;
                     console.log(error);
                     this.waiting = false;
                     this.closeCreateEmailDialog();

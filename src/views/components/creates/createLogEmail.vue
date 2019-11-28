@@ -171,6 +171,10 @@
             closeCreateLogEmailDialog(){
                 this.$emit('closeCreateLogEmailDialog');
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             createLogEmail(){
                 let timeString = this.date + 'T' + this.time
                 let timeToSend = moment(timeString).utc().format().substring(0, 19)
@@ -181,12 +185,23 @@
                     "type":"email",
                 }
                 logService.createLog(this.idAccount, this.idContact, data).then(result => {
-                    this.successfulDialog = true;
-                    this.log = '';
-                    eventBus.updateLogEmailList();
-                    this.$emit('updateLastActivityDate');
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        
+                        this.log = '';
+                        eventBus.updateLogEmailList();
+                        this.$emit('updateLastActivityDate');
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                   
                 }).catch(error => {
-                    this.failDialog = true;
+                    // this.failDialog = true;
                     console.log(error);
                 });
                 this.$emit('closeCreateLogEmailDialog');

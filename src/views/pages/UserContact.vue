@@ -977,14 +977,23 @@
             getAllEmail(){
                 this.allEmail = [];
                 contact.getAllEmail(this.idAccount).then(result => {
-                    result.response.filter(e => {
-                        const obj = {
-                            text: e.name + ' (' + e.email + ')',
-                            value: e.email,
-                            name: e.name
-                        }
-                        this.allEmail.push(obj);
-                    });
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        result.response.filter(e => {
+                            const obj = {
+                                text: e.name + ' (' + e.email + ')',
+                                value: e.email,
+                                name: e.name
+                            }
+                            this.allEmail.push(obj);
+                        });
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 })
             },
             getActionLog(property, title){
@@ -996,9 +1005,18 @@
                 }
                 console.log(params)
                 contact.getActionLog(this.idAccount, params).then(result => {
-                    console.log(result);
-                    this.actionLog.changeArray = result.response.Detail.reverse();
-                    this.actionLog.dialog = true;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        this.actionLog.changeArray = result.response.Detail.reverse();
+                        this.actionLog.dialog = true;
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                     this.actionLog.failDialog = true;
@@ -1018,85 +1036,91 @@
             },
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    result.response.firstName = this.checkString(result.response.firstName);
-                    result.response.lastName = this.checkString(result.response.lastName);
-                    result.response.email = this.checkString(result.response.email);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        result.response.firstName = this.checkString(result.response.firstName);
+                        result.response.lastName = this.checkString(result.response.lastName);
+                        result.response.email = this.checkString(result.response.email);
 
-                    this.basicInfo.firstName = result.response.firstName;
-                    this.basicInfo.lastName = result.response.lastName;
-                    this.basicInfo.email = result.response.email;
-                    this.detail = result.response
-                    // console.log(this.detail)
+                        this.basicInfo.firstName = result.response.firstName;
+                        this.basicInfo.lastName = result.response.lastName;
+                        this.basicInfo.email = result.response.email;
+                        this.detail = result.response
+                        this.items = [
+                            {
+                                title: 'Vòng đời',
+                                description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
+                                value: this.checkString(result.response.lifecycleStage),
+                                dialog: false,
+                                property: 'lifecycleStage'
+                            },
+                            {
+                                title: 'Trạng thái',
+                                description: "The contact's sales, prospecting or outreach status",
+                                value: this.checkString(result.response.leadStatus),
+                                dialog: false,
+                                property: 'leadStatus'
+                            },
+                            {
+                                title: 'Thuộc sở hữu',
+                                description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
+                                value: this.checkString(result.response.contactOwner),
+                                dialog: false,
+                                property: 'contactOwner'
+                            },
+                            {
+                                title: 'Số điện thoại',
+                                description: "A contact's primary phone number",
+                                value: this.checkString(result.response.phone),
+                                dialog: false,
+                                property: 'phone'
+                            },
+                            {
+                                title: 'Email',
+                                description: "A contact's email address",
+                                value: this.checkString(result.response.email),
+                                dialog: false,
+                                property: 'email'
+                            },
+                            {
+                                title: 'Thời gian hoạt động gần nhất',
+                                description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                                value: this.coverTimeTooltip(result.response.lastActivityDate),
+                                dialog: false,
+                                property: 'lastActivityDate'
+                            },
+                            {
+                                title: 'Thời gian liên lạc gần nhất',
+                                description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                                value: this.coverTimeTooltip(result.response.lastContacted),
+                                dialog: false,
+                                property: 'lastContacted'
+                            },
+                            {
+                                title: 'Thành phố',
+                                description: 'Thành phố',
+                                value: this.checkString(result.response.city),
+                                dialog: false,
+                                property: 'city'
+                            },
+                            {
+                                title: 'Ngành nghề',
+                                description: 'phân loại ngành nghề',
+                                value: this.checkString(result.response.bussiness),
+                                dialog: false,
+                                property: 'bussiness',
+                                otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
+                            }
+                        ]
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     
-                    this.items = [
-                        {
-                            title: 'Vòng đời',
-                            description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
-                            value: this.checkString(result.response.lifecycleStage),
-                            dialog: false,
-                            property: 'lifecycleStage'
-                        },
-                        {
-                            title: 'Trạng thái',
-                            description: "The contact's sales, prospecting or outreach status",
-                            value: this.checkString(result.response.leadStatus),
-                            dialog: false,
-                            property: 'leadStatus'
-                        },
-                        {
-                            title: 'Thuộc sở hữu',
-                            description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
-                            value: this.checkString(result.response.contactOwner),
-                            dialog: false,
-                            property: 'contactOwner'
-                        },
-                        {
-                            title: 'Số điện thoại',
-                            description: "A contact's primary phone number",
-                            value: this.checkString(result.response.phone),
-                            dialog: false,
-                            property: 'phone'
-                        },
-                        {
-                            title: 'Email',
-                            description: "A contact's email address",
-                            value: this.checkString(result.response.email),
-                            dialog: false,
-                            property: 'email'
-                        },
-                        {
-                            title: 'Thời gian hoạt động gần nhất',
-                            description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: this.coverTimeTooltip(result.response.lastActivityDate),
-                            dialog: false,
-                            property: 'lastActivityDate'
-                        },
-                        {
-                            title: 'Thời gian liên lạc gần nhất',
-                            description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: this.coverTimeTooltip(result.response.lastContacted),
-                            dialog: false,
-                            property: 'lastContacted'
-                        },
-                        {
-                            title: 'Thành phố',
-                            description: 'Thành phố',
-                            value: this.checkString(result.response.city),
-                            dialog: false,
-                            property: 'city'
-                        },
-                        {
-                            title: 'Ngành nghề',
-                            description: 'phân loại ngành nghề',
-                            value: this.checkString(result.response.bussiness),
-                            dialog: false,
-                            property: 'bussiness',
-                            otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
-                        }
-                    ]
-                    // console.log(result)
                 }).catch(error => {
-                    this.failDialog = true;
                     console.log(error);
                 }).finally(() => {
                     this.getCurrentUser()
@@ -1133,7 +1157,7 @@
                     } = this.$store;
                     let time = moment();
                     if(result.code == 'SUCCESS'){
-                        dispatch('alert/success', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         // this.$emit('updateLastActivityDate');
                         // eventBus.updateLogCallList();
                         // this.deleteLogDialog.id = '';
@@ -1200,7 +1224,16 @@
                     }
                     this.updateLastActivityDate();
                     contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                        console.log(result);
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
                     }).catch(error => {
                         console.log(error);
                     }).finally(() => {
@@ -1221,7 +1254,16 @@
                         }
                         
                         contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                            console.log(result);
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
                         }).catch(error => {
                             console.log(error);
                         }).finally(() => {
@@ -1238,9 +1280,17 @@
                                 }
                             ]
                         }
-                        
                         contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                            console.log(result);
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
                         }).catch(error => {
                             console.log(error);
                         }).finally(() => {
@@ -1305,8 +1355,17 @@
                     ]
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
-                    this.basicInfoDialog = false;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.basicInfoDialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {

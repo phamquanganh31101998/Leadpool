@@ -369,7 +369,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <alert/>
     </v-content>
 </template>
 <script>
@@ -567,18 +566,16 @@ export default {
             }
             // console.log(body);
             accountService.inviteUser(this.idAccount, body).then(result => {
-                let time = moment();
                 const {
                     dispatch
                 } = this.$store;
-                if (result.code == "SUCCESS") {
-                    dispatch('alert/success', `${result.message} lúc ${this.coverTimeDetail(time)}`)
-                    
-                } else {
-                    dispatch('alert/error', `${result.message} lúc ${this.coverTimeDetail(time)}`)
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                // console.log(result);
-                // this.inviteUser.success = true;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
                 // this.inviteUser.fail = true;
@@ -590,27 +587,37 @@ export default {
             this.allUsers = [];
             this.users = [];
             permissionsService.findUserByAccount(this.idAccount).then(result => {
-                // console.log(result);
-                for (let i = 0; i<result.response.length;i++){
-                    result.response[i].number = i;
-                    var role = '';
-                    var obj = result.response[i];
-                    if (obj.groupPermission == null){
-                        role = 'null'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    // console.log(result);
+                    for (let i = 0; i<result.response.length;i++){
+                        result.response[i].number = i;
+                        var role = '';
+                        var obj = result.response[i];
+                        if (obj.groupPermission == null){
+                            role = 'null'
+                        }
+                        else {
+                            for (let k = 0; k < obj.groupPermission.length; k++){
+                                role = role + ' ' + this.returnRole(obj.groupPermission[k].name) + ' | '
+                            }
+                        }
+                        result.response[i].role = role;
                     }
-                    else {
-                        for (let k = 0; k < obj.groupPermission.length; k++){
-                            role = role + ' ' + this.returnRole(obj.groupPermission[k].name) + ' | '
+                    for(let i = 0; i<result.response.length;i++){
+                        if(result.response[i].role != 'null' && !result.response[i].role.includes('Quản trị hệ thống')){
+                            this.users.push(result.response[i]);
+                            this.allUsers.push(result.response[i]);
                         }
                     }
-                    result.response[i].role = role;
                 }
-                for(let i = 0; i<result.response.length;i++){
-                    if(result.response[i].role != 'null' && !result.response[i].role.includes('Quản trị hệ thống')){
-                        this.users.push(result.response[i]);
-                        this.allUsers.push(result.response[i]);
-                    }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
+                
             }).catch(error => {
                 console.log(error)
             })
@@ -627,40 +634,49 @@ export default {
         },
         openPermissionDialog(userId){
             permissionsService.getUserInfo(this.idAccount, userId).then(result => {
-                let res = result.response;
-                try {
-                    if(res.groupPermission != null && res.groupPermission.length > 0){
-                        res.isAdmin = false;
-                        res.adminPer = {
-                            AddAndEditUsers: false,
-                            AddAndEditTeam: false,
-                            PartitionByTeams: false,
-                            EditAccountDefaults: false
-                        }
-                        for(let i = 0; i<res.groupPermission.length;i++){
-                            if(res.groupPermission[i].name == 'contact'){
-                                let contactPer = {};
-                                contactPer.view = res.groupPermission[i].permission[0].accessLevel.accessLevel;
-                                contactPer.communicate = res.groupPermission[i].permission[1].accessLevel.accessLevel;
-                                contactPer.edit = res.groupPermission[i].permission[2].accessLevel.accessLevel;
-                                res.contactPer = contactPer;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    try {
+                        if(res.groupPermission != null && res.groupPermission.length > 0){
+                            res.isAdmin = false;
+                            res.adminPer = {
+                                AddAndEditUsers: false,
+                                AddAndEditTeam: false,
+                                PartitionByTeams: false,
+                                EditAccountDefaults: false
                             }
-                            if(res.groupPermission[i].name == 'admin'){
-                                let adminPer = {};
-                                adminPer.AddAndEditUsers = this.setAdminAccessLevel(res.groupPermission[i].permission[0].accessLevel.accessLevel);
-                                adminPer.AddAndEditTeam = this.setAdminAccessLevel(res.groupPermission[i].permission[1].accessLevel.accessLevel);
-                                adminPer.PartitionByTeams = this.setAdminAccessLevel(res.groupPermission[i].permission[2].accessLevel.accessLevel);
-                                adminPer.EditAccountDefaults = this.setAdminAccessLevel(res.groupPermission[i].permission[3].accessLevel.accessLevel);
-                                res.adminPer = adminPer;
-                                res.isAdmin = true;
+                            for(let i = 0; i<res.groupPermission.length;i++){
+                                if(res.groupPermission[i].name == 'contact'){
+                                    let contactPer = {};
+                                    contactPer.view = res.groupPermission[i].permission[0].accessLevel.accessLevel;
+                                    contactPer.communicate = res.groupPermission[i].permission[1].accessLevel.accessLevel;
+                                    contactPer.edit = res.groupPermission[i].permission[2].accessLevel.accessLevel;
+                                    res.contactPer = contactPer;
+                                }
+                                if(res.groupPermission[i].name == 'admin'){
+                                    let adminPer = {};
+                                    adminPer.AddAndEditUsers = this.setAdminAccessLevel(res.groupPermission[i].permission[0].accessLevel.accessLevel);
+                                    adminPer.AddAndEditTeam = this.setAdminAccessLevel(res.groupPermission[i].permission[1].accessLevel.accessLevel);
+                                    adminPer.PartitionByTeams = this.setAdminAccessLevel(res.groupPermission[i].permission[2].accessLevel.accessLevel);
+                                    adminPer.EditAccountDefaults = this.setAdminAccessLevel(res.groupPermission[i].permission[3].accessLevel.accessLevel);
+                                    res.adminPer = adminPer;
+                                    res.isAdmin = true;
+                                }
                             }
                         }
+                    } catch (error) {
+                        console.log(error);
                     }
-                } catch (error) {
-                    console.log(error);
+                    this.openUser = result.response;
                 }
-                this.openUser = result.response;
-                console.log(this.openUser);
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
             this.permissionsDialog = true;
         },
