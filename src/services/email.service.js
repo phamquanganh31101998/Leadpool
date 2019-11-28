@@ -6,7 +6,8 @@ export default {
     sendEmail, createEmailTemplate, getEmailTemplate, 
     sendEmailViaTemplate, getEmailHistory, createEmailSchedule,
     getEmailSchedule, activateSchedule, deactivateSchedule,
-    getAllEmail, deleteEmailTemplate, trackingEmailActivities
+    getAllEmail, deleteEmailTemplate, trackingEmailActivities,
+    updateEmailTemplate
 }
 function getAllEmail(idAccount){
     let request = {
@@ -118,5 +119,15 @@ function trackingEmailActivities(idAccount, idContact, body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiContact}/${idAccount}/contact/${idContact}/email/activities`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function updateEmailTemplate(idAccount, body){
+    let request = {
+        method: 'PUT',
+        headers: authHeader(),
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/emailTemplates`
     return responseService.fetchRetry(endpoint, request, 1)
 }

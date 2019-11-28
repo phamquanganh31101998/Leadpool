@@ -223,7 +223,7 @@ const router = new Router({
         const role = localStorage.getItem('token')
         if (role) {
           if (role == 'USER_NOT_ACTIVE'){
-            next('/login');
+            next('/sorry');
           }
           else {
             let user = JSON.parse(localStorage.getItem('user'));

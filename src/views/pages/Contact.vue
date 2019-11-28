@@ -73,18 +73,18 @@
                             label="Vòng đời" required></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-select label="Thành Phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select>
+                          <v-select label="Thành phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
                           <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select :disabled="otherBussinessCheckBox" label="Ngành nghề" v-model="bussiness" :items="allBussiness"></v-select>
+                              <v-select label="Ngành nghề" v-model="bussiness" :items="allBussiness" @change="changeBussiness(bussiness)"></v-select>
                             </v-flex>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                              <v-checkbox v-model="otherBussinessCheckBox" label="Ngành nghề khác:"></v-checkbox>
-                            </v-flex>
-                            <v-flex xs8 sm8 md8 lg8 xl8>
-                              <v-text-field v-if="otherBussinessCheckBox" v-model="otherBussiness" placeholder="Nhập ngành nghề khác"></v-text-field>
+                            <!-- <v-flex xs4 sm4 md4 lg4 xl4>
+                              <v-checkbox v-model="isOtherBussiness" label="Ngành nghề khác:"></v-checkbox>
+                            </v-flex> -->
+                            <v-flex xs12 sm12 md12 lg12 xl12>
+                              <v-text-field v-if="isOtherBussiness" v-model="otherBussinessValue" placeholder="Nhập ngành nghề khác"></v-text-field>
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -561,8 +561,8 @@
       },
     },
     data: () => ({
-      otherBussinessCheckBox: false,
-      otherBussiness: '',
+      isOtherBussiness: false,
+      otherBussinessValue: '',
       cannotDeleteDialog: false,
       currentUser: null,
       logoutDialog: false,
@@ -618,7 +618,7 @@
       allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
         'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
         'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
-        'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Nông, Lâm, Thủy sản'],
+        'Bảo hiểm', 'Thiết bị chiếu sáng (Đèn trần, đèn led,...)', 'Tài chính', 'Nông, Lâm, Thủy sản', 'Khác'],
       bussiness: 'Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ',
       divider: true,
       dialog: false,
@@ -927,6 +927,14 @@
         }
         return result;
       },
+      changeBussiness(value){
+        if(value != 'Khác'){
+          this.isOtherBussiness = false;
+        }
+        else {
+          this.isOtherBussiness = true;
+        }
+      },
       createContacts() {
         this.createWaiting = true;
         let userInfo = JSON.parse(localStorage.getItem('user'));
@@ -961,9 +969,10 @@
           },
           {
             "property": "bussiness",
-            "value": (this.otherBussinessCheckBox ? this.otherBussiness : this.bussiness)
+            "value": (this.isOtherBussiness ? this.otherBussinessValue : this.bussiness)
           }
         ]
+        console.log(contact);
         contacts.createContact(this.idUser, contact).then(result => {
           if(result.code == 'SUCCESS'){
             this.$router.push(this.takeLink(result.response.contactId));

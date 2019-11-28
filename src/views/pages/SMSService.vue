@@ -9,8 +9,8 @@
         <v-layout row v-if="access">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <v-list-tile @click="page='send'">
-                        <v-list-tile-content :style="fontWeight[0]">Đặt lịch gửi tin nhắn</v-list-tile-content>
+                    <v-list-tile @click="page='schedule'">
+                        <v-list-tile-content :style="fontWeight[3]">Quản lý lịch gửi </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="page='saveKey'">
                         <v-list-tile-content :style="fontWeight[1]">Quản lý chiến dịch</v-list-tile-content>
@@ -18,20 +18,17 @@
                     <v-list-tile @click="page='template'">
                         <v-list-tile-content :style="fontWeight[2]">Quản lý mẫu tin nhắn</v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page='schedule'">
-                        <v-list-tile-content :style="fontWeight[3]">Quản lý lịch gửi </v-list-tile-content>
-                    </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 class="ml-3 mt-3">
-                <v-layout row v-if="page=='send'">
+                <!-- <v-layout row v-if="page=='send'">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-layout row>
                             <v-flex xs12 sm12 md3 lg3 xl3>
                                 <v-card>
                                     <v-card-text>
                                         <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                        <!-- <p>Chiến dịch này còn {{send.remain}} tin nhắn</p> -->
+                                       
                                         <v-divider :divider="divider"></v-divider>
                                         <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
                                         <v-divider :divider="divider"></v-divider>
@@ -71,34 +68,12 @@
                                             <v-flex xs6 sm6 md6 lg6 xl6>
                                                 <h2>Danh sách</h2>
                                             </v-flex>
-                                            <!-- <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn color="success" @click="markAllContact()">
-                                                    Chọn tất cả
-                                                </v-btn>
-                                            </v-flex>
-                                            
-                                            <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn @click="unmarkAllContact()">
-                                                    Bỏ chọn tất cả
-                                                </v-btn>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
-                                            </v-flex> -->
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text>
-                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
                                         <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                             <template v-slot:items="props">
                                                 <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
                                                             @change="getPhoneNumberToSendSMS()"
@@ -110,10 +85,6 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
-                                        <br>
-
-                                    
                                     </v-card-text>
                                 </v-card>
                                 <v-card class="mt-3" v-if="send.additionalContacts.length > 0">
@@ -125,11 +96,11 @@
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text>
-                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                       
                                         <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
                                             <template v-slot:items="props">
                                                 <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                    
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
                                                             @change="getPhoneNumberToSendSMS()"
@@ -141,261 +112,153 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
                                         <br>
-
-                                    
                                     </v-card-text>
                                 </v-card>
                             </v-flex>
                         </v-layout>
-                        <!-- <v-layout row>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn mẫu tin nhắn</h2></strong></span>
-                                        <span class="ml-4"><v-select :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                     
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-textarea box readonly rows="6" label="Nội dung" v-model="send.chosenContent"></v-textarea>
-                                    </v-card-text>
-                                </v-card>
-                                
-                            </v-flex>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card height="100%">
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn chiến dịch</h2> </strong></span>
-                                        <span class="ml-4"><v-select :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
-                                    </v-card-text>
-                                    <v-divider :divider="divider"></v-divider>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn danh sách gửi</h2> </strong></span>
-                                        <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Đặt lịch gửi</h2></strong></span>
-                                        <span class="ml-4">
-                                            <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
-                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-text-field v-model="send.date"  persistent-hint prepend-icon="event"
-                                                        v-on="on">
-                                                    </v-text-field>
-                                                </template>
-                                                <v-date-picker v-model="send.date" no-title @input="send.menu1 = false"></v-date-picker>
-                                            </v-menu>
-                                        </span>
-                                        <br>
-                                        <span class="ml-4">
-                                            <v-select v-model="send.time" :items="send.timeToChoose"></v-select>
-                                        </span>
-                                    </v-card-text>
-                                    <v-divider :divider="divider"></v-divider>
-                                    <v-card-actions>
-                                        <v-btn block color="primary" :disabled="send.remain < 0" @click="sendSMS()">Đặt lịch gửi</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-
-                        </v-layout> -->
                         <br>
-                        <!-- <v-layout row wrap>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-card v-if="send.displayContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Danh sách</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table  dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-card v-if="send.additionalContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Chọn thêm người nhận</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout> -->
                     </v-flex>
-                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 style="height: 100%">
-                        <v-card >
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn chiến dịch</h2> </strong></span>
-                                <span class="ml-4"><v-select :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn mẫu tin nhắn</h2></strong></span>
-                                <span class="ml-4"><v-select :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                <p>Chiến dịch này còn {{send.remain}} tin nhắn</p>
-                                <v-textarea box readonly rows="6" v-model="send.chosenContent"></v-textarea>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn danh sách gửi</h2> </strong></span>
-                                <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
-                            </v-card-text>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Đặt lịch gửi</h2></strong></span>
-                                <span class="ml-4">
-                                    <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
-                                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="send.date"  persistent-hint prepend-icon="event"
-                                                v-on="on">
-                                            </v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="send.date" no-title @input="send.menu1 = false"></v-date-picker>
-                                    </v-menu>
-                                </span>
-                                <br>
-                                <span class="ml-4">
-                                    <v-select v-model="send.time" :items="send.timeToChoose"></v-select>
-                                </span>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-actions>
-                                <v-btn block color="primary" :disabled="send.remain < 0" @click="sendSMS()">Đặt lịch gửi</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-flex> -->
-                    <!-- <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card flat>
-                            <v-card-title>
-                                <v-layout row wrap>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Danh sách</h2>
+                </v-layout> -->
+                <v-dialog persistent fullscreen v-model="createScheduleDialog">
+                    <v-card>
+                        <v-toolbar card dark color="primary">
+                            <v-btn icon dark @click="page = 'schedule'">
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                            <v-toolbar-title>Tạo lịch gửi SMS mới</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                        <v-layout row>
+                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                <v-layout row>
+                                    <v-flex xs12 sm12 md3 lg3 xl3>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
+                                                <!-- <p>Chiến dịch này còn {{send.remain}} tin nhắn</p> -->
+                                                <v-divider :divider="divider"></v-divider>
+                                                <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <span class="ml-4"><v-select prepend-icon="list"  label="Chọn chiến dịch gửi tin nhắn" :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <v-select prepend-icon="people" :items="send.list" label="Chọn danh sách gửi" v-model="send.selectedListToSendSMS" ></v-select>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <span class="ml-4">
+                                                    <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
+                                                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-text-field v-model="send.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
+                                                                v-on="on">
+                                                            </v-text-field>
+                                                        </template>
+                                                        <v-date-picker v-model="send.date"  no-title @input="send.menu1 = false"></v-date-picker>
+                                                    </v-menu>
+                                                </span>
+                                                <span class="ml-4">
+                                                    <v-select prepend-icon="access_time" label="Chọn giờ gửi" v-model="send.time" :items="send.timeToChoose"></v-select>
+                                                </span>
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
+                                            </v-card-text>
+                                            <v-card-actions>
+                                                <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
                                     </v-flex>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                    </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                    </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn color="success" @click="markAllContact()">
-                                            Chọn tất cả
-                                        </v-btn>
-                                    </v-flex>
-                                    
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn @click="unmarkAllContact()">
-                                            Bỏ chọn tất cả
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
+                                    <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
+                                        <v-card flat v-if="send.displayContacts.length > 0">
+                                            <v-card-title>
+                                                <v-layout row wrap>
+                                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Danh sách</h2>
+                                                    </v-flex>
+                                                    <!-- <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-btn color="success" @click="markAllContact()">
+                                                            Chọn tất cả
+                                                        </v-btn>
+                                                    </v-flex>
+                                                    
+                                                    <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-btn @click="unmarkAllContact()">
+                                                            Bỏ chọn tất cả
+                                                        </v-btn>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
+                                                    </v-flex> -->
+                                                </v-layout>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                                    <template v-slot:items="props">
+                                                        <tr>
+                                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                    v-model="props.item.chosen" 
+                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                    >
+                                                                    </v-checkbox></td>
+                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.phone }}</td>
+                                                        </tr>
+                                                    </template>
+                                                </v-data-table>
+                                                <br>
+                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <br>
+
+                                            
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-card flat class="mt-3" v-if="send.additionalContacts.length > 0">
+                                            <v-card-title>
+                                                <v-layout row wrap>
+                                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Chọn thêm người nhận</h2>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
+                                                    <template v-slot:items="props">
+                                                        <tr>
+                                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                    v-model="props.item.chosen" 
+                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                    >
+                                                                    </v-checkbox></td>
+                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.phone }}</td>
+                                                        </tr>
+                                                    </template>
+                                                </v-data-table>
+                                                <br>
+                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <br>
+
+                                            
+                                            </v-card-text>
+                                        </v-card>
                                     </v-flex>
                                 </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select>
-                                <v-data-table dense :headers="send.headers" :items="send.displayContacts" hide-actions class="elevation-1">
-                                    <template v-slot:items="props">
-                                        <tr>
-                                            @change="checkChosenContact(props.item.contactId, props.item.chosen)"
-                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                    v-model="props.item.chosen" 
-                                                    @change="getPhoneNumberToSendSMS()"
-                                                    >
-                                                    </v-checkbox></td>
-                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                            <td>{{ props.item.phone }}</td>
-                                        </tr>
-                                    </template>
-                                </v-data-table>
                                 <br>
-                                <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
-                                <br>
-
-                            
-                            </v-card-text>
-                        </v-card>
-                        <br>
-                        <v-card v-if="send.additionalContacts.length > 0" flat>
-                            <v-card-title>
-                                <v-layout row wrap>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Chọn thêm người nhận</h2>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select>
-                                <v-data-table dense :headers="send.headers" :items="send.additionalContacts" hide-actions class="elevation-1">
-                                    <template v-slot:items="props">
-                                        <tr>
-                                            @change="checkChosenContact(props.item.contactId, props.item.chosen)"
-                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                    v-model="props.item.chosen" 
-                                                    @change="getPhoneNumberToSendSMS()"
-                                                    >
-                                                    </v-checkbox></td>
-                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                            <td>{{ props.item.phone }}</td>
-                                        </tr>
-                                    </template>
-                                </v-data-table>
-                                <br>
-                                <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
-                                <br>
-
-                            
-                            </v-card-text>
-                        </v-card>
-                        <br>
-                    </v-flex> -->
-                </v-layout>
+                            </v-flex>
+                        </v-layout>
+                    </v-card>
+                </v-dialog>
                 <v-layout row v-if="page=='saveKey'">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-layout row>
@@ -585,7 +448,7 @@
                 </v-layout>
                 <v-layout row v-if="page=='template'">
                     <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-card style="height: 300px;">
+                        <v-card style="height: 400px;">
                             <v-card-title>
                                 <h2>Mẫu tin nhắn</h2>
                             </v-card-title>
@@ -604,7 +467,7 @@
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card>
+                        <v-card style="height: 400px;">
                             <v-card-title>
                                 <h2 v-if="!template.creatingTemplate">Nội dung tin nhắn</h2>
                                 <h2 v-else>Tạo mẫu tin nhắn mới</h2>
@@ -675,7 +538,10 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout row v-if="page=='schedule'">
+                <v-layout row wrap v-if="page=='schedule'">
+                    <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
+                        <v-btn dark color = "#3E82F7" @click="page = 'send'">Tạo lịch gửi mới</v-btn>
+                    </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
                             <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.headers" :items="schedule.list">
@@ -865,8 +731,8 @@ export default {
         return {
             currentUser: null,
             access: false,
-            fontWeight: ['fontWeight: bold', '', '', ''],
-            page: 'send',
+            fontWeight: ['', '', '', 'fontWeight: bold'],
+            page: 'schedule',
             divider: true,
             saveKey: {
                 list: [],
@@ -1083,6 +949,14 @@ export default {
             else {
                 return false;
             }
+        },
+        createScheduleDialog(){
+            if (this.page == 'send'){
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     },
     methods: {
@@ -1231,6 +1105,10 @@ export default {
             }
             return result;
         },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         sendSMS(){
             let timeString = this.send.date + 'T' + this.send.time
             let timeToSend = moment(timeString).utc().format().substring(0, 19)
@@ -1250,9 +1128,19 @@ export default {
                 listPhone: listPhone
             }
             SMSService.createSchedule(this.idAccount, body).then(result => {
-                console.log(result);
-                this.getSchedule();
-                this.page = 'schedule'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    this.getSchedule();
+                    this.page = 'schedule'
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error)
             })
@@ -1410,13 +1298,13 @@ export default {
         returnStatus(status){
             let result = ''
             if (status == 'ACTIVE'){
-                result = 'Lịch gửi được kích hoạt'
+                result = 'Được kích hoạt'
             }
             else if (status == 'INACTIVE'){
-                result = 'Lịch gửi đã tắt'
+                result = 'Đã tắt'
             }
             else if (status == 'PENDING'){
-                result = 'Chờ xử lý'
+                result = 'Chờ xử lý...'
             }
             else if (status == 'INPROGRESS'){
                 result = 'Đang xử lý...'
@@ -1431,7 +1319,7 @@ export default {
                 result = 'Đã gửi'
             }
             else if (status == 'TIMEOUT'){
-                result = 'Bị dừng (do mất quá nhiều thời gian xử lý)'
+                result = 'Bị dừng (do tốn quá nhiều thời gian xử lý)'
             }
             return result;
         },
@@ -1443,7 +1331,7 @@ export default {
                 return 'color: red;'
             }
             else {
-                return 'color: black;'
+                return 'color: blue;'
             }
         },
         //Template

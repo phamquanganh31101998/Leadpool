@@ -67,8 +67,8 @@
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                <v-btn outline small color="primary" class="ml-4">Đã gửi</v-btn>
-                                <template v-if="email.updateDetailBtn">
+                                <v-btn outline style="color: black;" small :color="returnStatusColor(email.status)" class="ml-4" v-if="email.status">{{returnStatus(email.status)}}</v-btn>
+                                <template>
                                     <span class="ml-4">Số lượt mở: 
                                         <strong>{{email.open}}</strong>
                                     </span>
@@ -76,15 +76,16 @@
                                         <strong>{{email.click}}</strong>
                                     </span>
                                 </template>
-                                <v-progress-circular
+                                <!-- <v-progress-circular
                                     :size="20"
                                     :width="1"
                                     color="grey"
                                     indeterminate
                                     v-else
                                 ></v-progress-circular>
-                                <span class="ml-4"><v-btn v-if="email.updateDetailBtn" outline small dark color="success" @click="trackingEmailActivities(email.emailId)"> <v-icon>cached</v-icon> Cập nhật</v-btn></span>
+                                 -->
                                 <!-- <v-btn outline dark small color="grey" @click="email.showDetail =!email.showDetail">Detail</v-btn> -->
+                                <!-- <span class="ml-4"><v-btn v-if="email.updateDetailBtn" outline small dark color="success" @click="trackingEmailActivities(email.emailId)"> <v-icon>cached</v-icon> Cập nhật</v-btn></span> -->
                             </v-flex>
                         </v-layout>
                         <!-- <v-divider :divider="divider" class="mt-2"></v-divider>
@@ -361,6 +362,69 @@ import contact from '../../../services/contacts.service'
             }
         },
         methods: {
+            returnStatus(status){
+                let result = ''
+                if (status == 'SENT'){
+                    result = 'Đã gửi'
+                }
+                else if (status == 'SENDING'){
+                    result = 'Đang gửi'
+                }
+                else if (status == 'FAIL'){
+                    result = 'Lỗi'
+                }
+                else if (status == 'processed'){
+                    result = 'Đã xử lý'
+                }
+                else if (status == 'clicks'){
+                    result = 'Đã click'
+                }
+                else if (status == 'delivered'){
+                    result = 'Đã nhận'
+                }
+                else if (status == 'opens'){
+                    result = 'Đã xem'
+                }
+                else if (status == 'unsubscribes'){
+                    result = 'Đã bỏ theo dõi'
+                }
+                else if (status == 'group unsubscribes'){
+                    result = 'Đã bỏ theo dõi nhóm'
+                }
+                else if (status == 'group resubscribes'){
+                    result = 'Đã theo dõi nhóm lại'
+                }
+                else if (status == 'deferred'){
+                    result = 'Bị hoãn'
+                }
+                else if (status == 'drops'){
+                    result = 'Đã gửi (người dùng đã từ chối nhận hoặc báo cáo là spam)'
+                }
+                else if (status == 'bounces'){
+                    result = 'Bị từ chối nhận'
+                }
+                else if (status == 'blocks'){
+                    result = 'Bị chặn'
+                }
+                else if (status == 'spam reports'){
+                    result = 'Bị báo cáo là spam'
+                }
+                else {
+                    result = status;
+                }
+                return result;
+            },
+            returnStatusColor(status){
+                if (status == 'SENT' || status == 'clicks' || status == 'opens' || status == 'delivered' || status == 'group resubscribes'){
+                    return 'success'
+                }
+                else if (status == 'FAIL' || status == 'unsubscribes' || status == 'group unsubscribes' || status == 'deferred' || status == 'bounces' || status == 'blocks' || status == 'spam reports'){
+                    return 'alert'
+                }
+                else {
+                    return 'warning'
+                }
+            },
             coverTimeDetail(time){
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -489,13 +553,29 @@ import contact from '../../../services/contacts.service'
                         //     this.setEmailContentDialog(result.response[i].emailId, result.response[i].body)
                         //     console.log('------------------------------------------')
                         // }
+                        result.response[i].number = i;
                         result.response[i].updateDetailBtn = true;
+                        
                     }
                     this.emails = result.response.reverse();
                     // console.log(this.emails);
                 }).catch(error => {
                     console.log(error);
+                }).finally(() => {
+                    // for (let i = 0; i < this.emails.length; i++){
+                    //     if (this.emails[i].click == 0 && this.emails[i].click == 0){
+                    //         this.trackingEmailActivities(this.emails[i].emailId)
+                    //     }
+                    // }
+                    this.trackingAllEmailActivities();
                 })
+            },
+            async trackingAllEmailActivities(){
+                for (let i = 0; i < this.emails.length; i++){
+                    if (this.emails[i].open == 0 && this.emails[i].click == 0){
+                        await this.trackingEmailActivities(this.emails[i].emailId)
+                    }
+                }
             },
             getEmailFromEmailId(id){
                 let result = null;
@@ -508,13 +588,16 @@ import contact from '../../../services/contacts.service'
             },
             trackingEmailActivities(id){
                 let email = this.getEmailFromEmailId(id);
-                console.log(email);
-                email.updateDetailBtn = false;
+                console.log('tracking email with id ' + email.emailId);
+                // email.updateDetailBtn = false;
+                // let email = this.emails[number];
                 let body = {
                     "limit":"1",
-                    "query": `(Contains(categories,\"${id}\"))`
+                    "query": `(Contains(categories,\"${email.emailId}\"))`
                 }
                 emailService.trackingEmailActivities(this.idAccount, this.idContact, body).then(result => {
+                    console.log('Tracking result!!!!!!!!!!!!!!!!!')
+                    console.log(result);
                     if (result.code == 'SUCCESS'){
                         if (result.response.messages.length > 0){
                             let data = result.response.messages[0];
@@ -525,7 +608,7 @@ import contact from '../../../services/contacts.service'
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
-                    email.updateDetailBtn = true;
+                    // email.updateDetailBtn = true;
                 })
             },
             setEmailContentDialog(id, body){
