@@ -10,6 +10,7 @@ import NewList from './views/pages/lists/NewList.vue'
 import ListDetail from './views/pages/lists/ListDetail.vue'
 import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
+import EditAccountDefaultSetting from './views/pages/settings/EditAccountDefault.vue'
 import AccountSetting from './views/pages/settings/AccountSetting.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
 import SMSService from './views/pages/SMSService.vue'
@@ -20,6 +21,7 @@ import leadhub from './views/pages/leadhub.vue'
 import settingGroupbtn from './views/pages/settingBtn.vue'
 import updateGroupbtn from './views/pages/updateBtn.vue'
 import UserNotActive from './views/pages/UserNotActive.vue'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -114,6 +116,18 @@ const router = new Router({
             path: '/settings/:idAccount/manageaccount',
             name: 'manageaccount',
             component: AccountSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/settings/:idAccount/editaccountdefault',
+            name: 'editaccountdefault',
+            component: EditAccountDefaultSetting,
             props(route) {
                 const props = {
                     ...route.params

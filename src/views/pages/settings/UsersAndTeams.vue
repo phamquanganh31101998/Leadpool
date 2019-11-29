@@ -14,6 +14,11 @@
                             Tài khoản và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="goToEditAccountDefaultPage()">
+                        <v-list-tile-content>
+                            Cấu hình tổ chức mặc định
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
                         <v-list-tile-content>
                             Quản lý hệ thống
@@ -794,6 +799,10 @@ export default {
         },
         goToAccountSettingPage(){
             let link = `/settings/${this.currentUser.accountId}/manageaccount`;
+            this.$router.push(link);
+        },
+        goToEditAccountDefaultPage(){
+            let link = `/settings/${this.currentUser.accountId}/editaccountdefault`;
             this.$router.push(link);
         }
     },
