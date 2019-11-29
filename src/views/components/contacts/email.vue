@@ -363,6 +363,7 @@ import contact from '../../../services/contacts.service'
         },
         methods: {
             viewEmailContent(body){
+                console.log(body);
                 let regex = /\\\"/gi
                 document.getElementById("templateBody").innerHTML = body.replace(regex, "\"");
                 this.viewEmailContentDialog = true;

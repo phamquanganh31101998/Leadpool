@@ -3,7 +3,8 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default {
-    getList, findContactByCondition, getContactByListId, createNewList
+    getList, findContactByCondition, getContactByListId, 
+    createNewList, updateList, deleteList
 }
 
 function getList(idAccount) {
@@ -41,5 +42,24 @@ function createNewList(idAccount, body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiContact}/${idAccount}/condition-group`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function updateList(idAccount, body){
+    let request = {
+        method: 'PUT',
+        headers: authHeader(),
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/condition-group`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function deleteList(idAccount, idList){
+    let request = {
+        method: 'DELETE',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/condition-group/${idList}`
     return responseService.fetchRetry(endpoint, request, 1)
 }

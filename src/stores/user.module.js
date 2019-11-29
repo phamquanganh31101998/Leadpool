@@ -10,16 +10,21 @@ export const user = {
     actions:{
         login({commit}, data){
             const token = data
-            const decode = jwt.decode(token)
-            const user = JSON.stringify(decode)
-            localStorage.setItem('token', token)
-            localStorage.setItem('user', user)
-            commit('authToken',{
-                token: token
-            })
-            commit('authUser',{
-                user: user
-            })
+            if(token != 'USER_NOT_ACTIVE'){
+                const decode = jwt.decode(token)
+                const user = JSON.stringify(decode)
+                localStorage.setItem('token', token)
+                localStorage.setItem('user', user)
+                commit('authToken',{
+                    token: token
+                })
+                commit('authUser',{
+                    user: user
+                })
+            }
+            else {
+                router.replace('/usernotactive');
+            }
         },
         logout({commit}){
             commit('clearAuthData')

@@ -1091,7 +1091,6 @@ export default {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
-                this.failDialog = true;
                 console.log(error);
             })
         }

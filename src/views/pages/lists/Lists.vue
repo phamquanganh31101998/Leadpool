@@ -17,7 +17,21 @@
         </v-layout>
         <br>
         <v-divider class="mt-4" :divider="divider"></v-divider>
-        
+        <v-dialog v-model="deleteListDialog.dialog" @click:outside="deleteListDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+            <v-card tile>
+                <v-toolbar card dark color="red">
+                    <v-toolbar-title>Xóa?</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card-text>
+                    Bạn có chắc chắn muốn xóa Lead này?
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn flat color="red" @click="deleteList(deleteListDialog.id)">Xóa</v-btn>
+                    <v-btn flat color="primary" @click="deleteListDialog.dialog = false, deleteListDialog.id = ''">Quay lại</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-layout v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
@@ -31,7 +45,19 @@
                         <td>{{ props.item.name }}</td>
                         <td>{{props.item.createdBy}}</td>
                         <td>{{coverTime(props.item.createdAt)}}</td>
-                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">Xem chi tiết danh sách </a></td>
+                        <v-menu>
+                            <template v-slot:activator="{ on }">
+                                <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                            </template>
+                            <v-list>
+                                <v-list-tile @click="goToListDetailPage(props.item.contactConditionGroupId)">
+                                    <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile @click="confirmDeleteList(props.item.contactConditionGroupId)">
+                                    <v-list-tile-content>Xóa danh sách</v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-menu>
                     </template>
                     <template v-slot:no-results>
                         <v-alert :value="true" color="error" icon="warning">
@@ -98,6 +124,10 @@ export default {
     },
     data(){
         return{
+            deleteListDialog: {
+                dialog: false,
+                id: ''
+            },
             search: '',
             headersLists: [
                 {
@@ -119,8 +149,8 @@ export default {
                     value: 'name'
                 },
                 {
-                    text: 'CHI TIẾT',
-                    align: 'left',
+                    text: 'HÀNH ĐỘNG',
+                    align: 'right',
                     sortable: false,
                     value: 'name'
                 },
@@ -145,6 +175,29 @@ export default {
         }
     },
     methods: {
+        confirmDeleteList(id){
+            this.deleteListDialog.id = id;
+            this.deleteListDialog.dialog = true;
+        },
+        deleteList(id){
+            listService.deleteList(this.idAccount, id).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`);
+                    this.getList();
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                this.deleteListDialog.dialog = false;
+                this.deleteListDialog.id = '';
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')

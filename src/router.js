@@ -19,6 +19,7 @@ import Sorry from './views/pages/Sorry.vue'
 import leadhub from './views/pages/leadhub.vue'
 import settingGroupbtn from './views/pages/settingBtn.vue'
 import updateGroupbtn from './views/pages/updateBtn.vue'
+import UserNotActive from './views/pages/UserNotActive.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -248,9 +249,6 @@ const router = new Router({
     {
       path: '/sorry',
       component: Sorry,
-      props: (router) => ({
-        token: router.query.token
-      }),
       beforeEnter(to, from, next) {
         const role = localStorage.getItem('token')
         if (role) {
@@ -264,6 +262,25 @@ const router = new Router({
         } else {
           next('/login')
         }}
+    },
+    {
+      path: '/usernotactive',
+      component: UserNotActive,
+      beforeEnter(to, from, next) {
+        const role = localStorage.getItem('token')
+        if (role) {
+          let user = JSON.parse(localStorage.getItem('user'));
+          if(user.accountId){
+            next('/')
+          }
+          else {
+            next('/login')
+          }
+        }
+        else {
+          next();
+        } 
+      }
     },
     {
       path: '*',
