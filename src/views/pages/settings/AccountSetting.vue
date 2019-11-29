@@ -19,6 +19,11 @@
                             Tài khoản và nhóm
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="goToEditAccountDefaultPage()">
+                        <v-list-tile-content>
+                            Cấu hình tổ chức mặc định
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
                             Quản lý hệ thống
@@ -1083,6 +1088,10 @@ export default {
         },
         goToUserAndTeamSettingPage(){
             let link = `/settings/${this.currentUser.accountId}/userandteam`;
+            this.$router.push(link);
+        },
+        goToEditAccountDefaultPage(){
+            let link = `/settings/${this.currentUser.accountId}/editaccountdefault`;
             this.$router.push(link);
         }
     },
