@@ -192,7 +192,7 @@
                                               <template v-else>
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
                                                     <v-select :items="lifecycleStages" v-model="newCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
-                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAddCondition(orIndex, 'lifecycle_stage', newCondition.chosenConstant, newCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', newCondition.chosenConstant, newCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
                                             </template>
@@ -500,7 +500,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn flat color="red" @click="deleteContact(deleteContactDialog.id)">Xóa</v-btn>
-          <v-btn flat color="primary" @click="deleteContactDialog.dialog = false">Quay lại</v-btn>
+          <v-btn flat color="primary" @click="deleteContactDialog.dialog = false, deleteContactDialog.id = ''">Quay lại</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
