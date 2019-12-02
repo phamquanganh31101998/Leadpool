@@ -44,9 +44,10 @@
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
                 <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
+                        <span class="ml-2 pt-4 pb-4"><v-btn color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                         <v-card>
                             <v-card-text>
-                                <span class="ml-4"><v-btn color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
+                                
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
                                 <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">

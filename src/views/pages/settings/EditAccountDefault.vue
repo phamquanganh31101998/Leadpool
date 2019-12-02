@@ -287,8 +287,10 @@ export default {
         renameService(){
             let obj = this.rename.service;
             obj.name = this.rename.newName;
-            let body = obj;
-            serviceAPI.updateService(this.idAccount, body).then(result => {
+            let body = {
+                name: obj.name
+            }
+            serviceAPI.updateService(this.idAccount, obj.accountServiceId, body).then(result => {
                 const {
                     dispatch
                 } = this.$store;

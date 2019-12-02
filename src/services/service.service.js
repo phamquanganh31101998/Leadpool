@@ -26,13 +26,13 @@ function getService(idAccount){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function updateService(idAccount, body){
+function updateService(idAccount, idService, body){
     let request = {
         method: 'PUT',
         headers: authHeader(),
         body: JSON.stringify(body)
     }
-    let endpoint = `${config.apiContact}/${idAccount}/services`
+    let endpoint = `${config.apiContact}/${idAccount}/services/${idService}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 

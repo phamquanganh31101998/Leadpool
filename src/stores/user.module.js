@@ -13,14 +13,19 @@ export const user = {
             if(token != 'USER_NOT_ACTIVE'){
                 const decode = jwt.decode(token)
                 const user = JSON.stringify(decode)
-                localStorage.setItem('token', token)
-                localStorage.setItem('user', user)
-                commit('authToken',{
-                    token: token
-                })
-                commit('authUser',{
-                    user: user
-                })
+                if(decode.accountId){
+                    localStorage.setItem('token', token)
+                    localStorage.setItem('user', user)
+                    commit('authToken',{
+                        token: token
+                    })
+                    commit('authUser',{
+                        user: user
+                    })
+                }
+                else {
+                    router.replace('/sorry');
+                }
             }
             else {
                 router.replace('/usernotactive');

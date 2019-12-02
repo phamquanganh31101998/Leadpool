@@ -238,20 +238,26 @@ const router = new Router({
         const role = localStorage.getItem('token')
         if (role) {
           if (role == 'USER_NOT_ACTIVE'){
-            next('/sorry');
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            next('/usernotactive');
           }
           else {
             let user = JSON.parse(localStorage.getItem('user'));
+            console.log(user)
               if(user.accountId){
                 next();
               }
               else {
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
                 next('/sorry');
               }
           }
         } else {
           next('/login')
-        }}
+        }
+      }
     },
     {
       path: '/login',
@@ -263,38 +269,39 @@ const router = new Router({
     {
       path: '/sorry',
       component: Sorry,
-      beforeEnter(to, from, next) {
-        const role = localStorage.getItem('token')
-        if (role) {
-          let user = JSON.parse(localStorage.getItem('user'));
-          if(user.accountId){
-            next('/')
-          }
-          else {
-            next()
-          }
-        } else {
-          next('/login')
-        }}
+      // beforeEnter(to, from, next) {
+      //   const role = localStorage.getItem('token')
+      //   if (role) {
+      //     let user = JSON.parse(localStorage.getItem('user'));
+      //     if(user.accountId){
+      //       next('/')
+      //     }
+      //     else {
+      //       next()
+      //     }
+      //   } else {
+      //     next('/login')
+      //   }
+      // }
     },
     {
       path: '/usernotactive',
       component: UserNotActive,
-      beforeEnter(to, from, next) {
-        const role = localStorage.getItem('token')
-        if (role) {
-          let user = JSON.parse(localStorage.getItem('user'));
-          if(user.accountId){
-            next('/')
-          }
-          else {
-            next('/login')
-          }
-        }
-        else {
-          next();
-        } 
-      }
+      // beforeEnter(to, from, next) {
+      //   const role = localStorage.getItem('token')
+      //   if (role) {
+      //     let user = JSON.parse(localStorage.getItem('user'));
+      //     if(user.accountId){
+      //       next('/')
+      //     }
+      //     else {
+      //       next('/login')
+      //     }
+      //   }
+      //   else {
+      //     next();
+      //   } 
+      // }
     },
     {
       path: '*',
