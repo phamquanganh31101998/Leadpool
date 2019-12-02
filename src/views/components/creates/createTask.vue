@@ -391,6 +391,10 @@
         },
 
         methods: {
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             returnReminder(str){
                 if (str == 'The day of'){
                     return 'Trong ngày'
@@ -482,19 +486,39 @@
                 let timeString = this.date + 'T' + this.time
                 let timeToSend = moment(timeString).utc().format().substring(0, 19)
                 let reminderToSend = (emailReminder == '' ? '' : moment(emailReminder).utc().format().substring(0, 19))
-                let task = {
-                    "contactId": this.idContact,
-                    "title": this.title,
-                    "dueDate": timeToSend,
-                    "note": this.note,
-                    "type": this.type,
-                    "assignedTo": this.chosenEmail,
-                    "emailReminder": reminderToSend,
-                    "queue":"None",
-                    "status":"NOTCOMPLETED"
+                if (this.idContact == null){
+                    var task = {
+                        "title": this.title,
+                        "dueDate": timeToSend,
+                        "note": this.note,
+                        "type": this.type,
+                        "assignedTo": this.chosenEmail,
+                        "emailReminder": reminderToSend,
+                        "queue":"None",
+                        "status":"NOTCOMPLETED"
+                    }
                 }
+                else {
+                    task = {
+                        "contactId": this.idContact,
+                        "title": this.title,
+                        "dueDate": timeToSend,
+                        "note": this.note,
+                        "type": this.type,
+                        "assignedTo": this.chosenEmail,
+                        "emailReminder": reminderToSend,
+                        "queue":"None",
+                        "status":"NOTCOMPLETED"
+                    }
+                }
+                
                 taskService.createTask(this.idAccount, task).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
                     if(result.code == 'SUCCESS'){
+                        let time = moment();
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.title = '';
                         this.note = '';
                         this.date = new Date().toISOString().substr(0, 10);
@@ -505,12 +529,13 @@
                         this.day = 'The day of';
                         eventBus.updateTaskList();
                     }
-                    this.successfulDialog = true;
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     this.$emit('updateLastActivityDate');
                     this.closeCreateTaskDialog();
                 }).catch(error => {
                     console.log(error);
-                    this.failDialog = true;
                     this.closeCreateTaskDialog();
                 })
 

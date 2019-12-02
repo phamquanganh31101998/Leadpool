@@ -72,7 +72,7 @@
                         </v-card-title>
                         <v-layout row wrap>
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <v-text-field outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
+                                <v-text-field @change="updateNote(note.note, note.noteId)" outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -89,9 +89,9 @@
                                     <v-flex xs7 sm8 md8 lg9 xl9>
                                         <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> đã tạo 1 ghi chú</p>
                                     </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
+                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
                                         <v-btn v-if="hover && access" @click="updateNote(note.note, note.noteId)" outlined :disabled="note.disableSaveButton" >Lưu lại</v-btn>
-                                    </v-flex>
+                                    </v-flex> -->
                                 </v-layout>
                             </v-flex>
                         </v-layout>
@@ -117,6 +117,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <!-- <alert/> -->
     </v-layout>
 </template>
 <script>
@@ -125,6 +126,9 @@ import contact from '../../../services/contacts.service'
 import noteService from '../../../services/note.service'
 import { eventBus } from '../../../eventBus';
 export default {
+    components: {
+        alert
+    },
     props: {
         idAccount: {
             type: String,
@@ -151,11 +155,19 @@ export default {
     methods: {
         deleteNote(noteId){
             noteService.deleteNote(this.idAccount, this.idContact, noteId).then(result => {
-                this.$emit('updateLastActivityDate');
-                eventBus.updateNoteList();
-                this.deleteNoteDialog.id = '';
-                this.deleteNoteDialog.dialog = false;
-                
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    eventBus.updateNoteList();
+                    this.deleteNoteDialog.id = '';
+                    this.deleteNoteDialog.dialog = false;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error)
             });
@@ -168,17 +180,30 @@ export default {
             if (_.isNull(time)) return '';
             return moment(time).format('DD/MM/YYYY')
         },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
             return moment(time).format('dddd, DD MMMM YYYY HH:mm:ss')
         },
         getNotesList(){
             noteService.getNotes(this.idAccount, this.idContact).then(result => {
-                for (let i = 0;i < result.response.length; i++){
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0;i < result.response.length; i++){
                         result.response[i].disableSaveButton = true;
                     }
-                this.notes = result.response.reverse();
-                this.notes = [...this.notes];
+                    this.notes = result.response.reverse();
+                    this.notes = [...this.notes];
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
                 this.progress = false;
             }).catch (error => {
                 console.log(error);
@@ -195,8 +220,18 @@ export default {
                     "note": note
                 }
                 noteService.updateNote(this.idAccount, this.idContact, body, noteId).then(result => {
-                    this.$emit('updateLastActivityDate');
-                    eventBus.updateNoteList();
+                    let time = moment();
+                    const {
+                        dispatch
+                    } = this.$store;
+                    if (result.code == "SUCCESS") {
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.$emit('updateLastActivityDate');
+                        eventBus.updateNoteList();
+                    } else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                 });

@@ -9,8 +9,8 @@
         <v-layout row v-if="access">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <v-list-tile @click="page='send'">
-                        <v-list-tile-content :style="fontWeight[0]">Đặt lịch gửi tin nhắn</v-list-tile-content>
+                    <v-list-tile @click="page='schedule'">
+                        <v-list-tile-content :style="fontWeight[3]">Quản lý lịch gửi </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="page='saveKey'">
                         <v-list-tile-content :style="fontWeight[1]">Quản lý chiến dịch</v-list-tile-content>
@@ -18,20 +18,17 @@
                     <v-list-tile @click="page='template'">
                         <v-list-tile-content :style="fontWeight[2]">Quản lý mẫu tin nhắn</v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page='schedule'">
-                        <v-list-tile-content :style="fontWeight[3]">Quản lý lịch gửi </v-list-tile-content>
-                    </v-list-tile>
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 class="ml-3 mt-3">
-                <v-layout row v-if="page=='send'">
+                <!-- <v-layout row v-if="page=='send'">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-layout row>
                             <v-flex xs12 sm12 md3 lg3 xl3>
                                 <v-card>
                                     <v-card-text>
                                         <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                        <!-- <p>Chiến dịch này còn {{send.remain}} tin nhắn</p> -->
+                                       
                                         <v-divider :divider="divider"></v-divider>
                                         <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
                                         <v-divider :divider="divider"></v-divider>
@@ -71,34 +68,12 @@
                                             <v-flex xs6 sm6 md6 lg6 xl6>
                                                 <h2>Danh sách</h2>
                                             </v-flex>
-                                            <!-- <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn color="success" @click="markAllContact()">
-                                                    Chọn tất cả
-                                                </v-btn>
-                                            </v-flex>
-                                            
-                                            <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn @click="unmarkAllContact()">
-                                                    Bỏ chọn tất cả
-                                                </v-btn>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
-                                            </v-flex> -->
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text>
-                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
                                         <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                             <template v-slot:items="props">
                                                 <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
                                                             @change="getPhoneNumberToSendSMS()"
@@ -110,10 +85,6 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
-                                        <br>
-
-                                    
                                     </v-card-text>
                                 </v-card>
                                 <v-card class="mt-3" v-if="send.additionalContacts.length > 0">
@@ -125,11 +96,11 @@
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text>
-                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                       
                                         <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
                                             <template v-slot:items="props">
                                                 <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                    
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
                                                             @change="getPhoneNumberToSendSMS()"
@@ -141,261 +112,153 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
                                         <br>
-
-                                    
                                     </v-card-text>
                                 </v-card>
                             </v-flex>
                         </v-layout>
-                        <!-- <v-layout row>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn mẫu tin nhắn</h2></strong></span>
-                                        <span class="ml-4"><v-select :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                     
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-textarea box readonly rows="6" label="Nội dung" v-model="send.chosenContent"></v-textarea>
-                                    </v-card-text>
-                                </v-card>
-                                
-                            </v-flex>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card height="100%">
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn chiến dịch</h2> </strong></span>
-                                        <span class="ml-4"><v-select :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
-                                    </v-card-text>
-                                    <v-divider :divider="divider"></v-divider>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Chọn danh sách gửi</h2> </strong></span>
-                                        <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs4 sm4 md4 lg4 xl4>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="mt-4"><strong><h2>Đặt lịch gửi</h2></strong></span>
-                                        <span class="ml-4">
-                                            <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
-                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-text-field v-model="send.date"  persistent-hint prepend-icon="event"
-                                                        v-on="on">
-                                                    </v-text-field>
-                                                </template>
-                                                <v-date-picker v-model="send.date" no-title @input="send.menu1 = false"></v-date-picker>
-                                            </v-menu>
-                                        </span>
-                                        <br>
-                                        <span class="ml-4">
-                                            <v-select v-model="send.time" :items="send.timeToChoose"></v-select>
-                                        </span>
-                                    </v-card-text>
-                                    <v-divider :divider="divider"></v-divider>
-                                    <v-card-actions>
-                                        <v-btn block color="primary" :disabled="send.remain < 0" @click="sendSMS()">Đặt lịch gửi</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-
-                        </v-layout> -->
                         <br>
-                        <!-- <v-layout row wrap>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-card v-if="send.displayContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Danh sách</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table  dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-card v-if="send.additionalContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Chọn thêm người nhận</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout> -->
                     </v-flex>
-                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 style="height: 100%">
-                        <v-card >
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn chiến dịch</h2> </strong></span>
-                                <span class="ml-4"><v-select :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn mẫu tin nhắn</h2></strong></span>
-                                <span class="ml-4"><v-select :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                <p>Chiến dịch này còn {{send.remain}} tin nhắn</p>
-                                <v-textarea box readonly rows="6" v-model="send.chosenContent"></v-textarea>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Chọn danh sách gửi</h2> </strong></span>
-                                <v-select :items="send.list" v-model="send.selectedListToSendSMS" ></v-select>
-                            </v-card-text>
-                            <v-card-text>
-                                <span class="mt-4"><strong><h2>Đặt lịch gửi</h2></strong></span>
-                                <span class="ml-4">
-                                    <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
-                                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field v-model="send.date"  persistent-hint prepend-icon="event"
-                                                v-on="on">
-                                            </v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="send.date" no-title @input="send.menu1 = false"></v-date-picker>
-                                    </v-menu>
-                                </span>
-                                <br>
-                                <span class="ml-4">
-                                    <v-select v-model="send.time" :items="send.timeToChoose"></v-select>
-                                </span>
-                            </v-card-text>
-                            <v-divider :divider="divider"></v-divider>
-                            <v-card-actions>
-                                <v-btn block color="primary" :disabled="send.remain < 0" @click="sendSMS()">Đặt lịch gửi</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-flex> -->
-                    <!-- <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card flat>
-                            <v-card-title>
-                                <v-layout row wrap>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Danh sách</h2>
+                </v-layout> -->
+                <v-dialog persistent fullscreen v-model="createScheduleDialog">
+                    <v-card>
+                        <v-toolbar card dark color="primary">
+                            <v-btn icon dark @click="page = 'schedule'">
+                                <v-icon>close</v-icon>
+                            </v-btn>
+                            <v-toolbar-title>Tạo lịch gửi SMS mới</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                        <v-layout row>
+                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                <v-layout row>
+                                    <v-flex xs12 sm12 md3 lg3 xl3>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
+                                                <!-- <p>Chiến dịch này còn {{send.remain}} tin nhắn</p> -->
+                                                <v-divider :divider="divider"></v-divider>
+                                                <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <span class="ml-4"><v-select prepend-icon="list"  label="Chọn chiến dịch gửi tin nhắn" :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <v-select prepend-icon="people" :items="send.list" label="Chọn danh sách gửi" v-model="send.selectedListToSendSMS" ></v-select>
+                                                <v-divider :divider="divider"></v-divider>
+                                                <span class="ml-4">
+                                                    <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
+                                                        transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-text-field v-model="send.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
+                                                                v-on="on">
+                                                            </v-text-field>
+                                                        </template>
+                                                        <v-date-picker v-model="send.date"  no-title @input="send.menu1 = false"></v-date-picker>
+                                                    </v-menu>
+                                                </span>
+                                                <span class="ml-4">
+                                                    <v-select prepend-icon="access_time" label="Chọn giờ gửi" v-model="send.time" :items="send.timeToChoose"></v-select>
+                                                </span>
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
+                                            </v-card-text>
+                                            <v-card-actions>
+                                                <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
                                     </v-flex>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                    </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                    </v-flex>
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn color="success" @click="markAllContact()">
-                                            Chọn tất cả
-                                        </v-btn>
-                                    </v-flex>
-                                    
-                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn @click="unmarkAllContact()">
-                                            Bỏ chọn tất cả
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
+                                    <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
+                                        <v-card flat v-if="send.displayContacts.length > 0">
+                                            <v-card-title>
+                                                <v-layout row wrap>
+                                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Danh sách</h2>
+                                                    </v-flex>
+                                                    <!-- <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-btn color="success" @click="markAllContact()">
+                                                            Chọn tất cả
+                                                        </v-btn>
+                                                    </v-flex>
+                                                    
+                                                    <v-flex xs2 sm2 md2 lg2 xl2>
+                                                        <v-btn @click="unmarkAllContact()">
+                                                            Bỏ chọn tất cả
+                                                        </v-btn>
+                                                    </v-flex> -->
+                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
+                                                    </v-flex> -->
+                                                </v-layout>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                                    <template v-slot:items="props">
+                                                        <tr>
+                                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                    v-model="props.item.chosen" 
+                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                    >
+                                                                    </v-checkbox></td>
+                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.phone }}</td>
+                                                        </tr>
+                                                    </template>
+                                                </v-data-table>
+                                                <br>
+                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <br>
+
+                                            
+                                            </v-card-text>
+                                        </v-card>
+                                        <v-card flat class="mt-3" v-if="send.additionalContacts.length > 0">
+                                            <v-card-title>
+                                                <v-layout row wrap>
+                                                    <v-flex xs6 sm6 md6 lg6 xl6>
+                                                        <h2>Chọn thêm người nhận</h2>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
+                                                    <template v-slot:items="props">
+                                                        <tr>
+                                                            <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                    v-model="props.item.chosen" 
+                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                    >
+                                                                    </v-checkbox></td>
+                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.phone }}</td>
+                                                        </tr>
+                                                    </template>
+                                                </v-data-table>
+                                                <br>
+                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <br>
+
+                                            
+                                            </v-card-text>
+                                        </v-card>
                                     </v-flex>
                                 </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select>
-                                <v-data-table dense :headers="send.headers" :items="send.displayContacts" hide-actions class="elevation-1">
-                                    <template v-slot:items="props">
-                                        <tr>
-                                            @change="checkChosenContact(props.item.contactId, props.item.chosen)"
-                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                    v-model="props.item.chosen" 
-                                                    @change="getPhoneNumberToSendSMS()"
-                                                    >
-                                                    </v-checkbox></td>
-                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                            <td>{{ props.item.phone }}</td>
-                                        </tr>
-                                    </template>
-                                </v-data-table>
                                 <br>
-                                <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
-                                <br>
-
-                            
-                            </v-card-text>
-                        </v-card>
-                        <br>
-                        <v-card v-if="send.additionalContacts.length > 0" flat>
-                            <v-card-title>
-                                <v-layout row wrap>
-                                    <v-flex xs6 sm6 md6 lg6 xl6>
-                                        <h2>Chọn thêm người nhận</h2>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select>
-                                <v-data-table dense :headers="send.headers" :items="send.additionalContacts" hide-actions class="elevation-1">
-                                    <template v-slot:items="props">
-                                        <tr>
-                                            @change="checkChosenContact(props.item.contactId, props.item.chosen)"
-                                            <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                    v-model="props.item.chosen" 
-                                                    @change="getPhoneNumberToSendSMS()"
-                                                    >
-                                                    </v-checkbox></td>
-                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                            <td>{{ props.item.phone }}</td>
-                                        </tr>
-                                    </template>
-                                </v-data-table>
-                                <br>
-                                <v-pagination v-model="send.page" :length="send.pages"></v-pagination>
-                                <br>
-
-                            
-                            </v-card-text>
-                        </v-card>
-                        <br>
-                    </v-flex> -->
-                </v-layout>
+                            </v-flex>
+                        </v-layout>
+                    </v-card>
+                </v-dialog>
                 <v-layout row v-if="page=='saveKey'">
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-layout row>
@@ -585,7 +448,7 @@
                 </v-layout>
                 <v-layout row v-if="page=='template'">
                     <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-card style="height: 300px;">
+                        <v-card style="height: 400px;">
                             <v-card-title>
                                 <h2>Mẫu tin nhắn</h2>
                             </v-card-title>
@@ -604,7 +467,7 @@
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card>
+                        <v-card style="height: 400px;">
                             <v-card-title>
                                 <h2 v-if="!template.creatingTemplate">Nội dung tin nhắn</h2>
                                 <h2 v-else>Tạo mẫu tin nhắn mới</h2>
@@ -675,7 +538,10 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
-                <v-layout row v-if="page=='schedule'">
+                <v-layout row wrap v-if="page=='schedule'">
+                    <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
+                        <v-btn dark color = "#3E82F7" @click="page = 'send'">Tạo lịch gửi mới</v-btn>
+                    </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
                             <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.headers" :items="schedule.list">
@@ -708,10 +574,10 @@
                                                 <v-list-tile @click.stop="openScheduleDetailDialog(props.item.id)">
                                                     <v-list-tile-content>Xem chi tiết</v-list-tile-content>
                                                 </v-list-tile>
-                                                <v-list-tile v-if="props.item.status == 'ACTIVE'" @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">
+                                                <v-list-tile v-if="props.item.status == 'ACTIVE'" @click="changeScheduleStatus(props.item.number, 'INACTIVE')">
                                                     <v-list-tile-content>Tắt lịch gửi</v-list-tile-content>
                                                 </v-list-tile>
-                                                <v-list-tile v-if="props.item.status == 'INACTIVE'" @click="changeScheduleStatus(props.item.number, 'ACTIVE'), props.item.status = 'ACTIVE'">
+                                                <v-list-tile v-if="props.item.status == 'INACTIVE'" @click="changeScheduleStatus(props.item.number, 'ACTIVE')">
                                                     <v-list-tile-content>Kích hoạt lịch gửi</v-list-tile-content>
                                                 </v-list-tile>
                                             </v-list>
@@ -765,7 +631,7 @@
                                         <h2>Không có quyền truy cập</h2>
                                     </v-card-title>
                                     <v-card-text>
-                                        Bạn phải có quyền <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> và <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
                                         <br>
                                         Hãy liên hệ với Quản lý để được cấp quyền truy cập.
                                     </v-card-text>
@@ -865,8 +731,8 @@ export default {
         return {
             currentUser: null,
             access: false,
-            fontWeight: ['fontWeight: bold', '', '', ''],
-            page: 'send',
+            fontWeight: ['', '', '', 'fontWeight: bold'],
+            page: 'schedule',
             divider: true,
             saveKey: {
                 list: [],
@@ -1022,7 +888,7 @@ export default {
             schedule: {
                 headers: [
                     {
-                        text: 'TÊN CHIẾN DỊCH',
+                        text: 'TÊN MẪU TIN NHẮN',
                         align: 'left',
                         value: 'name',
                         sortable: false
@@ -1044,7 +910,7 @@ export default {
                         align: 'right',
                         value: 'fat',
                         sortable: false
-                    }
+                    },
                 ],
                 list: [],
                 detail: {
@@ -1083,11 +949,19 @@ export default {
             else {
                 return false;
             }
+        },
+        createScheduleDialog(){
+            if (this.page == 'send'){
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     },
     methods: {
         returnTime(data) {
-            return moment(data).lang('vi').format('HH:mm:ss DD/MM/YYYY')
+            return moment(data).format('HH:mm:ss DD/MM/YYYY')
         },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
@@ -1118,19 +992,38 @@ export default {
         },
         getList(){
             listService.getList(this.idAccount).then(result => {
-                let res = result.response;
-                for (let i = 0; i < res.length; i++){
-                    listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
-                        let obj = {
-                            text: res[i].name,
-                            value: res[i].contactConditionGroupId
-                        }
-                        for (let k = 0; k < result.response.length; k++){
-                            result.response[k].chosen = true;
-                        }
-                        obj.contact = result.response;
-                        this.send.list.push(obj);
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                let obj = {
+                                    text: res[i].name,
+                                    value: res[i].contactConditionGroupId
+                                }
+                                for (let k = 0; k < result.response.length; k++){
+                                    result.response[k].chosen = true;
+                                }
+                                obj.contact = result.response;
+                                this.send.list.push(obj);
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            
+                        })
+                    }
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
                 // console.log(this.send.list);
             }).then(() => {
@@ -1139,44 +1032,42 @@ export default {
         },
         getAllContact(){
             contactService.getAllContact(this.idAccount, this.send.page).then(result => {
-                for (let i = 1; i <= result.response.totalPage;i++){
-                    contactService.getAllContact(this.idAccount, i).then(result => {
-                        for(let k = 0; k < result.response.results.length; k++){
-                            result.response.results[k].chosen = true;
-                            this.send.allContacts.push(result.response.results[k]);
-                        }
-                    })
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 1; i <= result.response.totalPage;i++){
+                        contactService.getAllContact(this.idAccount, i).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                for(let k = 0; k < result.response.results.length; k++){
+                                    result.response.results[k].chosen = true;
+                                    this.send.allContacts.push(result.response.results[k]);
+                                }
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            
+                        })
+                    }
+                    // console.log(this.send.allContacts.length)
+                    let obj = {
+                        text: 'Tất cả các Lead',
+                        value: 'all',
+                        contact: this.send.allContacts
+                    }
+                    this.send.list.unshift(obj);
                 }
-                // console.log(this.send.allContacts.length)
-                let obj = {
-                    text: 'Tất cả các Lead',
-                    value: 'all',
-                    contact: this.send.allContacts
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
                 
-                this.send.list.unshift(obj);
-                // console.log(this.send.list)
-                // this.send.displayContacts = this.send.allContacts;
-                // this.send.allContacts.filter(e => {
-                //     console.log(e)
-                //     this.send.phoneNumberToSend.push(e.phone)
-                // })
-                // for (let i = 0; i < this.send.allContacts.length; i++){
-                //     // console.log(i)
-                //     this.send.phoneNumberToSend.push(this.send.allContacts[i].phone)
-                // }
-                // // console.log(this.send.phoneNumberToSend)
-                
-                // if (this.send.phoneNumberToSend.length > this.send.remain){
-                //     console.log('lon hon')
-                //     this.send.exceedRecipientAlert = true;
-                // }
-                // else {
-                //     console.log('nho hon')
-                //     this.send.exceedRecipientAlert = false;
-                // }
             })
-            // console.log(this.send.pages);
         },
         checkIncludeContact(array, id){
             let result = false;
@@ -1253,6 +1144,10 @@ export default {
             }
             return result;
         },
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         sendSMS(){
             let timeString = this.send.date + 'T' + this.send.time
             let timeToSend = moment(timeString).utc().format().substring(0, 19)
@@ -1272,9 +1167,19 @@ export default {
                 listPhone: listPhone
             }
             SMSService.createSchedule(this.idAccount, body).then(result => {
-                console.log(result);
-                this.getSchedule();
-                this.page = 'schedule'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    this.getSchedule();
+                    this.page = 'schedule'
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error)
             })
@@ -1284,24 +1189,33 @@ export default {
         getListDeviceKey(){
             this.saveKey.list = [];
             SMSService.getListDeviceKey(this.idAccount).then(result => {
-                console.log(result)
-                for (let i = 0; i < result.response.length; i++){
-                    let name = '';
-                    if (result.response[i].campaign == null){
-                        name = '*chiến dịch không có tên*' + ' (' + result.response[i].name + ')'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0; i < result.response.length; i++){
+                        let name = '';
+                        if (result.response[i].campaign == null){
+                            name = '*chiến dịch không có tên*' + ' (' + result.response[i].name + ')'
+                        }
+                        else{
+                            name = result.response[i].campaign + ' (' + result.response[i].name + ')'
+                        }
+                        let obj = {
+                            text: name,
+                            value: result.response[i].smsDeviceId
+                        }
+                        this.saveKey.list.push(obj)
                     }
-                    else{
-                        name = result.response[i].campaign + ' (' + result.response[i].name + ')'
-                    }
-                    let obj = {
-                        text: name,
-                        value: result.response[i].smsDeviceId
-                    }
-                    this.saveKey.list.push(obj)
+                    this.saveKey.list = this.saveKey.list.reverse();
+                    this.saveKey.selectedCampaignId = this.saveKey.list[0].value;
+                    this.getStatisticAndHistory();
                 }
-                this.saveKey.list = this.saveKey.list.reverse();
-                this.saveKey.selectedCampaignId = this.saveKey.list[0].value;
-                this.getStatisticAndHistory();
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error)
             })
@@ -1314,32 +1228,61 @@ export default {
                 success: 0,
             }
             SMSService.getInfo(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                this.saveKey.selectedCampaignDetail.total = result.response.smsTotal;
-                this.saveKey.selectedCampaignDetail.remain = result.response.smsRemain;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.saveKey.selectedCampaignDetail.total = result.response.smsTotal;
+                    this.saveKey.selectedCampaignDetail.remain = result.response.smsRemain;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
             SMSService.getStatisticDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                this.saveKey.selectedCampaignDetail.success = result.response.success;
-                this.saveKey.selectedCampaignDetail.fail = result.response.fail;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    this.saveKey.selectedCampaignDetail.success = result.response.success;
+                    this.saveKey.selectedCampaignDetail.fail = result.response.fail;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             });
             this.saveKey.selectedCampaignHistory.success = [];
             this.saveKey.selectedCampaignHistory.fail = [];
             SMSService.getHistoryDetail(this.idAccount, this.saveKey.selectedCampaignId).then(result => {
-                result.response = result.response.reverse();
-                for (let i = 0; i < result.response.length; i++){
-                    let obj = {
-                        phoneNumber: result.response[i].phoneNumber,
-                        message: result.response[i].message,
-                        statusMessage: this.returnBug(result.response[i].status),
-                        status: result.response[i].status,
-                        time: this.coverTime(result.response[i].createdAt)
-                    }
-                    if (obj.status == 'SUCCESS'){
-                        this.saveKey.selectedCampaignHistory.success.push(obj);
-                    }
-                    else {
-                        this.saveKey.selectedCampaignHistory.fail.push(obj);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    result.response = result.response.reverse();
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            phoneNumber: result.response[i].phoneNumber,
+                            message: result.response[i].message,
+                            statusMessage: this.returnBug(result.response[i].status),
+                            status: result.response[i].status,
+                            time: this.coverTime(result.response[i].createdAt)
+                        }
+                        if (obj.status == 'SUCCESS'){
+                            this.saveKey.selectedCampaignHistory.success.push(obj);
+                        }
+                        else {
+                            this.saveKey.selectedCampaignHistory.fail.push(obj);
+                        }
                     }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             })
         },
         createCampaign(){
@@ -1349,19 +1292,38 @@ export default {
                 campaign: this.saveKey.createData.campaign,
             }
             SMSService.createDeviceKey(this.idAccount, body).then(result => {
-                console.log(result);
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error);
             })
             SMSService.getListDeviceKey(this.idAccount).then(result => {
-                let data = result.response.reverse();
-                let newDeviceKey = {
-                    text: data[0].campaign + ' ' + '(' + data[0].name + ')',
-                    value: data[0].smsDeviceId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response.reverse();
+                    let newDeviceKey = {
+                        text: data[0].campaign + ' ' + '(' + data[0].name + ')',
+                        value: data[0].smsDeviceId
+                    }
+                    this.saveKey.list.unshift(newDeviceKey);
+                    this.saveKey.list = [...this.saveKey.list]
+                    this.saveKey.selectedCampaignId = newDeviceKey.value
                 }
-                this.saveKey.list.unshift(newDeviceKey);
-                this.saveKey.list = [...this.saveKey.list]
-                this.saveKey.selectedCampaignId = newDeviceKey.value
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
                 this.saveKey.createCampaign = false;
             }).catch(error => {
                 console.log(error);
@@ -1432,13 +1394,13 @@ export default {
         returnStatus(status){
             let result = ''
             if (status == 'ACTIVE'){
-                result = 'Lịch gửi được kích hoạt'
+                result = 'Được kích hoạt'
             }
             else if (status == 'INACTIVE'){
-                result = 'Lịch gửi đã tắt'
+                result = 'Đã tắt'
             }
             else if (status == 'PENDING'){
-                result = 'Chờ xử lý'
+                result = 'Chờ xử lý...'
             }
             else if (status == 'INPROGRESS'){
                 result = 'Đang xử lý...'
@@ -1452,17 +1414,20 @@ export default {
             else if (status == 'DONE'){
                 result = 'Đã gửi'
             }
+            else if (status == 'TIMEOUT'){
+                result = 'Bị dừng (do tốn quá nhiều thời gian xử lý)'
+            }
             return result;
         },
         returnStatusColor(status){
             if (status == 'DONE'){
                 return 'color: green;'
             }
-            else if (status == 'STOP' || status == 'ERROR' || status == 'FAIL'){
+            else if (status == 'STOP' || status == 'ERROR' || status == 'FAIL' || status == 'TIMEOUT'){
                 return 'color: red;'
             }
             else {
-                return 'color: black;'
+                return 'color: blue;'
             }
         },
         //Template
@@ -1476,15 +1441,25 @@ export default {
                 status: 'ACTIVE'
             }
             SMSService.createTemplate(this.idAccount, obj).then(result => {
-                console.log(result);
-                let obj = {
-                    text: result.response.name,
-                    content: result.response.content,
-                    value: result.response.smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        let obj = {
+                        text: result.response.name,
+                        content: result.response.content,
+                        value: result.response.smsTemplateId
+                    }
+                    this.template.currentTemplates.unshift(obj);
+                    this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                    this.template.selectedTemplateId = this.template.currentTemplates[0].value;
                 }
-                this.template.currentTemplates.unshift(obj);
-                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
-                this.template.selectedTemplateId = this.template.currentTemplates[0].value;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
             }).catch(error => {
                 console.log(error);
             })
@@ -1500,19 +1475,30 @@ export default {
         },
         getTemplate(){
             SMSService.getTemplate(this.idAccount).then(result => {
-                console.log(result);
-                for (let i = 0; i < result.response.length; i++){
-                    let obj = {
-                        text: result.response[i].name,
-                        content: result.response[i].content,
-                        value: result.response[i].smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            text: result.response[i].name,
+                            content: result.response[i].content,
+                            value: result.response[i].smsTemplateId
+                        }
+                        this.template.currentTemplates.push(obj)
                     }
-                    this.template.currentTemplates.push(obj)
+                    this.template.currentTemplates = this.template.currentTemplates.reverse();
+                    this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
+                    this.template.oldContent = this.template.selectedTemplateContent;
+                    this.template.selectedTemplateId = this.template.currentTemplates[0].value
                 }
-                this.template.currentTemplates = this.template.currentTemplates.reverse();
-                this.template.selectedTemplateContent = this.template.currentTemplates[0].content;
-                this.template.oldContent = this.template.selectedTemplateContent;
-                this.template.selectedTemplateId = this.template.currentTemplates[0].value
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error)
             })
         },
         updateTemplate(){
@@ -1522,27 +1508,46 @@ export default {
                 content: this.normalText(this.template.selectedTemplateContent)
             }
             SMSService.updateTemplate(this.idAccount, body).then(result => {
-                console.log(result)
-                SMSService.getTemplate(this.idAccount).then(result => {
-                    let tempArr = [];
-                    for (let i = 0; i < result.response.length; i++){
-                        let obj = {
-                            text: result.response[i].name,
-                            content: result.response[i].content,
-                            value: result.response[i].smsTemplateId
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    SMSService.getTemplate(this.idAccount).then(result => {
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            let tempArr = [];
+                            for (let i = 0; i < result.response.length; i++){
+                                let obj = {
+                                    text: result.response[i].name,
+                                    content: result.response[i].content,
+                                    value: result.response[i].smsTemplateId
+                                }
+                                tempArr.push(obj)
+                            }
+                            tempArr = tempArr.reverse()
+                            for (let i = 0; i < tempArr.length; i++){
+                                if(this.template.currentTemplates[i] != tempArr[i]){
+                                    this.template.currentTemplates[i] = tempArr[i]
+                                }
+                            }
+                            this.template.currentTemplates = [...this.template.currentTemplates]
+                            this.template.oldContent = this.template.selectedTemplateContent;
                         }
-                        tempArr.push(obj)
-                    }
-                    tempArr = tempArr.reverse()
-                    for (let i = 0; i < tempArr.length; i++){
-                        if(this.template.currentTemplates[i] != tempArr[i]){
-                            this.template.currentTemplates[i] = tempArr[i]
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                         }
-                    }
-                    this.template.currentTemplates = [...this.template.currentTemplates]
-                    this.template.oldContent = this.template.selectedTemplateContent;
-                    this.template.updateTemplateView = false;
-                })
+                        
+                    })
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                this.template.updateTemplateView = false;
             }).catch(error => {
                 console.log(error)
             })
@@ -1552,126 +1557,114 @@ export default {
         getSchedule(){
             this.schedule.list = [];
             SMSService.getSchedule(this.idAccount).then(result => {
-                console.log(result);
-                let data = result.response;
-                for (let i = 0; i < data.length; i++){
-                    let name = '';
-                    if (data[i].device.campaign == null){
-                        name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response;
+                    for (let i = 0; i < data.length; i++){
+                        let name = '';
+                        if (data[i].device.campaign == null){
+                            name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
+                        }
+                        else{
+                            name = data[i].device.campaign + ' (' + data[i].device.name + ')'
+                        }
+                        let obj = {
+                            content: data[i].content,
+                            campaign: name,
+                            time: this.returnTime(data[i].timeToSend),
+                            status: data[i].status,
+                            listPhone: data[i].listPhone,
+                            number: i,
+                            id: data[i].smsScheduleId
+                        }
+                        this.schedule.list.push(obj);
                     }
-                    else{
-                        name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-                    }
-                    let obj = {
-                        content: data[i].content,
-                        campaign: name,
-                        time: this.returnTime(data[i].timeToSend),
-                        status: data[i].status,
-                        listPhone: data[i].listPhone,
-                        number: i,
-                        id: data[i].smsScheduleId
-                    }
-                    this.schedule.list.push(obj);
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error);
             })
         },
         openScheduleDetailDialog(id){
-            // SMSService.getSchedule(this.idAccount).then(result => {
-            //     console.log(result);
-            //     let tempArr = []
-            //     let data = result.response;
-            //     for (let i = 0; i < data.length; i++){
-            //         let name = '';
-            //         if (data[i].device.campaign == null){
-            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
-            //         }
-            //         else{
-            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-            //         }
-            //         let obj = {
-            //             content: data[i].content,
-            //             campaign: name,
-            //             time: this.coverTime(data[i].timeToSend),
-            //             status: data[i].status,
-            //             listPhone: data[i].listPhone,
-            //             number: i,
-            //             id: data[i].smsScheduleId
-            //         }
-            //         tempArr.push(obj);
-            //     }
-            //     this.schedule.list = [...tempArr]
-            // })
             let obj = null;
             SMSService.getSchedule(this.idAccount).then(result => {
-                console.log(result);
-                let data = result.response;
-                for (let i = 0; i < data.length; i++){
-                    if (id == data[i].smsScheduleId){
-                        obj = data[i];
-                        this.schedule.detail.content = obj.content;
-                        this.schedule.detail.listPhone = obj.listPhone;
-                        this.schedule.detail.dialog = true;
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let data = result.response;
+                    for (let i = 0; i < data.length; i++){
+                        if (id == data[i].smsScheduleId){
+                            obj = data[i];
+                            this.schedule.detail.content = obj.content;
+                            this.schedule.detail.listPhone = obj.listPhone;
+                            this.schedule.detail.dialog = true;
+                        }
                     }
                 }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error);
             })
-            
         },
         changeScheduleStatus(number, status){
             let obj = this.schedule.list[number];
             let id = obj.id;
             if (status == 'ACTIVE'){
                 SMSService.activateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        obj.status = 'ACTIVE';
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
             }
             else {
                 SMSService.deactivateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`);
+                        obj.status = 'INACTIVE';
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
             }
-            // SMSService.getSchedule(this.idAccount).then(result => {
-            //     console.log(result);
-            //     let tempArr = [];
-            //     let data = result.response;
-            //     for (let i = 0; i < data.length; i++){
-            //         let name = '';
-            //         if (data[i].device.campaign == null){
-            //             name = '*chiến dịch không có tên*' + ' (' + data[i].device.name + ')'
-            //         }
-            //         else{
-            //             name = data[i].device.campaign + ' (' + data[i].device.name + ')'
-            //         }
-            //         let obj = {
-            //             content: data[i].content,
-            //             campaign: name,
-            //             time: this.coverTime2(data[i].timeToSend),
-            //             status: data[i].status,
-            //             listPhone: data[i].listPhone,
-            //             number: i,
-            //             id: data[i].smsScheduleId
-            //         }
-            //         tempArr.push(obj);
-            //     }
-            //     // for(let i = 0; i < tempArr.length; i++){
-            //     //     if (this.schedule.list[i] != tempArr[i]){
-            //     //         this.schedule.list[i] = tempArr[i];
-            //     //     }
-            //     // }
-                
-            //     this.schedule.list = [...tempArr];
-            // })
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
-            for (let i = 0; i < role.length;i++){
-                if (role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING'){
-                    this.access = true;
-                }
+            // for (let i = 0; i < role.length;i++){
+            //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
+            //         this.access = true;
+            //     }
+            // }
+            if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
+                this.access = true;
             }
             if (this.access == true){
                 this.getList();

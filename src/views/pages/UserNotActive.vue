@@ -10,10 +10,10 @@
                         <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
                             <v-card flat style="background-color: #FDEDEE; ">
                                 <v-card-title>
-                                    <h1>Email chưa được mời vào tổ chức</h1>
+                                    <h1>Email không tồn tại</h1>
                                 </v-card-title>
                                 <v-card-text>
-                                    Bạn không thuộc tổ chức nào, hãy liên hệ với admin để được thêm vào tổ chức.
+                                    Tài khoản này không có trong hệ thống. Hãy liên hệ với admin để được thêm vào.
                                 </v-card-text>
                             </v-card>
                         </v-card-text>

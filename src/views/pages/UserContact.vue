@@ -51,7 +51,7 @@
                                     </v-layout>
                                 </v-card-text>
                             </v-layout>
-                            <v-layout row wrap v-if="access == false">
+                            <v-layout row wrap v-if="cannotEdit">
                                 <v-flex xs12 sm12 md12 lg12 xl12>
                                     <v-card flat width="100%">
                                         <v-card-text style="background-color: #FDEDEE; border: 1px solid red;">
@@ -128,7 +128,7 @@
                             <v-layout row>
                                 <v-flex xs12 sm12 md10 lg10 xl10 offset-md1 offset-lg1 offset-xl1>
                                     <v-layout row>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createNote" persistent max-width="700px">
@@ -151,7 +151,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createEmail" persistent max-width="700px">
@@ -186,7 +186,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
@@ -232,7 +232,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-menu offset-y>
@@ -289,7 +289,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createTask" persistent max-width="700px">
@@ -320,37 +320,31 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-dialog v-model="createMeet" persistent max-width="700px">
+                                                    <v-dialog v-model="createDeal" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
                                                                 <v-icon dark>event</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Tạo cuộc họp</span>
+                                                                <span class="headline">Tạo hợp đồng</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newMeet />
+                                                                <newDeal @closeCreateDealDialog =  "createDeal = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createMeet = false">Save</v-btn>
-                                                                <v-btn color="red darken-1" small flat
-                                                                    @click="createMeet = false">Cancel</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Meet</p>
+                                                    <p>Hợp đồng</p>
                                                 </v-flex>
                                             </v-layout>
-                                        </v-flex> -->
+                                        </v-flex>
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -378,7 +372,19 @@
                                                                 <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'bussiness'">
-                                                                <v-select :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-layout row wrap>
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
+                                           
+                                                                    </v-flex>
+                                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-checkbox v-model="item.otherBussiness" label="Ngành nghề khác "></v-checkbox>
+                                                                    </v-flex> -->
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-text-field :readonly="!access" v-if="item.otherBussiness" v-model="item.value" label="Nhập ngành nghề khác tại đây" @change="updateContactDetail(item.property, item.value)"></v-text-field>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                                
                                                             </template>
                                                             <template v-else-if="item.property == 'phone'">
                                                                 <v-form v-model="validPhone">
@@ -397,7 +403,7 @@
                                                                 
                                                             </template>
                                                             <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" :readonly="!access">
+                                                                <v-text-field :label="item.title" v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
                                                             
@@ -552,7 +558,7 @@
                                 </v-menu>
                             </v-layout> -->
                             <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <!-- <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/> -->
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -691,6 +697,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <!-- <alert/> -->
     </v-content>
 </template>
 <script>
@@ -709,9 +716,11 @@
     import newLogCall from '../components/creates/createLogCall'
     import newLogEmail from '../components/creates/createLogEmail'
     import newLogMeet from '../components/creates/createLogMeet'
+    import newDeal from '../components/creates/createDeal'
     import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
+    import alert from '@/components/alert'
     export default {
         props: {
             idAccount: {
@@ -725,6 +734,7 @@
         },
         data: () => ({
             actionLog: {
+                
                 failDialog: false,
                 dialog: false,
                 changeArray: [],
@@ -752,6 +762,7 @@
                 ],
                 title: ''
             },
+            cannotEdit: false,
             lifecycleStages: [
                 'Lead',
                 'Subscriber',
@@ -785,6 +796,7 @@
             createLogEmail: false,
             createLogMeet: false,
             createSMS: false,
+            createDeal: false,
             items: [{
                     title: 'Lifecycle stage',
                     description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -928,6 +940,29 @@
                 value: ''
             }
         }),
+        watch: {
+            // bussinessChoice(){
+            //     alert(this.bussinessChoice)
+            // }
+            // access(){
+            //     this.cannotEdit = !this.access;
+            // }
+            items(){
+                console.log(this.items[8].value)
+            }
+        },
+        computed: {
+            // bussinessChoice(){
+            //     let result = '';
+            //     for (let i = 0; i < this.items.length;i++){
+            //         if(this.items[i].property == 'bussiness'){
+            //             return this.items[i].value;
+            //         }
+            //     }
+            //     console.log(result);
+            //     return result;
+            // }
+        },
         methods:{
             updateEmail(){
                 eventBus.updateEmail();
@@ -938,14 +973,23 @@
             getAllEmail(){
                 this.allEmail = [];
                 contact.getAllEmail(this.idAccount).then(result => {
-                    result.response.filter(e => {
-                        const obj = {
-                            text: e.name + ' (' + e.email + ')',
-                            value: e.email,
-                            name: e.name
-                        }
-                        this.allEmail.push(obj);
-                    });
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        result.response.filter(e => {
+                            const obj = {
+                                text: e.name + ' (' + e.email + ')',
+                                value: e.email,
+                                name: e.name
+                            }
+                            this.allEmail.push(obj);
+                        });
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 })
             },
             getActionLog(property, title){
@@ -957,9 +1001,18 @@
                 }
                 console.log(params)
                 contact.getActionLog(this.idAccount, params).then(result => {
-                    console.log(result);
-                    this.actionLog.changeArray = result.response.Detail.reverse();
-                    this.actionLog.dialog = true;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        this.actionLog.changeArray = result.response.Detail.reverse();
+                        this.actionLog.dialog = true;
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
                 }).catch(error => {
                     console.log(error);
                     this.actionLog.failDialog = true;
@@ -979,88 +1032,113 @@
             },
             getDetail(){
                 contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    result.response.firstName = this.checkString(result.response.firstName);
-                    result.response.lastName = this.checkString(result.response.lastName);
-                    result.response.email = this.checkString(result.response.email);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        result.response.firstName = this.checkString(result.response.firstName);
+                        result.response.lastName = this.checkString(result.response.lastName);
+                        result.response.email = this.checkString(result.response.email);
 
-                    this.basicInfo.firstName = result.response.firstName;
-                    this.basicInfo.lastName = result.response.lastName;
-                    this.basicInfo.email = result.response.email;
-                    this.detail = result.response
-                    // console.log(this.detail)
+                        this.basicInfo.firstName = result.response.firstName;
+                        this.basicInfo.lastName = result.response.lastName;
+                        this.basicInfo.email = result.response.email;
+                        this.detail = result.response
+                        this.items = [
+                            {
+                                title: 'Vòng đời',
+                                description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
+                                value: this.checkString(result.response.lifecycleStage),
+                                dialog: false,
+                                property: 'lifecycleStage'
+                            },
+                            {
+                                title: 'Trạng thái',
+                                description: "The contact's sales, prospecting or outreach status",
+                                value: this.checkString(result.response.leadStatus),
+                                dialog: false,
+                                property: 'leadStatus'
+                            },
+                            {
+                                title: 'Thuộc sở hữu',
+                                description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
+                                value: this.checkString(result.response.contactOwner),
+                                dialog: false,
+                                property: 'contactOwner'
+                            },
+                            {
+                                title: 'Số điện thoại',
+                                description: "A contact's primary phone number",
+                                value: this.checkString(result.response.phone),
+                                dialog: false,
+                                property: 'phone'
+                            },
+                            {
+                                title: 'Email',
+                                description: "A contact's email address",
+                                value: this.checkString(result.response.email),
+                                dialog: false,
+                                property: 'email'
+                            },
+                            {
+                                title: 'Thời gian hoạt động gần nhất',
+                                description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                                value: this.coverTimeTooltip(result.response.lastActivityDate),
+                                dialog: false,
+                                property: 'lastActivityDate'
+                            },
+                            {
+                                title: 'Thời gian liên lạc gần nhất',
+                                description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
+                                value: this.coverTimeTooltip(result.response.lastContacted),
+                                dialog: false,
+                                property: 'lastContacted'
+                            },
+                            {
+                                title: 'Thành phố',
+                                description: 'Thành phố',
+                                value: this.checkString(result.response.city),
+                                dialog: false,
+                                property: 'city'
+                            },
+                            {
+                                title: 'Ngành nghề',
+                                description: 'phân loại ngành nghề',
+                                value: this.checkString(result.response.bussiness),
+                                dialog: false,
+                                property: 'bussiness',
+                                otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
+                            }
+                        ]
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                     
-                    this.items = [{
-                            title: 'Vòng đời',
-                            description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
-                            value: this.checkString(result.response.lifecycleStage),
-                            dialog: false,
-                            property: 'lifecycleStage'
-                        },
-                        {
-                            title: 'Trạng thái',
-                            description: "The contact's sales, prospecting or outreach status",
-                            value: this.checkString(result.response.leadStatus),
-                            dialog: false,
-                            property: 'leadStatus'
-                        },
-                        {
-                            title: 'Thuộc sở hữu',
-                            description: 'The owner of a contact. This can be any HubSpot user or Salesforce integration user, and can be set manually or via Workflows.',
-                            value: this.checkString(result.response.contactOwner),
-                            dialog: false,
-                            property: 'contactOwner'
-                        },
-                        {
-                            title: 'Số điện thoại',
-                            description: "A contact's primary phone number",
-                            value: this.checkString(result.response.phone),
-                            dialog: false,
-                            property: 'phone'
-                        },
-                        {
-                            title: 'Email',
-                            description: "A contact's email address",
-                            value: this.checkString(result.response.email),
-                            dialog: false,
-                            property: 'email'
-                        },
-                        {
-                            title: 'Thời gian hoạt động gần nhất',
-                            description: 'The last time a note, call, email, meeting, or task was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: this.coverTimeTooltip(result.response.lastActivityDate),
-                            dialog: false,
-                            property: 'lastActivityDate'
-                        },
-                        {
-                            title: 'Thời gian liên lạc gần nhất',
-                            description: 'The last time a call, email, or meeting was logged for a contact. This is set automatically by HubSpot based on user actions in the contact record.',
-                            value: this.coverTimeTooltip(result.response.lastContacted),
-                            dialog: false,
-                            property: 'lastContacted'
-                        },
-                        {
-                            title: 'Thành phố',
-                            description: 'Thành phố',
-                            value: this.checkString(result.response.city),
-                            dialog: false,
-                            property: 'city'
-                        },
-                        {
-                            title: 'Ngành nghề',
-                            description: 'phân loại ngành nghề',
-                            value: this.checkString(result.response.bussiness),
-                            dialog: false,
-                            property: 'bussiness'
-                        }]
-                    // console.log(result)
                 }).catch(error => {
-                    this.failDialog = true;
                     console.log(error);
                 }).finally(() => {
                     this.getCurrentUser()
                 })
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
+            updateBussiness(property, value){
+                if (value != 'Khác'){
+                    this.updateContactDetail(property, value);
+                    this.items[8].otherBussiness = false;
+                }
+                else {
+                    this.items[8].otherBussiness = true;
+                }
+            },
             updateContactDetail(property, value){
+                const {
+                    dispatch
+                } = this.$store;
                 let body = {
                     properties: [
                         {
@@ -1069,10 +1147,21 @@
                         }
                     ]
                 }
-                console.log(body)
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
-                    
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        // this.$emit('updateLastActivityDate');
+                        // eventBus.updateLogCallList();
+                        // this.deleteLogDialog.id = '';
+                        // this.deleteLogDialog.dialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', result.message)
+                    }
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
@@ -1131,7 +1220,16 @@
                     }
                     this.updateLastActivityDate();
                     contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                        console.log(result);
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
                     }).catch(error => {
                         console.log(error);
                     }).finally(() => {
@@ -1152,7 +1250,16 @@
                         }
                         
                         contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                            console.log(result);
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
                         }).catch(error => {
                             console.log(error);
                         }).finally(() => {
@@ -1169,9 +1276,17 @@
                                 }
                             ]
                         }
-                        
                         contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                            console.log(result);
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
                         }).catch(error => {
                             console.log(error);
                         }).finally(() => {
@@ -1236,8 +1351,17 @@
                     ]
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
-                    this.basicInfoDialog = false;
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.basicInfoDialog = false;
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
@@ -1260,6 +1384,9 @@
                         this.canSendSMS = true;
                     }
                 }
+                if (this.access == false){
+                    this.cannotEdit = true;
+                }
             }
         },
         created(){
@@ -1269,6 +1396,7 @@
             this.$store.state.colorNumber = 0;
         },
         components: {
+            newDeal,
             note,
             email,
             task,
@@ -1283,7 +1411,8 @@
             newLogEmail,
             newLogCall,
             newLogMeet,
-            newSMS
+            newSMS,
+            alert
         }
     }
     // đã làm được phần lấy list thuộc tính

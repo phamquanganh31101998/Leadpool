@@ -207,6 +207,10 @@
             closeCreateLogCallDialog(){
                 this.$emit('closeCreateLogCallDialog');
             },
+            coverTimeDetail(time){
+                if (_.isNull(time)) return '';
+                return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            },
             createLogCall(){
                 let timeString = this.date + 'T' + this.time
                 let timeToSend = moment(timeString).utc().format().substring(0, 19)
@@ -218,12 +222,23 @@
                     "status": this.item
                 }
                 logService.createLog(this.idAccount, this.idContact, data).then(result => {
-                    this.successfulDialog = true;
-                    this.log = '';
-                    eventBus.updateLogCallList();
-                    this.$emit('updateLastActivityDate');
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        this.log = '';
+                        eventBus.updateLogCallList();
+                        this.$emit('updateLastActivityDate');
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    // this.successfulDialog = true;
+                    
                 }).catch(error => {
-                    this.failDialog = true;
+                    // this.failDialog = true;
                     console.log(error);
                 });
                 this.$emit('closeCreateLogCallDialog');
