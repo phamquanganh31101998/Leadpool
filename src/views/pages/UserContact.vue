@@ -128,7 +128,7 @@
                             <v-layout row>
                                 <v-flex xs12 sm12 md10 lg10 xl10 offset-md1 offset-lg1 offset-xl1>
                                     <v-layout row>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createNote" persistent max-width="700px">
@@ -151,7 +151,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createEmail" persistent max-width="700px">
@@ -186,7 +186,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createSMS" persistent max-width="700px">
@@ -232,7 +232,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-menu offset-y>
@@ -289,7 +289,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <v-flex>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
                                                     <v-dialog v-model="createTask" persistent max-width="700px">
@@ -320,37 +320,31 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-                                        <!-- <v-flex xs2 sm2 md2 lg2 xl2>
+                                        <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-dialog v-model="createMeet" persistent max-width="700px">
+                                                    <v-dialog v-model="createDeal" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-btn fab small color="#E0E0E0" v-on="on">
+                                                            <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
                                                                 <v-icon dark>event</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Tạo cuộc họp</span>
+                                                                <span class="headline">Tạo hợp đồng</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newMeet />
+                                                                <newDeal @closeCreateDealDialog =  "createDeal = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
-                                                            <v-card-actions>
-                                                                <v-btn color="blue darken-1" small flat
-                                                                    @click="createMeet = false">Save</v-btn>
-                                                                <v-btn color="red darken-1" small flat
-                                                                    @click="createMeet = false">Cancel</v-btn>
-                                                            </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Meet</p>
+                                                    <p>Hợp đồng</p>
                                                 </v-flex>
                                             </v-layout>
-                                        </v-flex> -->
+                                        </v-flex>
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
@@ -564,7 +558,7 @@
                                 </v-menu>
                             </v-layout> -->
                             <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <!-- <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/> -->
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
@@ -722,6 +716,7 @@
     import newLogCall from '../components/creates/createLogCall'
     import newLogEmail from '../components/creates/createLogEmail'
     import newLogMeet from '../components/creates/createLogMeet'
+    import newDeal from '../components/creates/createDeal'
     import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
     import moment from 'moment'
@@ -801,6 +796,7 @@
             createLogEmail: false,
             createLogMeet: false,
             createSMS: false,
+            createDeal: false,
             items: [{
                     title: 'Lifecycle stage',
                     description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -1400,6 +1396,7 @@
             this.$store.state.colorNumber = 0;
         },
         components: {
+            newDeal,
             note,
             email,
             task,
