@@ -72,7 +72,7 @@
                         </v-card-title>
                         <v-layout row wrap>
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <v-text-field @change="updateNote(note.note, note.noteId)" outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
+                                <v-text-field @change="updateNote(note.note, note.noteId)" outlined label="Nội dung" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
@@ -164,6 +164,7 @@ export default {
                     eventBus.updateNoteList();
                     this.deleteNoteDialog.id = '';
                     this.deleteNoteDialog.dialog = false;
+                    this.$emit('updateLastActivityDate');
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)

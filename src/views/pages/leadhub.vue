@@ -295,7 +295,7 @@
             }
         },
         created() {
-            this.$store.state.colorNumber = 5;
+            this.$store.state.colorNumber = 6;
             this.getAllGroupBtn()
         },
         components: {

@@ -34,6 +34,9 @@ export const eventBus = new Vue({
       },
       updatePhone(){
         this.$emit('updatePhone');
+      },
+      updateDealList(){
+        this.$emit('updateDealList');
       }
     }
   })

@@ -3,9 +3,17 @@ import { authHeader } from '../helpers'
 import { responseService } from './response.service'
 
 export default {
-    createDeal
+    createDeal, getAllEmail, getDealByAccount,
+    updateDeal, deleteDeal, getDealByContact
 }
-
+function getAllEmail(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/user/getAllEmail`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
 function createDeal(idAccount, body){
     let request = {
         method: 'POST',
@@ -13,5 +21,42 @@ function createDeal(idAccount, body){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/deals`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getDealByAccount(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/deals/account-deals`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function updateDeal(idAccount, body){
+    let request = {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/deals`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function deleteDeal(idAccount, idDeal){
+    let request = {
+        method: 'DELETE',
+        headers: authHeader(),
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/deals/${idDeal}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getDealByContact(idAccount, idContact){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/deals/contact/${idContact}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
