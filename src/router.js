@@ -21,6 +21,7 @@ import leadhub from './views/pages/leadhub.vue'
 import settingGroupbtn from './views/pages/settingBtn.vue'
 import updateGroupbtn from './views/pages/updateBtn.vue'
 import UserNotActive from './views/pages/UserNotActive.vue'
+import DealService from './views/pages/DealService.vue'
 
 Vue.use(Router)
 
@@ -164,6 +165,18 @@ const router = new Router({
             path: '/contacts/:idAccount/smsservice',
             name: 'smsservice',
             component: SMSService,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/dealservice',
+            name: 'dealservice',
+            component: DealService,
             props(route) {
                 const props = {
                     ...route.params

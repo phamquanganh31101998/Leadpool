@@ -113,6 +113,5 @@ function searchContact(idAccount, page, keyword){
     }
     let _qs = qs.stringify(a);
     let endpoint = `${config.apiContact}/${idAccount}/contacts/search?${_qs}`
-    console.log(endpoint)
     return responseService.fetchRetry(endpoint, request, 1)
 }

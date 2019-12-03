@@ -516,8 +516,9 @@
                     const {
                         dispatch
                     } = this.$store;
+                    let time = moment();
                     if(result.code == 'SUCCESS'){
-                        let time = moment();
+                        
                         dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.title = '';
                         this.note = '';

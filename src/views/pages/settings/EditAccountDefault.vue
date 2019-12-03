@@ -24,7 +24,7 @@
                             Cấu hình tổ chức mặc định
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="goToAccountSettingPage()">
+                    <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
                         <v-list-tile-content >
                             Quản lý hệ thống
                         </v-list-tile-content>
@@ -182,6 +182,7 @@ export default {
     },
     data(){
         return {
+            isSysadmin: false,
             search: '',
             access: false,
             nameRules: [
@@ -346,6 +347,9 @@ export default {
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
+            if(role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')){
+                this.isSysadmin = true;
+            }
             if(role.includes('ROLE_ADMIN_EDITACCOUNTDEFAULTS_ACCEPT') || role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')){
                 this.access = true;
             }

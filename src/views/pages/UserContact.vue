@@ -334,7 +334,7 @@
                                                                 <span class="headline">Tạo hợp đồng</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newDeal @closeCreateDealDialog =  "createDeal = false"/>
+                                                                <newDeal :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
@@ -505,6 +505,9 @@
                         <v-tab href="#tab-6">
                             Cuộc họp
                         </v-tab>
+                        <v-tab href="#tab-7">
+                            Hợp đồng
+                        </v-tab>
                         <v-tab-item value="tab-1">
                             <!-- <v-layout row>
                                 <span class="mt-2 ml-3">Filter by:</span>
@@ -562,6 +565,7 @@
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -609,6 +613,14 @@
                                 </v-flex>
                             </v-layout>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                        </v-tab-item>
+                        <v-tab-item value="tab-7">
+                            <v-layout row>
+                                <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
+                                    <v-btn small color="grey lighten-3" @click="createDeal=true" v-if="access">Tạo hợp đồng mới</v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <deal :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                     </v-tabs>
                 </v-layout>
@@ -708,6 +720,7 @@
     import call from '../components/contacts/call'
     import meet from '../components/contacts/meet'
     import activity from '../components/contacts/activity'
+    import deal from '../components/contacts/deal'
     import logs from '../components/logs/history'
     import newNote from '../components/creates/createNote'
     import newEmail from '../components/creates/createEmail'
@@ -1397,6 +1410,7 @@
         },
         components: {
             newDeal,
+            deal,
             note,
             email,
             task,
