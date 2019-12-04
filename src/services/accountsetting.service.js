@@ -5,7 +5,8 @@ import { responseService } from './response.service'
 export default{
     findUserByAccount, createAccount, getListAccount, 
     deleteAccount, inviteUser, setNewAccount,
-    renameAccount, restoreDeletedAccount
+    renameAccount, restoreDeletedAccount, getAccountInfo,
+    updateAccountCountry, getCountryCode, getCity
 }
 
 function findUserByAccount(idAccount){
@@ -81,5 +82,42 @@ function restoreDeletedAccount(idAccount){
         headers: authHeader(), 
     }
     let endpoint = `${config.apiUrl}accounts/${idAccount}/restore`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getAccountInfo(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/accountInfo`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function updateAccountCountry(idAccount, body){
+    let request = {
+        method: 'PUT',
+        headers: authHeader(), 
+        body: JSON.stringify(body)
+    }
+    let endpoint = `${config.apiUrl}accounts/${idAccount}/country`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getCountryCode(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/country-code`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getCity(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/country-city`
     return responseService.fetchRetry(endpoint, request, 1)
 }

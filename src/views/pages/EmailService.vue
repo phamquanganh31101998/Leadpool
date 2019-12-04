@@ -1746,14 +1746,32 @@ export default {
         changeScheduleStatus(id, status){
             if (status == 'ACTIVE'){
                 emailService.activateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
             }
             else {
                 emailService.deactivateSchedule(this.idAccount, id).then(result => {
-                    console.log(result);
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
                 }).catch(error => {
                     console.log(error)
                 })
