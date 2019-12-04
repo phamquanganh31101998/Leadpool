@@ -5,7 +5,7 @@ import _ from 'lodash';
 import VueRouter from 'vue-router'
 import router from './router'
 import { store } from './stores'
-
+import 'vue-search-select/dist/VueSearchSelect.css'
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 

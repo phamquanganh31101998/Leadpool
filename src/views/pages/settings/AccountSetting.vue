@@ -21,7 +21,7 @@
                     </v-list-tile>
                     <v-list-tile @click="goToEditAccountDefaultPage()">
                         <v-list-tile-content>
-                            Cấu hình tổ chức mặc định
+                            Cài đặt tổ chức
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile>

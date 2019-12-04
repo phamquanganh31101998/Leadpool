@@ -60,11 +60,7 @@ import alert from '@/components/alert'
         let expiredTime = moment.unix(exp);
         let currentTime = moment();
         if (currentTime.isAfter(expiredTime)){
-          console.log('Hết hạn')
           this.$store.state.expiredDialog = true;
-        }
-        else{
-          console.log('Còn hạn')
         }
       }
     },

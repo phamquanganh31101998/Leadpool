@@ -21,7 +21,7 @@
                     </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
-                            Cấu hình tổ chức mặc định
+                            Cài đặt tổ chức
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
@@ -32,7 +32,7 @@
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10>
-                <h1>Cấu hình tổ chức mặc định </h1>
+                <h1>Cài đặt tổ chức </h1>
                 <br>
                 <v-layout row wrap v-if="access">
                     <v-card flat width="100%">
@@ -45,10 +45,10 @@
                                 <v-card-title>
                                     <v-layout row wrap>
                                         <v-flex xs5 sm5 md5 lg5 xl5>
-                                            <h2>Các dịch vụ hiện tại của tổ chức</h2>
+                                            <h2 class="pt-4 ml-4">Các dịch vụ hiện tại của tổ chức</h2>
                                         </v-flex>
                                         <v-flex xs2 sm2 md2 lg2 xl2>
-                                            <v-btn round
+                                            <v-btn round class="mt-3"
                                                 @click="createService.dialog = true"
                                                 color="#3E82F7"
                                                 dark>
@@ -88,6 +88,57 @@
                             </v-card>
                         </v-card-text>
                     </v-card>
+                    <v-card flat width="100%">
+                        <v-card-title>
+                            <v-layout row wrap>
+                                
+                            </v-layout>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-card>
+                                <v-card-title>
+                                    <v-layout row wrap>
+                                        <v-flex xs3 sm3 md3 lg3 xl3  class="mt-4">
+                                            <h2>Các quốc gia hiện tại đang có</h2>
+                                        </v-flex>
+                                        <v-flex xs6 sm6 md6 lg6 xl6  class="mt-3">
+                                            <multi-select :options="allCountry"
+                                                :selected-options="country"
+                                                @select="onSelect"
+                                                option-value="value"
+                                                option-text="text"
+                                                placeholder="Chọn quốc gia">
+                                            </multi-select>
+                                        </v-flex>
+                                        <v-flex xs2 offset-xs1 sm2 md2 lg2 xl2>
+                                            <v-btn round class="mt-3"
+                                                color="#3E82F7"
+                                                @click="updateAccountCountry()"
+                                                dark :disabled="country.length == 0">
+                                                Cập nhật quốc gia  
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-title>
+                                <v-card-text>
+                                    
+                                </v-card-text>
+                            </v-card>
+                        </v-card-text>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </v-card>
+                    
                 </v-layout>
                 <v-layout row wrap v-else>
                     <v-flex xs12 sm12 md12 lg12 xl12>
@@ -163,7 +214,12 @@
 <script>
 import moment from 'moment';
 import serviceAPI from '../../../services/service.service'
+import accountAPI from '../../../services/accountsetting.service'
+import { MultiSelect } from 'vue-search-select'
 export default {
+    components: {
+        MultiSelect
+    },
     props: {
         idAccount: {
             type: String,
@@ -182,6 +238,8 @@ export default {
     },
     data(){
         return {
+            allCountry: [],
+            country: [],
             isSysadmin: false,
             search: '',
             access: false,
@@ -344,6 +402,83 @@ export default {
             let link = `/settings/${this.currentUser.accountId}/userandteam`;
             this.$router.push(link);
         },
+        updateAccountCountry(){
+            let body = [];
+            for (let i = 0; i < this.country.length; i++){
+                body.push(this.country[i].value)
+            }
+            accountAPI.updateAccountCountry(this.idAccount, body).then(result => {
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                } else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        onSelect(items){
+            this.country = items;
+            console.log(this.country)
+        },
+        getAccountInfo(){
+            this.country = [];
+            accountAPI.getAccountInfo(this.idAccount).then(result => {
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    let country = result.response.country;
+                    for(let i = 0; i < country.length; i++){
+                        this.country.push(this.getCountryFromAllCountry(country[i]))
+                    }
+                } else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        getCountryFromAllCountry(code){
+            let obj = {};
+            for(let i = 0; i < this.allCountry.length;i++){
+                if(code == this.allCountry[i].value){
+                    obj = this.allCountry[i]
+                    break;
+                }
+            }
+            return obj;
+        },
+        getAllCountry(){
+            this.allCountry = [];
+            accountAPI.getCountryCode(this.idAccount).then(result => {
+                let time = moment();
+                const {
+                    dispatch
+                } = this.$store;
+                if (result.code == "SUCCESS") {
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        let obj = {
+                            text: res[i].name,
+                            value: res[i].code
+                        }
+                        this.allCountry.push(obj);
+                    }
+                } else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                this.getAccountInfo();
+            })
+        },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
@@ -355,6 +490,7 @@ export default {
             }
             if(this.access == true){
                 this.getService();
+                this.getAllCountry();
             }
             
         },

@@ -10,8 +10,20 @@
                                     <v-card-text class="text-xs-center" >
                                         <img height="100" src="../assets/adstech-logo1.png" alt="avatar">
                                     </v-card-text>
+                                    
                                     <v-card-text class="text-xs-center">
-                                        <v-btn color="error" @click="login" round>Đăng nhập với google</v-btn>
+                                        <v-layout row wrap>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-text-field label="Nhập email" v-model="userName"></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-text-field label="Nhập mật khẩu" type="password" v-model="password"></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-btn block color="primary" @click="loginWithPass()">Đăng nhập</v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-btn color="error" block @click="login">Đăng nhập với google</v-btn>
                                     </v-card-text>
                                 </v-card>
                            </v-flex>
@@ -23,7 +35,9 @@
     </v-app>
 </template>
 <script>
+import { responseService } from '../services/response.service'
 import config from '../config'
+import authAPI from '../services/auth.service'
 export default {
     props: {
         token: {
@@ -32,28 +46,42 @@ export default {
         },
     },
     data:() =>({
-
+        userName: '',
+        password: ''
     }),
     mounted:function(){
-      if(this.token) this.handleSubmit()
-      if(this.$store.state.user.token && this.$store.state.user.user){
-        let idUser = JSON.parse(this.$store.state.user.user)
-        this.$router.push(`/contacts/${idUser.accountId}`)
-      }
+        if(this.token) this.handleSubmit()
+        if(this.$store.state.user.token && this.$store.state.user.user){
+            let idUser = JSON.parse(this.$store.state.user.user)
+            this.$router.push(`/contacts/${idUser.accountId}`)
+        }
     },
     computed:{
         ssoUrl () { return `${config.ssoUrl}login` },
+        authUrl(){ return `${config.authUrl}login`}
     },
     methods:{
+        loginWithPass(){
+            let body = {
+                userName: this.userName,
+                password: this.password
+            }
+            authAPI.loginWithPass(body).then(result => {
+                console.log(result)
+            }).catch(error => {
+                console.log(error)
+            })
+
+        },
         login(){
             window.location.href = this.ssoUrl
         },
         handleSubmit(){
-        const { dispatch } = this.$store;
-        if (this.token) {
-           dispatch('user/login', this.token)
+            const { dispatch } = this.$store;
+            if (this.token) {
+            dispatch('user/login', this.token)
+            }
         }
-      }
     }
 }
 </script>

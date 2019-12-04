@@ -7,7 +7,7 @@
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
                     <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-text-field append-icon="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
+                        <!-- <v-text-field append-icon="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field> -->
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
                         <v-dialog v-model="createDeal" persistent max-width="700px">
@@ -40,7 +40,7 @@
                         class="elevation-1 mt-6"
                     >
                     <template v-slot:items="props">
-                        <td>{{ props.item.name }}</td>
+                        <td><a @click.stop="openDetailDialog(props.item.number)">{{ props.item.name }}</a></td>
                         <td>{{props.item.amount}}</td>
                         <td>{{props.item.owner}}</td>
                         <td>{{props.item.service}}</td>

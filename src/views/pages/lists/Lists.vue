@@ -42,7 +42,7 @@
                         v-if="!listDetail"
                     >
                     <template v-slot:items="props">
-                        <td>{{ props.item.name }}</td>
+                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">{{ props.item.name }}</a></td>
                         <td>{{props.item.createdBy}}</td>
                         <td>{{coverTime(props.item.createdAt)}}</td>
                         <v-menu>

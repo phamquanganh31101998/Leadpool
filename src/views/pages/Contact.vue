@@ -65,20 +65,25 @@
                         </v-flex>
                         
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-text-field v-model="phone" label="Số điện thoại" required :rules="phoneRules">
+                          
+                          <v-text-field v-model="phone" type="number" label="Số điện thoại" required :rules="phoneRules">
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-select v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
+                          <span><h3>Vòng đời</h3></span>
+                          <v-select solo v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
                             label="Vòng đời" required></v-select>
                         </v-flex>
-                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <v-select label="Thành phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;" class="mb-4">
+                          <span><h3>Thành phố</h3></span>
+                          <!-- <v-select label="Thành phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select> -->
+                          <model-select :options="cities" v-model="city" label="Chọn thành phố"></model-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
+                          <span class="mt-4"><h3>Ngành nghề</h3></span>
                           <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select label="Ngành nghề" v-model="bussiness" :items="allBussiness" @change="changeBussiness(bussiness)"></v-select>
+                              <v-select solo label="Ngành nghề" v-model="bussiness" :items="allBussiness" @change="changeBussiness(bussiness)"></v-select>
                             </v-flex>
                             <!-- <v-flex xs4 sm4 md4 lg4 xl4>
                               <v-checkbox v-model="isOtherBussiness" label="Ngành nghề khác:"></v-checkbox>
@@ -549,6 +554,8 @@
   </v-content>
 </template>
 <script>
+  import accountAPI from '../../services/accountsetting.service'
+  import { ModelSelect } from 'vue-search-select'
   import moment from 'moment'
   import contacts from '../../services/contacts.service'
   import contactsService from '../../services/contacts.service';
@@ -608,13 +615,14 @@
         'Evangelist',
         'Other'
       ],
-      cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-        'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-        'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-        'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-        'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
-      ],
-      city: 'Hà Nội',
+      // cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
+      //   'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+      //   'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+      //   'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+      //   'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+      // ],
+      cities: [],
+      city: '',
       allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
         'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
         'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
@@ -849,8 +857,35 @@
         }
       },
     },
-
+    components: {
+      ModelSelect
+    },
     methods: {
+      getCity(){
+        this.cities = [];
+        accountAPI.getCity(this.idUser).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+            let res = result.response;
+            for(let i = 0; i < res.length; i++){
+              let obj = {
+                text: res[i].name + ' - ' + res[i].countryCode,
+                value: res[i].name
+              }
+              this.cities.push(obj);
+            }
+            this.city = this.cities[0].value;
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          } 
+        }).catch(error => {
+          console.log(error)
+        })
+      },
       coverTimeDetail(time){
           if (_.isNull(time)) return '';
           return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -901,6 +936,7 @@
         }
       },
       getCurrentUser(){
+        this.getCity();
         this.currentUser = JSON.parse(localStorage.getItem('user'));
         let role = this.currentUser.authorities;
         for (let i = 0; i < role.length; i++){
@@ -1236,6 +1272,9 @@
       }
     },
     watch:{
+      city(){
+        console.log(this.city)
+      },
       page(){
         this.contacts = []
         if (this.section == 'allContact'){
