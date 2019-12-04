@@ -12,6 +12,7 @@ import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import EditAccountDefaultSetting from './views/pages/settings/EditAccountDefault.vue'
 import AccountSetting from './views/pages/settings/AccountSetting.vue'
+import MyInfoSetting from './views/pages/settings/MyInfo.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
 import SMSService from './views/pages/SMSService.vue'
 import SMSTest from './views/pages/SMSTest.vue'
@@ -129,6 +130,18 @@ const router = new Router({
             path: '/settings/:idAccount/editaccountdefault',
             name: 'editaccountdefault',
             component: EditAccountDefaultSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/settings/:idAccount/myinfo',
+            name: 'myinfo',
+            component: MyInfoSetting,
             props(route) {
                 const props = {
                     ...route.params

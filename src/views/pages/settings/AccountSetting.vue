@@ -24,6 +24,11 @@
                             Cài đặt tổ chức
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="goToMyInfoPage()">
+                        <v-list-tile-content>
+                            Tài khoản của tôi
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
                             Quản lý hệ thống
@@ -1093,7 +1098,11 @@ export default {
         goToEditAccountDefaultPage(){
             let link = `/settings/${this.currentUser.accountId}/editaccountdefault`;
             this.$router.push(link);
-        }
+        },
+        goToMyInfoPage(){
+            let link = `/settings/${this.currentUser.accountId}/myinfo`;
+            this.$router.push(link);
+        },
     },
     created(){
         this.getCurrentUser();

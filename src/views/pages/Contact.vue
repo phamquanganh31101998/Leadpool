@@ -74,6 +74,10 @@
                           <v-select solo v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
                             label="Vòng đời" required></v-select>
                         </v-flex>
+                        <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
+                          <span><h3>Dịch vụ</h3></span>
+                          <v-select solo v-model="service" :items="allService"></v-select>
+                        </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;" class="mb-4">
                           <span><h3>Thành phố</h3></span>
                           <!-- <v-select label="Thành phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select> -->
@@ -173,7 +177,7 @@
                                             </v-flex>
                                             <br>
                                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness'" 
+                                                <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness' || newCondition.chosenProperty == 'service'" 
                                                   :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                                   label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
                                                 <v-select v-if="newCondition.chosenProperty == 'contact_owner' || newCondition.chosenProperty == 'phone' || newCondition.chosenProperty == 'email'" 
@@ -285,6 +289,26 @@
                                                 </v-flex>
                                               </template>
                                             </template>
+                                            <template v-else-if="newCondition.chosenProperty == 'service'">
+                                              <template v-if="newCondition.chosenConstant == 'IN'">
+                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                    <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="newCondition.chosenServices"></v-select>
+                                                    <v-btn :disabled="newCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                </v-flex>
+                                              </template>
+                                              <template v-else-if="newCondition.chosenConstant == 'LIKE'">
+                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                </v-flex>
+                                              </template>
+                                              <template v-else>
+                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                    <v-select :items="allService" v-model="newCondition.value" label="Chọn giá trị"></v-select>
+                                                    <v-btn :disabled="newCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                </v-flex>
+                                              </template>
+                                            </template>
                                         </v-layout>
                                     </v-card-text>
                                 </v-card>
@@ -325,7 +349,7 @@
                           </v-flex>
                           <br>
                           <v-flex xs6 sm6 md6 lg6 xl6>
-                              <v-select v-if="createFirstCondition.chosenProperty == 'lifecycle_stage' || createFirstCondition.chosenProperty == 'city' || createFirstCondition.chosenProperty == 'bussiness'" 
+                              <v-select v-if="createFirstCondition.chosenProperty == 'lifecycle_stage' || createFirstCondition.chosenProperty == 'city' || createFirstCondition.chosenProperty == 'bussiness' || createFirstCondition.chosenProperty == 'service'" 
                                 :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
                                 label="Chọn điều kiện lọc" v-model="createFirstCondition.chosenConstant"></v-select>
                               <v-select v-if="createFirstCondition.chosenProperty == 'contact_owner' || createFirstCondition.chosenProperty == 'phone' || createFirstCondition.chosenProperty == 'email'" 
@@ -437,6 +461,26 @@
                               </v-flex>
                             </template>
                           </template>
+                          <template v-else-if="createFirstCondition.chosenProperty == 'service'">
+                            <template v-if="createFirstCondition.chosenConstant == 'IN'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="createFirstCondition.chosenServices"></v-select>
+                                  <v-btn :disabled="createFirstCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, 'IN', createFirstCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                            <template v-else>
+                              <v-flex xs12 sm12 md12 lg12 xl12>
+                                  <v-select :items="allService" v-model="createFirstCondition.value" label="Chọn giá trị"></v-select>
+                                  <v-btn :disabled="createFirstCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addFirstCondition(createFirstCondition.chosenProperty, createFirstCondition.chosenConstant, createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                              </v-flex>
+                            </template>
+                          </template>
                       </v-layout>
                   </v-card-text>
               </v-card>
@@ -455,6 +499,7 @@
                 <td class="text-xs-left">{{ props.item.contactOwner }}</td>
                 <td class="text-xs-left">{{ props.item.city }}</td>
                 <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                <td class="text-xs-left">{{ props.item.service }}</td>
                 <v-menu>
                   <template v-slot:activator="{ on }">
                       <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
@@ -560,6 +605,7 @@
   import contacts from '../../services/contacts.service'
   import contactsService from '../../services/contacts.service';
   import listService from '../../services/list.services'
+  import serviceAPI from '../../services/service.service'
   export default {
     props: {
 			idUser: {
@@ -568,6 +614,8 @@
       },
     },
     data: () => ({
+      allService: [],
+      service: '',
       isOtherBussiness: false,
       otherBussinessValue: '',
       cannotDeleteDialog: false,
@@ -692,6 +740,12 @@
           sortable: false
         },
         {
+          text: 'DỊCH VỤ',
+          align: 'left',
+          value: 'protein',
+          sortable: false
+        },
+        {
           text: 'HÀNH ĐỘNG',
           align: 'right',
           value: 'delete',
@@ -730,6 +784,10 @@
             {
                 text: 'Ngành nghề',
                 value: 'bussiness'
+            },
+            {
+                text: 'Dịch vụ',
+                value: 'service'
             }
         ],
         conditionConstants: [
@@ -754,6 +812,7 @@
                 value: 'IN'
             },
         ],
+        chosenServices: [],
         checkValidInPhone: false,
         chosenProperty: 'lifecycle_stage',
         chosenConstant: 'LIKE',
@@ -793,6 +852,10 @@
             {
                 text: 'Ngành nghề',
                 value: 'bussiness'
+            },
+            {
+                text: 'Dịch vụ',
+                value: 'service'
             }
         ],
         conditionConstants: [
@@ -825,6 +888,7 @@
         chosenCity: 'Hà Nội',
         chosenBussiness: 'Khác',
         chosenBussinesses: [],
+        chosenServices: [],
         value: '',
         vchipTextField: '',
         vchipValue: [],
@@ -861,6 +925,26 @@
       ModelSelect
     },
     methods: {
+      getService(){
+          this.allService = [];
+          serviceAPI.getService(this.idUser).then(result => {
+              const {
+                  dispatch
+              } = this.$store;
+              let time = moment();
+              if(result.code == 'SUCCESS'){
+                let res = result.response.reverse();
+                for (let i = 0; i < res.length; i++){
+                  this.allService.push(res[i].name)
+                }
+              }
+              else {
+                  dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+              }
+          }).catch(error => {
+              console.log(error);
+          })
+      },
       getCity(){
         this.cities = [];
         accountAPI.getCity(this.idUser).then(result => {
@@ -937,6 +1021,7 @@
       },
       getCurrentUser(){
         this.getCity();
+        this.getService();
         this.currentUser = JSON.parse(localStorage.getItem('user'));
         let role = this.currentUser.authorities;
         for (let i = 0; i < role.length; i++){
@@ -1012,7 +1097,14 @@
             "value": (this.isOtherBussiness ? this.otherBussinessValue : this.bussiness)
           }
         ]
-        console.log(contact);
+        if(this.service != ''){
+          let obj = {
+            "property": "service",
+            "value": this.service
+          }
+          contact.push(obj)
+        }
+        // console.log(contact);
         contacts.createContact(this.idUser, contact).then(result => {
           if(result.code == 'SUCCESS'){
             this.$router.push(this.takeLink(result.response.contactId));
