@@ -323,7 +323,7 @@
                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-dialog v-model="createDeal" persistent max-width="700px">
+                                                    <v-dialog v-model="createDeal" persistent width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
                                                                 <v-icon dark>event</v-icon>
@@ -361,26 +361,31 @@
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
                                                             <template v-if="item.property == 'lifecycleStage'">
                                                                 <span><h4>Vòng đời</h4></span>
-                                                                <v-select solo :readonly="!access" label="Vòng đời" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access"  :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-if="item.property == 'service'">
+                                                                <span><h4>Dịch vụ</h4></span>
+                                                                <v-select :readonly="!access"  :items="allService" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
                                                                 <span><h4>Tài khoản sở hữu</h4></span>
-                                                                <v-select solo :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access"  :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'leadStatus'">
                                                                 <span><h4>Trạng thái</h4></span>
-                                                                <v-select solo :readonly="!access" label="Trạng thái" :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <v-select :readonly="!access"  :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'city'" class="mb-4">
                                                                 <span><h4>Thành phố</h4></span>
-                                                                <model-select :options="cities" v-model="city" label="Chọn thành phố"></model-select>
+                                                                <model-select :options="cities" v-model="city"></model-select>
+                                                                <br>
                                                                 <!-- <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select> -->
                                                             </template>
                                                             <template v-else-if="item.property == 'bussiness'" class="mt-4">
                                                                 <span class="mt-4 pt-4"><h4>Ngành nghề</h4></span>
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select solo placeholder="Chọn ngành nghề" :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
+                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
                                            
                                                                     </v-flex>
                                                                     <!-- <v-flex xs12 sm12 md12 lg12 xl12>
@@ -395,7 +400,7 @@
                                                             <template  v-else-if="item.property == 'phone'">
                                                                 <span><h4>Số điện thoại</h4></span>
                                                                 <v-form v-model="validPhone">
-                                                                    <v-text-field solo v-model="item.value" :rules="phoneRules" :readonly="!access"
+                                                                    <v-text-field v-model="item.value" :rules="phoneRules" :readonly="!access"
                                                                         @change="updateContactDetailWithCondition(item.property, item.value, validPhone)">
                                                                     </v-text-field>
                                                                 </v-form>
@@ -404,7 +409,7 @@
                                                             <template v-else-if="item.property == 'email'">
                                                                 <span><h4>Email</h4></span>
                                                                 <v-form v-model="validEmail">
-                                                                    <v-text-field solo v-model="item.value" :rules="emailRules" :readonly="!access"
+                                                                    <v-text-field v-model="item.value" :rules="emailRules" :readonly="!access"
                                                                         @change="updateContactDetailWithCondition(item.property, item.value, validEmail)">
                                                                     </v-text-field>
                                                                 </v-form>
@@ -412,18 +417,18 @@
                                                             </template>
                                                             <template v-else-if="item.property == 'lastActivityDate'">
                                                                 <span><h4>Thời gian hoạt động gần nhất</h4></span>
-                                                                <v-text-field solo :label="item.title" v-model="item.value" readonly>
+                                                                <v-text-field  v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
                                                             <template v-else-if="item.property == 'lastContacted'">
                                                                 <span><h4>Thời gian liên lạc gần nhất</h4></span>
-                                                                <v-text-field solo :label="item.title" v-model="item.value" readonly>
+                                                                <v-text-field  v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
-                                                            <template v-else>
+                                                            <!-- <template v-else>
                                                                 <v-text-field solo :label="item.title" v-model="item.value" readonly>
                                                                 </v-text-field>
-                                                            </template>
+                                                            </template> -->
                                                             
                                                         </v-flex>
                                                         <v-flex xs5 sm5 md5 lg4 xl4>
@@ -754,6 +759,7 @@
     import accountAPI from '../../services/accountsetting.service'
     import moment from 'moment'
     import alert from '@/components/alert'
+    import serviceAPI from '../../services/service.service'
     export default {
         props: {
             idAccount: {
@@ -766,6 +772,7 @@
             }
         },
         data: () => ({
+            allService: [],
             actionLog: {
                 
                 failDialog: false,
@@ -1002,6 +1009,26 @@
             // }
         },
         methods:{
+            getService(){ 
+                this.allService = [];
+                serviceAPI.getService(this.idAccount).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        let res = result.response.reverse();
+                        for (let i = 0; i < res.length; i++){
+                            this.allService.push(res[i].name)
+                        }
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
             getCity(){
                 this.cities = [];
                 accountAPI.getCity(this.idAccount).then(result => {
@@ -1171,7 +1198,15 @@
                                 dialog: false,
                                 property: 'bussiness',
                                 otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
-                            }
+                            },
+                            {
+                                title: 'Dịch vụ',
+                                description: 'Dịch vụ',
+                                value: this.checkString(result.response.service),
+                                dialog: false,
+                                property: 'service'
+                            },
+
                         ]
                         this.city = this.items[7].value;
                     }
@@ -1450,15 +1485,13 @@
                 if (this.access == false){
                     this.cannotEdit = true;
                 }
-                else {
-                    
-                }
             }
         },
         created(){
             this.getDetail();
             this.getAllEmail();
             this.getCity();
+            this.getService();
             // this.getCurrentUser()
             this.$store.state.colorNumber = 0;
         },

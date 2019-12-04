@@ -20,8 +20,13 @@
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile>
-                        <v-list-tile-content style="font-weight: bold;">
+                        <v-list-tile-content  style="font-weight: bold;">
                             Cài đặt tổ chức
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="goToMyInfoPage()">
+                        <v-list-tile-content>
+                            Tài khoản của tôi
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
@@ -400,6 +405,10 @@ export default {
         },
         goToUserAndTeamSettingPage(){
             let link = `/settings/${this.currentUser.accountId}/userandteam`;
+            this.$router.push(link);
+        },
+        goToMyInfoPage(){
+            let link = `/settings/${this.currentUser.accountId}/myinfo`;
             this.$router.push(link);
         },
         updateAccountCountry(){

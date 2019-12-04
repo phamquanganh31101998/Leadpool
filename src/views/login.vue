@@ -32,13 +32,20 @@
                </v-layout>
             </v-container>
         </v-content>
+        <alert/>
     </v-app>
 </template>
 <script>
+const qs = require('qs');
+import alert from '@/components/alert'
+import moment from 'moment'
 import { responseService } from '../services/response.service'
 import config from '../config'
 import authAPI from '../services/auth.service'
 export default {
+    components: {
+        alert
+    },
     props: {
         token: {
             type: String, 
@@ -61,6 +68,10 @@ export default {
         authUrl(){ return `${config.authUrl}login`}
     },
     methods:{
+        coverTimeDetail(time){
+            if (_.isNull(time)) return '';
+            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+        },
         loginWithPass(){
             let body = {
                 userName: this.userName,
@@ -68,6 +79,21 @@ export default {
             }
             authAPI.loginWithPass(body).then(result => {
                 console.log(result)
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let token = {
+                        token: result.response
+                    }
+                    let _qs = qs.stringify(token);
+                    let link = `${config.baseUrl}login?${_qs}`
+                    window.location.href = link;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
             }).catch(error => {
                 console.log(error)
             })
@@ -79,7 +105,7 @@ export default {
         handleSubmit(){
             const { dispatch } = this.$store;
             if (this.token) {
-            dispatch('user/login', this.token)
+                dispatch('user/login', this.token)
             }
         }
     }

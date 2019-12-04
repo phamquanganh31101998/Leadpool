@@ -57,10 +57,11 @@
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
                                 <v-layout row >
                                     <v-flex xs3 sm3 md3 lg3 xl3>
-                                        <v-text-field outlined label="Tên" v-model="deal.name" :readonly="!access"></v-text-field>
+                                        <v-text-field outlined v-model="deal.name" :readonly="!access"></v-text-field>
                                     </v-flex>
                                     <v-flex xs3 offset-xs1 sm3 offset-sm1 md3 offset-md1 lg3 offset-lg1 xl3 offset-xl1 class="ml-6">
-                                        <v-text-field outlined type="number" label="Giá trị" v-model="deal.amount" :readonly="!access"></v-text-field>
+                                        <money style="width: 100%; font-size: 16px; " v-model="deal.amount" v-bind="money"></money>
+                                        <!-- <v-text-field outlined type="number" label="Giá trị" v-model="deal.amount" :readonly="!access"></v-text-field> -->
                                     </v-flex>
                                     <v-flex offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
                                         <v-select label="Chủ sở hữu" :items="allEmail" v-model="deal.owner"></v-select>
@@ -91,7 +92,7 @@
                                         <p class="mt-2 pt-1"><strong>{{deal.createdBy}} </strong> đã tạo hợp đồng</p>
                                     </v-flex>
                                     <v-flex xs2 sm2 md2 lg2 xl2>
-                                        <v-btn v-if="hover && access" @click="updateDeal(deal.number)">Lưu lại</v-btn>
+                                        <v-btn v-if="hover && access" :disabled="deal.name == '' || deal.amount ==''"  @click="updateDeal(deal.number)">Lưu lại</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -104,12 +105,16 @@
     </v-layout>
 </template>
 <script>
+import {Money} from 'v-money'
 import moment from 'moment'
 import { eventBus } from '../../../eventBus';
 import contact from '../../../services/contacts.service'
 import dealService from '../../../services/deal.service'
 import serviceAPI from '../../../services/service.service'
 export default {
+    components: {
+        Money
+    },
     props: {
         idAccount: {
             type: String,
@@ -122,6 +127,14 @@ export default {
     },
     data(){
         return {
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: '',
+                suffix: ' VND',
+                precision: 0,
+                masked: false
+            },
             access: false,
             allDeal: [],
             currentContact: null,

@@ -8,13 +8,17 @@ export default {
 }
 
 function loginWithPass(body){
+    let headers = authHeader();
+    headers['Content-Type'] = 'application/json';
     let request = {
         method: 'POST',
-        body: body,
-        headers: {
-            'Accept': 'application/json',
-		    'Content-Type': 'application/json'
-        }
+        body: JSON.stringify(body),
+        headers: headers,
+        // mode: 'cors', // no-cors, cors, *same-origin
+        // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        // credentials: 'same-origin', // include, *same-origin, omit
+        // redirect: 'follow', // manual, *follow, error
+        // referrer: 'no-referrer', // no-referrer, *client
     }
     let endpoint = `${config.authUrl}`
     return responseService.fetchRetry(endpoint, request, 1)

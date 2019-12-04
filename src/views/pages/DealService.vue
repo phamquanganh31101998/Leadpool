@@ -41,7 +41,7 @@
                     >
                     <template v-slot:items="props">
                         <td><a @click.stop="openDetailDialog(props.item.number)">{{ props.item.name }}</a></td>
-                        <td>{{props.item.amount}}</td>
+                        <td>{{formatNumber(props.item.amount)}} VND</td>
                         <td>{{props.item.owner}}</td>
                         <td>{{props.item.service}}</td>
                         <td>{{props.item.stage}}</td>
@@ -67,32 +67,43 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
-        <v-dialog v-model="detailDialog" persistent max-width="700">
+        <v-dialog v-model="detailDialog" persistent width="700">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
                     <span class="headline">Chi tiết hợp đồng</span>
                 </v-card-title>
                 <v-card-text>
                     <v-layout wrap>
-                    <v-layout row wrap>
-                        <v-flex xs6 sm6 md6 lg6 xl6>
-                            <v-text-field :rules="nameRules" label="Tên hợp đồng" v-model="detailDeal.name"></v-text-field>
+                        <!-- <v-layout row wrap>
+                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                <v-text-field :rules="nameRules" label="Tên hợp đồng" v-model="detailDeal.name"></v-text-field>
+                            </v-flex>
+                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="detailDeal.amount"></v-text-field>
+                            </v-flex>
+                        </v-layout> -->
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Tên hợp đồng</h4></span>
+                            <v-text-field :rules="nameRules" v-model="detailDeal.name"></v-text-field>
                         </v-flex>
-                        <v-flex xs6 sm6 md6 lg6 xl6>
-                            <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="detailDeal.amount"></v-text-field>
+                        <v-flex xs12 sm12 md12 lg12 xl12 style="padding-top: 20px;padding-bottom: 20px;">
+                            <!-- <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="amount"></v-text-field> -->
+                            <span style="padding-top: 20px; padding-bottom: 10px;"><h4>Giá trị</h4></span>
+                            <money style="width: 100%; font-size: 16px; " v-model="detailDeal.amount" v-bind="money"></money>
+                        </v-flex>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Dịch vụ</h4></span>
+                            <v-select solo v-model="detailDeal.service" :items="allService"></v-select>
+                        </v-flex>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Giai đoạn</h4></span>
+                            <v-select solo v-model="detailDeal.stage" :items="allStage"></v-select>
+                        </v-flex>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Chủ sở hữu</h4></span>
+                            <v-select solo v-model="detailDeal.owner" :items="allEmail"></v-select>
                         </v-flex>
                     </v-layout>
-                    
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-select v-model="detailDeal.service" :items="allService" label="Dịch vụ"></v-select>
-                    </v-flex>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-select v-model="detailDeal.stage" :items="allStage" label="Giai đoạn"></v-select>
-                    </v-flex>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-select label="Chủ sở hữu" v-model="detailDeal.owner" :items="allEmail"></v-select>
-                    </v-flex>
-                </v-layout>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="primary" flat :disabled="detailDeal.name == '' || detailDeal.amount ==''" @click="updateDeal()">Lưu lại</v-btn>
@@ -118,14 +129,16 @@
     </v-content>
 </template>
 <script>
+import {Money} from 'v-money'
 import newDeal from '../components/creates/createDeal'
 import serviceAPI from '../../services/service.service'
 import moment from 'moment'
 import dealService from '../../services/deal.service'
 import { eventBus } from '../../eventBus'
+import numberFormat from '../../helpers/numberformat'
 export default {
     components: {
-        newDeal
+        newDeal, Money
     },
     props: {
         idAccount: {
@@ -135,6 +148,14 @@ export default {
     },
     data(){
         return{
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: '',
+                suffix: ' VND',
+                precision: 0,
+                masked: false
+            },
             createDeal: false,
             numberRules: [
                 v => !!v || 'Không được để trống',
@@ -211,6 +232,9 @@ export default {
     watch: {
     },
     methods: {
+        formatNumber(num){
+            return numberFormat.number_format(num);
+        },
         confirmDeleteDeal(id){
             this.deleteDealDialog.id = id;
             this.deleteDealDialog.dialog = true;
