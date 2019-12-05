@@ -17,7 +17,7 @@
                                                 <v-text-field label="Nhập email" v-model="userName"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field label="Nhập mật khẩu" type="password" v-model="password"></v-text-field>
+                                                <v-text-field label="Nhập mật khẩu" type="password" v-model="password" @keyup.enter="loginWithPass()"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
                                                 <v-btn block color="primary" @click="loginWithPass()">Đăng nhập</v-btn>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import login from './views/login.vue'
+import SignUp from './views/SignUp.vue'
 import HomeA from './views/pages/HomeA.vue'
 import Contacts from './views/pages/Contact.vue'
 import UserContacts from './views/pages/UserContact.vue'
@@ -290,6 +291,14 @@ const router = new Router({
       component: login,
       props: (router) => ({
         token: router.query.token
+      })
+    },
+    {
+      path: '/signup',
+      component: SignUp,
+      props: (router) => ({
+        email: router.query.email,
+        account: router.query.account
       })
     },
     {

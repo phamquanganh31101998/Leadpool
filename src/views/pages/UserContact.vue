@@ -772,6 +772,7 @@
             }
         },
         data: () => ({
+            changeCity: false,
             allService: [],
             actionLog: {
                 
@@ -990,7 +991,9 @@
             //     this.cannotEdit = !this.access;
             // }
             city(){
-                this.updateContactDetail('city', this.city);
+                if(this.changeCity == true){
+                    this.updateContactDetail('city', this.city);
+                }
             },
             items(){
                 console.log(this.items[7].value)
@@ -1209,6 +1212,7 @@
 
                         ]
                         this.city = this.items[7].value;
+                        
                     }
                     else {
                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1218,6 +1222,7 @@
                     console.log(error);
                 }).finally(() => {
                     this.getCurrentUser()
+                    this.changeCity = true;
                 })
             },
             coverTimeDetail(time){

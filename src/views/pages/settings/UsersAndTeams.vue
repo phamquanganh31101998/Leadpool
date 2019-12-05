@@ -98,7 +98,10 @@
                 <v-card-text>
                     <span class="mt-4"><strong>Nhập email </strong></span>
                     <v-form v-model="inviteUser.valid">
-                        <span class="ml-4"><v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field></span>
+                        <span class="ml-4">
+                            <v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field>
+                            <v-checkbox v-model="inviteUser.isGoogleEmail" label="Email Google?"></v-checkbox>
+                        </span>
                     </v-form>
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
@@ -204,15 +207,13 @@
                                     </div>
                                 </template>
                             </div>
-                            
-                            
-                                
                         </v-flex>
                     </v-layout>
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <v-btn flat color="primary" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                    <v-btn flat color="primary" v-if="inviteUser.isGoogleEmail" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                    <v-btn flat color="primary" v-if="!inviteUser.isGoogleEmail" @click="inviteUserNormal()" :disabled="!inviteUser.valid">Thêm</v-btn>
                     <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
@@ -402,6 +403,7 @@ import moment from 'moment'
 import alert from '@/components/alert'
 import permissionsService from '../../../services/permissions.service'
 import accountService from '../../../services/accountsetting.service'
+import userAPI from '../../../services/user.service'
 import {mapGetters} from 'vuex'
 export default {
     components: {
@@ -498,6 +500,7 @@ export default {
             currentUser: null,
             isSysadmin: false,
             inviteUser: {
+                isGoogleEmail: false,
                 dialog: false,
                 email: '',
                 emailRules: [
@@ -557,6 +560,57 @@ export default {
             else if (role == 'sysadmin'){
                 return 'Quản trị hệ thống'
             }
+        },
+        inviteUserNormal(){
+            let email = this.inviteUser.email;
+            let accountId = this.idAccount;
+            let groupPermissions = ["5d2556cf77201a4516f5b901"];
+            let contactPer = this.inviteUser.contactPer;
+            let permissions = {
+                "5d1dd9c7f0aa6114b40507b3": contactPer.view,
+                "5d1dd9d9f0aa6114b40507b4": contactPer.communicate,
+                "5d1dd9e5f0aa6114b40507b5": contactPer.edit
+            }
+            let adminPer = this.inviteUser.adminPer;
+            if (adminPer.isAdmin == true){
+                groupPermissions.push('5d255b0c77201a474d72eacd');
+                if (adminPer.AddAndEditUsers == true){
+                    permissions["5d2559f577201a474d72eac9"] = "Accept";
+                }
+                if (adminPer.AddAndEditTeam == true){
+                    permissions["5d255a0d77201a474d72eaca"] = "Accept";
+                }
+                if (adminPer.PartitionsByTeams == true){
+                    permissions["5d255a5077201a474d72eacb"] = "Accept";
+                }
+                if (adminPer.EditAccountDefaults == true){
+                    permissions["5d255a8477201a474d72eacc"] = "Accept";
+                }
+            }
+            let body = {
+                email: email,
+                accountId: accountId,
+                groupPermissions: groupPermissions,
+                permissions: permissions
+            }
+            // console.log(body);
+            userAPI.inviteUserNormal(this.idAccount, body).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
+                // this.inviteUser.fail = true;
+            }).finally(() => {
+                this.inviteUser.dialog = false;
+            })
         },
         inviteUserToAccount(){
             let email = this.inviteUser.email;
