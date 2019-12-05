@@ -20,6 +20,29 @@
                                                 <v-text-field label="Nhập mật khẩu" type="password" v-model="password" @keyup.enter="loginWithPass()"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <a @click.stop="forgotPassword.dialog = true">Quên mật khẩu?</a>
+                                                <v-dialog v-model="forgotPassword.dialog" width="30%" persistent>
+                                                    <v-card>
+                                                        <v-card-title style="background-color:#1E88E5;color:#fff">
+                                                            <span class="headline">Quên mật khẩu</span>
+                                                        </v-card-title>
+                                                        <v-card-text>
+                                                            <span class="mt-4"><strong>Nhập email để nhận mã xác nhận yêu cầu đặt lại mật khẩu </strong></span>
+                                                            <v-form v-model="forgotPassword.valid">
+                                                                <span class="ml-4">
+                                                                    <v-text-field :rules="emailRules" v-model="forgotPassword.email"></v-text-field>
+                                                                </span>
+                                                            </v-form>
+                                                        </v-card-text>
+                                                        <v-divider :divider="divider"></v-divider>
+                                                        <v-card-actions>
+                                                            <v-btn flat color="primary" @click="requestForgotPassword(forgotPassword.email)" :disabled="!forgotPassword.valid">Nhận mã xác nhận</v-btn>
+                                                            <v-btn flat color="red" @click="forgotPassword.dialog = false">Đóng</v-btn>
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
+                                            </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
                                                 <v-btn block color="primary" @click="loginWithPass()">Đăng nhập</v-btn>
                                             </v-flex>
                                         </v-layout>
@@ -53,8 +76,17 @@ export default {
         },
     },
     data:() =>({
+        emailRules: [
+            v => !!v || 'Chưa nhập E-mail',
+            v => /.+@.+/.test(v) || 'E-mail không đúng định dạng',
+        ],
         userName: '',
-        password: ''
+        password: '',
+        forgotPassword: {
+            dialog: false,
+            email: '',
+            valid: false,
+        }
     }),
     mounted:function(){
         if(this.token) this.handleSubmit()
@@ -68,6 +100,23 @@ export default {
         authUrl(){ return `${config.authUrl}login`}
     },
     methods:{
+        requestForgotPassword(email){
+            authAPI.requestForgotPassword(email).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                this.forgotPassword.dialog = false;
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -94,6 +143,7 @@ export default {
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
+                
             }).catch(error => {
                 console.log(error)
             })

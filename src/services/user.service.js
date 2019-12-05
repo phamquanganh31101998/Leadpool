@@ -5,7 +5,7 @@ const qs = require('qs');
 
 export default {
     getMyInfo, updatePassword, inviteUserNormal,
-    signUp,
+    signUp, resetPassword
 }
 
 function getMyInfo(idAccount){
@@ -50,6 +50,17 @@ function signUp(idAccount, body){
         }
     }
     let endpoint = `${config.apiUrl}auth/signup/?${_qs}`
-    console.log(endpoint)
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function resetPassword(body){
+    let request = {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    let endpoint = `${config.apiUrl}auth/forgot-password`
     return responseService.fetchRetry(endpoint, request, 1)
 }

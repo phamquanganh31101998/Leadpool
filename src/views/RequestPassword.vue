@@ -13,18 +13,12 @@
                                     
                                     <v-card-text class="text-xs-center">
                                         <v-layout row wrap>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field readonly  label="Nhập email" v-model="email"></v-text-field>
-                                            </v-flex>
                                             <v-form v-model="valid" style="width: 100%">
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field :rules="passwordRules" label="Tên hiển thị" v-model="name"></v-text-field>
+                                                    <v-text-field :rules="passwordRules" label="Mật khẩu mới" type="password" v-model="password"></v-text-field>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field :rules="passwordRules" label="Mật khẩu" type="password" v-model="password"></v-text-field>
-                                                </v-flex>
-                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
+                                                    <v-text-field label="Nhập lại mật khẩu mới" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
                                                 </v-flex>
                                             </v-form>
                                             <v-alert
@@ -35,7 +29,7 @@
                                                 Mật khẩu nhập lại không khớp
                                             </v-alert>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-btn block color="primary" :disabled="!valid || (password != retypePassword)" @click="signUp(email, name, password)">Đăng kí</v-btn>
+                                                <v-btn block color="primary" :disabled="!valid || (password != retypePassword)" @click="resetPassword(password)">Xác nhận mật khẩu mới & Đăng nhập</v-btn>
                                             </v-flex>
                                         </v-layout>
                                     </v-card-text>
@@ -64,14 +58,13 @@ export default {
             type: String,
             default: null
         },
-        account: {
+        code: {
             type: String,
             default: null
         },
     },
     data(){
         return {
-            name: '',
             password: '',
             retypePassword: '',
             valid: false,
@@ -85,30 +78,31 @@ export default {
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
-        signUp(email, name, password){
+        resetPassword(password){
             let body = {
-                email: email,
-                name: name,
-                password: password
+                email: this.email,
+                code: this.code,
+                newPassword: password
             }
-            userAPI.signUp(this.account, body).then(result => {
-                let time = moment();
+            console.log(body)
+            userAPI.resetPassword(body).then(result => {
                 const {
                     dispatch
                 } = this.$store;
-                if (result.code == "SUCCESS") {
-                    // dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)}), Xin mời bạn đăng nhập lại`)
+                let time = moment();
+                if(result.code == 'SUCCESS'){
                     let token = {
                         token: result.response
                     }
                     let _qs = qs.stringify(token);
                     let link = `${config.baseUrl}login?${_qs}`
                     window.location.href = link;
-                } else {
+                }
+                else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
-                console.log(error);
+                console.log(error)
             })
         }
     },
