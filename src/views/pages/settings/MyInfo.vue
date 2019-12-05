@@ -81,7 +81,7 @@
                                                         <!-- <span><h4>Nhập lại mật khẩu mới</h4></span> -->
                                                         <v-text-field label="Nhập lại mật khẩu mới" v-model="changePassword.retypeNew" :rules="passwordRules" type="password"></v-text-field>
                                                         <v-alert
-                                                            :value="changePassword.new != changePassword.retypeNew"
+                                                            :value="changePassword.new != changePassword.retypeNew && (changePassword.retypeNew != '')"
                                                             type="warning"
                                                             >
                                                             Mật khẩu nhập lại không khớp với mật khẩu mới
@@ -95,7 +95,7 @@
                                                         <v-text-field label="Mật khẩu mới" v-model="changePassword.new" :rules="passwordRules" type="password"></v-text-field>
                                                         <v-text-field label="Nhập lại mật khẩu mới" v-model="changePassword.retypeNew" :rules="passwordRules" type="password"></v-text-field>
                                                         <v-alert
-                                                            :value="changePassword.new != changePassword.retypeNew"
+                                                            :value="changePassword.new != changePassword.retypeNew && (changePassword.retypeNew != '')" 
                                                             type="warning"
                                                             >
                                                             Mật khẩu nhập lại không khớp với mật khẩu mới
