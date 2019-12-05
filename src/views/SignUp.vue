@@ -91,6 +91,7 @@ export default {
                 name: name,
                 password: password
             }
+            console.log(body)
             userAPI.signUp(this.account, body).then(result => {
                 let time = moment();
                 const {
