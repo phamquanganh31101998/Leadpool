@@ -78,7 +78,7 @@ export default {
                 password: this.password
             }
             authAPI.loginWithPass(body).then(result => {
-                console.log(result)
+                // console.log(result)
                 const {
                     dispatch
                 } = this.$store;
