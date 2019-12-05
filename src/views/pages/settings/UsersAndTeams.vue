@@ -888,7 +888,7 @@ export default {
     },
     
     created(){
-        this.$store.state.colorNumber = 6;
+        this.$store.state.colorNumber = 7;
         this.getCurrentUser();
         
     }

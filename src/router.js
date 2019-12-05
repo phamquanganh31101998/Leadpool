@@ -24,7 +24,7 @@ import settingGroupbtn from './views/pages/settingBtn.vue'
 import updateGroupbtn from './views/pages/updateBtn.vue'
 import UserNotActive from './views/pages/UserNotActive.vue'
 import DealService from './views/pages/DealService.vue'
-
+import RequestPassWord from './views/RequestPassword.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -299,6 +299,14 @@ const router = new Router({
       props: (router) => ({
         email: router.query.email,
         account: router.query.account
+      })
+    },
+    {
+      path: '/requestpassword',
+      component: RequestPassWord,
+      props: (router) => ({
+        email: router.query.u,
+        code: router.query.code
       })
     },
     {

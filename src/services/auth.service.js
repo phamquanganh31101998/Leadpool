@@ -4,7 +4,7 @@ import { responseService } from './response.service'
 
 
 export default {
-    loginWithPass
+    loginWithPass, requestForgotPassword
 }
 
 function loginWithPass(body){
@@ -21,5 +21,17 @@ function loginWithPass(body){
         // referrer: 'no-referrer', // no-referrer, *client
     }
     let endpoint = `${config.authUrl}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function requestForgotPassword(email){
+    let headers = authHeader();
+    headers['Content-Type'] = 'application/json';
+    let request = {
+        method: 'POST',
+        body: email,
+        headers: headers,
+    }
+    let endpoint = `${config.apiUrl}auth/request-reset-password`
     return responseService.fetchRetry(endpoint, request, 1)
 }
