@@ -2,7 +2,7 @@
     <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3"> Quản lý hợp đồng</h1>
+                <h1 class="ml-3"> Quản lý Thỏa thuận</h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
@@ -16,7 +16,7 @@
                             </template>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                                    <span class="headline">Tạo hợp đồng</span>
+                                    <span class="headline">Tạo Thỏa thuận</span>
                                 </v-card-title>
                                 <v-card-text>
                                     <newDeal :idAccount="this.idAccount" @closeCreateDealDialog="createDeal = false"/>
@@ -70,26 +70,26 @@
         <v-dialog v-model="detailDialog" persistent width="700">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
-                    <span class="headline">Chi tiết hợp đồng</span>
+                    <span class="headline">Chi tiết Thỏa thuận</span>
                 </v-card-title>
                 <v-card-text>
                     <v-layout wrap>
                         <!-- <v-layout row wrap>
                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-text-field :rules="nameRules" label="Tên hợp đồng" v-model="detailDeal.name"></v-text-field>
+                                <v-text-field :rules="nameRules" label="Tên Thỏa thuận" v-model="detailDeal.name"></v-text-field>
                             </v-flex>
                             <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="detailDeal.amount"></v-text-field>
+                                <v-text-field :rules="numberRules" type="number" label="Giá trị Thỏa thuận" v-model="detailDeal.amount"></v-text-field>
                             </v-flex>
                         </v-layout> -->
                         <v-flex xs12 sm12 md12 lg12 xl12>
-                            <span><h4>Tên hợp đồng</h4></span>
+                            <span><h4>Tên Thỏa thuận</h4></span>
                             <v-text-field :rules="nameRules" v-model="detailDeal.name"></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 style="padding-top: 20px;padding-bottom: 20px;">
-                            <!-- <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="amount"></v-text-field> -->
+                            <!-- <v-text-field :rules="numberRules" type="number" label="Giá trị Thỏa thuận" v-model="amount"></v-text-field> -->
                             <span style="padding-top: 20px; padding-bottom: 10px;"><h4>Giá trị</h4></span>
-                            <money style="width: 100%; font-size: 16px; " v-model="detailDeal.amount" v-bind="money"></money>
+                            <money style="width: 100%; margin-top: 0px; padding-top: 0px; font-size: 16px; border-bottom: 1px solid grey;" v-model="detailDeal.amount" v-bind="money"></money>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Dịch vụ</h4></span>
@@ -118,7 +118,7 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Bạn có chắc chắn muốn xóa hợp đồng này?
+                    Bạn có chắc chắn muốn xóa Thỏa thuận này?
                 </v-card-text>
                 <v-card-actions>
                     <v-btn flat color="red" @click="deleteDeal(deleteDealDialog.id)" >XÓA</v-btn>
@@ -171,7 +171,7 @@ export default {
             allDeal: [],
             headers: [
                 {
-                    text: 'TÊN HỢP ĐỒNG',
+                    text: 'TÊN Thỏa thuận',
                     align: 'left',
                     sortable: false,
                     value: 'name'

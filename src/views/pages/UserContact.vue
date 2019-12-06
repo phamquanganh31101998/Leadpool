@@ -331,7 +331,7 @@
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Tạo hợp đồng</span>
+                                                                <span class="headline">Tạo Thỏa thuận</span>
                                                             </v-card-title>
                                                             <v-card-text>
                                                                 <newDeal :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
@@ -341,7 +341,7 @@
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Hợp đồng</p>
+                                                    <p>Thỏa thuận</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -529,7 +529,7 @@
                             Cuộc họp
                         </v-tab>
                         <v-tab href="#tab-7">
-                            Hợp đồng
+                            Thỏa thuận
                         </v-tab>
                         <v-tab-item value="tab-1">
                             <!-- <v-layout row>
@@ -584,11 +584,12 @@
                                 </v-menu>
                             </v-layout> -->
                             <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <!-- <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/> -->
+                            <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <!-- <activity :idAccount="this.idAccount" :idContact="this.idContact"></activity> -->
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -640,7 +641,7 @@
                         <v-tab-item value="tab-7">
                             <v-layout row>
                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
-                                    <v-btn small color="grey lighten-3" @click="createDeal=true" v-if="access">Tạo hợp đồng mới</v-btn>
+                                    <v-btn small color="grey lighten-3" @click="createDeal=true" v-if="access">Tạo Thỏa thuận mới</v-btn>
                                 </v-flex>
                             </v-layout>
                             <deal :idAccount="this.idAccount" :idContact="this.idContact"/>

@@ -7,7 +7,7 @@
             <v-list two-line class="pl-3 pr-3">
                 <v-list-tile avatar>
                     <v-list-tile-avatar>
-                        <img src="../../assets/user.png">
+                        <img :src="userAvatar" alt="avatar">
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                         <v-list-tile-title>{{name}}</v-list-tile-title>
@@ -22,7 +22,7 @@
                 <v-divider class="mt-2"></v-divider>
                 <v-list-tile>
                     <v-list-tile-content>
-                        <v-list-tile-title>{{accountId}}</v-list-tile-title>
+                        <v-list-tile-title>Tổ chức: <span style="font-weight: bold;">{{accountName}}</span></v-list-tile-title>
                         <!-- <v-list-tile-sub-title>3385135</v-list-tile-sub-title> -->
                     </v-list-tile-content>
                 </v-list-tile>
@@ -83,6 +83,8 @@
     </div>
 </template>
 <script>
+    import accountAPI from '../../services/accountsetting.service'
+    import userAPI from '../../services/user.service'
     import moment from 'moment'
     import jwt from 'jsonwebtoken'
     import {mapGetters} from 'vuex'
@@ -96,7 +98,9 @@
             divider: true,
             name: '',
             email: '',
-            accountId: ''
+            accountId: '',
+            accountName: '',
+            userAvatar: ''
         }),
         computed: {
             ...mapGetters({
@@ -105,11 +109,43 @@
 		    })
         },
         methods: {
+            getAccountInfo(){
+                accountAPI.getAccountInfo(this.accountId).then(result => {
+                    let time = moment();
+                    const {
+                        dispatch
+                    } = this.$store;
+                    if (result.code == "SUCCESS") {
+                        this.accountName = this.checkString(result.response.accountName)
+                    } else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
             displayName() {
                 let a = JSON.parse(localStorage.getItem('user'));
                 this.name = a.displayName
                 this.email = a.username
                 this.accountId = a.accountId;
+                this.getMyInfo()
+                this.getAccountInfo();
+            },
+            getMyInfo(){
+                userAPI.getMyInfo(this.accountId).then(result => {
+                    this.userAvatar = this.checkString(result.response.userAvatar);
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
+            checkString(str){
+                if (str == null || str == undefined){
+                    return ''
+                }
+                else {
+                    return str;
+                }
             },
             logout() {
                 this.$store.dispatch('turnOffExpiredDialog');

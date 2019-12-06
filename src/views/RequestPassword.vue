@@ -91,12 +91,15 @@ export default {
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    let token = {
-                        token: result.response
-                    }
-                    let _qs = qs.stringify(token);
-                    let link = `${config.baseUrl}login?${_qs}`
-                    window.location.href = link;
+                    dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                    // let token = {
+                    //     token: result.response
+                    // }
+                    // let _qs = qs.stringify(token);
+                    setTimeout(() => {
+                        let link = `${config.baseUrl}login`
+                        window.location.href = link;
+                    }, 4000)
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
