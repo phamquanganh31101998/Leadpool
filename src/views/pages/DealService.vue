@@ -12,7 +12,7 @@
                     <v-flex xs2 md2 lg2 xl2>
                         <v-dialog v-model="createDeal" persistent max-width="700px">
                             <template v-slot:activator="{ on }">
-                                <v-btn dark color="#3E82F7" v-on="on"> <v-icon>add</v-icon> Tạo mới</v-btn>
+                                <v-btn v-if="access" round dark color="#3E82F7" v-on="on"> <v-icon>add</v-icon> Tạo mới</v-btn>
                             </template>
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -31,7 +31,7 @@
         </v-layout>
         <br>
         <v-divider class="mt-4" :divider="divider"></v-divider>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
                         no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
@@ -67,6 +67,49 @@
                 </v-data-table>
             </v-flex>
         </v-layout>
+        <v-layout v-else>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-layout style="height: 300px;">
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-card flat style="height: 300px; margin-top: 100px;" >
+                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-card flat style="height: 300px; margin-top: 100px;" >
+                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs8 sm8 md8 lg8 xl8>
+                        <v-card flat style="height: 500px; margin-top: 100px;">
+                            <v-img alt="ảnh ở đây" width="100%" src="../../../sms2.png"></v-img>
+                        </v-card>
+                    </v-flex> -->
+                </v-layout>
+            </v-flex>
+        </v-layout>
         <v-dialog v-model="detailDialog" persistent width="700">
             <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -83,7 +126,7 @@
                             </v-flex>
                         </v-layout> -->
                         <v-flex xs12 sm12 md12 lg12 xl12>
-                            <span><h4>Tên Thỏa thuận</h4></span>
+                            <span><h4>Tên thỏa thuận</h4></span>
                             <v-text-field :rules="nameRules" v-model="detailDeal.name"></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 style="padding-top: 20px;padding-bottom: 20px;">
@@ -148,6 +191,7 @@ export default {
     },
     data(){
         return{
+            access: false,
             money: {
                 decimal: ',',
                 thousands: '.',
@@ -171,34 +215,34 @@ export default {
             allDeal: [],
             headers: [
                 {
-                    text: 'TÊN Thỏa thuận',
+                    text: 'TÊN THỎA THUẬN',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'GIÁ TRỊ',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'amount'
                 },
                 {
                     text: 'CHỦ SỞ HỮU',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'owner'
                 },
                 {
                     text: 'DỊCH VỤ',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'service'
                 },
                 {
                     text: 'GIAI ĐOẠN',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'stage'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
@@ -350,9 +394,16 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            this.getAllEmail();
-            this.getService();
-            this.getDeal();
+            let role = this.currentUser.authorities;
+            if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || role.includes("ROLE_CONTACT_VIEW_EVERYTHING")){
+                this.access = true;
+            }
+            if(this.access == true){
+                this.getAllEmail();
+                this.getService();
+                this.getDeal();
+            }
+            
         },
         getDeal(){
             dealService.getDealByAccount(this.idAccount).then(result => {

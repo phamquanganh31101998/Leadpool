@@ -15,7 +15,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm lead theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs3 md3 lg3 xl3>
-                        <v-btn dark color="#3E82F7" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Tạo danh sách</v-btn>
+                        <v-btn block round dark color="#3E82F7" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Tạo danh sách</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -541,7 +541,7 @@
                     class="elevation-1 mt-6"
                 >
                     <template v-slot:items="props">
-                        <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.firstName }} {{props.item.lastName}}</a></td>
+                        <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.fullname}}</a></td>
                         <td>{{ props.item.email }}</td>
                         <td>{{ props.item.phone }}</td>
                         <td>{{ props.item.lifecycleStage }}</td>
@@ -656,50 +656,50 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'fullname'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'email'
                 },
                 {
                     text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'phone'
                 },
                 {
                     text: 'VÒNG ĐỜI',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'lifecycleStage'
                 },
                 {
                     text: 'TÀI KHOẢN SỞ HỮU',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'contactOwner'
                 },
                 {
                     text: 'THÀNH PHÓ',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'city'
                 },
                 {
                     text: 'NGÀNH NGHỀ',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'bussiness'
                 },
                 {
                     text: 'DỊCH VỤ',
                     align: 'left',
-                    sortable: false,
-                    value: 'bussiness'
+                    // sortable: false,
+                    value: 'service'
                 },
             ],
             list: null,
@@ -1179,6 +1179,14 @@ export default {
                 }
             }
         },
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
         filter(){
             this.allContacts = [];
             this.contacts = [];
@@ -1188,6 +1196,9 @@ export default {
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
+                    for(let i = 0; i < result.response.length; i++){
+                        result.response[i].fullname = this.checkString(result.response[i].firstName) + ' ' + this.checkString(result.response[i].lastName)
+                    }
                     this.allContacts = result.response;
                     this.contacts = this.allContacts;
                 }

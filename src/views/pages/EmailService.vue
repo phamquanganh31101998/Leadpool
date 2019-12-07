@@ -1,4 +1,3 @@
-
 <template>
     <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
@@ -19,10 +18,10 @@
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="access">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <v-list-tile @click="page = 'manage'">
+                    <v-list-tile @click="page = 'manage', getEmailTemplate()">
                         <v-list-tile-content :style="fontWeight[0]">
                             Quản lý mẫu email
                         </v-list-tile-content>
@@ -44,10 +43,9 @@
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
                 <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <span class="ml-2 pt-4 pb-4"><v-btn color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
+                        <span class="ml-2 pt-4 pb-4"><v-btn round color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                         <v-card>
                             <v-card-text>
-                                
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
                                 <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
@@ -57,7 +55,6 @@
                                             <td>{{props.item.createdAt}}</td>
                                             <td>{{props.item.updatedBy}}</td>
                                             <td>{{props.item.updatedAt}}</td>
-                                            
                                             <v-menu>
                                                 <template v-slot:activator="{ on }">
                                                     <td class="text-xs-right"><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn></td>
@@ -74,7 +71,6 @@
                                                     </v-list-tile>
                                                 </v-list>
                                             </v-menu>
-                                            
                                         </tr>
                                     </template>
                                 </v-data-table>
@@ -83,116 +79,6 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
-            <!-- <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='createSchedule'">
-                <v-layout row>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-layout row>
-                            <v-flex xs12 sm12 md3 lg3 xl3>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="ml-4"><v-select prepend-icon="account_box" :items="allEmail" v-model="createSchedule.from" label="Chọn tài khoản gửi email"></v-select></span>
-                                        <span class="ml-4"><v-text-field prepend-icon="title" v-model="createSchedule.title" label="Tiêu đề"></v-text-field></span>
-                                        <span class="ml-4"><v-select :items="templateSelect" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
-
-                                        <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate()">Xem mẫu email </a></span>
-                                        <br>
-                                        <br>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-select prepend-icon="people" :items="createSchedule.list" label="Chọn danh sách gửi" v-model="createSchedule.selectedListToSendSMS"></v-select>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <span class="ml-4">
-                                            <v-menu ref="menu1" v-model="createSchedule.menu1" :close-on-content-click="false" lazy
-                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-text-field v-model="createSchedule.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
-                                                        v-on="on">
-                                                    </v-text-field>
-                                                </template>
-                                                <v-date-picker v-model="createSchedule.date"  no-title @input="createSchedule.menu1 = false"></v-date-picker>
-                                            </v-menu>
-                                        </span>
-                                        <span class="ml-4">
-                                            <v-select  prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
-                                        </span>
-                                    </v-card-text>
-                                </v-card>
-                                <v-card>
-                                    <v-card-text>
-                                        <h4>Đã chọn {{createSchedule.numberOfRecipient}} người nhận</h4>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
-                                <v-card v-if="createSchedule.displayContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Danh sách</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getEmailToSend()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.email }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                                <v-card class="mt-3" v-if="createSchedule.additionalContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Chọn thêm người nhận</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getEmailToSend()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.email }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-
-                                        <br>
-
-                                    
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                </v-layout>
-            </v-flex> -->
             <v-dialog persistent fullscreen v-model="createScheduleDialog">
                 <v-card>
                     <v-toolbar card dark color="primary">
@@ -335,7 +221,7 @@
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manageSchedule'">
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
-                        <v-btn dark color="#3E82F7" @click="page='createSchedule'">Tạo lịch gửi mới</v-btn>
+                        <v-btn round dark color="#3E82F7" @click="page='createSchedule'">Tạo lịch gửi mới</v-btn>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
@@ -343,7 +229,8 @@
                                 <template v-slot:items="props">
                                     <tr>
                                         <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
-                                        <td>{{ getTemplateNameFromId(props.item.templateId) }}</td>
+                                        <td>{{ props.item.title }}</td>
+                                        <td>{{ props.item.from }} </td>
                                         <td>{{ props.item.time }} </td>
                                         <td style="color: red" v-if="props.item.status == 'INACTIVE'">{{ returnStatus(props.item.status) }}</td>
                                         <td style="color: green" v-if="props.item.status == 'ACTIVE'">{{ returnStatus(props.item.status) }}</td>
@@ -375,6 +262,49 @@
                         </v-card>
                         
                     </v-flex>
+                </v-layout>
+            </v-flex>
+        </v-layout>
+        <v-layout v-else>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-layout style="height: 300px;">
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-card flat style="height: 300px; margin-top: 100px;" >
+                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> và <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                        <v-card flat style="height: 300px; margin-top: 100px;" >
+                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
+                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
+                                    <v-card-title>
+                                        <h2>Không có quyền truy cập</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> và <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
+                                        <br>
+                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs8 sm8 md8 lg8 xl8>
+                        <v-card flat style="height: 500px; margin-top: 100px;">
+                            <v-img alt="ảnh ở đây" width="100%" src="../../../sms2.png"></v-img>
+                        </v-card>
+                    </v-flex> -->
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -566,7 +496,7 @@ export default {
             title: 'Tạo mẫu email mới',
             allEmail: [],
             currentUser: null,
-            access: true,
+            access: false,
             page: 'manage',
             fontWeight: ['font-weight: bold', '', ''],
             templates: [],
@@ -581,32 +511,32 @@ export default {
                 {
                     text: 'TÊN MẪU',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'text'
                 },
                 {
                     text: 'NGƯỜI TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdBy'
                 },
                 {
                     text: 'THỜI GIAN TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdAt'
                 },
                 {
                     text: 'NGƯỜI CHỈNH SỬA LẦN CUỐI',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'updatedBy'
                 },
                 {
                     text: 'THỜI GIAN CHỈNH SỬA CUỐI CÙNG',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'updatedAt'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
@@ -691,28 +621,34 @@ export default {
             manageSchedule: {
                 headers: [
                     {
-                        text: 'TÊN MẪU EMAIL',
+                        text: 'TIÊU ĐỀ',
                         align: 'left',
-                        value: 'name',
-                        sortable: false
+                        value: 'title',
+                        // sortable: false
+                    },
+                    {
+                        text: 'NGƯỜI GỬI',
+                        align: 'left',
+                        value: 'from',
+                        // sortable: false
                     },
                     {
                         text: 'THỜI GIAN GỬI',
                         align: 'left',
-                        value: 'calories',
-                        sortable: false
+                        value: 'time',
+                        // sortable: false
                     },
                     {
                         text: 'TRẠNG THÁI',
                         align: 'left',
-                        value: 'fat',
-                        sortable: false
+                        value: 'status',
+                        // sortable: false
                     },
                     {
-                        text: 'NGƯỜI TẠO',
+                        text: 'NGƯỜI ĐẶT LỊCH',
                         align: 'left',
-                        value: 'fat',
-                        sortable: false
+                        value: 'createdBy',
+                        // sortable: false
                     },
                     {
                         text: 'HÀNH ĐỘNG',
@@ -730,20 +666,20 @@ export default {
                         {
                             text: 'NGƯỜI NHẬN',
                             align: 'left',
-                            value: 'name',
-                            sortable: false
+                            value: 'email',
+                            // sortable: false
                         },
                         {
                             text: 'THỜI GIAN NHẬN',
                             align: 'left',
-                            value: 'calories',
-                            sortable: false
+                            value: 'timeToSend',
+                            // sortable: false
                         },
                         {
                             text: 'TRẠNG THÁI',
                             align: 'left',
-                            value: 'fat',
-                            sortable: false
+                            value: 'status',
+                            // sortable: false
                         },
                         
                     ],
@@ -864,7 +800,7 @@ export default {
         //manage template
         covertime(time) {
             if (_.isNull(time)) return '';
-            return moment(time).format('DD/MM/YYYY HH:mm:ss')
+            return moment(time).format('YYYY/MM/DD, HH:mm:ss')
         },
         getEmailTemplate(){
             emailService.getEmailTemplate(this.idAccount).then(result => {
@@ -893,7 +829,7 @@ export default {
                     createdBy: templateArray[i].createdBy,
                     createdAt: this.covertime(templateArray[i].createdAt),
                     updatedBy: templateArray[i].updatedBy,
-                    updatedAt: this.covertime(templateArray[i].updatedAt),
+                    updatedAt: this.covertime(templateArray[i].updateAt),
                     content: templateArray[i].content
                 }
                 result.push(obj);
@@ -1674,7 +1610,7 @@ export default {
         
         //manage schedule
         returnTime(data) {
-            return moment(data).format('HH:mm:ss DD/MM/YYYY')
+            return moment(data).format('YYYY/MM/DD HH:mm')
         },
         returnStatus(status){
             let result = ''
@@ -1704,6 +1640,14 @@ export default {
             }
             return result;
         },
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
         returnStatusColor(status){
             if (status == 'DONE'){
                 return 'color: green;'
@@ -1725,13 +1669,14 @@ export default {
                 if(result.code == 'SUCCESS'){
                     let data = result.response.reverse();
                     for (let i = 0; i < data.length; i++){
-                        
                         let obj = {
-                            id: data[i].emailScheduleId,
-                            templateId: data[i].emailTemplateId,
-                            time: this.returnTime(data[i].timeToSend),
-                            status: data[i].status,
-                            createdBy: data[i].createdBy
+                            from: this.checkString(data[i].from),
+                            title: this.checkString(data[i].title),
+                            id: this.checkString(data[i].emailScheduleId),
+                            templateId: this.checkString(data[i].emailTemplateId),
+                            time: this.returnTime(this.checkString(data[i].timeToSend)),
+                            status: this.checkString(data[i].status),
+                            createdBy: this.checkString(data[i].createdBy)
                         }
                         this.manageSchedule.list.push(obj);
                     }
@@ -1789,9 +1734,7 @@ export default {
                     for (let i = 0; i < data.length; i++){
                         if (id == data[i].emailScheduleId){
                             obj = data[i];
-                            
                             this.manageSchedule.detail.listEmail = obj.emailScheduleDetails;
-                            console.log(obj.emailScheduleDetails)
                             this.manageSchedule.detail.dialog = true;
                         }
                     }
@@ -1816,17 +1759,22 @@ export default {
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
-            // let role = this.currentUser.authorities;
+            let role = this.currentUser.authorities;
             // for (let i = 0; i < role.length;i++){
             //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
             //         this.access = true;
             //     }
             // }
+            if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
+                this.access = true;
+            }
+            this.getEmailTemplate();
+            this.getList();
+            this.getAllEmail()
             if (this.access == true){
+                this.grape();
                 
-                this.getAllEmail()
-                this.getEmailTemplate();
-                this.getList();
+                
                 // this.getSchedule();
             }
         }
@@ -1835,7 +1783,7 @@ export default {
     created(){
         this.$store.state.colorNumber = 4;
         this.getCurrentUser();
-        this.grape();
+        
         // console.log(result)
         // this.grape()
     }

@@ -10,7 +10,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>list</v-icon> Tạo mới</v-btn>
+                        <v-btn round block dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>list</v-icon> Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -133,20 +133,20 @@ export default {
                 {
                     text: 'TÊN DANH SÁCH',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'NGƯỜI TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdBy'
                 },
                 {
                     text: 'NGÀY TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdAt'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
