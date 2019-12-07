@@ -10,7 +10,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
                     </v-flex> -->
                     <v-flex xs12 md12 lg12 xl12>
-                        <v-btn block dark color="#3E82F7" @click="createTask = true"> Tạo công việc</v-btn>
+                        <v-btn round block dark color="#3E82F7" @click="createTask = true"> Tạo công việc</v-btn>
                         <v-dialog v-model="createTask" persistent max-width="700px">
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -396,25 +396,25 @@ export default {
             {
                 text: 'TRẠNG THÁI',
                 align: 'left',
-                sortable: false,
+                // sortable: false,
                 value: 'status'
             },
             {
                 text: 'TÊN CÔNG VIỆC (CLICK ĐỂ XEM CHI TIẾT)',
                 align: 'left',
-                sortable: false,
+                // sortable: false,
                 value: 'title'
             },
             {
                 text: 'KIỂU',
                 align: 'left',
-                sortable: false,
+                // sortable: false,
                 value: 'type'
             },
             {
                 text: 'HẠN CUỐI',
                 align: 'left',
-                sortable: false,
+                // sortable: false,
                 value: 'dueDate'
             },
             // {
@@ -575,7 +575,7 @@ export default {
         },
         coverTimeTooltip(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('DD/MM/YYYY HH:mm')
+            return moment(time).format('YYYY/MM/DD, HH:mm:ss')
         },
         returnType(type){
             if (type == 'To-do'){

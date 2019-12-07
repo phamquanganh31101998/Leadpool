@@ -21,105 +21,6 @@
                 </v-list>
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10 class="ml-3 mt-3">
-                <!-- <v-layout row v-if="page=='send'">
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-layout row>
-                            <v-flex xs12 sm12 md3 lg3 xl3>
-                                <v-card>
-                                    <v-card-text>
-                                        <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
-                                       
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <span class="ml-4"><v-select prepend-icon="list"  label="Chọn chiến dịch gửi tin nhắn" :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-select prepend-icon="people" :items="send.list" label="Chọn danh sách gửi" v-model="send.selectedListToSendSMS" ></v-select>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <span class="ml-4">
-                                            <v-menu ref="menu1" v-model="send.menu1" :close-on-content-click="false" lazy
-                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-text-field v-model="send.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
-                                                        v-on="on">
-                                                    </v-text-field>
-                                                </template>
-                                                <v-date-picker v-model="send.date"  no-title @input="send.menu1 = false"></v-date-picker>
-                                            </v-menu>
-                                        </span>
-                                        <span class="ml-4">
-                                            <v-select prepend-icon="access_time" label="Chọn giờ gửi" v-model="send.time" :items="send.timeToChoose"></v-select>
-                                        </span>
-                                    </v-card-text>
-                                </v-card>
-                                <v-card>
-                                    <v-card-text>
-                                        <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
-                                <v-card v-if="send.displayContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Danh sách</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                    </v-card-text>
-                                </v-card>
-                                <v-card class="mt-3" v-if="send.additionalContacts.length > 0">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Chọn thêm người nhận</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                       
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="getPhoneNumberToSendSMS()"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
-                                                    <td>{{ props.item.phone }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <br>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout>
-                        <br>
-                    </v-flex>
-                </v-layout> -->
                 <v-dialog persistent fullscreen v-model="createScheduleDialog">
                     <v-card>
                         <v-toolbar card dark color="primary">
@@ -209,7 +110,7 @@
                                                                     @change="getPhoneNumberToSendSMS()"
                                                                     >
                                                                     </v-checkbox></td>
-                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.fullName}}</td>
                                                             <td>{{ props.item.phone }}</td>
                                                         </tr>
                                                     </template>
@@ -240,7 +141,7 @@
                                                                     @change="getPhoneNumberToSendSMS()"
                                                                     >
                                                                     </v-checkbox></td>
-                                                            <td>{{ props.item.firstName }} {{ props.item.lastName}}</td>
+                                                            <td>{{ props.item.fullName}}</td>
                                                             <td>{{ props.item.phone }}</td>
                                                         </tr>
                                                     </template>
@@ -540,7 +441,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="page=='schedule'">
                     <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
-                        <v-btn dark color = "#3E82F7" @click="page = 'send'">Tạo lịch gửi mới</v-btn>
+                        <v-btn dark round color = "#3E82F7" @click="page = 'send'">Tạo lịch gửi mới</v-btn>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
@@ -605,7 +506,7 @@
                                         <tr>
                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                             <td>{{ props.item.phoneNumber}}</td>
-                                            <td>{{ coverTime(props.item.timeToSend) }} </td>
+                                            <td>{{ returnTime(props.item.timeToSend) }} </td>
                                             <td :style="returnStatusColor(props.item.status)">{{ returnStatus(props.item.status) }}</td>
                                         </tr>
                                     </template>
@@ -747,55 +648,55 @@ export default {
                     success: [],
                     successHeaders: [
                         {
-                            text: 'Số điện thoại ',
+                            text: 'SỐ ĐIỆN THOẠI',
                             align: 'left',
-                            value: 'calories',
+                            value: 'phoneNumber',
+                            // sortable: false
+                        },
+                        {
+                            text: 'THỜI GIAN GỬI',
+                            align: 'left',
+                            value: 'time',
+                            // sortable: false
+                        },
+                        {
+                            text: 'TRẠNG THÁI',
+                            align: 'left',
+                            value: 'statusMessage',
                             sortable: false
                         },
                         {
-                            text: 'Thời gian gửi',
+                            text: 'NỘI DUNG',
                             align: 'left',
-                            value: 'calories',
-                            sortable: false
-                        },
-                        {
-                            text: 'Trạng thái',
-                            align: 'left',
-                            value: 'calories',
-                            sortable: false
-                        },
-                        {
-                            text: 'Nội dung',
-                            align: 'left',
-                            value: 'calories',
-                            sortable: false
+                            value: 'message',
+                            // sortable: false
                         },
                     ],
                     fail: [],
                     failHeaders: [
                         {
-                            text: 'Số điện thoại ',
+                            text: 'SỐ ĐIỆN THOẠI',
                             align: 'left',
-                            value: 'calories',
+                            value: 'phoneNumber',
+                            // sortable: false
+                        },
+                        {
+                            text: 'THỜI GIAN GỬI',
+                            align: 'left',
+                            value: 'time',
+                            // sortable: false
+                        },
+                        {
+                            text: 'TRẠNG THÁI',
+                            align: 'left',
+                            value: 'statusMessage',
                             sortable: false
                         },
                         {
-                            text: 'Thời gian gửi',
+                            text: 'NỘI DUNG',
                             align: 'left',
-                            value: 'calories',
-                            sortable: false
-                        },
-                        {
-                            text: 'Trạng thái',
-                            align: 'left',
-                            value: 'calories',
-                            sortable: false
-                        },
-                        {
-                            text: 'Nội dung',
-                            align: 'left',
-                            value: 'calories',
-                            sortable: false
+                            value: 'message',
+                            // sortable: false
                         },
                     ],
                 },
@@ -839,20 +740,20 @@ export default {
                     {
                         text: 'CHỌN',
                         align: 'left',
-                        value: 'name',
+                        value: 'chosen',
                         sortable: false
                     },
                     {
                         text: 'TÊN LEAD',
                         align: 'left',
-                        value: 'calories',
-                        sortable: false
+                        value: 'fullName',
+                        // sortable: false
                     },
                     {
                         text: 'SỐ ĐIỆN THOẠI',
                         align: 'left',
-                        value: 'fat',
-                        sortable: false
+                        value: 'phone',
+                        // sortable: false
                     },
                 ],
                 page: 1,
@@ -890,20 +791,20 @@ export default {
                     {
                         text: 'TÊN MẪU TIN NHẮN',
                         align: 'left',
-                        value: 'name',
-                        sortable: false
+                        value: 'campaign',
+                        // sortable: false
                     },
                     {
                         text: 'THỜI GIAN GỬI',
                         align: 'left',
-                        value: 'calories',
-                        sortable: false
+                        value: 'time',
+                        // sortable: false
                     },
                     {
                         text: 'TRẠNG THÁI',
                         align: 'left',
-                        value: 'fat',
-                        sortable: false
+                        value: 'status',
+                        // sortable: false
                     },
                     {
                         text: 'HÀNH ĐỘNG',
@@ -920,20 +821,20 @@ export default {
                         {
                             text: 'SỐ ĐIỆN THOẠI',
                             align: 'left',
-                            value: 'name',
-                            sortable: false
+                            value: 'phoneNumber',
+                            // sortable: false
                         },
                         {
                             text: 'NGÀY NHẬN',
                             align: 'left',
-                            value: 'calories',
-                            sortable: false
+                            value: 'timeToSend',
+                            // sortable: false
                         },
                         {
                             text: 'TRẠNG THÁI',
                             align: 'left',
-                            value: 'fat',
-                            sortable: false
+                            value: 'status',
+                            // sortable: false
                         },
                     ],
                     listPhone: []
@@ -961,7 +862,7 @@ export default {
     },
     methods: {
         returnTime(data) {
-            return moment(data).format('HH:mm:ss DD/MM/YYYY')
+            return moment(data).format('YYYY/MM/DD, HH:mm:ss')
         },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
@@ -1011,6 +912,7 @@ export default {
                                 }
                                 for (let k = 0; k < result.response.length; k++){
                                     result.response[k].chosen = true;
+                                    result.response[k].fullName = this.checkString(result.response[k].firstName) + ' ' + this.checkString(result.response[k].lastName)
                                 }
                                 obj.contact = result.response;
                                 this.send.list.push(obj);
@@ -1030,6 +932,14 @@ export default {
                 this.getAllContact()
             })
         },
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
         getAllContact(){
             contactService.getAllContact(this.idAccount, this.send.page).then(result => {
                 const {
@@ -1045,6 +955,7 @@ export default {
                             let time = moment();
                             if(result.code == 'SUCCESS'){
                                 for(let k = 0; k < result.response.results.length; k++){
+                                    result.response.results[k].fullName = this.checkString(result.response.results[k].firstName) + ' ' + this.checkString(result.response.results[k].lastName)
                                     result.response.results[k].chosen = true;
                                     this.send.allContacts.push(result.response.results[k]);
                                 }
@@ -1269,7 +1180,7 @@ export default {
                             message: result.response[i].message,
                             statusMessage: this.returnBug(result.response[i].status),
                             status: result.response[i].status,
-                            time: this.coverTime(result.response[i].createdAt)
+                            time: this.returnTime(result.response[i].createdAt)
                         }
                         if (obj.status == 'SUCCESS'){
                             this.saveKey.selectedCampaignHistory.success.push(obj);
@@ -1706,11 +1617,6 @@ export default {
     },
 
     created(){
-        // this.getList();
-        // this.getTemplate();
-        // this.getListDeviceKey();
-        // // this.getAllContact();
-        // this.getSchedule();
         this.$store.state.colorNumber = 3;
         this.getCurrentUser();
         this.send.dateFormatted = this.formatDate(new Date().toISOString().substr(0, 10))

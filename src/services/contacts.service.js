@@ -21,9 +21,15 @@ function createContact(id,data) {
     let endpoint = `${config.apiContact}/${id}/contacts`
     return responseService.fetchRetry(endpoint, request, 1)
 }
-function getAllContact(id, page) {
+function getAllContact(id, page, property, order) {
     let a = {
         page: page
+    }
+    if (property != ''){
+        a.sortBy = property
+    }
+    if (order != ''){
+        a.orderBy = order
     }
     let request ={
         method: 'GET',
@@ -33,6 +39,26 @@ function getAllContact(id, page) {
     let endpoint = `${config.apiContact}/${id}/contacts?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
+
+function getMyContact(idAccount, page, property, order){
+    let a = {
+        page: page
+    }
+    if (property != ''){
+        a.sortBy = property
+    }
+    if (order != ''){
+        a.orderBy = order
+    }
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let _qs = qs.stringify(a);
+    let endpoint = `${config.apiContact}/${idAccount}/contacts/mycontact?${_qs}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
 function getdetailContact(idAccount,idContact){
     let request ={
         method: 'GET',
@@ -89,18 +115,7 @@ function getAllEmail(idAccount){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getMyContact(idAccount, page){
-    let a = {
-        page: page
-    }
-    let request = {
-        method: 'GET',
-        headers: authHeader()
-    }
-    let _qs = qs.stringify(a);
-    let endpoint = `${config.apiContact}/${idAccount}/contacts/mycontact?${_qs}`
-    return responseService.fetchRetry(endpoint, request, 1)
-}
+
 
 function searchContact(idAccount, page, keyword){
     let a = {

@@ -583,13 +583,13 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <!-- <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <!-- <activity :idAccount="this.idAccount" :idContact="this.idContact"></activity> -->
+                            <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/> -->
+                            <activity :idAccount="this.idAccount" :idContact="this.idContact"></activity>
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>

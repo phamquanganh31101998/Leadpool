@@ -260,14 +260,14 @@ export default {
                 {
                     text: 'TÊN DỊCH VỤ',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'NGÀY TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'email'
+                    // sortable: false,
+                    value: 'createdAt'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
@@ -394,7 +394,7 @@ export default {
         },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('HH:mm:ss, DD/MM/YYYY')
+            return moment(time).format('YYYY/MM/DD, HH:mm')
         },
         normalText(str){
             return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");

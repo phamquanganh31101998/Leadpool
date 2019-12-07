@@ -100,7 +100,7 @@
                     <v-form v-model="inviteUser.valid">
                         <span class="ml-4">
                             <v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field>
-                            <v-checkbox v-model="inviteUser.isGoogleEmail" label="Email Google?"></v-checkbox>
+                            <!-- <v-checkbox v-model="inviteUser.isGoogleEmail" label="Email Google?"></v-checkbox> -->
                         </span>
                     </v-form>
                 </v-card-text>
@@ -212,8 +212,8 @@
                 </v-card-text>
                 <v-divider :divider="divider"></v-divider>
                 <v-card-actions>
-                    <v-btn flat color="primary" v-if="inviteUser.isGoogleEmail" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
-                    <v-btn flat color="primary" v-if="!inviteUser.isGoogleEmail" @click="inviteUserNormal()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                    <v-btn flat color="primary" v-if="inviteUser.email.includes('@gmail.com')" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                    <v-btn flat color="primary" v-else @click="inviteUserNormal()" :disabled="!inviteUser.valid">Thêm</v-btn>
                     <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
@@ -354,20 +354,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <!-- <v-dialog v-model="forbiddenDialog" persistent @click:outside="$store.dispatch('turnOffForbiddenDialog')" transition="dialog-bottom-transition" scrollable width="30%">
-            <v-card tile>
-                <v-toolbar card dark color="red">
-                    <v-toolbar-title>Không có quyền truy cập</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-card-text>
-                    Bạn phải là Quản lý và có quyền chỉnh sửa tài khoản mới có thể truy cập vào trang này.
-                </v-card-text>
-                <v-card-actions>
-                <v-btn flat color="red" @click="$store.dispatch('turnOffForbiddenDialog'), $router.go(-1)">OK</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog> -->
         <v-dialog v-model="inviteUser.success" @click:outside="inviteUser.success = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="green">
@@ -424,19 +410,19 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'displayName'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: false,
-                    value: 'email'
+                    // sortable: false,
+                    value: 'userEmail'
                 },
                 {
                     text: 'QUYỀN',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'role'
                 },
                 // {

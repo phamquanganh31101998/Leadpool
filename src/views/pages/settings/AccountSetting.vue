@@ -120,7 +120,7 @@
                                                 <v-form v-model="inviteUser.valid">
                                                     <span class="ml-4">
                                                         <v-text-field :rules="inviteUser.emailRules" v-model="inviteUser.email"></v-text-field>
-                                                        <v-checkbox v-model="inviteUser.isGoogleEmail" label="Email Google?"></v-checkbox>
+                                                        <!-- <v-checkbox v-model="inviteUser.isGoogleEmail" label="Email Google?"></v-checkbox> -->
                                                     </span>
                                                 </v-form>
                                             </v-card-text>
@@ -235,8 +235,8 @@
                                             </v-card-text>
                                             <v-divider :divider="divider"></v-divider>
                                             <v-card-actions>
-                                                <v-btn flat color="primary" v-if="inviteUser.isGoogleEmail" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
-                                                <v-btn flat color="primary" v-if="!inviteUser.isGoogleEmail" @click="inviteUserNormal()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                                                <v-btn flat color="primary" v-if="inviteUser.email.includes('@gmail.com')" @click="inviteUserToAccount()" :disabled="!inviteUser.valid">Thêm</v-btn>
+                                                <v-btn flat color="primary" v-else @click="inviteUserNormal()" :disabled="!inviteUser.valid">Thêm</v-btn>
                                                 <v-btn flat color="red" @click="inviteUser.dialog = false">Đóng</v-btn>
                                             </v-card-actions>
                                         </v-card>
@@ -555,23 +555,23 @@ export default {
                 {
                     text: 'TÊN',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'displayName'
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
-                    sortable: false,
-                    value: 'email'
+                    // sortable: false,
+                    value: 'userEmail'
                 },
                 {
                     text: 'QUYỀN',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'role'
                 },
                 {
-                    text: 'Hành động',
+                    text: 'HÀNH ĐỘNG',
                     align: 'right',
                     sortable: false,
                     value: 'role'

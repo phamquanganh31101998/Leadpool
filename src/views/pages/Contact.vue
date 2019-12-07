@@ -42,7 +42,7 @@
           <v-flex xs3 sm3 md3 lg3 xl3>
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                <v-btn dark color="#3E82F7" class="ml-4" v-on="on" > <v-icon>person_add</v-icon> Tạo Lead mới</v-btn>
+                <v-btn round dark color="#3E82F7" class="ml-4" v-on="on" > <v-icon>person_add</v-icon> Tạo Lead mới</v-btn>
               </template>
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -323,9 +323,9 @@
             <v-flex>
               <v-btn style="backgroundColor: #425B76" dark @click="filter()">Lọc</v-btn>
             </v-flex>
-            <v-flex>
+            <!-- <v-flex>
               <v-btn @click="resetFilter()">Xóa</v-btn>
-            </v-flex>
+            </v-flex> -->
           </v-layout>
           <br>
           <br>
@@ -488,34 +488,44 @@
         </template>
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
-        <v-data-table :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-          <template v-slot:items="props">
-              <tr>
-              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.lastName }} {{ props.item.firstName }}</a></td>
-                <td class="text-xs-left">{{ props.item.email }}</td>
-                <td class="text-xs-left">{{ props.item.phone }}</td>
-                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                <td class="text-xs-left">{{ props.item.city }}</td>
-                <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                <td class="text-xs-left">{{ props.item.service }}</td>
-                <v-menu>
-                  <template v-slot:activator="{ on }">
-                      <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                  </template>
-                  <v-list>
-                    <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                      <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                    </v-list-tile>
-                    <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                      <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu>
-            </tr>
-          </template>
-        </v-data-table>
+        <v-layout row>
+          <v-flex xs2 sm2 md2 lg2 xl2 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
+            <v-select v-if="section != 'search' && section != 'filter'" label="Sắp xếp theo" v-model="sortContact.property" :items="sortContact.contactProperties"></v-select>
+          </v-flex>
+          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
+            <v-select v-if="section != 'search' && section != 'filter'" label="Thứ tự" v-model="sortContact.order" :items="sortContact.orderBy"></v-select>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-data-table style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+            <template v-slot:items="props">
+                <tr>
+                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                  <td class="text-xs-left">{{ props.item.email }}</td>
+                  <td class="text-xs-left">{{ props.item.phone }}</td>
+                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                  <td class="text-xs-left">{{ props.item.city }}</td>
+                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                  <td class="text-xs-left">{{ props.item.service }}</td>
+                  <v-menu>
+                    <template v-slot:activator="{ on }">
+                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                    </template>
+                    <v-list>
+                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-layout>
         <div class="text-xs-center pt-2">
           <v-pagination v-model="page" :length="pages"></v-pagination>
         </div>
@@ -614,6 +624,59 @@
       },
     },
     data: () => ({
+      sortContact: {
+        contactProperties: 
+          [
+              {
+                  text: 'Tên',
+                  value: 'firstName'
+              },
+              {
+                  text: 'Họ',
+                  value: 'lastName'
+              },
+              {
+                  text: 'Vòng đời',
+                  value: 'lifecycleStage'
+              },
+              {
+                  text: 'Tài khoản sở hữu',
+                  value: 'contactOwner'
+              },
+              {
+                  text: 'Số điện thoại',
+                  value: 'phone'
+              },
+              {
+                  text: 'Email',
+                  value: 'email'
+              },
+              {
+                  text: 'Thành phố',
+                  value: 'city'
+              },
+              {
+                  text: 'Ngành nghề',
+                  value: 'bussiness'
+              },
+              {
+                  text: 'Dịch vụ',
+                  value: 'service'
+              }
+          ],
+        property: '',
+        orderBy: [
+          {
+            text: 'Tăng dần',
+            value: 'ASC'
+          },
+          {
+            text: 'Giảm dần',
+            value: 'DSC'
+          }
+        ],
+        order: ''
+      },
       allService: [],
       service: '',
       isOtherBussiness: false,
@@ -700,50 +763,50 @@
       headers: [{
           text: 'TÊN',
           align: 'left',
-          value: 'name',
-          sortable: false
+          value: 'fullname',
+          // sortable: false
         },
         {
           text: 'EMAIL',
           align: 'left',
-          value: 'calories',
-          sortable: false
+          value: 'email',
+          // sortable: false
         },
         {
           text: 'SỐ ĐIỆN THOẠI',
           align: 'left',
-          value: 'fat',
-          sortable: false
+          value: 'phone',
+          // sortable: false
         },
         {
           text: 'VÒNG ĐỜI',
           align: 'left',
-          value: 'carbs',
-          sortable: false
+          value: 'lifecycleStage',
+          // sortable: false
         },
         {
           text: 'TÀI KHOẢN SỞ HỮU',
           align: 'left',
-          value: 'protein',
-          sortable: false
+          value: 'contactOwner',
+          // sortable: false
         },
         {
           text: 'THÀNH PHỐ',
           align: 'left',
-          value: 'protein',
-          sortable: false
+          value: 'city',
+          // sortable: false
         },
         {
           text: 'NGÀNH NGHỀ',
           align: 'left',
-          value: 'protein',
-          sortable: false
+          value: 'bussiness',
+          // sortable: false
         },
         {
           text: 'DỊCH VỤ',
           align: 'left',
-          value: 'protein',
-          sortable: false
+          value: 'service',
+          // sortable: false
         },
         {
           text: 'HÀNH ĐỘNG',
@@ -1135,15 +1198,26 @@
           this.createWaiting = false;
         })
       },
+      checkString(str){
+          if (str == null || str == undefined){
+              return ''
+          }
+          else {
+              return str;
+          }
+      },
       getAllContact() {
         this.contacts = []
         this.allContacts = [];
-        contacts.getAllContact(this.idUser, this.page).then(result => {
+        contacts.getAllContact(this.idUser, this.page, this.sortContact.property, this.sortContact.order).then(result => {
           const {
               dispatch
           } = this.$store;
           let time = moment();
           if(result.code == 'SUCCESS'){
+              for(let i = 0; i < result.response.results.length; i++){
+                  result.response.results[i].fullname = this.checkString(result.response.results[i].lastName) + ' ' + this.checkString(result.response.results[i].firstName)
+              }
               this.allContacts = result.response.results;
               this.contacts = this.allContacts;
               this.pages = result.response.totalPage
@@ -1160,12 +1234,15 @@
       getMyContact(){
         this.contacts = []
         this.allContacts = [];
-        contacts.getMyContact(this.idUser, this.page).then(result => {
+        contacts.getMyContact(this.idUser, this.page, this.sortContact.property, this.sortContact.order).then(result => {
           const {
               dispatch
           } = this.$store;
           let time = moment();
           if(result.code == 'SUCCESS'){
+              for(let i = 0; i < result.response.results.length; i++){
+                  result.response.results[i].fullname = this.checkString(result.response.results[i].lastName) + ' ' + this.checkString(result.response.results[i].firstName)
+              }
               this.allContacts = result.response.results;
               this.contacts = this.allContacts;
               this.pages = result.response.totalPage
@@ -1326,14 +1403,18 @@
         this.getAllContact();
       },
       filter(){
+        this.section = 'filter';
         let conditions = this.conditions;
-        console.log(conditions)
+        // console.log(conditions)
         listService.findContactByCondition(this.idUser, conditions).then(result => {
           const {
               dispatch
           } = this.$store;
           let time = moment();
           if(result.code == 'SUCCESS'){
+              for(let i = 0; i < result.response.length; i++){
+                  result.response[i].fullname = this.checkString(result.response[i].lastName) + ' ' + this.checkString(result.response[i].firstName)
+              }
               this.allContacts = result.response;
               this.contacts = this.allContacts.reverse();
               this.page = 1;
@@ -1364,8 +1445,26 @@
       }
     },
     watch:{
-      city(){
-        console.log(this.city)
+      // city(){
+      //   console.log(this.city)
+      // },
+      'sortContact.property'(){
+        this.contacts = []
+        if (this.section == 'allContact'){
+          this.getAllContact()
+        }
+        else if(this.section == 'myContact') {
+          this.getMyContact()
+        }
+      },
+      'sortContact.order'(){
+        this.contacts = []
+        if (this.section == 'allContact'){
+          this.getAllContact()
+        }
+        else if(this.section == 'myContact') {
+          this.getMyContact()
+        }
       },
       page(){
         this.contacts = []
@@ -1378,7 +1477,6 @@
         else if (this.section == 'search'){
           this.searchContact();
         }
-        
       },
       search(){
       },
