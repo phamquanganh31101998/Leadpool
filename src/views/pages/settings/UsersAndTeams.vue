@@ -54,7 +54,7 @@
                                 </v-layout>
                             </v-card-title>
                             <v-card-text>
-                                <v-data-table :headers="headers" :items="users" no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]">
+                                <v-data-table :loading="loadingTable" :headers="headers" :items="users" no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]">
                                     <template v-slot:items="props">
                                         <td><a @click="openPermissionDialog(props.item.userId)">{{ props.item.displayName }}</a></td>
                                         <td>{{ props.item.userEmail }}</td>
@@ -403,6 +403,7 @@ export default {
     },
     data(){
         return {
+            loadingTable: false,
             divider: true,
             // forbiddenDialog: false,
             permissionsDialog: false,
@@ -650,6 +651,7 @@ export default {
             })
         },
         findUserByAccount(){
+            this.loadingTable = true;
             this.allUsers = [];
             this.users = [];
             permissionsService.findUserByAccount(this.idAccount).then(result => {
@@ -686,6 +688,8 @@ export default {
                 
             }).catch(error => {
                 console.log(error)
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         setAdminAccessLevel(value){

@@ -34,6 +34,7 @@
         <v-layout row wrap v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
+                        :loading="loadingTable"
                         no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                         :headers="headers"
                         :items="allDeal"
@@ -133,8 +134,11 @@
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Các Lead có trong thỏa thuận</h4></span>
                             <multi-select :options="allContacts"
+                                
                                 :selected-options="detailDeal.contactId"
                                 @select="onSelect"
+                                
+                                onkeypress="hello()"
                                 option-value="value"
                                 option-text="text"
                                 placeholder="Chọn Lead">
@@ -175,6 +179,9 @@
     </v-content>
 </template>
 <script>
+function hello() {
+    console.log('hello')
+}
 import { MultiSelect } from 'vue-search-select'
 import {Money} from 'v-money'
 import newDeal from '../components/creates/createDeal'
@@ -196,6 +203,8 @@ export default {
     },
     data(){
         return{
+            loadingTable: false,
+            inputText: '',
             all: 'all',
             access: false,
             money: {
@@ -267,7 +276,7 @@ export default {
                 "service": "",
                 "amount": "",
                 "owner": "",
-                contactId: [],
+                "contactId": [],
                 "accountId": "",
                 "createdBy": "",
                 "createdAt": "",
@@ -283,12 +292,18 @@ export default {
     watch: {
     },
     methods: {
+        hello(e){
+            console.log(e)
+        },
         openDetailDialog(number){
+            let res = document.getElementsByClassName('search');
+            console.log(res)
             try {
-                
+                // console.log(this.allDeal[number])
                 this.detailDeal = Object.assign({}, this.allDeal[number]);
-                
+                // console.log(this.detailDeal)
                 if(this.detailDeal.contactId == null){
+                    // console.log('bị null')
                     this.detailDeal.contactId = [];
                 }
                 let tempArr = [];
@@ -461,6 +476,7 @@ export default {
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         getCurrentUser(){
+            
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
             if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || role.includes("ROLE_CONTACT_VIEW_EVERYTHING")){
@@ -523,6 +539,7 @@ export default {
             })
         },
         getDeal(){
+            this.loadingTable = true;
             dealService.getDealByAccount(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -539,6 +556,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         }
     },

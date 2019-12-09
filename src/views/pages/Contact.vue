@@ -16,15 +16,15 @@
             
           </v-flex>
           
-          <v-flex xs4 sm4 md4 lg4 xl4>
+          <v-flex xs8 sm8 md8 lg8 xl8>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
           </v-flex>
-          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
+          <!-- <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
             <v-select v-if="section != 'search' && section != 'filter'" label="Sắp xếp theo" v-model="sortContact.property" :items="sortContact.contactProperties"></v-select>
           </v-flex>
           <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
             <v-select v-if="section != 'search' && section != 'filter'" label="Thứ tự" v-model="sortContact.order" :items="sortContact.orderBy"></v-select>
-          </v-flex>
+          </v-flex> -->
           <!-- <v-flex xs2 sm2 md2 lg2 xl2>
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
@@ -494,7 +494,7 @@
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
         <v-layout row wrap>
-          <v-data-table :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+          <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
             <template v-slot:items="props">
                 <tr>
                 <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
@@ -522,6 +522,90 @@
               </tr>
             </template>
           </v-data-table>
+          <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+            <template v-slot:items="props">
+                <tr>
+                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                  <td class="text-xs-left">{{ props.item.email }}</td>
+                  <td class="text-xs-left">{{ props.item.phone }}</td>
+                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                  <td class="text-xs-left">{{ props.item.city }}</td>
+                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                  <td class="text-xs-left">{{ props.item.service }}</td>
+                  <v-menu>
+                    <template v-slot:activator="{ on }">
+                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                    </template>
+                    <v-list>
+                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+              </tr>
+            </template>
+          </v-data-table>
+          <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+            <template v-slot:items="props">
+                <tr>
+                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                  <td class="text-xs-left">{{ props.item.email }}</td>
+                  <td class="text-xs-left">{{ props.item.phone }}</td>
+                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                  <td class="text-xs-left">{{ props.item.city }}</td>
+                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                  <td class="text-xs-left">{{ props.item.service }}</td>
+                  <v-menu>
+                    <template v-slot:activator="{ on }">
+                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                    </template>
+                    <v-list>
+                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+              </tr>
+            </template>
+          </v-data-table>
+          <!-- <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+            <template v-slot:items="props">
+                <tr>
+                
+                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                  <td class="text-xs-left">{{ props.item.email }}</td>
+                  <td class="text-xs-left">{{ props.item.phone }}</td>
+                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                  <td class="text-xs-left">{{ props.item.city }}</td>
+                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                  <td class="text-xs-left">{{ props.item.service }}</td>
+                  <v-menu>
+                    <template v-slot:activator="{ on }">
+                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                    </template>
+                    <v-list>
+                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+              </tr>
+            </template>
+          </v-data-table> -->
         </v-layout>
         <div class="text-xs-center pt-2">
           <v-pagination v-model="page" :length="pages"></v-pagination>
@@ -662,7 +746,7 @@
                   value: 'service'
               }
           ],
-        property: '',
+        property: 'lastName',
         orderBy: [
           {
             text: 'Tăng dần',
@@ -673,7 +757,7 @@
             value: 'DSC'
           }
         ],
-        order: ''
+        order: 'ASC'
       },
       allService: [],
       service: '',
@@ -759,6 +843,61 @@
       },
       selected: [],
       headers: [{
+          text: 'TÊN',
+          align: 'left',
+          value: 'fullname',
+          // sortable: false
+        },
+        {
+          text: 'EMAIL',
+          align: 'left',
+          value: 'email',
+          // sortable: false
+        },
+        {
+          text: 'SỐ ĐIỆN THOẠI',
+          align: 'left',
+          value: 'phone',
+          // sortable: false
+        },
+        {
+          text: 'VÒNG ĐỜI',
+          align: 'left',
+          value: 'lifecycleStage',
+          // sortable: false
+        },
+        {
+          text: 'TÀI KHOẢN SỞ HỮU',
+          align: 'left',
+          value: 'contactOwner',
+          // sortable: false
+        },
+        {
+          text: 'THÀNH PHỐ',
+          align: 'left',
+          value: 'city',
+          // sortable: false
+        },
+        {
+          text: 'NGÀNH NGHỀ',
+          align: 'left',
+          value: 'bussiness',
+          // sortable: false
+        },
+        {
+          text: 'DỊCH VỤ',
+          align: 'left',
+          value: 'service',
+          // sortable: false
+        },
+        {
+          text: 'HÀNH ĐỘNG',
+          align: 'right',
+          value: 'delete',
+          sortable: false
+        }
+      ],
+      headersSearch: [{
           text: 'TÊN',
           align: 'left',
           value: 'fullname',
@@ -986,6 +1125,25 @@
       ModelSelect
     },
     methods: {
+      customSort(items, index, isDescending) {
+        // The following is informations as far as I researched.
+        // items:  items to be sorted
+        // index: Enabled sort headers value. (black arrow status).
+        // isDescending: Whether enabled sort headers is desc
+        // console.log(items)
+        this.sortContact.property = (index == 'fullname') ? 'lastName' : index;
+        this.sortContact.order = (isDescending) ? 'DSC' : 'ASC';
+        return items;
+        // if(this.sortContact.property != null){
+        //   if(this.section == 'allContact'){
+        //     this.getAllContact()
+        //   }
+        //   else if (this.section == 'myContact') {
+        //     this.getMyContact()
+        //   }
+        // }
+      },
+ 
       getService(){
           this.allService = [];
           serviceAPI.getService(this.idUser).then(result => {
@@ -1470,11 +1628,13 @@
       // },
       'sortContact.property'(){
         this.contacts = []
-        if (this.section == 'allContact'){
-          this.getAllContact()
-        }
-        else if(this.section == 'myContact') {
-          this.getMyContact()
+        if(this.sortContact.property != null){
+          if (this.section == 'allContact'){
+            this.getAllContact()
+          }
+          else if(this.section == 'myContact') {
+            this.getMyContact()
+          }
         }
       },
       'sortContact.order'(){

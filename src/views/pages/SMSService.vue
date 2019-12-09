@@ -9,13 +9,13 @@
         <v-layout row v-if="access">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
-                    <v-list-tile @click="page='schedule'">
+                    <v-list-tile @click="page='schedule', getSchedule()">
                         <v-list-tile-content :style="fontWeight[3]">Quản lý lịch gửi </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page='saveKey'">
+                    <v-list-tile @click="page='saveKey', getListDeviceKey()">
                         <v-list-tile-content :style="fontWeight[1]">Quản lý chiến dịch</v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="page='template'">
+                    <v-list-tile @click="page='template', getTemplate()">
                         <v-list-tile-content :style="fontWeight[2]">Quản lý mẫu tin nhắn</v-list-tile-content>
                     </v-list-tile>
                 </v-list>
@@ -101,7 +101,7 @@
                                             </v-card-title>
                                             <v-card-text>
                                                 <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                                     <template v-slot:items="props">
                                                         <tr>
                                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -132,7 +132,7 @@
                                             </v-card-title>
                                             <v-card-text>
                                                 <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
+                                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
                                                     <template v-slot:items="props">
                                                         <tr>
                                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -288,7 +288,7 @@
                                         <br>
                                     </template>
                                      -->
-                                    <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
+                                    <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
                                         <template v-slot:items="props">
                                             <tr>
                                                 <td>{{props.item.phoneNumber}}</td>
@@ -319,7 +319,7 @@
                                         <br>
                                     </template>
                                      -->
-                                    <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
+                                    <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
                                         <template v-slot:items="props">
                                             <tr>
                                                 <td>{{props.item.phoneNumber}}</td>
@@ -445,7 +445,7 @@
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
-                            <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.headers" :items="schedule.list">
+                            <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.headers" :items="schedule.list">
                                 <template v-slot:items="props">
                                     <tr>
                                         <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -501,7 +501,7 @@
                                 <p>Nội dung tin nhắn: </p>
                                 <v-textarea v-model="schedule.detail.content" readonly rows="2" box></v-textarea>
                                 <br>
-                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
+                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="schedule.detail.headers" :items="schedule.detail.listPhone">
                                     <template v-slot:items="props">
                                         <tr>
                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -630,6 +630,7 @@ export default {
     },
     data(){
         return {
+            loadingTable: false,
             currentUser: null,
             access: false,
             fontWeight: ['', '', '', 'fontWeight: bold'],
@@ -1132,6 +1133,7 @@ export default {
             })
         },
         getStatisticAndHistory(){
+            this.loadingTable = true;
             this.saveKey.selectedCampaignDetail = {
                 total: 0,
                 remain: 0,
@@ -1164,6 +1166,10 @@ export default {
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                this.loadingTable = false;
             });
             this.saveKey.selectedCampaignHistory.success = [];
             this.saveKey.selectedCampaignHistory.fail = [];
@@ -1195,6 +1201,7 @@ export default {
                 }
                 
             })
+            this.loadingTable = false;
         },
         createCampaign(){
             let body = {
@@ -1466,6 +1473,7 @@ export default {
 
         //Schedule
         getSchedule(){
+            this.loadingTable = true;
             this.schedule.list = [];
             SMSService.getSchedule(this.idAccount).then(result => {
                 const {
@@ -1500,9 +1508,12 @@ export default {
                 
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         openScheduleDetailDialog(id){
+            this.loadingTable = true;
             let obj = null;
             SMSService.getSchedule(this.idAccount).then(result => {
                 const {
@@ -1526,6 +1537,8 @@ export default {
                 
             }).catch(error => {
                 console.log(error);
+            }).finally (() => {
+                this.loadingTable = false;
             })
         },
         changeScheduleStatus(number, status){
@@ -1579,8 +1592,8 @@ export default {
             }
             if (this.access == true){
                 this.getList();
-                this.getTemplate();
-                this.getListDeviceKey();
+                // this.getTemplate();
+                // this.getListDeviceKey();
                 this.getSchedule();
             }
         },

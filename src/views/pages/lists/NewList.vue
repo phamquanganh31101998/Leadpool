@@ -534,6 +534,7 @@
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-data-table
+                    :loading="loadingTable"
                     rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                     no-data-text="Không có kết quả nào phù hợp"
                     :headers="headersLists"
@@ -640,6 +641,7 @@ export default {
     },
     data(){
         return {
+            loadingTable: false,
             allService: [],
             phoneSearchInRules: [
                 v => !!v || 'Không được để trống',
@@ -1188,6 +1190,7 @@ export default {
             }
         },
         filter(){
+            this.loadingTable = true;
             this.allContacts = [];
             this.contacts = [];
             listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
@@ -1207,6 +1210,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         }
     },

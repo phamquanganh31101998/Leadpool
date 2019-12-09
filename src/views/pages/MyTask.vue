@@ -59,7 +59,7 @@
                     <v-layout row wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             
-                            <v-data-table :headers="headers" :items="displayTasks" hide-actions no-data-text="Không có công việc nào">
+                            <v-data-table :loading="loadingTable" :headers="headers" :items="displayTasks" hide-actions no-data-text="Không có công việc nào">
                                 <template v-slot:items="props">
                                     <td v-if="props.item.status == 'NOTCOMPLETED'">
                                         <v-tooltip top>
@@ -372,6 +372,7 @@ export default {
         },
     },
     data: vm => ({
+        loadingTable: false,
         currentUser: null,
         logoutDialog: false,
         failDialog: false,
@@ -537,6 +538,7 @@ export default {
             return result;
         },
         getMyTask(page, status, type){
+            this.loadingTable = true;
             if(status == 'COMPLETED'){
                 var params = {
                     page: page,
@@ -571,6 +573,8 @@ export default {
             }).catch(error => {
                 // this.failDialog = true;
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         coverTimeTooltip(time){
