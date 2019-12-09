@@ -1,24 +1,28 @@
 <template>
     <v-container grid-list-md>
         <v-layout wrap>
-            <!-- <v-form style="width: 100%" v-model="valid">
-                <v-layout row wrap>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-text-field :rules="nameRules" label="Tên hợp đồng" v-model="name"></v-text-field>
-                    </v-flex>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="amount"></v-text-field>
-                    </v-flex>
-                </v-layout>
-            </v-form> -->
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <span><h4>Tên hợp đồng</h4></span>
+                <span><h4>Chủ sở hữu</h4></span>
+                <v-select solo v-model="owner" :items="allEmail"></v-select>
+            </v-flex>
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <span><h4>Tên thỏa thuận</h4></span>
                 <v-text-field :rules="nameRules" v-model="name"></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12 style="padding-top: 20px;padding-bottom: 20px;">
                 <!-- <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="amount"></v-text-field> -->
                 <span style="padding-top: 20px; padding-bottom: 10px;"><h4>Giá trị</h4></span>
                 <money style="width: 100%; font-size: 16px; " v-model="amount" v-bind="money"></money>
+            </v-flex>
+            <v-flex xs12 sm12 md12 lg12 xl12 v-if="idContact == 'all'">
+                <span><h4>Các Lead có trong thỏa thuận</h4></span>
+                <multi-select :options="allContacts"
+                    :selected-options="contacts"
+                    @select="onSelect"
+                    option-value="value"
+                    option-text="text"
+                    placeholder="Chọn Lead">
+                </multi-select>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Dịch vụ</h4></span>
@@ -27,10 +31,6 @@
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Giai đoạn</h4></span>
                 <v-select solo v-model="stage" :items="allStage"></v-select>
-            </v-flex>
-            <v-flex xs12 sm12 md12 lg12 xl12>
-                <span><h4>Chủ sở hữu</h4></span>
-                <v-select solo v-model="owner" :items="allEmail"></v-select>
             </v-flex>
         </v-layout>
         <br>
@@ -43,14 +43,15 @@
     </v-container>
 </template>
 <script>
-
+    import { MultiSelect } from 'vue-search-select'
     import {Money} from 'v-money'
     import moment from 'moment'
     import {eventBus} from '../../../eventBus'
     import dealService from '../../../services/deal.service'
     import serviceAPI from '../../../services/service.service'
+    import contactAPI from '../../../services/contacts.service'
     export default {
-        components: {Money},
+        components: {Money, MultiSelect},
         props: {
             idAccount: {
                 type: String,
@@ -87,31 +88,40 @@
                 ],
                 valid: false,
                 createWaiting: false,
+                allContacts: [],
+                contacts: []
             }
         },
         computed: {
         },
         methods:{
             createDeal(){
-                if (this.idContact == null){
+                var contactArr = [];
+                if (this.idContact == 'all'){
+                    for(let i = 0; i < this.contacts.length;i++){
+                        contactArr.push(this.contacts[i].value)
+                    }
                     var body = {
                         name: this.name, 
                         stage: this.stage,
                         service: this.service, 
                         amount: this.amount,
-                        owner: this.owner
+                        owner: this.owner,
+                        contactId: contactArr
                     }
                 }
                 else {
+                    contactArr.push(this.idContact)
                     body = {
                         name: this.name, 
                         stage: this.stage,
                         service: this.service, 
                         amount: this.amount,
                         owner: this.owner,
-                        contactId: this.idContact
+                        contactId: contactArr
                     }
                 }
+                // console.log(body)
                 dealService.createDeal(this.idAccount, body).then(result => {
                     const {
                         dispatch
@@ -180,11 +190,68 @@
                 }).catch(error => {
                     console.log(error);
                 })
-            }
+            },
+            checkString(str){
+                if (str == null || str == undefined){
+                    return ''
+                }
+                else {
+                    return str;
+                }
+            },
+            onSelect(items){
+                this.contacts = items;
+                // console.log(this.contacts)
+            },
+            getAllContact(){
+                this.allContacts = [];
+                contactAPI.getAllContact(this.idAccount, 1).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for (let i = 1; i <= result.response.totalPage;i++){
+                            contactAPI.getAllContact(this.idAccount, i).then(result => {
+                                const {
+                                    dispatch
+                                } = this.$store;
+                                let time = moment();
+                                if(result.code == 'SUCCESS'){
+                                    for(let k = 0; k < result.response.results.length; k++){
+                                        let tempObj = result.response.results[k];
+                                        let obj = {
+                                            text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
+                                            value: this.checkString(tempObj.contactId)
+                                        }
+                                        this.allContacts.push(obj);
+                                    }
+                                }
+                                else {
+                                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                                }
+                            }).catch(error => {
+                                console.log(error);
+                            })
+                        }
+                        
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                    
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
         },
         created(){
             this.getAllEmail();
             this.getService();
+            if(this.idContact == 'all'){
+                this.getAllContact();
+            }
+            // this.getAllContact();
         }
     }
 </script>

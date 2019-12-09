@@ -10,7 +10,7 @@
                         <!-- <v-text-field append-icon="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field> -->
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-dialog v-model="createDeal" persistent max-width="700px">
+                        <v-dialog v-model="createDeal" persistent max-width="700px" height="700px;">
                             <template v-slot:activator="{ on }">
                                 <v-btn v-if="access" round dark color="#3E82F7" v-on="on"> <v-icon>add</v-icon> Tạo mới</v-btn>
                             </template>
@@ -19,7 +19,7 @@
                                     <span class="headline">Tạo Thỏa thuận</span>
                                 </v-card-title>
                                 <v-card-text>
-                                    <newDeal :idAccount="this.idAccount" @closeCreateDealDialog="createDeal = false"/>
+                                    <newDeal :idAccount="this.idAccount" :idContact="all" @closeCreateDealDialog="createDeal = false"/>
                                 </v-card-text>
                                 <v-divider :divider="divider"></v-divider>
                             </v-card>
@@ -117,14 +117,10 @@
                 </v-card-title>
                 <v-card-text>
                     <v-layout wrap>
-                        <!-- <v-layout row wrap>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-text-field :rules="nameRules" label="Tên Thỏa thuận" v-model="detailDeal.name"></v-text-field>
-                            </v-flex>
-                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                <v-text-field :rules="numberRules" type="number" label="Giá trị Thỏa thuận" v-model="detailDeal.amount"></v-text-field>
-                            </v-flex>
-                        </v-layout> -->
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Chủ sở hữu</h4></span>
+                            <v-select solo v-model="detailDeal.owner" :items="allEmail"></v-select>
+                        </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Tên thỏa thuận</h4></span>
                             <v-text-field :rules="nameRules" v-model="detailDeal.name"></v-text-field>
@@ -135,6 +131,16 @@
                             <money style="width: 100%; margin-top: 0px; padding-top: 0px; font-size: 16px; border-bottom: 1px solid grey;" v-model="detailDeal.amount" v-bind="money"></money>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
+                            <span><h4>Các Lead có trong thỏa thuận</h4></span>
+                            <multi-select :options="allContacts"
+                                :selected-options="detailDeal.contactId"
+                                @select="onSelect"
+                                option-value="value"
+                                option-text="text"
+                                placeholder="Chọn Lead">
+                            </multi-select>
+                        </v-flex>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Dịch vụ</h4></span>
                             <v-select solo v-model="detailDeal.service" :items="allService"></v-select>
                         </v-flex>
@@ -142,15 +148,12 @@
                             <span><h4>Giai đoạn</h4></span>
                             <v-select solo v-model="detailDeal.stage" :items="allStage"></v-select>
                         </v-flex>
-                        <v-flex xs12 sm12 md12 lg12 xl12>
-                            <span><h4>Chủ sở hữu</h4></span>
-                            <v-select solo v-model="detailDeal.owner" :items="allEmail"></v-select>
-                        </v-flex>
+                        
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="primary" flat :disabled="detailDeal.name == '' || detailDeal.amount ==''" @click="updateDeal()">Lưu lại</v-btn>
-                    <v-btn flat @click="detailDialog = false" color="red">Đóng</v-btn>
+                    <v-btn flat  color="red" @click="detailDialog = false">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -172,6 +175,7 @@
     </v-content>
 </template>
 <script>
+import { MultiSelect } from 'vue-search-select'
 import {Money} from 'v-money'
 import newDeal from '../components/creates/createDeal'
 import serviceAPI from '../../services/service.service'
@@ -179,9 +183,10 @@ import moment from 'moment'
 import dealService from '../../services/deal.service'
 import { eventBus } from '../../eventBus'
 import numberFormat from '../../helpers/numberformat'
+import contactAPI from '../../services/contacts.service'
 export default {
     components: {
-        newDeal, Money
+        newDeal, Money, MultiSelect
     },
     props: {
         idAccount: {
@@ -191,6 +196,7 @@ export default {
     },
     data(){
         return{
+            all: 'all',
             access: false,
             money: {
                 decimal: ',',
@@ -251,6 +257,7 @@ export default {
                     value: 'name'
                 },
             ],
+            allContacts: [],
             detailDialog: false,
             valid: true,
             detailDeal: {
@@ -260,7 +267,7 @@ export default {
                 "service": "",
                 "amount": "",
                 "owner": "",
-                "contactId": "",
+                contactId: [],
                 "accountId": "",
                 "createdBy": "",
                 "createdAt": "",
@@ -276,6 +283,34 @@ export default {
     watch: {
     },
     methods: {
+        openDetailDialog(number){
+            try {
+                
+                this.detailDeal = Object.assign({}, this.allDeal[number]);
+                
+                if(this.detailDeal.contactId == null){
+                    this.detailDeal.contactId = [];
+                }
+                let tempArr = [];
+                for(let i = 0; i < this.detailDeal.contactId.length; i++){
+                    tempArr.push(this.getContactFromId(this.detailDeal.contactId[i]));
+                }
+                // this.detailDeal.contactId.length = 0;
+                this.detailDeal.contactId = tempArr;
+                // console.log(this.detailDeal)
+            } catch (error) {
+                console.log(error)
+            }
+            finally {
+                this.detailDialog = true;
+            }
+            
+        },
+        onSelect(items){
+            this.detailDeal.contactId = items;
+            // console.log(this.detailDeal)
+            // console.log(this.contacts)
+        },
         formatNumber(num){
             return numberFormat.number_format(num);
         },
@@ -324,8 +359,26 @@ export default {
                 
             })
         },
+        getContactFromId(id){
+            // console.log(id)
+            let result = null;
+            for(let i = 0; i < this.allContacts.length; i++){
+                if(this.allContacts[i].value == id){
+                    // console.log('found')
+                    result = Object.assign({}, this.allContacts[i]);
+                    break;
+                }
+            }
+            return result;
+        },
         updateDeal(){
-            let body = this.detailDeal;
+            let tempArr = [];
+            let body = Object.assign({}, this.detailDeal);
+            for(let i = 0; i < body.contactId.length; i++){
+                tempArr.push(body.contactId[i].value)
+            }
+            body.contactId = tempArr;
+            // console.log(body);
             dealService.updateDeal(this.idAccount, body).then(result => {
                 const {
                     dispatch
@@ -384,10 +437,25 @@ export default {
                 console.log(error);
             })
         },
-        openDetailDialog(number){
-            this.detailDeal = Object.assign({}, this.allDeal[number]);
-            this.detailDialog = true;
-        },
+        
+        // closeDetailDialog(){
+        //     let emptyObj = {
+        //         "dealId": "",
+        //         "name": "",
+        //         "stage": "",
+        //         "service": "",
+        //         "amount": "",
+        //         "owner": "",
+        //         contactId: [],
+        //         "accountId": "",
+        //         "createdBy": "",
+        //         "createdAt": "",
+        //         "updatedBy": "",
+        //         "updateAt": ""
+        //     }
+        //     this.detailDeal = Object.assign({}, emptyObj)
+        //     this.detailDialog = false
+        // },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -399,11 +467,60 @@ export default {
                 this.access = true;
             }
             if(this.access == true){
+                this.getAllContact();
                 this.getAllEmail();
                 this.getService();
                 this.getDeal();
             }
             
+        },
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
+        getAllContact(){
+            this.allContacts.length = 0;
+            contactAPI.getAllContact(this.idAccount, 1).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 1; i <= result.response.totalPage;i++){
+                        contactAPI.getAllContact(this.idAccount, i).then(result => {
+                            const {
+                                dispatch
+                            } = this.$store;
+                            let time = moment();
+                            if(result.code == 'SUCCESS'){
+                                for(let k = 0; k < result.response.results.length; k++){
+                                    let tempObj = result.response.results[k];
+                                    let obj = {
+                                        text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
+                                        value: this.checkString(tempObj.contactId)
+                                    }
+                                    this.allContacts.push(obj);
+                                }
+                            }
+                            else {
+                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    }
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                
+            }).catch(error => {
+                console.log(error);
+            })
         },
         getDeal(){
             dealService.getDealByAccount(this.idAccount).then(result => {
