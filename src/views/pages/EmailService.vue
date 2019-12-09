@@ -43,11 +43,11 @@
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manage'">
                 <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <span class="ml-2 pt-4 pb-4"><v-btn round color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
-                        <v-card>
+                        <span><v-btn class="mt-3" round color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
+                        <v-card class=" mt-3">
                             <v-card-text>
                                 <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
-                                <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
+                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
                                         <tr>
                                             <td>{{props.item.text}}</td>
@@ -160,7 +160,7 @@
                                     </v-card-title>
                                     <v-card-text>
 
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                        <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                             <template v-slot:items="props">
                                                 <tr>
                                                     <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -191,7 +191,7 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                        <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
+                                        <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
                                             <template v-slot:items="props">
                                                 <tr>
                                                     <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -220,12 +220,12 @@
             </v-dialog>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manageSchedule'">
                 <v-layout row wrap>
-                    <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
-                        <v-btn round dark color="#3E82F7" @click="page='createSchedule'">Tạo lịch gửi mới</v-btn>
+                    <v-flex xs12 sm12 md12 lg12 xl12 class="mb-3 mt-3">
+                        <v-btn round dark color="#3E82F7" @click="page='createSchedule'"> <v-icon>add</v-icon> Tạo lịch gửi mới</v-btn>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
-                            <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="manageSchedule.headers" :items="manageSchedule.list">
+                            <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="manageSchedule.headers" :items="manageSchedule.list">
                                 <template v-slot:items="props">
                                     <tr>
                                         <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -314,7 +314,7 @@
                     <span class="headline">Chi tiết</span>
                 </v-card-title>
                 <v-card-text>
-                    <v-data-table rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="manageSchedule.detail.headers" :items="manageSchedule.detail.listEmail">
+                    <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="manageSchedule.detail.headers" :items="manageSchedule.detail.listEmail">
                         <template v-slot:items="props">
                             <tr>
                                 <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
@@ -492,6 +492,7 @@ export default {
     },
     data(){
         return{
+            loadingTable: false,
             createBtn: true,
             title: 'Tạo mẫu email mới',
             allEmail: [],
@@ -803,6 +804,7 @@ export default {
             return moment(time).format('YYYY/MM/DD, HH:mm:ss')
         },
         getEmailTemplate(){
+            this.loadingTable = true;
             emailService.getEmailTemplate(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -818,6 +820,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         setSelectEmailTemplate(templateArray){
@@ -940,7 +944,7 @@ export default {
                         {
                             id: 'text',
                             label: '<h2>Văn bản</h2>',
-                            content: '<div data-gjs-type="text" style="width: 100%"></span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Leo urna molestie at elementum eu facilisis sed. Tortor id aliquet lectus proin nibh nisl. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Venenatis cras sed felis eget velit aliquet sagittis id. Pretium quam vulputate dignissim suspendisse in est. Massa placerat duis ultricies lacus sed turpis tincidunt id. Duis ultricies lacus sed turpis tincidunt. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et netus. Rhoncus mattis rhoncus urna neque viverra justo nec. Malesuada fames ac turpis egestas integer eget. Felis bibendum ut tristique et egestas quis ipsum. Augue neque gravida in fermentum.</span></div>',
+                            content: '<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Leo urna molestie at elementum eu facilisis sed. Tortor id aliquet lectus proin nibh nisl. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Venenatis cras sed felis eget velit aliquet sagittis id. Pretium quam vulputate dignissim suspendisse in est. Massa placerat duis ultricies lacus sed turpis tincidunt id. Duis ultricies lacus sed turpis tincidunt. Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et netus. Rhoncus mattis rhoncus urna neque viverra justo nec. Malesuada fames ac turpis egestas integer eget. Felis bibendum ut tristique et egestas quis ipsum. Augue neque gravida in fermentum.</span>',
                             
                         }, 
                         {
@@ -1660,6 +1664,7 @@ export default {
             }
         },
         getSchedule(){
+            this.loadingTable = true;
             this.manageSchedule.list = [];
             emailService.getEmailSchedule(this.idAccount).then(result => {
                 const {
@@ -1686,6 +1691,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error)
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         changeScheduleStatus(id, status){

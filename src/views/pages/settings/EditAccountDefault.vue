@@ -68,7 +68,7 @@
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap>
-                                        <v-data-table style="width: 100%" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="displayService" no-data-text="Tổ chức này chưa có dịch vụ nào">
+                                        <v-data-table :loading="loadingTable" style="width: 100%" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="displayService" no-data-text="Tổ chức này chưa có dịch vụ nào">
                                             <template v-slot:items="props">
                                                 <td>{{ props.item.name }}</td>
                                                 <td>{{ coverTimeDetail(props.item.createdAt) }}</td>
@@ -243,6 +243,7 @@ export default {
     },
     data(){
         return {
+            loadingTable: false,
             allCountry: [],
             country: [],
             isSysadmin: false,
@@ -504,6 +505,7 @@ export default {
             
         },
         getService(){
+            this.loadingTable = true;
             serviceAPI.getService(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -518,6 +520,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
             this.search = '';
         }
