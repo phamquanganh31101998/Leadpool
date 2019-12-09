@@ -35,6 +35,7 @@
         <v-layout v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
+                    :loading="loadingTable"
                         no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                         :headers="headersLists"
                         :items="lists"
@@ -124,6 +125,7 @@ export default {
     },
     data(){
         return{
+            loadingTable: false,
             deleteListDialog: {
                 dialog: false,
                 id: ''
@@ -207,6 +209,7 @@ export default {
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         getList(){
+            this.loadingTable = true;
             listService.getList(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -221,6 +224,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         goToListDetailPage(idList){

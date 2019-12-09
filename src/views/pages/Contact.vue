@@ -16,9 +16,14 @@
             
           </v-flex>
           
-          <v-flex xs8 sm8 md8 lg8 xl8>
-            
+          <v-flex xs4 sm4 md4 lg4 xl4>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
+          </v-flex>
+          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
+            <v-select v-if="section != 'search' && section != 'filter'" label="Sắp xếp theo" v-model="sortContact.property" :items="sortContact.contactProperties"></v-select>
+          </v-flex>
+          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
+            <v-select v-if="section != 'search' && section != 'filter'" label="Thứ tự" v-model="sortContact.order" :items="sortContact.orderBy"></v-select>
           </v-flex>
           <!-- <v-flex xs2 sm2 md2 lg2 xl2>
             <v-menu offset-y>
@@ -488,16 +493,8 @@
         </template>
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
-        <v-layout row>
-          <v-flex xs2 sm2 md2 lg2 xl2 offset-xs8 offset-sm8 offset-md8 offset-lg8 offset-xl8>
-            <v-select v-if="section != 'search' && section != 'filter'" label="Sắp xếp theo" v-model="sortContact.property" :items="sortContact.contactProperties"></v-select>
-          </v-flex>
-          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
-            <v-select v-if="section != 'search' && section != 'filter'" label="Thứ tự" v-model="sortContact.order" :items="sortContact.orderBy"></v-select>
-          </v-flex>
-        </v-layout>
         <v-layout row wrap>
-          <v-data-table style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+          <v-data-table :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
             <template v-slot:items="props">
                 <tr>
                 <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
@@ -624,6 +621,7 @@
       },
     },
     data: () => ({
+      loadingTable: false,
       sortContact: {
         contactProperties: 
           [
@@ -764,49 +762,49 @@
           text: 'TÊN',
           align: 'left',
           value: 'fullname',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'EMAIL',
           align: 'left',
           value: 'email',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'SỐ ĐIỆN THOẠI',
           align: 'left',
           value: 'phone',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'VÒNG ĐỜI',
           align: 'left',
           value: 'lifecycleStage',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'TÀI KHOẢN SỞ HỮU',
           align: 'left',
           value: 'contactOwner',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'THÀNH PHỐ',
           align: 'left',
           value: 'city',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'NGÀNH NGHỀ',
           align: 'left',
           value: 'bussiness',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'DỊCH VỤ',
           align: 'left',
           value: 'service',
-          // sortable: false
+          sortable: false
         },
         {
           text: 'HÀNH ĐỘNG',
@@ -1207,6 +1205,7 @@
           }
       },
       getAllContact() {
+        this.loadingTable = true;
         this.contacts = []
         this.allContacts = [];
         contacts.getAllContact(this.idUser, this.page, this.sortContact.property, this.sortContact.order).then(result => {
@@ -1224,14 +1223,16 @@
           }
           else {
               dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-          } 
-          
+          }
         }).catch(error => {
           // this.failDialog = true;
           console.log(error);
+        }).finally(() => {
+          this.loadingTable = false;
         })
       },
       getMyContact(){
+        this.loadingTable = true;
         this.contacts = []
         this.allContacts = [];
         contacts.getMyContact(this.idUser, this.page, this.sortContact.property, this.sortContact.order).then(result => {
@@ -1253,6 +1254,8 @@
           
         }).catch(error => {
           console.log(error);
+        }).finally(() => {
+          this.loadingTable = false;
         })
 
       },
@@ -1403,6 +1406,7 @@
         this.getAllContact();
       },
       filter(){
+        this.loadingTable = true;
         this.section = 'filter';
         let conditions = this.conditions;
         // console.log(conditions)
@@ -1426,21 +1430,37 @@
         }).catch(error => {
           // this.failDialog = true;
           console.log(error);
+        }).finally(() => {
+          this.loadingTable = false;
         })
       },
       normalText(str){
           return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
       },
       searchContact(){
+        this.loadingTable = true;
         this.contacts = []
         this.allContacts = [];
         contacts.searchContact(this.idUser, this.page, this.search).then(result => {
-          console.log(result)
-          this.allContacts = result.response.results;
-          this.contacts = this.allContacts;
-          this.pages = result.response.totalPage
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              for(let i = 0; i < result.response.results.length; i++){
+                  result.response.results[i].fullname = this.checkString(result.response.results[i].lastName) + ' ' + this.checkString(result.response.results[i].firstName)
+              }
+              this.allContacts = result.response.results;
+              this.contacts = this.allContacts;
+              this.pages = result.response.totalPage
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
         }).catch(error => {
           console.log(error);
+        }).finally(() => {
+          this.loadingTable = false;
         })
       }
     },
