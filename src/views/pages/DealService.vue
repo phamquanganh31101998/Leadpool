@@ -133,16 +133,23 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Các Lead có trong thỏa thuận</h4></span>
-                            <multi-select :options="allContacts"
-                                
+                            <!-- <multi-select :options="allContacts"
                                 :selected-options="detailDeal.contactId"
                                 @select="onSelect"
-                                
-                                onkeypress="hello()"
                                 option-value="value"
                                 option-text="text"
                                 placeholder="Chọn Lead">
-                            </multi-select>
+                            </multi-select> -->
+                            <!-- <v-combobox multiple :items="allContacts" v-model="detailDeal.contactId" :search-input.sync="searchContactText"></v-combobox> -->
+                            <v-combobox @input="removeNotObject()" v-model="detailDeal.contactId" small-chips :items="allContacts" :search-input.sync="searchContactText"
+                                outlined multiple>
+                                <template v-slot:selection="data">
+                                    <v-chip close @input="remove(data)">
+                                        <strong>{{ data.item.text }}</strong>
+                                    </v-chip>
+                                    <br>
+                                </template>
+                            </v-combobox>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Dịch vụ</h4></span>
@@ -157,7 +164,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="primary" flat :disabled="detailDeal.name == '' || detailDeal.amount ==''" @click="updateDeal()">Lưu lại</v-btn>
-                    <v-btn flat  color="red" @click="detailDialog = false">Đóng</v-btn>
+                    <v-btn flat  color="red" @click="detailDialog = false, searchContactText = ''">Đóng</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -179,9 +186,6 @@
     </v-content>
 </template>
 <script>
-function hello() {
-    console.log('hello')
-}
 import { MultiSelect } from 'vue-search-select'
 import {Money} from 'v-money'
 import newDeal from '../components/creates/createDeal'
@@ -203,6 +207,7 @@ export default {
     },
     data(){
         return{
+            searchContactText: '',
             loadingTable: false,
             inputText: '',
             all: 'all',
@@ -290,14 +295,54 @@ export default {
         }
     },
     watch: {
+
+        searchContactText(){
+            this.allContacts = [];
+            if(this.searchContactText != '' && this.searchContactText != null){
+                dealService.searchContactForDeal(this.idAccount, this.searchContactText).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        let res = result.response;
+                        for (let i = 0; i < res.length; i++){
+                            let obj = {
+                                text: this.checkString(res[i].lastName) + ' ' + this.checkString(res[i].firstName) + ' (' + this.checkString(res[i].email) + ')',
+                                value: this.checkString(res[i].contactId)
+                            }
+                            this.allContacts.push(obj)
+                        }
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+            
+        }
     },
     methods: {
-        hello(e){
-            console.log(e)
+        removeNotObject(){
+            for (let i = 0; i < this.detailDeal.contactId.length; i++){
+                if (typeof(this.detailDeal.contactId[i]) != 'object'){
+                    this.detailDeal.contactId.splice(i, 1)
+                }
+            }
+        },
+        remove(data){
+            this.detailDeal.contactId.splice(data.index, 1)
+            
+        },
+        hello(){
+            // if(this.allContacts.length > 0){
+            //     this.detailDeal.contactId.push(this.allContacts[0])
+            // }
+            console.log(this.detailDeal.contactId)
         },
         openDetailDialog(number){
-            let res = document.getElementsByClassName('search');
-            console.log(res)
             try {
                 // console.log(this.allDeal[number])
                 this.detailDeal = Object.assign({}, this.allDeal[number]);
@@ -308,9 +353,28 @@ export default {
                 }
                 let tempArr = [];
                 for(let i = 0; i < this.detailDeal.contactId.length; i++){
-                    tempArr.push(this.getContactFromId(this.detailDeal.contactId[i]));
+                    
+                    contactAPI.getdetailContact(this.idAccount, this.detailDeal.contactId[i]).then(result => {
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            let obj = {
+                                text: this.checkString(result.response.lastName) + ' ' + this.checkString(result.response.firstName) + ' (' + this.checkString(result.response.email) + ')',
+                                value: this.checkString(result.response.contactId)
+                            }
+                           
+                            tempArr.push(obj)
+                            // console.log(tempArr)
+                        }
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
                 }
-                // this.detailDeal.contactId.length = 0;
                 this.detailDeal.contactId = tempArr;
                 // console.log(this.detailDeal)
             } catch (error) {
@@ -375,16 +439,38 @@ export default {
             })
         },
         getContactFromId(id){
-            // console.log(id)
-            let result = null;
-            for(let i = 0; i < this.allContacts.length; i++){
-                if(this.allContacts[i].value == id){
-                    // console.log('found')
-                    result = Object.assign({}, this.allContacts[i]);
-                    break;
+            let res = null;
+            contactAPI.getdetailContact(this.idAccount, id).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let obj = {
+                        text: this.checkString(result.response.lastName) + ' ' + this.checkString(result.response.firstName) + ' (' + this.checkString(result.response.email) + ')',
+                        value: this.checkString(result.response.contactId)
+                    }
+                    res = Object.assign({}, obj);
+                    console.log(res)
+                    return res;
                 }
-            }
-            return result;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+            
+            // console.log(id)
+            // let result = null;
+            // for(let i = 0; i < this.allContacts.length; i++){
+            //     if(this.allContacts[i].value == id){
+            //         // console.log('found')
+            //         result = Object.assign({}, this.allContacts[i]);
+            //         break;
+            //     }
+            // }
+            // return result;
         },
         updateDeal(){
             let tempArr = [];
@@ -483,7 +569,7 @@ export default {
                 this.access = true;
             }
             if(this.access == true){
-                this.getAllContact();
+                // this.getAllContact();
                 this.getAllEmail();
                 this.getService();
                 this.getDeal();
@@ -498,46 +584,46 @@ export default {
                 return str;
             }
         },
-        getAllContact(){
-            this.allContacts.length = 0;
-            contactAPI.getAllContact(this.idAccount, 1).then(result => {
-                const {
-                    dispatch
-                } = this.$store;
-                let time = moment();
-                if(result.code == 'SUCCESS'){
-                    for (let i = 1; i <= result.response.totalPage;i++){
-                        contactAPI.getAllContact(this.idAccount, i).then(result => {
-                            const {
-                                dispatch
-                            } = this.$store;
-                            let time = moment();
-                            if(result.code == 'SUCCESS'){
-                                for(let k = 0; k < result.response.results.length; k++){
-                                    let tempObj = result.response.results[k];
-                                    let obj = {
-                                        text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
-                                        value: this.checkString(tempObj.contactId)
-                                    }
-                                    this.allContacts.push(obj);
-                                }
-                            }
-                            else {
-                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                            }
-                        }).catch(error => {
-                            console.log(error);
-                        })
-                    }
-                }
-                else {
-                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                }
+        // getAllContact(){
+        //     this.allContacts.length = 0;
+        //     contactAPI.getAllContact(this.idAccount, 1).then(result => {
+        //         const {
+        //             dispatch
+        //         } = this.$store;
+        //         let time = moment();
+        //         if(result.code == 'SUCCESS'){
+        //             for (let i = 1; i <= result.response.totalPage;i++){
+        //                 contactAPI.getAllContact(this.idAccount, i).then(result => {
+        //                     const {
+        //                         dispatch
+        //                     } = this.$store;
+        //                     let time = moment();
+        //                     if(result.code == 'SUCCESS'){
+        //                         for(let k = 0; k < result.response.results.length; k++){
+        //                             let tempObj = result.response.results[k];
+        //                             let obj = {
+        //                                 text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
+        //                                 value: this.checkString(tempObj.contactId)
+        //                             }
+        //                             this.allContacts.push(obj);
+        //                         }
+        //                     }
+        //                     else {
+        //                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+        //                     }
+        //                 }).catch(error => {
+        //                     console.log(error);
+        //                 })
+        //             }
+        //         }
+        //         else {
+        //             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+        //         }
                 
-            }).catch(error => {
-                console.log(error);
-            })
-        },
+        //     }).catch(error => {
+        //         console.log(error);
+        //     })
+        // },
         getDeal(){
             this.loadingTable = true;
             dealService.getDealByAccount(this.idAccount).then(result => {

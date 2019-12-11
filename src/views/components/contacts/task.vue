@@ -771,6 +771,7 @@ import alert from '@/components/alert'
                             result.response[i].timeMenu = false;
                         }
                         this.tasks = result.response.reverse();
+                        dispatch('data/updateTask', this.tasks)
                     }
                     else {
                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -827,6 +828,7 @@ import alert from '@/components/alert'
                     let time = moment();
                     if(result.code == 'SUCCESS'){
                         dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        dispatch('data/updateTask', this.tasks)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateTaskList();
                     }

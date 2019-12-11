@@ -1,10 +1,10 @@
 <template>
   <v-content class="mt-4 pl-3 pr-3">
     <v-layout row wrap>
-      <v-flex xs12 sm12 md5 lg6 xl6>
+      <v-flex xs12 sm12 md5 lg5 xl5>
         <h1 class="ml-3">Quản lý Leads</h1>
       </v-flex>
-      <v-flex xs12 sm12 md7 lg6 xl6>
+      <v-flex xs12 sm12 md7 lg7 xl7>
         <v-layout row>
           <v-flex xs1 sm1 md1 lg1 xl1>
             <v-tooltip top>
@@ -16,7 +16,7 @@
             
           </v-flex>
           
-          <v-flex xs8 sm8 md8 lg8 xl8>
+          <v-flex xs7 sm7 md7 lg7 xl7>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
           </v-flex>
           <!-- <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
@@ -44,7 +44,52 @@
               Import
             </v-btn>
           </v-flex> -->
-          <v-flex xs3 sm3 md3 lg3 xl3>
+          <v-flex xs1 sm1 md1 lg1 xl1>
+            <!-- <upload-btn
+              @file-update="updateFile"
+              round dark color="#3E82F7"
+              title="Import"
+              noTitleUpdate
+              :ripple="false"
+            >
+              
+            </upload-btn> -->
+            <v-dialog v-model="uploadFileDialog.dialog" width="400">
+              <template v-slot:activator="{ on }">
+                <v-btn round dark color="#3E82F7" class="ml-4" v-on="on" >Import</v-btn>
+              </template>
+              <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                  <span class="headline">Thêm Lead từ file excel</span>
+                </v-card-title>
+                <v-card-text style="padding: 0px 0px;">
+                  <v-layout row>
+                    <div class="container">
+                      <div>
+                        <label><h4  style="font-weight: bold;">Chọn file excel từ máy tính của bạn để thêm lead (Định dạng .xlsx, .xlsm, ...)</h4>
+                          <br>
+                          <br>
+                          <v-icon>attach_file</v-icon>
+                          <input type="file" value="Click để chọn file để tải lên" id="file" ref="file" v-on:change="handleFileUpload()"/>
+                        </label>
+                      </div>
+                    </div>
+                  </v-layout>
+                </v-card-text>
+                <v-alert
+                  :value="!checkFileExtension(uploadFileDialog.file.name) && uploadFileDialog.file.name != ''"
+                  type="error"
+                  >
+                  File không đúng định dạng của excel
+                </v-alert>
+                <v-card-actions>
+                  <v-btn color="primary" :disabled="!checkFileExtension(uploadFileDialog.file.name)" flat @click="submitFile()">Tải lên</v-btn>
+                  <v-btn color="red" flat @click="uploadFileDialog.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-flex>
+          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-4">
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
                 <v-btn round dark color="#3E82F7" class="ml-4" v-on="on" > <v-icon>person_add</v-icon> Tạo Lead mới</v-btn>
@@ -114,6 +159,16 @@
             </v-dialog>
           </v-flex>
         </v-layout>
+        <!-- <v-layout row>
+          <div class="container">
+            <div class="large-12 medium-12 small-12 cell">
+              <label>File
+                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+              </label>
+                <v-btn round v-on:click="submitFile()">Import</v-btn>
+            </div>
+          </div>
+        </v-layout> -->
       </v-flex>
     </v-layout>
     <v-divider class="mt-3" :divider="divider"></v-divider>
@@ -690,6 +745,14 @@
   </v-content>
 </template>
 <script>
+  const axios = require('axios');
+  function validateFormOnSubmit(theForm) {
+      console.log(theForm)
+      return false;
+  }
+  import {authHeader} from '../../helpers/auth-header'
+  import config from '../../config'
+  import UploadButton from 'vuetify-upload-button';
   import accountAPI from '../../services/accountsetting.service'
   import { ModelSelect } from 'vue-search-select'
   import moment from 'moment'
@@ -705,6 +768,7 @@
       },
     },
     data: () => ({
+    
       loadingTable: false,
       sortContact: {
         contactProperties: 
@@ -1109,9 +1173,20 @@
       },
       editRole: '',
       viewRole: '',
-      isSysAdmin: false
+      isSysAdmin: false,
+      uploadFileDialog: {
+        dialog: false,
+        file: {
+          name: ''
+        },
+        extension: ['xlsx', 'xlsm', 'xlsb', 'xltx', 'xltm', 'xls', 'xlt', 'xml', 'xlam', 'xla', 'xlr']
+      }
+      
     }),
     computed: {
+      path(){
+        return `${config.apiContact}/${this.idUser}/import`
+      },
       disableSaveFilterButton(){
         if (this.saveFilter.name == ''){
           return true;
@@ -1122,9 +1197,84 @@
       },
     },
     components: {
-      ModelSelect
+      ModelSelect,
+      'upload-btn': UploadButton
     },
     methods: {
+      checkFileExtension(filename) {
+        let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        if(this.uploadFileDialog.extension.includes(ext)){
+          return true
+        }
+        else{
+          return false
+        }
+      },
+      handleFileUpload(){
+        this.uploadFileDialog.file = this.$refs.file.files[0];
+      },
+      submitFile(){
+        let formData = new FormData();
+        formData.append('file', this.uploadFileDialog.file);
+        console.log(this.uploadFileDialog.file)
+        let link = `${config.apiContact}/${this.idUser}/import`
+        // let link = 'http://dev.adstech.vn:9000/account/5d1dd258f0aa61074608b0e3/import'
+        axios.post(link,
+          formData,
+          {
+            headers: authHeader()
+          }
+        ).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.data.code == 'SUCCESS'){
+              dispatch('alert/success', `${result.data.message} (${this.coverTimeDetail(time)})`)
+          }
+          else {
+              dispatch('alert/error', `Import thất ${result.data.message} (${this.coverTimeDetail(time)})`)
+          }
+          console.log(result)
+        })
+        .catch(error => {
+          console.log(error);
+        }).finally(() => {
+          this.uploadFileDialog.dialog = false;
+        });
+      },
+      // submit(){
+      //   const button = document.querySelector('#submit');
+      //   button.addEventListener('click', () => {
+      //     const form = new FormData(document.querySelector('#profileData'));
+      //     const url = `${config.apiContact}/${idAccount}/import`
+      //     const request = new Request(url, {
+      //       method: 'POST',
+      //       body: form
+      //     });
+
+      //     fetch(request)
+      //       .then(response => response.json())
+      //       .then(data => { console.log(data); })
+      //   });
+      // },
+      updateFile(file){
+        console.log(file);
+        // var data = new FormData();
+        // data.append('file', file.name);
+        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        let fd = new FormData();
+        fd.append('file',file)
+        contacts.importContactFromFile(this.idUser, fd).then(result => {
+          console.log(error);
+        }).catch(error => {
+          console.log(error)
+        })
+        
+        // axios.post(link, fd, config).then(result => {
+        //   console.log(error);
+        // })
+      },
       customSort(items, index, isDescending) {
         // The following is informations as far as I researched.
         // items:  items to be sorted
@@ -1663,6 +1813,7 @@
 
     },
     created() {
+      // this.submit()
       // this.getList();
       this.getCurrentUser();
       this.$store.state.colorNumber = 0;
