@@ -6,7 +6,8 @@ const qs = require('qs');
 export default {
     createContact, getAllContact, getdetailContact, 
     deleteContact, findUserByAccount, updateContactDetail, 
-    getActionLog, getAllEmail, getMyContact, searchContact
+    getActionLog, getAllEmail, getMyContact, searchContact,
+    importContactFromFile
 }
 
 function createContact(id,data) {
@@ -128,5 +129,17 @@ function searchContact(idAccount, page, keyword){
     }
     let _qs = qs.stringify(a);
     let endpoint = `${config.apiContact}/${idAccount}/contacts/search?${_qs}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function importContactFromFile(idAccount, body){
+    let headers = authHeader();
+    headers['Content-Type'] = 'multipart/form-data';
+    let request = {
+        method: 'POST',
+        body: body,
+        headers: headers
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/import`
     return responseService.fetchRetry(endpoint, request, 1)
 }

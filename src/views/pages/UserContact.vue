@@ -295,7 +295,7 @@
                                                     <v-dialog v-model="createTask" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
-                                                                <v-icon dark>calendar_today</v-icon>
+                                                                <v-icon dark>check</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
@@ -326,7 +326,7 @@
                                                     <v-dialog v-model="createDeal" persistent width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
-                                                                <v-icon dark>event</v-icon>
+                                                                <v-icon dark>thumb_up</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>

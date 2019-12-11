@@ -80,7 +80,7 @@
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
-                                    <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
+                                    <!-- <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn color="grey lighten-2" small fab v-on="on">
@@ -89,8 +89,8 @@
                                             </template>
                                             <span>{{deal.createdBy}}</span>
                                         </v-tooltip>
-                                    </v-flex>
-                                    <v-flex xs7 sm8 md8 lg9 xl9>
+                                    </v-flex> -->
+                                    <v-flex xs7 sm8 md8 lg9 xl9 class="ml-4 pl-4">
                                         <p class="mt-2 pt-1"><strong>{{deal.createdBy}} </strong> đã tạo Thỏa thuận</p>
                                     </v-flex>
                                     <v-flex xs2 sm2 md2 lg2 xl2>

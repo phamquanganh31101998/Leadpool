@@ -1,35 +1,40 @@
 <template>
     <v-app id="inspire">
-        <v-content class="login-custom">
-            <v-container fluid grid-list-sm pa-0 fill-height style="background-image: url('../assets/login-bg.jpg') center center/cover no-repeat !important;">
+        <v-content class="login-custom app">
+            <!-- fluid grid-list-sm pa-0 fill-height style="background-image: url('../assets/resetPassword.jpg') center center/cover no-repeat !important;" -->
+            <v-container >
                <v-layout row wrap>
                    <v-flex d-flex xs12>
-                       <v-layout row wrap justify-start fill-height>
-                           <v-flex d-flex xs9 lg3 md5 tile class="elevation-9" color="white" align-center style="background-color:white">
-                                <v-card flat>
-                                    <v-card-text class="text-xs-center" >
+                       <v-layout row wrap fill-height>
+                           <v-flex  style="padding-top: 180px" d-flex xs12 sm12 md4 lg4 xl4 offset-md8 offset-lg8 offset-xl8 tile color="white" align-center>
+                                <v-card flat >
+                                    <!-- <v-card-text class="text-xs-center" >
                                         <img height="100" src="../assets/adstech-logo1.png" alt="avatar">
-                                    </v-card-text>
-                                    
-                                    <v-card-text class="text-xs-center">
+                                    </v-card-text> -->
+                                    <v-card-title style="font-weight: bold; font-size: 35px;">
+                                        Đặt lại mật khẩu
+                                    </v-card-title>
+                                    <v-card-text>
                                         <v-layout row wrap>
                                             <v-form v-model="valid" style="width: 100%">
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field :rules="passwordRules" label="Mật khẩu mới" type="password" v-model="password"></v-text-field>
+                                                    <span><h3>Mật khẩu mới</h3></span>
+                                                    <v-text-field  class="custom" :rules="passwordRules" type="password" v-model="password"></v-text-field>
                                                 </v-flex>
-                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-text-field label="Nhập lại mật khẩu mới" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
+                                                <v-flex xs12 sm12 md12 lg12 xl12 style="margin-top: 45px;">
+                                                    <span><h3>Nhập lại mật khẩu mới</h3></span>
+                                                    <v-text-field class="custom" :rules="passwordRules" v-model="retypePassword" type="password"></v-text-field>
                                                 </v-flex>
                                             </v-form>
-                                            <v-alert
+                                            <!-- <v-alert
                                                 style="width: 100%"
                                                 :value="password != retypePassword && retypePassword != ''"
                                                 type="warning"
                                                 >
                                                 Mật khẩu nhập lại không khớp
-                                            </v-alert>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-btn block color="primary" :disabled="!valid || (password != retypePassword)" @click="resetPassword(password)">Xác nhận mật khẩu mới & Đăng nhập</v-btn>
+                                            </v-alert> -->
+                                            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-5">
+                                                <v-btn style="height: 50px; width: 300px; border-radius: 60px; " round dark block color="#292DA7" :disabled="!valid " @click="resetPassword(password)"><span style="font-weight: bold;">Đặt lại mật khẩu</span></v-btn>
                                             </v-flex>
                                         </v-layout>
                                     </v-card-text>
@@ -65,11 +70,13 @@ export default {
     },
     data(){
         return {
+            error: false,
             password: '',
             retypePassword: '',
             valid: false,
             passwordRules: [
                 v => !!v || 'Không được để trống',
+                v => (v == this.password) || 'Mật khẩu nhập lại không khớp'
             ],
         }
     },
@@ -114,6 +121,27 @@ export default {
     },
 }
 </script>
-<style scoped>
-
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Be+Vietnam&display=swap');
+    .app {
+        font-family: 'Be Vietnam', sans-serif !important;
+        background-color: #FFFFFF;
+        background-image: url('../assets/resetPassword1440.jpg');
+        /* background-repeat: repeat-y; */
+        width: 100%;
+        height: 100%;
+    }
+    .custom {
+        width: 320px;
+        padding: 5px 20px;
+        height: 38px;
+        border-radius: 5px;
+        background-color: #f3f3f3
+    }
+    .custom.v-text-field>.v-input__control>.v-input__slot:before {
+        border-style: none;
+    }
+    .custom.v-text-field>.v-input__control>.v-input__slot:after {
+        border-style: none;
+    }
 </style>

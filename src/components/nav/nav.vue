@@ -23,7 +23,7 @@
       <v-divider :divider="divider" vertical></v-divider>
       <v-btn depressed :color="background[2]" @click="goToMyTaskPage()" style="height: 50px; margin-bottom: 15px;"> 
         Công việc 
-        <v-icon color="white" class="ml-2">work_outline</v-icon>
+        <v-icon color="white" class="ml-2">check</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical ></v-divider>
@@ -41,7 +41,7 @@
       <v-divider :divider="divider" vertical></v-divider>
       <v-btn depressed :color="background[5]" @click="goToDealServicePage()" style="height: 50px; margin-bottom: 15px;">
         Thỏa thuận
-        <v-icon color="white" class="ml-2">add</v-icon>
+        <v-icon color="white" class="ml-2">thumb_up</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
