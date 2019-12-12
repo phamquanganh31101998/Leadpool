@@ -377,7 +377,7 @@
                                 </v-menu>
                             </v-card-actions>
                         </v-card>
-                        <v-btn dark color="#425B76" @click="filter()">Lọc</v-btn>
+                        <v-btn dark color="#425B76" @click="newFilter()">Lọc</v-btn>
                 </template>
                 <template v-else>
                     <br>
@@ -533,30 +533,41 @@
                 </template>
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
-                <v-data-table
-                    :loading="loadingTable"
-                    rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
-                    no-data-text="Không có kết quả nào phù hợp"
-                    :headers="headersLists"
-                    :items="contacts"
-                    class="elevation-1 mt-6"
-                >
-                    <template v-slot:items="props">
-                        <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.fullname}}</a></td>
-                        <td>{{ props.item.email }}</td>
-                        <td>{{ props.item.phone }}</td>
-                        <td>{{ props.item.lifecycleStage }}</td>
-                        <td>{{ props.item.contactOwner }}</td>
-                        <td>{{ props.item.city }}</td>
-                        <td>{{ props.item.bussiness }}</td>
-                        <td>{{ props.item.service }}</td>
-                    </template>
-                    <template v-slot:no-results>
-                        <v-alert :value="true" color="error" icon="warning">
-                        Your search for "{{ search }}" found no results.
-                        </v-alert>
-                    </template>
-                </v-data-table>
+                <v-layout row wrap>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-data-table
+                            hide-actions
+                            :loading="loadingTable"
+                            rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
+                            no-data-text="Không có kết quả nào phù hợp"
+                            :headers="headersLists"
+                            :items="contacts"
+                            class="elevation-1 mt-6"
+                            >
+                            <template v-slot:items="props">
+                                <td><a @click.stop="goToContactPage(props.item.contactId)">{{ props.item.fullname}}</a></td>
+                                <td>{{ props.item.email }}</td>
+                                <td>{{ props.item.phone }}</td>
+                                <td>{{ props.item.lifecycleStage }}</td>
+                                <td>{{ props.item.contactOwner }}</td>
+                                <td>{{ props.item.city }}</td>
+                                <td>{{ props.item.bussiness }}</td>
+                                <td>{{ props.item.service }}</td>
+                            </template>
+                            <template v-slot:no-results>
+                                <v-alert :value="true" color="error" icon="warning">
+                                Your search for "{{ search }}" found no results.
+                                </v-alert>
+                            </template>
+                        </v-data-table>
+                    </v-flex>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <div class="text-xs-center pt-2">
+                            <v-pagination v-model="page" @input="changePage()" :length="totalPage"></v-pagination>
+                        </div>
+                    </v-flex>
+                </v-layout>
+                
             </v-flex>
         </v-layout>
         <v-dialog v-model="failDialog" @click:outside="failDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
@@ -641,6 +652,8 @@ export default {
     },
     data(){
         return {
+            page: 1,
+            totalPage: 1,
             loadingTable: false,
             allService: [],
             phoneSearchInRules: [
@@ -942,6 +955,9 @@ export default {
         }
     },
     methods: {
+        changePage(){
+            this.filter();
+        },
         coverTimeDetail(time){
             if (_.isNull(time)) return '';
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -1193,17 +1209,18 @@ export default {
             this.loadingTable = true;
             this.allContacts = [];
             this.contacts = [];
-            listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
+            listService.findContactByCondition(this.idAccount, this.conditions, this.page).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].fullname = this.checkString(result.response[i].firstName) + ' ' + this.checkString(result.response[i].lastName)
+                    for(let i = 0; i < result.response.results.length; i++){
+                        result.response.results[i].fullname = this.checkString(result.response.results[i].firstName) + ' ' + this.checkString(result.response.results[i].lastName)
                     }
-                    this.allContacts = result.response;
+                    this.allContacts = result.response.results;
                     this.contacts = this.allContacts;
+                    this.totalPage = result.response.totalPage;
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1213,6 +1230,10 @@ export default {
             }).finally(() => {
                 this.loadingTable = false;
             })
+        },
+        newFilter(){
+            this.page = 1;
+            this.filter()
         }
     },
     created(){

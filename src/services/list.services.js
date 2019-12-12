@@ -1,6 +1,7 @@
 import config from '../config'
 import { authHeader } from '../helpers'
 import { responseService } from './response.service'
+const qs = require('qs');
 
 export default {
     getList, findContactByCondition, getContactByListId, 
@@ -16,26 +17,35 @@ function getList(idAccount) {
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function findContactByCondition(idAccount, condition){
+function findContactByCondition(idAccount, condition, page){
+    let a = {
+        page: page
+    }
+    let _qs = qs.stringify(a);
     let request = {
         method: 'POST',
         headers: authHeader(),
         body: JSON.stringify(condition)
     }
-    let endpoint = `${config.apiContact}/${idAccount}/get-contact-condition`
+    let endpoint = `${config.apiContact}/${idAccount}/get-contact-condition?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getContactByListId(idAccount, idList){
+function getContactByListId(idAccount, idList, page){
+    let a = {
+        page: page
+    }
+    let _qs = qs.stringify(a);
     let request = {
         method: 'GET',
         headers: authHeader(),
     }
-    let endpoint = `${config.apiContact}/${idAccount}/get-contact-condition/${idList}`
+    let endpoint = `${config.apiContact}/${idAccount}/get-contact-condition/${idList}?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
 function createNewList(idAccount, body){
+    
     let request = {
         method: 'POST',
         headers: authHeader(),
