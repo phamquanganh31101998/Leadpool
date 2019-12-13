@@ -29,7 +29,7 @@
         <v-divider class="mt-4" :divider="divider"></v-divider>
         <br>
         <br>
-        <v-layout row v-if="access">
+        <v-layout row v-if="access" wrap>
             <v-flex xs12 sm12 md3 lg3 xl3>
                 <template v-if="!firstConditionMenu">
                         <v-card>
@@ -385,7 +385,7 @@
                                 </v-menu>
                             </v-card-actions>
                         </v-card>
-                        <v-btn dark color="#425B76" @click="filter()">Lọc</v-btn>
+                        <v-btn dark color="#425B76" @click="newFilter()">Lọc</v-btn>
                 </template>
                 <template v-else>
                     <br>
@@ -542,30 +542,40 @@
                 </template>
             </v-flex>
             <v-flex xs12 sm12 md9 lg9 xl9>
-                <v-data-table
-                    :loading="loadingTable"
-                    rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
-                    no-data-text="Không có kết quả nào phù hợp"
-                    :headers="headersLists"
-                    :items="contacts"
-                    class="elevation-1 mt-6"
-                >
-                    <template v-slot:items="props">
-                        <td><a @click.stop="goToContactPage(props.item.contactId)">{{props.item.fullname}}</a></td>
-                        <td>{{ props.item.email }}</td>
-                        <td>{{ props.item.phone }}</td>
-                        <td>{{ props.item.lifecycleStage }}</td>
-                        <td>{{ props.item.contactOwner }}</td>
-                        <td>{{ props.item.city }}</td>
-                        <td>{{ props.item.bussiness }}</td>
-                        <td>{{ props.item.service }}</td>
-                    </template>
-                    <template v-slot:no-results>
-                        <v-alert :value="true" color="error" icon="warning">
-                        Your search for "{{ search }}" found no results.
-                        </v-alert>
-                    </template>
-                </v-data-table>
+                <v-layout row wrap>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <v-data-table
+                            hide-actions
+                            :loading="loadingTable"
+                            rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
+                            no-data-text="Không có kết quả nào phù hợp"
+                            :headers="headersLists"
+                            :items="contacts"
+                            class="elevation-1 mt-6"
+                            >
+                            <template v-slot:items="props">
+                                <td><a @click.stop="goToContactPage(props.item.contactId)">{{props.item.fullname}}</a></td>
+                                <td>{{ props.item.email }}</td>
+                                <td>{{ props.item.phone }}</td>
+                                <td>{{ props.item.lifecycleStage }}</td>
+                                <td>{{ props.item.contactOwner }}</td>
+                                <td>{{ props.item.city }}</td>
+                                <td>{{ props.item.bussiness }}</td>
+                                <td>{{ props.item.service }}</td>
+                            </template>
+                            <template v-slot:no-results>
+                                <v-alert :value="true" color="error" icon="warning">
+                                Your search for "{{ search }}" found no results.
+                                </v-alert>
+                            </template>
+                        </v-data-table>
+                    </v-flex>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+                        <div class="text-xs-center pt-2">
+                            <v-pagination :total-visible="7" v-model="page" @input="changePage()" :length="totalPage"></v-pagination>
+                        </div>
+                    </v-flex>
+                </v-layout>
             </v-flex>
         </v-layout>
         <v-layout v-else>
@@ -629,6 +639,8 @@ export default {
     },
     data(){
         return {
+            page: 1,
+            totalPage: 1,
             loadingTable: false,
             allService: [],
             access: false,
@@ -963,6 +975,9 @@ export default {
         }
     },
     methods: {
+        changePage(){
+            this.filter();
+        },
         getService(){
             this.allService = [];
             serviceAPI.getService(this.idAccount).then(result => {
@@ -1001,17 +1016,18 @@ export default {
         },
         getAllContacts(){
             this.loadingTable = true;
-            listService.getContactByListId(this.idAccount, this.idList).then(result => {
+            listService.getContactByListId(this.idAccount, this.idList, this.page).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].fullname = this.checkString(result.response[i].firstName) + ' ' + this.checkString(result.response[i].lastName)
+                    for(let i = 0; i < result.response.results.length; i++){
+                        result.response.results[i].fullname = this.checkString(result.response.results[i].firstName) + ' ' + this.checkString(result.response.results[i].lastName)
                     }
-                    this.allContacts = result.response;
+                    this.allContacts = result.response.results;
                     this.contacts = this.allContacts;
+                    this.totalPage = result.response.totalPage;
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1205,20 +1221,22 @@ export default {
             }
         },
         filter(){
+            // this.page = 1;
             this.loadingTable = true;
             this.allContacts = [];
             this.contacts = [];
-            listService.findContactByCondition(this.idAccount, this.conditions).then(result => {
+            listService.findContactByCondition(this.idAccount, this.conditions, this.page).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    for(let i = 0; i < result.response.length; i++){
-                        result.response[i].fullname = this.checkString(result.response[i].firstName) + ' ' + this.checkString(result.response[i].lastName)
+                    for(let i = 0; i < result.response.results.length; i++){
+                        result.response.results[i].fullname = this.checkString(result.response.results[i].firstName) + ' ' + this.checkString(result.response.results[i].lastName)
                     }
-                    this.allContacts = result.response;
+                    this.allContacts = result.response.results;
                     this.contacts = this.allContacts;
+                    this.totalPage = result.response.totalPage;
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1228,6 +1246,34 @@ export default {
             }).finally(() => {
                 this.loadingTable = false;
             })
+        },
+        newFilter(){
+            this.page = 1;
+            this.filter()
+            // this.loadingTable = true;
+            // this.allContacts = [];
+            // this.contacts = [];
+            // listService.findContactByCondition(this.idAccount, this.conditions, 1).then(result => {
+            //     const {
+            //         dispatch
+            //     } = this.$store;
+            //     let time = moment();
+            //     if(result.code == 'SUCCESS'){
+            //         for(let i = 0; i < result.response.results.length; i++){
+            //             result.response.results[i].fullname = this.checkString(result.response.results[i].firstName) + ' ' + this.checkString(result.response.results[i].lastName)
+            //         }
+            //         this.allContacts = result.response.results;
+            //         this.contacts = this.allContacts;
+            //         this.totalPage = result.response.totalPage;
+            //     }
+            //     else {
+            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //     }
+            // }).catch(error => {
+            //     console.log(error);
+            // }).finally(() => {
+            //     this.loadingTable = false;
+            // })
         },
         updateList(){
             let body = {

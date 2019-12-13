@@ -15,45 +15,10 @@
             </v-tooltip>
             
           </v-flex>
-          
           <v-flex xs7 sm7 md7 lg7 xl7>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
           </v-flex>
-          <!-- <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
-            <v-select v-if="section != 'search' && section != 'filter'" label="Sắp xếp theo" v-model="sortContact.property" :items="sortContact.contactProperties"></v-select>
-          </v-flex>
-          <v-flex xs2 sm2 md2 lg2 xl2 class="ml-3">
-            <v-select v-if="section != 'search' && section != 'filter'" label="Thứ tự" v-model="sortContact.order" :items="sortContact.orderBy"></v-select>
-          </v-flex> -->
-          <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-            <v-menu offset-y>
-              <template v-slot:activator="{ on }">
-                <v-btn outline color="warning" dark v-on="on">
-                  Actions
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-tile v-for="(item, index) in items" :key="index">
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-          </v-flex>
-          <v-flex xs2 md2 lg2 xl2>
-            <v-btn outline color="warning">
-              Import
-            </v-btn>
-          </v-flex> -->
           <v-flex xs1 sm1 md1 lg1 xl1>
-            <!-- <upload-btn
-              @file-update="updateFile"
-              round dark color="#3E82F7"
-              title="Import"
-              noTitleUpdate
-              :ripple="false"
-            >
-              
-            </upload-btn> -->
             <v-dialog v-model="uploadFileDialog.dialog" width="400">
               <template v-slot:activator="{ on }">
                 <v-btn round dark color="#3E82F7" class="ml-4" v-on="on" >Import</v-btn>
@@ -89,6 +54,21 @@
               </v-card>
             </v-dialog>
           </v-flex>
+          <v-dialog v-model="uploadFileDialog.resultDialog">
+            <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                  <span class="headline">Kết quả Import</span>
+                </v-card-title>
+                <v-card-text style="padding: 0px 0px;">
+                  <v-layout row>
+                    Thành công: {{}}
+                  </v-layout>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="red" flat @click="uploadFileDialog.uploadFileDialog.resultDialog = false">Đóng</v-btn>
+                </v-card-actions>
+              </v-card>
+          </v-dialog>
           <v-flex xs2 sm2 md2 lg2 xl2 class="ml-4">
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
@@ -159,28 +139,29 @@
             </v-dialog>
           </v-flex>
         </v-layout>
-        <!-- <v-layout row>
-          <div class="container">
-            <div class="large-12 medium-12 small-12 cell">
-              <label>File
-                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
-              </label>
-                <v-btn round v-on:click="submitFile()">Import</v-btn>
-            </div>
-          </div>
-        </v-layout> -->
       </v-flex>
     </v-layout>
     <v-divider class="mt-3" :divider="divider"></v-divider>
     <v-layout row>
       <v-flex xs12 sm4 md2 lg2 xl2>
         <v-list>
-          <v-list-tile v-if="viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING'  || isSysAdmin == true" @click="getAllContact(), section = 'allContact', page = 1, search=''">
+          <v-list-tile v-if="viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING'  || isSysAdmin == true" @click="section = 'allContact', page = 1, getAllContact(), search=''">
             <v-list-tile-title>Tất cả các Lead</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="getMyContact(), section = 'myContact', page = 1, search=''">
+          <v-list-tile @click="section = 'myContact', page = 1, getMyContact(), search=''">
             <v-list-tile-title>Các Lead của tôi</v-list-tile-title>
           </v-list-tile>
+          <template v-for="filter in filters">
+            <v-list-tile @click="filterId = filter.contactConditionGroupId">
+              <v-list-tile-title>{{filter.name}}</v-list-tile-title>
+            </v-list-tile>
+          </template>
+          <!-- <v-list-tile>
+            <v-list-tile-content>
+              <h4>Các bộ lọc hiện có</h4>
+              <v-select label="Chọn bộ lọc" v-model="filterId" :items="filters" item-text="name" item-value="contactConditionGroupId"></v-select>
+            </v-list-tile-content>
+          </v-list-tile> -->
         </v-list>
         <v-divider divider="true" class="mr-3"></v-divider>
         <template v-if="!firstConditionMenu">
@@ -188,6 +169,7 @@
             <v-card-text>
                 <h3>Bộ lọc kết quả</h3>
                 <br>
+                <v-text-field :rules="nameRules" label="Tên bộ lọc" v-model="filterName"></v-text-field>
                 <template v-for="(orCondition, orIndex) in conditions">
                     <v-card flat>
                         <v-card-text style="padding: 0px 0px; margins: 0px 0px">
@@ -383,9 +365,13 @@
             <v-flex>
               <v-btn style="backgroundColor: #425B76" dark @click="filter()">Lọc</v-btn>
             </v-flex>
-            <!-- <v-flex>
-              <v-btn @click="resetFilter()">Xóa</v-btn>
-            </v-flex> -->
+            <v-flex>
+              <v-btn v-if="filterId != ''" @click="updateFilter(filterId)">Cập nhật</v-btn>
+              <v-btn v-else :disabled="filterName ==''" @click="createFilter(filterName, conditions)">Tạo mới</v-btn>
+            </v-flex>
+            <v-flex>
+              <v-btn color="error" v-if="filterId != ''" @click="deleteFilterDialog = true">Xóa bộ lọc</v-btn>
+            </v-flex>
           </v-layout>
           <br>
           <br>
@@ -549,126 +535,115 @@
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
         <v-layout row wrap>
-          <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <!-- <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table> -->
+          <v-flex xs12 sm12 md12 lg12 xl12>
+            <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+            <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+            <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-flex>
         </v-layout>
         <div class="text-xs-center pt-2">
-          <v-pagination v-model="page" :length="pages"></v-pagination>
+          <v-pagination :total-visible="7" v-model="page" :length="pages"></v-pagination>
         </div>
         <br>
         <br>
       </v-flex>
     </v-layout>
+    <v-dialog v-model="deleteFilterDialog" @click:outside="deleteFilterDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
+      <v-card tile>
+        <v-toolbar card dark color="red">
+          <v-toolbar-title>Xóa?</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-card-text>
+            Bạn có chắc chắn muốn xóa bộ lọc này?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn flat color="red" @click="deleteFilter(filterId)">Xóa</v-btn>
+          <v-btn flat color="primary" @click="deleteFilterDialog = false">Quay lại</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="dialog" hide-overlay transition="dialog-bottom-transition" scrollable width="50%">
       <v-card tile>
         <v-toolbar card dark color="primary">
@@ -760,6 +735,7 @@
   import contactsService from '../../services/contacts.service';
   import listService from '../../services/list.services'
   import serviceAPI from '../../services/service.service'
+  import filterAPI from '../../services/filter.service'
   export default {
     props: {
 			idUser: {
@@ -768,7 +744,10 @@
       },
     },
     data: () => ({
-    
+      filters: [],
+      filterId: '',
+      filterName: '',
+      deleteFilterDialog: false,
       loadingTable: false,
       sortContact: {
         contactProperties: 
@@ -853,7 +832,7 @@
       firstname: '',
       lastname: '',
       nameRules: [
-        v => !!v || 'Chưa nhập tên',
+        v => !!v || 'Không được để trống',
         // v => v.length <= 15 || 'Tên nhỏ hơn 15 kí tự',
       ],
       email: '',
@@ -872,12 +851,6 @@
         'Evangelist',
         'Other'
       ],
-      // cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-      //   'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-      //   'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-      //   'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-      //   'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
-      // ],
       cities: [],
       city: '',
       allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
@@ -1175,11 +1148,29 @@
       viewRole: '',
       isSysAdmin: false,
       uploadFileDialog: {
+        resultDialog: false,
+        result: {
+          "IMPORT DUPLICATE": {
+            0: ""
+          },
+          "IMPORT ERROR": {
+            0: ""
+          },
+          "IMPORT FAIL": {
+            0: ""
+          },
+          "IMPORT SUCCESS": {
+            0: ""
+          },
+        },
         dialog: false,
         file: {
           name: ''
         },
-        extension: ['xlsx', 'xlsm', 'xlsb', 'xltx', 'xltm', 'xls', 'xlt', 'xml', 'xlam', 'xla', 'xlr']
+        extension: ['xlsx', 'xlsm', 'xlsb', 'xltx', 
+        'xltm', 'xls', 'xlt', 'xml', 
+        'xlam', 'xla', 'xlr', 'csv', 'dif', 'ods', 'ots'
+        , 'tsv']
       }
       
     }),
@@ -1216,7 +1207,7 @@
       submitFile(){
         let formData = new FormData();
         formData.append('file', this.uploadFileDialog.file);
-        console.log(this.uploadFileDialog.file)
+        // console.log(this.uploadFileDialog.file)
         let link = `${config.apiContact}/${this.idUser}/import`
         // let link = 'http://dev.adstech.vn:9000/account/5d1dd258f0aa61074608b0e3/import'
         axios.post(link,
@@ -1235,7 +1226,6 @@
           else {
               dispatch('alert/error', `Import thất ${result.data.message} (${this.coverTimeDetail(time)})`)
           }
-          console.log(result)
         })
         .catch(error => {
           console.log(error);
@@ -1259,7 +1249,7 @@
       //   });
       // },
       updateFile(file){
-        console.log(file);
+        // console.log(file);
         // var data = new FormData();
         // data.append('file', file.name);
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -1284,14 +1274,6 @@
         this.sortContact.property = (index == 'fullname') ? 'lastName' : index;
         this.sortContact.order = (isDescending) ? 'DSC' : 'ASC';
         return items;
-        // if(this.sortContact.property != null){
-        //   if(this.section == 'allContact'){
-        //     this.getAllContact()
-        //   }
-        //   else if (this.section == 'myContact') {
-        //     this.getMyContact()
-        //   }
-        // }
       },
  
       getService(){
@@ -1389,6 +1371,7 @@
         }
       },
       getCurrentUser(){
+        this.getFilter();
         this.getCity();
         this.getService();
         this.currentUser = JSON.parse(localStorage.getItem('user'));
@@ -1718,19 +1701,20 @@
         this.section = 'filter';
         let conditions = this.conditions;
         // console.log(conditions)
-        listService.findContactByCondition(this.idUser, conditions).then(result => {
+        
+        listService.findContactByCondition(this.idUser, conditions, this.page).then(result => {
           const {
               dispatch
           } = this.$store;
           let time = moment();
           if(result.code == 'SUCCESS'){
-              for(let i = 0; i < result.response.length; i++){
-                  result.response[i].fullname = this.checkString(result.response[i].lastName) + ' ' + this.checkString(result.response[i].firstName)
+              for(let i = 0; i < result.response.results.length; i++){
+                  result.response.results[i].fullname = this.checkString(result.response.results[i].lastName) + ' ' + this.checkString(result.response.results[i].firstName)
               }
-              this.allContacts = result.response;
-              this.contacts = this.allContacts.reverse();
-              this.page = 1;
-              this.pages = 1;
+              this.allContacts = result.response.results;
+              this.contacts = this.allContacts;
+              this.page = result.response.page;
+              this.pages = result.response.totalPage;
           }
           else {
               dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1740,6 +1724,98 @@
           console.log(error);
         }).finally(() => {
           this.loadingTable = false;
+        })
+      },
+      updateFilter(id){
+        let body = this.getFilterFromId(id);
+        body.name = this.filterName;
+        filterAPI.updateFilter(this.idUser, body).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`);
+              this.getFilter();
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
+        })
+      },
+      getFilterFromId(id){
+        let res = null;
+        for (let i = 0; i < this.filters.length;i++){
+          let obj = Object.assign({}, this.filters[i])
+          if (obj.contactConditionGroupId == id){
+            res = Object.assign({}, obj)
+            break;
+          }
+        }
+        return res;
+      },
+      getFilter(){
+        filterAPI.getFilter(this.idUser).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              this.filters = result.response;
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      deleteFilter(id){
+        this.deleteFilterDialog = false;
+        filterAPI.deleteFilter(this.idUser, id).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              this.filterId = '';
+              dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+              this.getFilter()
+              if(this.viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING' || this.isSysAdmin == true){
+                this.getAllContact();
+              }
+              else {
+                this.section = 'myContact';
+                this.getMyContact();
+              }
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      createFilter(name, conditions){
+        let body = {
+          name: name,
+          conditions: conditions
+        }
+        filterAPI.createFilter(this.idUser, body).then(result => {
+          const {
+              dispatch
+          } = this.$store;
+          let time = moment();
+          if(result.code == 'SUCCESS'){
+              dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+              this.filters.push(result.response)
+              this.filterId = this.filters[this.filters.length - 1].contactConditionGroupId;
+          }
+          else {
+              dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+          }
+        }).catch(error => {
+          console.log(error)
         })
       },
       normalText(str){
@@ -1773,9 +1849,14 @@
       }
     },
     watch:{
-      // city(){
-      //   console.log(this.city)
-      // },
+      section(){
+        if (this.section != 'filter'){
+          this.firstConditionMenu = true;
+          this.conditions = [];
+          this.filterName = '';
+          this.filterId = ''
+        }
+      },
       'sortContact.property'(){
         this.contacts = []
         if(this.sortContact.property != null){
@@ -1807,9 +1888,29 @@
         else if (this.section == 'search'){
           this.searchContact();
         }
+        else if (this.section == 'filter'){
+          this.filter();
+        }
       },
-      search(){
-      },
+      filterId(){
+        if(this.filterId != ''){
+          this.conditions = [];
+          this.firstConditionMenu = false;
+          let obj = Object.assign({}, this.getFilterFromId(this.filterId));
+          // console.log(obj)
+          this.conditions = Array.from(obj.conditions)
+          // console.log(this.conditions)
+          this.filterName = obj.name;
+          
+          this.filter();
+        }
+        else {
+          this.getFilter()
+          this.firstConditionMenu = true;
+          this.conditions = [];
+          this.filterName = '';
+        }
+      }
 
     },
     created() {

@@ -36,12 +36,12 @@
                                     <v-flex xs12 sm12 md3 lg3 xl3>
                                         <v-card flat>
                                             <v-card-text>
-                                                <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId" @change="logging()"></v-select></span>
+                                                <span class="ml-4"><v-select prepend-icon="textsms"  label="Chọn mẫu tin nhắn" :items="template.currentTemplates" v-model="send.chosenContentId"></v-select></span>
                                                 <!-- <p>Chiến dịch này còn {{send.remain}} tin nhắn</p> -->
                                                 <v-divider :divider="divider"></v-divider>
                                                 <v-textarea box readonly rows="4" label="Nội dung" v-model="send.chosenContent"></v-textarea>
                                                 <v-divider :divider="divider"></v-divider>
-                                                <span class="ml-4"><v-select prepend-icon="list"  label="Chọn chiến dịch gửi tin nhắn" :items="saveKey.list" v-model="send.chosenCampaign" @change="logging()"></v-select></span>
+                                                <span class="ml-4"><v-select prepend-icon="list"  label="Chọn chiến dịch gửi tin nhắn" :items="saveKey.list" v-model="send.chosenCampaign"></v-select></span>
                                                 <v-divider :divider="divider"></v-divider>
                                                 <v-select prepend-icon="people" :items="send.list" label="Chọn danh sách gửi" v-model="send.selectedListToSendSMS" ></v-select>
                                                 <v-divider :divider="divider"></v-divider>
@@ -62,67 +62,42 @@
                                             </v-card-text>
                                         </v-card>
                                         <v-card flat>
-                                            <v-card-text>
-                                                <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
-                                            </v-card-text>
                                             <v-card-actions>
-                                                <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
+                                                <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.selectedListToSendSMS =='' " @click="sendSMS()">Đặt lịch gửi</v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-flex>
                                     <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
-                                        <v-card flat v-if="send.displayContacts.length > 0">
+                                        <v-card flat>
                                             <v-card-title>
                                                 <v-layout row wrap>
                                                     <v-flex xs6 sm6 md6 lg6 xl6>
                                                         <h2>Danh sách</h2>
                                                     </v-flex>
-                                                    <!-- <v-flex xs6 sm6 md6 lg6 xl6>
-                                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-btn color="success" @click="markAllContact()">
-                                                            Chọn tất cả
-                                                        </v-btn>
-                                                    </v-flex>
-                                                    
-                                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-btn @click="unmarkAllContact()">
-                                                            Bỏ chọn tất cả
-                                                        </v-btn>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
-                                                    </v-flex> -->
                                                 </v-layout>
                                             </v-card-title>
                                             <v-card-text>
                                                 <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                                <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                                     <template v-slot:items="props">
                                                         <tr>
                                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                             <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                                     v-model="props.item.chosen" 
-                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                   @change="checkDisplayContact(props.item.contactId, props.item.chosen)"
                                                                     >
                                                                     </v-checkbox></td>
-                                                            <td>{{ props.item.fullName}}</td>
+                                                            <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
                                                             <td>{{ props.item.phone }}</td>
                                                         </tr>
                                                     </template>
                                                 </v-data-table>
                                                 <br>
-                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <v-pagination :total-visible="7" v-model="send.page" :length="send.pages" @input="getDisplayContactsOnOtherPage()"></v-pagination>
                                                 <br>
-
-                                            
                                             </v-card-text>
                                         </v-card>
-                                        <v-card flat class="mt-3" v-if="send.additionalContacts.length > 0">
+                                        <v-card flat class="mt-3">
                                             <v-card-title>
                                                 <v-layout row wrap>
                                                     <v-flex xs6 sm6 md6 lg6 xl6>
@@ -132,25 +107,23 @@
                                             </v-card-title>
                                             <v-card-text>
                                                 <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
+                                                <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="send.headers" :items="send.additionalContacts"  class="elevation-1">
                                                     <template v-slot:items="props">
                                                         <tr>
                                                             <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                             <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                                     v-model="props.item.chosen" 
-                                                                    @change="getPhoneNumberToSendSMS()"
+                                                                    @change="checkAdditionalContact(props.item.contactId, props.item.chosen)"
                                                                     >
                                                                     </v-checkbox></td>
-                                                            <td>{{ props.item.fullName}}</td>
+                                                            <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
                                                             <td>{{ props.item.phone }}</td>
                                                         </tr>
                                                     </template>
                                                 </v-data-table>
                                                 <br>
-                                                <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                                <v-pagination :total-visible="7" v-model="send.bonusPage" :length="send.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
                                                 <br>
-
-                                            
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
@@ -271,23 +244,6 @@
                         <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout class="mt-3" wrap v-if="saveKey.showSmsSuccess">
-                                    <!-- <template v-for="sms in saveKey.selectedCampaignHistory.success">
-                                        <v-flex xs12 sm12 md12 lg12 xl12 >
-                                            <v-card width="100%" height="100%">
-                                                <v-card-title>
-                                                    <span style="font-weight:bold"><v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}</span>
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
-                                                    <br>
-                                                    <span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}}
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-                                        
-                                        <br>
-                                    </template>
-                                     -->
                                     <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.successHeaders" :items="saveKey.selectedCampaignHistory.success">
                                         <template v-slot:items="props">
                                             <tr>
@@ -300,25 +256,6 @@
                                     </v-data-table>
                                 </v-layout>
                                 <v-layout class="mt-3" wrap v-if="saveKey.showSmsError">
-                                    <!-- <template v-for="sms in saveKey.selectedCampaignHistory.fail">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-card width="100%" height="100%">
-                                                <v-card-title>
-                                                    <span style="font-weight:bold">
-                                                        <v-icon class="mr-2">perm_contact_calendar</v-icon>Đến: {{sms.phoneNumber}}
-                                                    </span>
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    <span style="font-weight:bold">Nội dung tin nhắn</span>: {{sms.message}}
-                                                    <p><span style="font-weight:bold">Thời gian gửi</span>: {{sms.time}} </p>
-                                                    <p><span style="font-weight:bold">Lỗi:</span> {{sms.statusMessage}} </p>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-                                        <br>
-                                        <br>
-                                    </template>
-                                     -->
                                     <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" style="width: 100%;" class="elevation-1" no-data-text="Chưa có tin nhắn nào" :headers="saveKey.selectedCampaignHistory.failHeaders" :items="saveKey.selectedCampaignHistory.fail">
                                         <template v-slot:items="props">
                                             <tr>
@@ -453,18 +390,7 @@
                                         <td>{{ props.item.time }} </td>
                                         <td style="color: red" v-if="props.item.status == 'INACTIVE'">{{ returnStatus(props.item.status) }}</td>
                                         <td style="color: green" v-if="props.item.status == 'ACTIVE'">{{ returnStatus(props.item.status) }}</td>
-                                        <!-- <v-menu :close-on-content-click="false" right offset-x style="background-color: white">
-                                            <template v-slot:activator="{ on }">
-                                                
-                                                <td>
-                                                    <a color="indigo" v-on="on">
-                                                        {{ props.item.status }}
-                                                    </a>
-                                                </td>
-                                                
-                                            </template>
-                                            <v-select  style="background-color: white; width: 120px; padding: 0px 10px;" v-model="props.item.status" :items="['ACTIVE', 'INACTIVE']" @change="changeScheduleStatus(props.item.number, props.item.status)" ></v-select>
-                                        </v-menu> -->
+
                                         <v-menu offset-x>
                                             <template v-slot:activator="{ on }">
                                                 <td class="text-xs-right">
@@ -483,9 +409,6 @@
                                                 </v-list-tile>
                                             </v-list>
                                         </v-menu>
-                                        <!-- <td><a @click.stop="openScheduleDetailDialog(props.item.number)"> Xem chi tiết >> </a></td>
-                                        <td v-if="props.item.status == 'ACTIVE'"><v-btn color="red" outline round @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">Tắt lịch gửi</v-btn></td>
-                                        <td v-if="props.item.status == 'INACTIVE'"><v-btn color="primary" outline round @click="changeScheduleStatus(props.item.number, 'ACTIVE'), props.item.status = 'ACTIVE'">Kích hoạt lịch gửi</v-btn></td> -->
                                     </tr>
                                 </template>
                             </v-data-table>
@@ -563,9 +486,6 @@ export default {
         },
     },
     watch: {
-        // 'send.page'(){
-        //     this.getAllContact(this.idAccount, this.send.page);
-        // },
         page(){
             this.fontWeight = ['', '', '', ''];
             if(this.page == 'send'){
@@ -582,44 +502,10 @@ export default {
             }
         },
         'send.selectedListToSendSMS'(){
-            this.send.displayContacts = [];
-            this.send.additionalContacts = [];
-            //lấy danh sách các contact để hiển thị
-            for (let i = 0; i < this.send.list.length; i++){
-                if (this.send.selectedListToSendSMS == this.send.list[i].value){
-                    this.send.displayContacts = this.send.list[i].contact;
-                }
-            }
-            for (let i = 0; i < this.send.displayContacts.length; i++){
-                this.send.displayContacts[i].chosen = true;
-            }
-            //lấy danh sách các contact để chọn thêm
-            for (let k = 0; k < this.send.allContacts.length; k++){
-                let found = false;
-                for (let j = 0; j < this.send.displayContacts.length; j++){
-                    if(this.send.displayContacts[j].contactId == this.send.allContacts[k].contactId){
-                        found = true;
-                    }
-                }
-                if (found == false){
-                    this.send.additionalContacts.push(this.send.allContacts[k])
-                }
-            }
-            for (let i = 0; i < this.send.additionalContacts.length; i++){
-                this.send.additionalContacts[i].chosen = false;
-            }
-            this.send.additionalContacts = [...this.send.additionalContacts];
-            this.send.displayContacts = [...this.send.displayContacts]
-            this.getPhoneNumberToSendSMS()
+            this.send.ignoreContact = [];
+            this.getDisplayContactsOnPage1();
         },
-        'send.phoneNumberToSend.length'(){
-            if(this.send.phoneNumberToSend.length > this.send.remain){
-                this.send.exceedRecipientAlert = true;
-            }
-            else {
-                this.send.exceedRecipientAlert = false;
-            }
-        },
+        
         'send.chosenContentId'(){
             for (let i = 0; i < this.template.currentTemplates.length; i++){
                 if(this.send.chosenContentId == this.template.currentTemplates[i].value){
@@ -747,20 +633,22 @@ export default {
                     {
                         text: 'TÊN LEAD',
                         align: 'left',
-                        value: 'fullName',
-                        // sortable: false
+                        value: 'lastName',
+                        sortable: false
                     },
                     {
                         text: 'SỐ ĐIỆN THOẠI',
                         align: 'left',
                         value: 'phone',
-                        // sortable: false
+                        sortable: false
                     },
                 ],
                 page: 1,
                 //lưu id của list được chọn
                 selectedListToSendSMS: '',
                 pages: 1,
+                bonusPage: 1,
+                bonusPages: 1,
                 remain: 10,
                 phoneNumberToSend: [],
                 numberOfRecipient: 0,
@@ -786,6 +674,8 @@ export default {
                     '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
                 ],
+                ignoreContact: [],
+                bonusContact: []
             },
             schedule: {
                 headers: [
@@ -862,6 +752,7 @@ export default {
         }
     },
     methods: {
+        //create Schedule
         returnTime(data) {
             return moment(data).format('YYYY/MM/DD, HH:mm:ss')
         },
@@ -892,7 +783,85 @@ export default {
             const [month, day, year] = date.split('/')
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
+        getDisplayContactsOnOtherPage(){
+            this.send.displayContacts = []
+            if(this.send.selectedListToSendSMS == 'all'){
+                contactService.getAllContact(this.idAccount, this.send.page).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for(let k = 0; k < result.response.results.length; k++){
+                            result.response.results[k].chosen = !this.checkChosenContact(this.send.ignoreContact, result.response.results[k].contactId)
+                            this.send.displayContacts.push(result.response.results[k]);
+                        }
+                        this.send.pages = result.response.totalPage;
+                    }
+                    else {
+                        
+                    }
+                    
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
+            else {
+                listService.getContactByListId(this.idAccount, this.send.selectedListToSendSMS, this.send.page).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        for(let k = 0; k < result.response.results.length; k++){
+                            result.response.results[k].chosen = !this.checkChosenContact(this.send.ignoreContact, result.response.results[k].contactId)
+                            this.send.displayContacts.push(result.response.results[k]);
+                        }
+                        this.send.pages = result.response.totalPage;
+                    }
+                    else {
+                        
+                    }    
+                })
+            }
+        },
+        getDisplayContactsOnPage1(){
+            this.send.page = 1;
+            this.getDisplayContactsOnOtherPage();
+        },
+        getAdditionalContactsOnOtherPage(){
+            this.send.additionalContacts = []
+            contactService.getAllContact(this.idAccount, this.send.bonusPage).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for(let k = 0; k < result.response.results.length; k++){
+                        result.response.results[k].chosen = this.checkChosenContact(this.send.bonusContact, result.response.results[k].contactId)
+                        this.send.additionalContacts.push(result.response.results[k]);
+                    }
+                    this.send.bonusPages = result.response.totalPage;
+                }
+                else {
+                    
+                }
+                
+            }).catch(error => {
+                console.log(error)
+            })
+            
+        },
+        getAdditionalContactsOnPage1(){
+            this.send.bonusPage = 1;
+            this.getAdditionalContactsOnOtherPage();
+        },
         getList(){
+            // let allContact = {
+            //     text: 'Tất cả các Lead',
+            //     value: 'all'
+            // }
+            // this.send.list.push(allContact)
             listService.getList(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -900,37 +869,22 @@ export default {
                 let time = moment();
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
-                    for (let i = 0; i < res.length; i++){
-                        listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
-                            const {
-                                dispatch
-                            } = this.$store;
-                            let time = moment();
-                            if(result.code == 'SUCCESS'){
-                                let obj = {
-                                    text: res[i].name,
-                                    value: res[i].contactConditionGroupId
-                                }
-                                for (let k = 0; k < result.response.length; k++){
-                                    result.response[k].chosen = true;
-                                    result.response[k].fullName = this.checkString(result.response[k].firstName) + ' ' + this.checkString(result.response[k].lastName)
-                                }
-                                obj.contact = result.response;
-                                this.send.list.push(obj);
-                            }
-                            else {
-                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                            }
-                            
-                        })
+                    for(let i = 0; i < res.length; i++){
+                        let obj = {
+                            text: res[i].name,
+                            value: res[i].contactConditionGroupId,
+                            conditions: res[i].conditions
+                        }
+                        this.send.list.push(obj);
                     }
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                // console.log(this.send.list);
             }).then(() => {
                 this.getAllContact()
+            }).catch(error => {
+                console.log(error);
             })
         },
         checkString(str){
@@ -942,43 +896,23 @@ export default {
             }
         },
         getAllContact(){
-            contactService.getAllContact(this.idAccount, this.send.page).then(result => {
+            contactService.getAllContact(this.idAccount, 1).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    for (let i = 1; i <= result.response.totalPage;i++){
-                        contactService.getAllContact(this.idAccount, i).then(result => {
-                            const {
-                                dispatch
-                            } = this.$store;
-                            let time = moment();
-                            if(result.code == 'SUCCESS'){
-                                for(let k = 0; k < result.response.results.length; k++){
-                                    result.response.results[k].fullName = this.checkString(result.response.results[k].firstName) + ' ' + this.checkString(result.response.results[k].lastName)
-                                    result.response.results[k].chosen = true;
-                                    this.send.allContacts.push(result.response.results[k]);
-                                }
-                            }
-                            else {
-                                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                            }
-                            
-                        })
+                    for(let k = 0; k < result.response.results.length; k++){
+                        result.response.results[k].chosen = false;
+                        this.send.additionalContacts.push(result.response.results[k]);
+                        this.send.bonusPages = result.response.totalPage;
                     }
-                    // console.log(this.send.allContacts.length)
-                    let obj = {
-                        text: 'Tất cả các Lead',
-                        value: 'all',
-                        contact: this.send.allContacts
-                    }
-                    this.send.list.unshift(obj);
                 }
                 else {
-                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+
                 }
-                
+            }).catch(error => {
+                console.log(error)
             })
         },
         checkIncludeContact(array, id){
@@ -1063,21 +997,26 @@ export default {
         sendSMS(){
             let timeString = this.send.date + 'T' + this.send.time
             let timeToSend = moment(timeString).utc().format().substring(0, 19)
-            let listPhone = [];
-            for (let i = 0; i < this.send.phoneNumberToSend.length;i++){
-                let obj = {
-                    phoneNumber: this.send.phoneNumberToSend[i]
-                }
-                listPhone.push(obj)
-            }
+            // let listPhone = [];
+            // for (let i = 0; i < this.send.phoneNumberToSend.length;i++){
+            //     let obj = {
+            //         phoneNumber: this.send.phoneNumberToSend[i]
+            //     }
+            //     listPhone.push(obj)
+            // }
             let body = {
-                device: {
-                    smsDeviceId: this.send.chosenCampaign
+                "smsSchedule": {
+                    "device": {
+                        "smsDeviceId": this.send.chosenCampaign
+                    },
+                    "content": this.send.chosenContent,
+                    "timeToSend": timeToSend
                 },
-                content: this.send.chosenContent,
-                timeToSend: timeToSend,
-                listPhone: listPhone
+                "listId": this.send.selectedListToSendSMS,
+                "contactIgnore": this.send.ignoreContact,
+                "contactBonus": this.send.bonusContact
             }
+            console.log(body)
             SMSService.createSchedule(this.idAccount, body).then(result => {
                 const {
                     dispatch
@@ -1095,6 +1034,33 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
+        },
+        checkChosenContact(array, id){
+            let res = false;
+            if(array.includes(id)){
+                res = true;
+            }
+            return res;
+        },
+        checkAdditionalContact(str, isChosen){
+            if(isChosen == true){
+                this.send.bonusContact.push(str)
+            }
+            else {
+                let index = this.send.bonusContact.indexOf(str);
+                this.send.bonusContact.splice(index, 1)
+            }
+            console.log(this.send.bonusContact)
+        },
+        checkDisplayContact(str, isChosen){
+            if(isChosen == false){
+                this.send.ignoreContact.push(str)
+            }
+            else {
+                let index = this.send.ignoreContact.indexOf(str);
+                this.send.ignoreContact.splice(index, 1)
+            }
+            console.log(this.send.ignoreContact)
         },
 
         //SaveKey
@@ -1582,18 +1548,13 @@ export default {
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
-            // for (let i = 0; i < role.length;i++){
-            //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-            //         this.access = true;
-            //     }
-            // }
             if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
                 this.access = true;
             }
             if (this.access == true){
                 this.getList();
-                // this.getTemplate();
-                // this.getListDeviceKey();
+                this.getTemplate();
+                this.getListDeviceKey();
                 this.getSchedule();
             }
         },
