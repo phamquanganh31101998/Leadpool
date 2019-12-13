@@ -26,11 +26,6 @@
                             Quản lý mẫu email
                         </v-list-tile-content>
                     </v-list-tile>
-                    <!-- <v-list-tile @click="page = 'createSchedule'">
-                        <v-list-tile-content :style="fontWeight[1]">
-                            Đặt lịch gửi email
-                        </v-list-tile-content>
-                    </v-list-tile> -->
                     <v-list-tile @click="page = 'manageSchedule', getSchedule()">
                         <v-list-tile-content :style="fontWeight[2]">
                             Quản lý lịch gửi email
@@ -121,11 +116,11 @@
                                     </v-card-text>
                                 </v-card>
                                 <v-card flat>
-                                    <v-card-text>
+                                    <!-- <v-card-text>
                                         <h4>Đã chọn {{createSchedule.numberOfRecipient}} người nhận</h4>
-                                    </v-card-text>
+                                    </v-card-text> -->
                                     <v-card-actions>
-                                        <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
+                                        <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == '' || createSchedule.selectedListToSendSMS == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-flex>
@@ -136,36 +131,16 @@
                                             <v-flex xs6 sm6 md6 lg6 xl6>
                                                 <h2>Danh sách</h2>
                                             </v-flex>
-                                            <!-- <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn color="success" @click="markAllContact()">
-                                                    Chọn tất cả
-                                                </v-btn>
-                                            </v-flex>
-                                            
-                                            <v-flex xs2 sm2 md2 lg2 xl2>
-                                                <v-btn @click="unmarkAllContact()">
-                                                    Bỏ chọn tất cả
-                                                </v-btn>
-                                            </v-flex> -->
-                                            <!-- <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.emailToSend.length}} người nhận)</v-alert>
-                                            </v-flex> -->
                                         </v-layout>
                                     </v-card-title>
                                     <v-card-text>
-
                                         <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
                                             <template v-slot:items="props">
                                                 <tr>
                                                     <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
+                                                            @change="checkDisplayContact(props.item.contactId, props.item.chosen)"
                                                             >
                                                             </v-checkbox></td>
                                                     <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
@@ -194,9 +169,9 @@
                                         <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
                                             <template v-slot:items="props">
                                                 <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
                                                     <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
                                                             v-model="props.item.chosen" 
+                                                            @change="checkAdditionalContact(props.item.contactId, props.item.chosen)"
                                                             >
                                                             </v-checkbox></td>
                                                     <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
@@ -205,8 +180,8 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <v-pagination v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages"></v-pagination>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                        <v-pagination v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
+                                        
                                         <br>
                                     </v-card-text>
                                 </v-card>
@@ -617,7 +592,9 @@ export default {
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',
                 ],
                 from: '',
-                title: ''
+                title: '',
+                ignoreContact: [],
+                bonusContact: []
             },
             manageSchedule: {
                 headers: [
@@ -718,36 +695,8 @@ export default {
             this.counter = this.counter + 1 ;
         },
         'createSchedule.selectedListToSendSMS'(){
+            this.createSchedule.ignoreContact = [];
             this.getDisplayContactsOnPage1();
-            // this.createSchedule.displayContacts = [];
-            // this.createSchedule.additionalContacts = [];
-            // //lấy danh sách các contact để hiển thị
-            // for (let i = 0; i < this.createSchedule.list.length; i++){
-            //     if (this.createSchedule.selectedListToSendSMS == this.createSchedule.list[i].value){
-            //         this.createSchedule.displayContacts = this.createSchedule.list[i].contact;
-            //     }
-            // }
-            // for (let i = 0; i < this.createSchedule.displayContacts.length; i++){
-            //     this.createSchedule.displayContacts[i].chosen = true;
-            // }
-            // //lấy danh sách các contact để chọn thêm
-            // for (let k = 0; k < this.createSchedule.allContacts.length; k++){
-            //     let found = false;
-            //     for (let j = 0; j < this.createSchedule.displayContacts.length; j++){
-            //         if(this.createSchedule.displayContacts[j].contactId == this.createSchedule.allContacts[k].contactId){
-            //             found = true;
-            //         }
-            //     }
-            //     if (found == false){
-            //         this.createSchedule.additionalContacts.push(this.createSchedule.allContacts[k])
-            //     }
-            // }
-            // for (let i = 0; i < this.createSchedule.additionalContacts.length; i++){
-            //     this.createSchedule.additionalContacts[i].chosen = false;
-            // }
-            // this.createSchedule.additionalContacts = [...this.createSchedule.additionalContacts];
-            // this.createSchedule.displayContacts = [...this.createSchedule.displayContacts]
-            // this.getEmailToSend()
         },
     },
     computed: {
@@ -1427,10 +1376,6 @@ export default {
             })
         },
 
-
-
-
-
         //create schedule
         getDisplayContactsOnOtherPage(){
             this.createSchedule.displayContacts = []
@@ -1442,7 +1387,7 @@ export default {
                     let time = moment();
                     if(result.code == 'SUCCESS'){
                         for(let k = 0; k < result.response.results.length; k++){
-                            result.response.results[k].chosen = true;
+                            result.response.results[k].chosen = !this.checkChosenContact(this.createSchedule.ignoreContact, result.response.results[k].contactId)
                             this.createSchedule.displayContacts.push(result.response.results[k]);
                         }
                         this.createSchedule.pages = result.response.totalPage;
@@ -1463,7 +1408,7 @@ export default {
                     let time = moment();
                     if(result.code == 'SUCCESS'){
                         for(let k = 0; k < result.response.results.length; k++){
-                            result.response.results[k].chosen = true;
+                            result.response.results[k].chosen = !this.checkChosenContact(this.createSchedule.ignoreContact, result.response.results[k].contactId)
                             this.createSchedule.displayContacts.push(result.response.results[k]);
                         }
                         this.createSchedule.pages = result.response.totalPage;
@@ -1477,6 +1422,33 @@ export default {
         getDisplayContactsOnPage1(){
             this.createSchedule.page = 1;
             this.getDisplayContactsOnOtherPage();
+        },
+        getAdditionalContactsOnOtherPage(){
+            this.createSchedule.additionalContacts = []
+            contactService.getAllContact(this.idAccount, this.createSchedule.bonusPage).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for(let k = 0; k < result.response.results.length; k++){
+                        result.response.results[k].chosen = this.checkChosenContact(this.createSchedule.bonusContact, result.response.results[k].contactId)
+                        this.createSchedule.additionalContacts.push(result.response.results[k]);
+                    }
+                    this.createSchedule.bonusPages = result.response.totalPage;
+                }
+                else {
+                    
+                }
+                
+            }).catch(error => {
+                console.log(error)
+            })
+            
+        },
+        getAdditionalContactsOnPage1(){
+            this.createSchedule.bonusPage = 1;
+            this.getAdditionalContactsOnOtherPage();
         },
         getList(){
             let allContact = {
@@ -1553,12 +1525,12 @@ export default {
                     for(let k = 0; k < result.response.results.length; k++){
                         result.response.results[k].chosen = false;
                         this.createSchedule.additionalContacts.push(result.response.results[k]);
+                        this.createSchedule.bonusPages = result.response.totalPage;
                     }
                 }
                 else {
 
                 }
-                
             }).catch(error => {
                 console.log(error)
             })
@@ -1603,68 +1575,20 @@ export default {
             //     console.log(error);
             // })
         },
-        getChosenContactFromListByListId(id){
-            let result = []
-            let allContactArray = [];
-            //Lấy mảng tất cả các contact
-            if(id == 'additional'){
-                allContactArray = this.createSchedule.additionalContacts;
-            }
-            else {
-                for (let i = 0; i < this.createSchedule.list.length;i++){
-                    if(id == this.createSchedule.list[i].value){
-                        allContactArray = this.createSchedule.list[i].contact
-                    }
-                }
-            }
-            //Lấy các contact được chọn từ mảng tất cả các contact
-            for (let i = 0; i < allContactArray.length;i++){
-                if(allContactArray[i].chosen == true){
-                    result.push(allContactArray[i]);
-                }
-            }
-            return result;
-        },
-        getEmailToSend(){
-            let contactToSend = [];
-            this.createSchedule.emailToSend = []
-            let id = this.createSchedule.selectedListToSendSMS;
-            contactToSend = [...this.getChosenContactFromListByListId(id), ...this.getChosenContactFromListByListId('additional')]
-            let uniqueContact = [];
-            for (let k = 0; k < contactToSend.length;k++){
-                let found = false;
-                for (let j = 0; j < uniqueContact.length; j++){
-                    if(uniqueContact[j].contactId == contactToSend[k].contactId){
-                        found = true;
-                    }
-                }
-                if(found == false){
-                    uniqueContact.push(contactToSend[k]);
-                }
-            }
-            for (let index = 0; index < uniqueContact.length; index++){
-                let object = {
-                    email: uniqueContact[index].email,
-                    contactId: uniqueContact[index].contactId
-                }
-                this.createSchedule.emailToSend.push(object);
-            }
-            console.log(this.createSchedule.emailToSend);
-            this.createSchedule.numberOfRecipient = this.createSchedule.emailToSend.length;
-        },
         sendEmail(){
             let timeString = this.createSchedule.date + 'T' + this.createSchedule.time
             let timeToSend = moment(timeString).utc().format().substring(0, 19)
-            
             let body = {
-                from: this.createSchedule.from,
-                title: this.createSchedule.title,
-                emailTemplateId: this.createSchedule.chosenContentId,
-                timeToSend: timeToSend,
-                emailScheduleDetails: this.createSchedule.emailToSend
+                emailSchedule: {
+                    "emailTemplateId": this.createSchedule.chosenContentId,
+                    "timeToSend": timeToSend,
+                    "from": this.createSchedule.from,
+                    "title": this.createSchedule.title
+                },
+                listId: this.createSchedule.selectedListToSendSMS,
+                contactIgnore: this.createSchedule.ignoreContact,
+                contactBonus: this.createSchedule.bonusContact
             }
-
-            console.log(body)
             emailService.createEmailSchedule(this.idAccount, body).then(result => {
                 const {
                     dispatch
@@ -1678,15 +1602,38 @@ export default {
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                
-                
             }).catch(error => {
-                this.createSchedule.failDialog = true;
                 console.log(error);
             })
         },
+        checkChosenContact(array, id){
+            let res = false;
+            if(array.includes(id)){
+                res = true;
+            }
+            return res;
+        },
+        checkAdditionalContact(str, isChosen){
+            if(isChosen == true){
+                this.createSchedule.bonusContact.push(str)
+            }
+            else {
+                let index = this.createSchedule.bonusContact.indexOf(str);
+                this.createSchedule.bonusContact.splice(index, 1)
+            }
+            console.log(this.createSchedule.bonusContact)
+        },
+        checkDisplayContact(str, isChosen){
+            if(isChosen == false){
+                this.createSchedule.ignoreContact.push(str)
+            }
+            else {
+                let index = this.createSchedule.ignoreContact.indexOf(str);
+                this.createSchedule.ignoreContact.splice(index, 1)
+            }
+            console.log(this.createSchedule.ignoreContact)
+        },
 
-        
         //manage schedule
         returnTime(data) {
             return moment(data).format('YYYY/MM/DD HH:mm')
@@ -1700,7 +1647,7 @@ export default {
                 result = 'Đã tắt'
             }
             else if (status == 'PENDING'){
-                result = 'Chờ xử lý...'
+                result = 'Đang chờ gửi...'
             }
             else if (status == 'INPROGRESS'){
                 result = 'Đang xử lý...'

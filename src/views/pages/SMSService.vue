@@ -62,41 +62,21 @@
                                             </v-card-text>
                                         </v-card>
                                         <v-card flat>
-                                            <v-card-text>
+                                            <!-- <v-card-text>
                                                 <h4>Đã chọn {{send.numberOfRecipient}} người nhận</h4>
-                                            </v-card-text>
+                                            </v-card-text> -->
                                             <v-card-actions>
                                                 <v-btn dark block color="#3E82F7" :disabled="send.chosenContentId == '' || send.chosenCampaign == '' || send.numberOfRecipient == 0  " @click="sendSMS()">Đặt lịch gửi</v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-flex>
                                     <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
-                                        <v-card flat v-if="send.displayContacts.length > 0">
+                                        <v-card flat>
                                             <v-card-title>
                                                 <v-layout row wrap>
                                                     <v-flex xs6 sm6 md6 lg6 xl6>
                                                         <h2>Danh sách</h2>
                                                     </v-flex>
-                                                    <!-- <v-flex xs6 sm6 md6 lg6 xl6>
-                                                        <h2>Đã chọn {{numberOfRecipient}} người nhận</h2>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-select label="Chọn danh sách để xem" :items="send.list" v-model="send.selectedListWithOptions"></v-select>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-btn color="success" @click="markAllContact()">
-                                                            Chọn tất cả
-                                                        </v-btn>
-                                                    </v-flex>
-                                                    
-                                                    <v-flex xs2 sm2 md2 lg2 xl2>
-                                                        <v-btn @click="unmarkAllContact()">
-                                                            Bỏ chọn tất cả
-                                                        </v-btn>
-                                                    </v-flex> -->
-                                                    <!-- <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-alert type="error" :value="send.exceedRecipientAlert" >Số lượng người nhận không được lớn hơn số tin nhắn còn lại (Bạn đã chọn {{send.phoneNumberToSend.length}} người nhận)</v-alert>
-                                                    </v-flex> -->
                                                 </v-layout>
                                             </v-card-title>
                                             <v-card-text>
@@ -122,7 +102,7 @@
                                             
                                             </v-card-text>
                                         </v-card>
-                                        <v-card flat class="mt-3" v-if="send.additionalContacts.length > 0">
+                                        <v-card flat class="mt-3">
                                             <v-card-title>
                                                 <v-layout row wrap>
                                                     <v-flex xs6 sm6 md6 lg6 xl6>
@@ -149,8 +129,6 @@
                                                 <br>
                                                 <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
                                                 <br>
-
-                                            
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
@@ -453,18 +431,7 @@
                                         <td>{{ props.item.time }} </td>
                                         <td style="color: red" v-if="props.item.status == 'INACTIVE'">{{ returnStatus(props.item.status) }}</td>
                                         <td style="color: green" v-if="props.item.status == 'ACTIVE'">{{ returnStatus(props.item.status) }}</td>
-                                        <!-- <v-menu :close-on-content-click="false" right offset-x style="background-color: white">
-                                            <template v-slot:activator="{ on }">
-                                                
-                                                <td>
-                                                    <a color="indigo" v-on="on">
-                                                        {{ props.item.status }}
-                                                    </a>
-                                                </td>
-                                                
-                                            </template>
-                                            <v-select  style="background-color: white; width: 120px; padding: 0px 10px;" v-model="props.item.status" :items="['ACTIVE', 'INACTIVE']" @change="changeScheduleStatus(props.item.number, props.item.status)" ></v-select>
-                                        </v-menu> -->
+
                                         <v-menu offset-x>
                                             <template v-slot:activator="{ on }">
                                                 <td class="text-xs-right">
@@ -483,9 +450,6 @@
                                                 </v-list-tile>
                                             </v-list>
                                         </v-menu>
-                                        <!-- <td><a @click.stop="openScheduleDetailDialog(props.item.number)"> Xem chi tiết >> </a></td>
-                                        <td v-if="props.item.status == 'ACTIVE'"><v-btn color="red" outline round @click="changeScheduleStatus(props.item.number, 'INACTIVE'), props.item.status = 'INACTIVE'">Tắt lịch gửi</v-btn></td>
-                                        <td v-if="props.item.status == 'INACTIVE'"><v-btn color="primary" outline round @click="changeScheduleStatus(props.item.number, 'ACTIVE'), props.item.status = 'ACTIVE'">Kích hoạt lịch gửi</v-btn></td> -->
                                     </tr>
                                 </template>
                             </v-data-table>
@@ -862,6 +826,7 @@ export default {
         }
     },
     methods: {
+        //create Schedule
         returnTime(data) {
             return moment(data).format('YYYY/MM/DD, HH:mm:ss')
         },
