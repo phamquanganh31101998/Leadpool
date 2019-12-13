@@ -535,121 +535,95 @@
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
         <v-layout row wrap>
-          <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table>
-          <!-- <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-            <template v-slot:items="props">
-                <tr>
-                
-                  <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                  <td class="text-xs-left">{{ props.item.email }}</td>
-                  <td class="text-xs-left">{{ props.item.phone }}</td>
-                  <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                  <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                  <td class="text-xs-left">{{ props.item.city }}</td>
-                  <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                  <td class="text-xs-left">{{ props.item.service }}</td>
-                  <v-menu>
-                    <template v-slot:activator="{ on }">
-                        <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                    </template>
-                    <v-list>
-                      <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                        <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                      </v-list-tile>
-                      <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                        <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                      </v-list-tile>
-                    </v-list>
-                  </v-menu>
-              </tr>
-            </template>
-          </v-data-table> -->
+          <v-flex xs12 sm12 md12 lg12 xl12>
+            <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+            <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+            <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+              <template v-slot:items="props">
+                  <tr>
+                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                    <td class="text-xs-left">{{ props.item.email }}</td>
+                    <td class="text-xs-left">{{ props.item.phone }}</td>
+                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                    <td class="text-xs-left">{{ props.item.city }}</td>
+                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                    <td class="text-xs-left">{{ props.item.service }}</td>
+                    <v-menu>
+                      <template v-slot:activator="{ on }">
+                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                      </template>
+                      <v-list>
+                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-flex>
         </v-layout>
         <div class="text-xs-center pt-2">
-          <v-pagination v-model="page" :length="pages"></v-pagination>
+          <v-pagination :total-visible="7" v-model="page" :length="pages"></v-pagination>
         </div>
         <br>
         <br>

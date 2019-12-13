@@ -6,11 +6,8 @@
                <v-layout row wrap>
                    <v-flex d-flex xs12>
                        <v-layout row wrap fill-height>
-                           <v-flex  style="padding-top: 180px" d-flex xs12 sm12 md4 lg4 xl4 offset-md8 offset-lg8 offset-xl8 tile color="white" align-center>
-                                <v-card flat >
-                                    <!-- <v-card-text class="text-xs-center" >
-                                        <img height="100" src="../assets/adstech-logo1.png" alt="avatar">
-                                    </v-card-text> -->
+                           <v-flex  style="padding-top: 180px" d-flex xs12 sm12 md10 lg4 xl4 offset-md1 offset-lg8 offset-xl8 tile color="white" align-center>
+                                <v-card flat>
                                     <v-card-title style="font-weight: bold; font-size: 35px;">
                                         Đặt lại mật khẩu
                                     </v-card-title>
@@ -26,15 +23,8 @@
                                                     <v-text-field class="custom" :rules="passwordRules" v-model="retypePassword" type="password"></v-text-field>
                                                 </v-flex>
                                             </v-form>
-                                            <!-- <v-alert
-                                                style="width: 100%"
-                                                :value="password != retypePassword && retypePassword != ''"
-                                                type="warning"
-                                                >
-                                                Mật khẩu nhập lại không khớp
-                                            </v-alert> -->
-                                            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-5">
-                                                <v-btn style="height: 50px; width: 300px; border-radius: 60px; " round dark block color="#292DA7" :disabled="!valid " @click="resetPassword(password)"><span style="font-weight: bold;">Đặt lại mật khẩu</span></v-btn>
+                                            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-5" >
+                                                <v-btn style="height: 50px; width: 100%; border-radius: 60px; " round dark block color="#292DA7" :disabled="!valid " @click="resetPassword(password)"><span style="font-weight: bold;">Đặt lại mật khẩu</span></v-btn>
                                             </v-flex>
                                         </v-layout>
                                     </v-card-text>
@@ -127,12 +117,15 @@ export default {
         font-family: 'Be Vietnam', sans-serif !important;
         background-color: #FFFFFF;
         background-image: url('../assets/resetPassword1440.jpg');
+        background-size: cover;
         /* background-repeat: repeat-y; */
         width: 100%;
         height: 100%;
     }
     .custom {
-        width: 320px;
+        margin-left: 2%;
+        margin-right: 2%;
+        width: 95%;
         padding: 5px 20px;
         height: 38px;
         border-radius: 5px;

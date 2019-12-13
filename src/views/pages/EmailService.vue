@@ -116,9 +116,6 @@
                                     </v-card-text>
                                 </v-card>
                                 <v-card flat>
-                                    <!-- <v-card-text>
-                                        <h4>Đã chọn {{createSchedule.numberOfRecipient}} người nhận</h4>
-                                    </v-card-text> -->
                                     <v-card-actions>
                                         <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == '' || createSchedule.selectedListToSendSMS == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
                                     </v-card-actions>
@@ -149,11 +146,9 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <v-pagination v-model="createSchedule.page" :length="createSchedule.pages" @input="getDisplayContactsOnOtherPage()"></v-pagination>
+                                        <v-pagination :total-visible="7" v-model="createSchedule.page" :length="createSchedule.pages" @input="getDisplayContactsOnOtherPage()"></v-pagination>
                                         <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
                                         <br>
-                                        
-                                    
                                     </v-card-text>
                                 </v-card>
                                 <v-card flat class="mt-3">
@@ -180,7 +175,7 @@
                                             </template>
                                         </v-data-table>
                                         <br>
-                                        <v-pagination v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
+                                        <v-pagination :total-visible="7" v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
                                         
                                         <br>
                                     </v-card-text>
@@ -544,19 +539,19 @@ export default {
                     {
                         text: 'CHỌN',
                         align: 'left',
-                        value: 'name',
+                        value: 'chosen',
                         sortable: false
                     },
                     {
                         text: 'TÊN LEAD',
                         align: 'left',
-                        value: 'calories',
+                        value: 'lastName',
                         sortable: false
                     },
                     {
                         text: 'EMAIL',
                         align: 'left',
-                        value: 'fat',
+                        value: 'email',
                         sortable: false
                     },
                 ],
@@ -1451,11 +1446,11 @@ export default {
             this.getAdditionalContactsOnOtherPage();
         },
         getList(){
-            let allContact = {
-                text: 'Tất cả các Lead',
-                value: 'all'
-            }
-            this.createSchedule.list.push(allContact)
+            // let allContact = {
+            //     text: 'Tất cả các Lead',
+            //     value: 'all'
+            // }
+            // this.createSchedule.list.push(allContact)
             listService.getList(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -1471,22 +1466,10 @@ export default {
                         }
                         this.createSchedule.list.push(obj);
                     }
-                    
-                    // for (let i = 0; i < res.length; i++){
-                    //     listService.getContactByListId(this.idAccount, res[i].contactConditionGroupId).then(result => {
-                            
-                    //         for (let k = 0; k < result.response.length; k++){
-                    //             result.response[k].chosen = true;
-                    //         }
-                    //         obj.contact = result.response;
-                            
-                    //     })
-                    // }
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                // console.log(this.createSchedule.list);
             }).then(() => {
                 this.getAllContact()
             }).catch(error => {
@@ -1534,46 +1517,6 @@ export default {
             }).catch(error => {
                 console.log(error)
             })
-            // contactService.getAllContact(this.idAccount, 1).then(result => {
-            //     const {
-            //         dispatch
-            //     } = this.$store;
-            //     let time = moment();
-            //     if(result.code == 'SUCCESS'){
-            //         for (let i = 1; i <= result.response.totalPage;i++){
-            //             contactService.getAllContact(this.idAccount, i).then(result => {
-            //                 const {
-            //                     dispatch
-            //                 } = this.$store;
-            //                 let time = moment();
-            //                 if(result.code == 'SUCCESS'){
-            //                     for(let k = 0; k < result.response.results.length; k++){
-            //                         result.response.results[k].chosen = true;
-            //                         this.createSchedule.allContacts.push(result.response.results[k]);
-            //                     }
-            //                 }
-            //                 else {
-            //                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-            //                 }
-            //             }).catch(error => {
-            //                 console.log(error);
-            //             })
-            //         }
-            //         // console.log(this.createSchedule.allContacts.length)
-            //         let obj = {
-            //             text: 'Tất cả các Lead',
-            //             value: 'all',
-            //             contact: this.createSchedule.allContacts
-            //         }
-            //         this.createSchedule.list.unshift(obj);
-            //     }
-            //     else {
-            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-            //     }
-                
-            // }).catch(error => {
-            //     console.log(error);
-            // })
         },
         sendEmail(){
             let timeString = this.createSchedule.date + 'T' + this.createSchedule.time

@@ -572,7 +572,7 @@
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div class="text-xs-center pt-2">
-                            <v-pagination v-model="page" @input="changePage()" :length="totalPage"></v-pagination>
+                            <v-pagination :total-visible="7" v-model="page" @input="changePage()" :length="totalPage"></v-pagination>
                         </div>
                     </v-flex>
                 </v-layout>
