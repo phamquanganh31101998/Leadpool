@@ -34,8 +34,10 @@
                         <label><h4  style="font-weight: bold;">Chọn file excel từ máy tính của bạn để thêm lead (Định dạng .xlsx, .xlsm, ...)</h4>
                           <br>
                           <br>
-                          <v-icon>attach_file</v-icon>
                           <input type="file" value="Click để chọn file để tải lên" id="file" ref="file" v-on:change="handleFileUpload()"/>
+                          <br>
+                          <br>
+                          <a href="/datademo.xlsx" download>Tải file mẫu tại đây</a><v-icon>attach_file</v-icon>
                         </label>
                       </div>
                     </div>
@@ -50,6 +52,38 @@
                 <v-card-actions>
                   <v-btn color="primary" :disabled="!checkFileExtension(uploadFileDialog.file.name)" flat @click="submitFile()">Tải lên</v-btn>
                   <v-btn color="red" flat @click="uploadFileDialog.dialog = false">Đóng</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="uploadResult.dialog" width="400">
+              <v-card>
+                <v-card-title style="background-color:#1E88E5;color:#fff">
+                  <span class="headline">Kết quả</span>
+                </v-card-title>
+                <v-card-text style="padding: 0px 0px;">
+                  <v-layout row>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs12 sm12 md12 lg12 xl12>
+
+                    </v-flex>
+                  </v-layout>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="red" flat @click="uploadResult.dialog = false">Đóng</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -744,6 +778,25 @@
       },
     },
     data: () => ({
+      uploadResult: {
+        dialog: false,
+        SUCCESS: {
+          count: 0,
+          description: []
+        },
+        DUPLICATE: {
+          count: 0,
+          description: []
+        },
+        ERROR: {
+          count: 0,
+          description: []
+        },
+        FAIL: {
+          count: 0,
+          description: []
+        },
+      },
       filters: [],
       filterId: '',
       filterName: '',
@@ -1209,7 +1262,6 @@
         formData.append('file', this.uploadFileDialog.file);
         // console.log(this.uploadFileDialog.file)
         let link = `${config.apiContact}/${this.idUser}/import`
-        // let link = 'http://dev.adstech.vn:9000/account/5d1dd258f0aa61074608b0e3/import'
         axios.post(link,
           formData,
           {
@@ -1222,6 +1274,16 @@
           let time = moment();
           if(result.data.code == 'SUCCESS'){
               dispatch('alert/success', `${result.data.message} (${this.coverTimeDetail(time)})`)
+              this.uploadResult.SUCCESS.count = result.data.response.SUCCESS.count;
+              this.uploadResult.DUPLICATE.count = result.data.response.DUPLICATE.count;
+              this.uploadResult.ERROR.count = result.data.response.ERROR.count;
+              this.uploadResult.FAIL.count = result.data.response.FAIL.count;
+              this.uploadResult.SUCCESS.description = this.checkString(result.data.response.SUCCESS.description.split(" "));
+              this.uploadResult.DUPLICATE.description = this.checkString(result.data.response.DUPLICATE.description.split(" "));
+              this.uploadResult.ERROR.description = this.checkString(result.data.response.ERROR.description.split(" "));
+              this.uploadResult.FAIL.description = this.checkString(result.data.response.FAIL.description.split(" "));
+              console.log(this.uploadResult)
+              this.uploadResult.dialog = true;
           }
           else {
               dispatch('alert/error', `Import thất ${result.data.message} (${this.coverTimeDetail(time)})`)
@@ -1233,25 +1295,7 @@
           this.uploadFileDialog.dialog = false;
         });
       },
-      // submit(){
-      //   const button = document.querySelector('#submit');
-      //   button.addEventListener('click', () => {
-      //     const form = new FormData(document.querySelector('#profileData'));
-      //     const url = `${config.apiContact}/${idAccount}/import`
-      //     const request = new Request(url, {
-      //       method: 'POST',
-      //       body: form
-      //     });
-
-      //     fetch(request)
-      //       .then(response => response.json())
-      //       .then(data => { console.log(data); })
-      //   });
-      // },
       updateFile(file){
-        // console.log(file);
-        // var data = new FormData();
-        // data.append('file', file.name);
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
         let fd = new FormData();
         fd.append('file',file)
@@ -1260,10 +1304,6 @@
         }).catch(error => {
           console.log(error)
         })
-        
-        // axios.post(link, fd, config).then(result => {
-        //   console.log(error);
-        // })
       },
       customSort(items, index, isDescending) {
         // The following is informations as far as I researched.
@@ -1275,7 +1315,6 @@
         this.sortContact.order = (isDescending) ? 'DSC' : 'ASC';
         return items;
       },
- 
       getService(){
           this.allService = [];
           serviceAPI.getService(this.idUser).then(result => {
@@ -1914,12 +1953,8 @@
 
     },
     created() {
-      // this.submit()
-      // this.getList();
       this.getCurrentUser();
       this.$store.state.colorNumber = 0;
-      // this.getAllEmail();
-      // this.getAllContact();
     }
   }
 </script>
