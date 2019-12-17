@@ -10,7 +10,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>list</v-icon> Tạo mới</v-btn>
+                        <v-btn round block dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>list</v-icon> Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -35,6 +35,7 @@
         <v-layout v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
+                    :loading="loadingTable"
                         no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
                         :headers="headersLists"
                         :items="lists"
@@ -42,7 +43,7 @@
                         v-if="!listDetail"
                     >
                     <template v-slot:items="props">
-                        <td>{{ props.item.name }}</td>
+                        <td><a @click="goToListDetailPage(props.item.contactConditionGroupId)">{{ props.item.name }}</a></td>
                         <td>{{props.item.createdBy}}</td>
                         <td>{{coverTime(props.item.createdAt)}}</td>
                         <v-menu>
@@ -124,6 +125,7 @@ export default {
     },
     data(){
         return{
+            loadingTable: false,
             deleteListDialog: {
                 dialog: false,
                 id: ''
@@ -133,20 +135,20 @@ export default {
                 {
                     text: 'TÊN DANH SÁCH',
                     align: 'left',
-                    sortable: false,
+                    // sortable: false,
                     value: 'name'
                 },
                 {
                     text: 'NGƯỜI TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdBy'
                 },
                 {
                     text: 'NGÀY TẠO',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    // sortable: false,
+                    value: 'createdAt'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
@@ -207,6 +209,7 @@ export default {
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         getList(){
+            this.loadingTable = true;
             listService.getList(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -221,6 +224,8 @@ export default {
                 }
             }).catch(error => {
                 console.log(error);
+            }).finally(() => {
+                this.loadingTable = false;
             })
         },
         goToListDetailPage(idList){

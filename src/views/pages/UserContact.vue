@@ -295,7 +295,7 @@
                                                     <v-dialog v-model="createTask" persistent max-width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small color="#E0E0E0" v-on="on" :disabled="!access">
-                                                                <v-icon dark>calendar_today</v-icon>
+                                                                <v-icon dark>check</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
@@ -323,25 +323,25 @@
                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-dialog v-model="createDeal" persistent max-width="700px">
+                                                    <v-dialog v-model="createDeal" persistent width="700px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
-                                                                <v-icon dark>event</v-icon>
+                                                                <v-icon dark>thumb_up</v-icon>
                                                             </v-btn>
                                                         </template>
                                                         <v-card>
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
-                                                                <span class="headline">Tạo hợp đồng</span>
+                                                                <span class="headline">Tạo Thỏa thuận</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newDeal @closeCreateDealDialog =  "createDeal = false"/>
+                                                                <newDeal :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
                                                     </v-dialog>
                                                 </v-flex>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <p>Hợp đồng</p>
+                                                    <p>Thỏa thuận</p>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -352,7 +352,7 @@
                                 <v-expansion-panel expand v-model="expandDetail">
                                     <v-expansion-panel-content>
                                         <template v-slot:header>
-                                            <div><p style="font-weight: bold;">Thông tin Lead</p></div>
+                                            <div><h3>Thông tin Lead</h3></div>
                                         </template>
                                         <v-layout row v-for="(item,i) in items" :key="i">
                                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
@@ -360,21 +360,32 @@
                                                     <v-layout row slot-scope="{ hover }">
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
                                                             <template v-if="item.property == 'lifecycleStage'">
-                                                                <v-select :readonly="!access" label="Vòng đời" :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <span><h4>Vòng đời</h4></span>
+                                                                <v-select :readonly="!access"  :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            </template>
+                                                            <template v-if="item.property == 'service'">
+                                                                <span><h4>Dịch vụ</h4></span>
+                                                                <v-select :readonly="!access"  :items="allService" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
-                                                                <v-select :readonly="!access" label="Tài khoản sở hữu" :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
+                                                                <span><h4>Tài khoản sở hữu</h4></span>
+                                                                <v-select :readonly="!access"  :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'leadStatus'">
-                                                                <v-select :readonly="!access" label="Trạng thái" :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <span><h4>Trạng thái</h4></span>
+                                                                <v-select :readonly="!access"  :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
-                                                            <template v-else-if="item.property == 'city'">
-                                                                <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                            <template v-else-if="item.property == 'city'" class="mb-4">
+                                                                <span><h4>Thành phố</h4></span>
+                                                                <model-select :options="cities" v-model="city"></model-select>
+                                                                <br>
+                                                                <!-- <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select> -->
                                                             </template>
-                                                            <template v-else-if="item.property == 'bussiness'">
+                                                            <template v-else-if="item.property == 'bussiness'" class="mt-4">
+                                                                <span class="mt-4 pt-4"><h4>Ngành nghề</h4></span>
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" label="Ngành nghề" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
+                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
                                            
                                                                     </v-flex>
                                                                     <!-- <v-flex xs12 sm12 md12 lg12 xl12>
@@ -386,26 +397,38 @@
                                                                 </v-layout>
                                                                 
                                                             </template>
-                                                            <template v-else-if="item.property == 'phone'">
+                                                            <template  v-else-if="item.property == 'phone'">
+                                                                <span><h4>Số điện thoại</h4></span>
                                                                 <v-form v-model="validPhone">
-                                                                    <v-text-field :label="item.title" v-model="item.value" :rules="phoneRules" :readonly="!access"
+                                                                    <v-text-field v-model="item.value" :rules="phoneRules" :readonly="!access"
                                                                         @change="updateContactDetailWithCondition(item.property, item.value, validPhone)">
                                                                     </v-text-field>
                                                                 </v-form>
                                                                 
                                                             </template>
                                                             <template v-else-if="item.property == 'email'">
+                                                                <span><h4>Email</h4></span>
                                                                 <v-form v-model="validEmail">
-                                                                    <v-text-field :label="item.title" v-model="item.value" :rules="emailRules" :readonly="!access"
+                                                                    <v-text-field v-model="item.value" :rules="emailRules" :readonly="!access"
                                                                         @change="updateContactDetailWithCondition(item.property, item.value, validEmail)">
                                                                     </v-text-field>
                                                                 </v-form>
                                                                 
                                                             </template>
-                                                            <template v-else>
-                                                                <v-text-field :label="item.title" v-model="item.value" readonly>
+                                                            <template v-else-if="item.property == 'lastActivityDate'">
+                                                                <span><h4>Thời gian hoạt động gần nhất</h4></span>
+                                                                <v-text-field  v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
+                                                            <template v-else-if="item.property == 'lastContacted'">
+                                                                <span><h4>Thời gian liên lạc gần nhất</h4></span>
+                                                                <v-text-field  v-model="item.value" readonly>
+                                                                </v-text-field>
+                                                            </template>
+                                                            <!-- <template v-else>
+                                                                <v-text-field solo :label="item.title" v-model="item.value" readonly>
+                                                                </v-text-field>
+                                                            </template> -->
                                                             
                                                         </v-flex>
                                                         <v-flex xs5 sm5 md5 lg4 xl4>
@@ -505,6 +528,9 @@
                         <v-tab href="#tab-6">
                             Cuộc họp
                         </v-tab>
+                        <v-tab href="#tab-7">
+                            Thỏa thuận
+                        </v-tab>
                         <v-tab-item value="tab-1">
                             <!-- <v-layout row>
                                 <span class="mt-2 ml-3">Filter by:</span>
@@ -562,6 +588,8 @@
                             <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <!-- <activity :idAccount="this.idAccount" :idContact="this.idContact"></activity> -->
                         </v-tab-item>
                         <v-tab-item value="tab-2">
                             <v-layout row>
@@ -609,6 +637,14 @@
                                 </v-flex>
                             </v-layout>
                             <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                        </v-tab-item>
+                        <v-tab-item value="tab-7">
+                            <v-layout row>
+                                <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-right pr-2">
+                                    <v-btn small color="grey lighten-3" @click="createDeal=true" v-if="access">Tạo Thỏa thuận mới</v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <deal :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                     </v-tabs>
                 </v-layout>
@@ -701,6 +737,7 @@
     </v-content>
 </template>
 <script>
+    import { ModelSelect } from 'vue-search-select'
     import {eventBus} from '../../eventBus'
     import note from '../components/contacts/note'
     import email from '../components/contacts/email'
@@ -708,6 +745,7 @@
     import call from '../components/contacts/call'
     import meet from '../components/contacts/meet'
     import activity from '../components/contacts/activity'
+    import deal from '../components/contacts/deal'
     import logs from '../components/logs/history'
     import newNote from '../components/creates/createNote'
     import newEmail from '../components/creates/createEmail'
@@ -719,8 +757,10 @@
     import newDeal from '../components/creates/createDeal'
     import newSMS from '../components/creates/createSMS'
     import contact from '../../services/contacts.service'
+    import accountAPI from '../../services/accountsetting.service'
     import moment from 'moment'
     import alert from '@/components/alert'
+    import serviceAPI from '../../services/service.service'
     export default {
         props: {
             idAccount: {
@@ -733,6 +773,8 @@
             }
         },
         data: () => ({
+            changeCity: false,
+            allService: [],
             actionLog: {
                 
                 failDialog: false,
@@ -776,12 +818,14 @@
             allLeadStatus: [
                 'New', 'Open', 'In Progress', 'Open Deal', 'Unqualified', 'Attempted to Contact', 'Connected', 'Bad Timing'
             ],
-            cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-                'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-                'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-                'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-                'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
-            ],
+            // cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
+            //     'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
+            //     'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
+            //     'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
+            //     'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
+            // ],
+            cities: [],
+            city: '',
             allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
                 'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
                 'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
@@ -947,8 +991,13 @@
             // access(){
             //     this.cannotEdit = !this.access;
             // }
+            city(){
+                if(this.changeCity == true){
+                    this.updateContactDetail('city', this.city);
+                }
+            },
             items(){
-                console.log(this.items[8].value)
+                console.log(this.items[7].value)
             }
         },
         computed: {
@@ -964,6 +1013,50 @@
             // }
         },
         methods:{
+            getService(){ 
+                this.allService = [];
+                serviceAPI.getService(this.idAccount).then(result => {
+                    const {
+                        dispatch
+                    } = this.$store;
+                    let time = moment();
+                    if(result.code == 'SUCCESS'){
+                        let res = result.response.reverse();
+                        for (let i = 0; i < res.length; i++){
+                            this.allService.push(res[i].name)
+                        }
+                    }
+                    else {
+                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    }
+                }).catch(error => {
+                    console.log(error);
+                })
+            },
+            getCity(){
+                this.cities = [];
+                accountAPI.getCity(this.idAccount).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for(let i = 0; i < res.length; i++){
+                    let obj = {
+                        text: res[i].name + ' - ' + res[i].countryCode,
+                        value: res[i].name
+                    }
+                    this.cities.push(obj);
+                    }
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                } 
+                }).catch(error => {
+                console.log(error)
+                })
+            },
             updateEmail(){
                 eventBus.updateEmail();
             },
@@ -1109,8 +1202,18 @@
                                 dialog: false,
                                 property: 'bussiness',
                                 otherBussiness: (this.allBussiness.includes(this.checkString(result.response.bussiness))? false: true)
-                            }
+                            },
+                            {
+                                title: 'Dịch vụ',
+                                description: 'Dịch vụ',
+                                value: this.checkString(result.response.service),
+                                dialog: false,
+                                property: 'service'
+                            },
+
                         ]
+                        this.city = this.items[7].value;
+                        
                     }
                     else {
                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1120,6 +1223,7 @@
                     console.log(error);
                 }).finally(() => {
                     this.getCurrentUser()
+                    this.changeCity = true;
                 })
             },
             coverTimeDetail(time){
@@ -1392,11 +1496,14 @@
         created(){
             this.getDetail();
             this.getAllEmail();
+            this.getCity();
+            this.getService();
             // this.getCurrentUser()
             this.$store.state.colorNumber = 0;
         },
         components: {
             newDeal,
+            deal,
             note,
             email,
             task,
@@ -1412,7 +1519,8 @@
             newLogCall,
             newLogMeet,
             newSMS,
-            alert
+            alert,
+            ModelSelect
         }
     }
     // đã làm được phần lấy list thuộc tính

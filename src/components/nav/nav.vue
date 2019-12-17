@@ -23,7 +23,7 @@
       <v-divider :divider="divider" vertical></v-divider>
       <v-btn depressed :color="background[2]" @click="goToMyTaskPage()" style="height: 50px; margin-bottom: 15px;"> 
         Công việc 
-        <v-icon color="white" class="ml-2">work_outline</v-icon>
+        <v-icon color="white" class="ml-2">check</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical ></v-divider>
@@ -39,7 +39,13 @@
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn :color="background[5]" depressed @click="gotoLeadHubPage(), checkNavColor(5)" style="height: 50px; margin-bottom: 15px;">
+      <v-btn depressed :color="background[5]" @click="goToDealServicePage()" style="height: 50px; margin-bottom: 15px;">
+        Thỏa thuận
+        <v-icon color="white" class="ml-2">thumb_up</v-icon>
+        <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
+      </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn :color="background[6]" depressed @click="gotoLeadHubPage()" style="height: 50px; margin-bottom: 15px;">
         Lead Hub
         <v-icon color="white" class="ml-2">device_hub</v-icon>
       </v-btn>
@@ -187,7 +193,7 @@
       currentUser: null,
       contactViewEverything: true,
       contactCommunicateEverything: true,
-      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
+      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
     }),
     components: {
       loginAgen,
@@ -206,8 +212,8 @@
     },
     methods:{
       checkNavColor(number){
-        this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
-        if (number < 6){
+        this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
+        if (number < 8){
           this.background[number] = 'primary';
         }
       },
@@ -241,6 +247,10 @@
       },
       goToEmailServicePage(){
         let link = `/contacts/${this.currentUser.accountId}/emailservice`;
+        this.$router.push(link);
+      },
+      goToDealServicePage(){
+        let link = `/contacts/${this.currentUser.accountId}/dealservice`;
         this.$router.push(link);
       },
       gotoLeadHubPage(){

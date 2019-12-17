@@ -93,21 +93,22 @@
                 </v-flex>
                 <v-flex>
                     <p>Giao cho</p>
-                    <v-menu v-model="assignMenu" :close-on-content-click="false" offset-y max-width="300">
+                    <v-menu v-model="assignMenu" :close-on-content-click="false" offset-y top width="300">
                         <template v-slot:activator="{ on }">
                             <a color="indigo" v-on="on">
                                 {{chosenName}}
                             </a>
                         </template>
-                        <v-card>
-                            <v-card-title>
-                                <v-layout row wrap>
+                        <v-card style="height: 100%">
+                            <v-card-title style="height: 100%">
+                                <v-layout row wrap style="height: 100%">
                                     <!-- <v-flex xs12 sm12 md12 lg12 xl12>
                                         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="searchEmail"></v-text-field>
                                     </v-flex>
                                     <br> -->
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-select :items="searchedEmail" v-model="chosenEmail" @input="assignMenu = false"></v-select>
+                                    <v-flex xs12 sm12 md12 lg12 xl12 style="height: 100%">
+                                        <!-- <v-select :items="searchedEmail" v-model="chosenEmail" @input="assignMenu = false"></v-select> -->
+                                        <model-select :options="searchedEmail" v-model="chosenEmail" label="Chọn thành phố"></model-select>
                                     </v-flex>
                                 </v-layout>
                                 <!-- <v-layout>
@@ -289,10 +290,14 @@
     </v-layout>
 </template>
 <script>
+    import { ModelSelect } from 'vue-search-select'
     import taskService from '../../../services/task.service'
     import moment from 'moment'
     import { eventBus } from '../../../eventBus';
     export default {
+        components: {
+            ModelSelect,
+        },
         props: {
             idAccount: {
                 type: String,
@@ -369,6 +374,7 @@
                 this.dateFormatted = this.formatDate(this.date)
             },
             chosenEmail(){
+                this.assignMenu = false;
                 this.allEmail.filter(e => {
                     if(this.chosenEmail == e.value){
                         this.chosenName = e.name;
@@ -387,7 +393,7 @@
                 if(this.day == 'Custom Date'){
                     this.emailReminder.dateMenu = true;
                 }
-            }
+            },
         },
 
         methods: {
@@ -516,8 +522,9 @@
                     const {
                         dispatch
                     } = this.$store;
+                    let time = moment();
                     if(result.code == 'SUCCESS'){
-                        let time = moment();
+                        
                         dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
                         this.title = '';
                         this.note = '';
@@ -539,10 +546,30 @@
                     this.closeCreateTaskDialog();
                 })
 
+            },
+            handleImageUpload(event){
+                const files = event.target.files
+                const formData = new FormData()
+                formData.append('myFile', files[0])
+                console.log(event)
+                // fetch('/saveImage', {
+                //     method: 'POST',
+                //     body: formData
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     console.log(data)
+                // })
+                // .catch(error => {
+                //     console.error(error)
+                // })
             }
         },
         created(){
             this.getAllEmail();
+            document.querySelector('#fileUpload').addEventListener('change', event => {
+                this.handleImageUpload(event)
+            })
         }
     }
 </script>

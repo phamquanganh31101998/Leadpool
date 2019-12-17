@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import login from './views/login.vue'
+import SignUp from './views/SignUp.vue'
 import HomeA from './views/pages/HomeA.vue'
 import Contacts from './views/pages/Contact.vue'
 import UserContacts from './views/pages/UserContact.vue'
@@ -12,6 +13,7 @@ import MyTask from './views/pages/MyTask.vue'
 import UsersAndTeamsSetting from './views/pages/settings/UsersAndTeams.vue'
 import EditAccountDefaultSetting from './views/pages/settings/EditAccountDefault.vue'
 import AccountSetting from './views/pages/settings/AccountSetting.vue'
+import MyInfoSetting from './views/pages/settings/MyInfo.vue'
 import emailTemplate from './views/components/creates/EmailTemplate'
 import SMSService from './views/pages/SMSService.vue'
 import SMSTest from './views/pages/SMSTest.vue'
@@ -21,7 +23,8 @@ import leadhub from './views/pages/leadhub.vue'
 import settingGroupbtn from './views/pages/settingBtn.vue'
 import updateGroupbtn from './views/pages/updateBtn.vue'
 import UserNotActive from './views/pages/UserNotActive.vue'
-
+import DealService from './views/pages/DealService.vue'
+import RequestPassWord from './views/RequestPassword.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -137,6 +140,18 @@ const router = new Router({
             },
           },
           {
+            path: '/settings/:idAccount/myinfo',
+            name: 'myinfo',
+            component: MyInfoSetting,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
             path: '/contacts/:idAccount/myTask',
             name: 'MyTask',
             component: MyTask,
@@ -164,6 +179,18 @@ const router = new Router({
             path: '/contacts/:idAccount/smsservice',
             name: 'smsservice',
             component: SMSService,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/dealservice',
+            name: 'dealservice',
+            component: DealService,
             props(route) {
                 const props = {
                     ...route.params
@@ -264,6 +291,22 @@ const router = new Router({
       component: login,
       props: (router) => ({
         token: router.query.token
+      })
+    },
+    {
+      path: '/signup',
+      component: SignUp,
+      props: (router) => ({
+        email: router.query.email,
+        account: router.query.account
+      })
+    },
+    {
+      path: '/requestpassword',
+      component: RequestPassWord,
+      props: (router) => ({
+        email: router.query.u,
+        code: router.query.code
       })
     },
     {

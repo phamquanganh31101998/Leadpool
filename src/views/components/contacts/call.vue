@@ -119,7 +119,7 @@
                         </v-layout>
                         <v-divider :divider="divider" class="mt-2"></v-divider>
                         <v-layout row wrap class="mt-3">
-                            <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
+                            <!-- <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
                                         <v-btn color="grey lighten-2" small fab v-on="on">
@@ -128,8 +128,8 @@
                                     </template>
                                     <span>{{call.createdBy}}</span>
                                 </v-tooltip>
-                            </v-flex>
-                            <v-flex xs7 sm8 md8 lg9 xl9>
+                            </v-flex> -->
+                            <v-flex xs7 sm8 md8 lg9 xl9 class="ml-4 pl-4">
                                 <p class="mt-2 pt-2"><strong>{{call.createdBy}} </strong> đã lưu thông tin cuộc gọi</p>
                             </v-flex>
                             <!-- <v-flex xs1 sm1 md1 lg1 xl1>

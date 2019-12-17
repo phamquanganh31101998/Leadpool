@@ -122,7 +122,7 @@
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
-                                    <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
+                                    <!-- <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn color="grey lighten-2" small fab v-on="on">
@@ -131,8 +131,8 @@
                                             </template>
                                             <span>{{email.from}}</span>
                                         </v-tooltip>
-                                    </v-flex>
-                                    <v-flex xs8 sm9 md9 lg10 xl10>
+                                    </v-flex> -->
+                                    <v-flex xs8 sm9 md9 lg10 xl10 class="ml-4 pl-4">
                                         <p class="mt-2 pt-1"><strong>{{email.from}} </strong> đã gửi 1 email cho {{email.to}}</p>
                                     </v-flex>
                                 </v-layout>
@@ -256,7 +256,7 @@
                         </v-layout>
                         <v-divider :divider="divider" class="mt-2"></v-divider>
                         <v-layout row wrap class="mt-3">
-                            <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
+                            <!-- <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
                                         <v-btn color="grey lighten-2" small fab v-on="on">
@@ -265,8 +265,8 @@
                                     </template>
                                     <span>{{emailLog.createdBy}}</span>
                                 </v-tooltip>
-                            </v-flex>
-                            <v-flex xs7 sm8 md8 lg9 xl9>
+                            </v-flex> -->
+                            <v-flex xs7 sm8 md8 lg9 xl9 class="ml-4 pl-4">
                                 <p class="mt-2 pt-2"><strong>{{emailLog.createdBy}} </strong> đã lưu thông tin về email</p>
                             </v-flex>
                             <!-- <v-flex xs1 sm1 md1 lg1 xl1>
@@ -601,7 +601,7 @@ import contact from '../../../services/contacts.service'
             },
             trackingEmailActivities(id){
                 let email = this.getEmailFromEmailId(id);
-                console.log('tracking email with id ' + email.emailId);
+                // console.log('tracking email with id ' + email.emailId);
                 // email.updateDetailBtn = false;
                 // let email = this.emails[number];
                 let body = {
@@ -609,8 +609,8 @@ import contact from '../../../services/contacts.service'
                     "query": `(Contains(categories,\"${email.emailId}\"))`
                 }
                 emailService.trackingEmailActivities(this.idAccount, this.idContact, body).then(result => {
-                    console.log('Tracking result!!!!!!!!!!!!!!!!!')
-                    console.log(result);
+                    // console.log('Tracking result!!!!!!!!!!!!!!!!!')
+                    // console.log(result);
                     if (result.code == 'SUCCESS'){
                         if (result.response.messages.length > 0){
                             let data = result.response.messages[0];

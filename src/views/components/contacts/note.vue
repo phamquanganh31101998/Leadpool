@@ -72,11 +72,11 @@
                         </v-card-title>
                         <v-layout row wrap>
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
-                                <v-text-field @change="updateNote(note.note, note.noteId)" outlined label="Note" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
+                                <v-text-field @change="updateNote(note.note, note.noteId)" outlined label="Nội dung" v-model="note.note"  @focus="note.disableSaveButton = false" :readonly="!access"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12 xl12>
                                 <v-layout row>
-                                    <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
+                                    <!-- <v-flex xs3 sm2 md2 lg1 xl1 class="ml-4 pl-3">
                                         <v-tooltip top>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn color="grey lighten-2" small fab v-on="on">
@@ -85,8 +85,8 @@
                                             </template>
                                             <span>{{note.createdBy}}</span>
                                         </v-tooltip>
-                                    </v-flex>
-                                    <v-flex xs7 sm8 md8 lg9 xl9>
+                                    </v-flex> -->
+                                    <v-flex xs7 sm8 md8 lg9 xl9 class="ml-4 pl-4">
                                         <p class="mt-2 pt-1"><strong>{{note.createdBy}} </strong> đã tạo 1 ghi chú</p>
                                     </v-flex>
                                     <!-- <v-flex xs2 sm2 md2 lg2 xl2>
@@ -164,6 +164,7 @@ export default {
                     eventBus.updateNoteList();
                     this.deleteNoteDialog.id = '';
                     this.deleteNoteDialog.dialog = false;
+                    this.$emit('updateLastActivityDate');
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -200,6 +201,7 @@ export default {
                     }
                     this.notes = result.response.reverse();
                     this.notes = [...this.notes];
+                    dispatch('data/updateNote', this.notes)
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -226,6 +228,7 @@ export default {
                     } = this.$store;
                     if (result.code == "SUCCESS") {
                         dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
+                        dispatch('data/updateNote', this.notes)
                         this.$emit('updateLastActivityDate');
                         eventBus.updateNoteList();
                     } else {
