@@ -37,7 +37,7 @@
                           <input type="file" value="Click để chọn file để tải lên" id="file" ref="file" v-on:change="handleFileUpload()"/>
                           <br>
                           <br>
-                          <a href="/datademo.xlsx" download>Tải file mẫu tại đây</a><v-icon>attach_file</v-icon>
+                          <a href="https://drive.google.com/open?id=1EbaWwVxqHvh-4nPnpKbwH2qg_AEAzUyB" download>Tải file mẫu tại đây</a><v-icon>attach_file</v-icon>
                         </label>
                       </div>
                     </div>
@@ -55,30 +55,82 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-dialog v-model="uploadResult.dialog" width="400">
+            <v-dialog v-model="uploadResult.dialog" width="60%">
               <v-card>
                 <v-card-title style="background-color:#1E88E5;color:#fff">
                   <span class="headline">Kết quả</span>
                 </v-card-title>
-                <v-card-text style="padding: 0px 0px;">
+                <v-card-text>
                   <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-
+                      <h2>Thành công: <span style="color: green;">{{uploadResult.SUCCESS.count}}</span></h2>
+                      <a @click.stop="uploadResult.SUCCESS.display = !uploadResult.SUCCESS.display">Hiển thị 
+                        <v-icon v-if="uploadResult.SUCCESS.display == true">
+                          arrow_drop_down
+                        </v-icon>
+                        <v-icon v-if="uploadResult.SUCCESS.display == false">
+                          arrow_drop_up
+                        </v-icon>
+                      </a>
+                      <v-layout row wrap v-if="uploadResult.SUCCESS.display == true">
+                          <v-flex xs12 sm12 md3 lg3 xl3 v-for="(success, index) in uploadResult.SUCCESS.description">
+                            <p>{{success}}</p>
+                          </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-
+                      <h2>Bị trùng: <span style="color: red;">{{uploadResult.DUPLICATE.count}}</span></h2>
+                      <a @click.stop="uploadResult.DUPLICATE.display = !uploadResult.DUPLICATE.display">Hiển thị 
+                        <v-icon v-if="uploadResult.DUPLICATE.display == true">
+                          arrow_drop_down
+                        </v-icon>
+                        <v-icon v-if="uploadResult.DUPLICATE.display == false">
+                          arrow_drop_up
+                        </v-icon>
+                      </a>
+                      <v-layout row wrap v-if="uploadResult.DUPLICATE.display == true">
+                          <v-flex xs12 sm12 md3 lg3 xl3 v-for="(dup, index) in uploadResult.DUPLICATE.description">
+                            <p>{{dup}}</p>
+                          </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-
+                      <h2>Lỗi: <span style="color: red;">{{uploadResult.ERROR.count}}</span></h2>
+                      <a @click.stop="uploadResult.ERROR.display = !uploadResult.ERROR.display">Hiển thị 
+                        <v-icon v-if="uploadResult.ERROR.display == true">
+                          arrow_drop_down
+                        </v-icon>
+                        <v-icon v-if="uploadResult.ERROR.display == false">
+                          arrow_drop_up
+                        </v-icon>
+                      </a>
+                      <v-layout row wrap v-if="uploadResult.ERROR.display == true">
+                          <v-flex xs12 sm12 md3 lg3 xl3 v-for="(err, index) in uploadResult.ERROR.description">
+                            <p>{{err}}</p>
+                          </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-
+                      <h2>Thất bại: <span style="color: red;">{{uploadResult.FAIL.count}}</span></h2>
+                      <a @click.stop="uploadResult.FAIL.display = !uploadResult.FAIL.display">Hiển thị 
+                        <v-icon v-if="uploadResult.FAIL.display == true">
+                          arrow_drop_down
+                        </v-icon>
+                        <v-icon v-if="uploadResult.FAIL.display == false">
+                          arrow_drop_up
+                        </v-icon>
+                      </a>
+                      <v-layout row wrap v-if="uploadResult.FAIL.display == true">
+                          <v-flex xs12 sm12 md3 lg3 xl3 v-for="(fail, index) in uploadResult.FAIL.description">
+                            <p>{{fail}}</p>
+                          </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                 </v-card-text>
@@ -568,94 +620,90 @@
         </template>
       </v-flex>
       <v-flex xs12 sm8 md10 lg10 xl10>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md12 lg12 xl12>
-            <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-              <template v-slot:items="props">
-                  <tr>
-                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                    <td class="text-xs-left">{{ props.item.email }}</td>
-                    <td class="text-xs-left">{{ props.item.phone }}</td>
-                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                    <td class="text-xs-left">{{ props.item.city }}</td>
-                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                    <td class="text-xs-left">{{ props.item.service }}</td>
-                    <v-menu>
-                      <template v-slot:activator="{ on }">
-                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                      </template>
-                      <v-list>
-                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
-                </tr>
-              </template>
-            </v-data-table>
-            <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-              <template v-slot:items="props">
-                  <tr>
-                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                    <td class="text-xs-left">{{ props.item.email }}</td>
-                    <td class="text-xs-left">{{ props.item.phone }}</td>
-                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                    <td class="text-xs-left">{{ props.item.city }}</td>
-                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                    <td class="text-xs-left">{{ props.item.service }}</td>
-                    <v-menu>
-                      <template v-slot:activator="{ on }">
-                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                      </template>
-                      <v-list>
-                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
-                </tr>
-              </template>
-            </v-data-table>
-            <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
-              <template v-slot:items="props">
-                  <tr>
-                  <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                    <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
-                    <td class="text-xs-left">{{ props.item.email }}</td>
-                    <td class="text-xs-left">{{ props.item.phone }}</td>
-                    <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
-                    <td class="text-xs-left">{{ props.item.contactOwner }}</td>
-                    <td class="text-xs-left">{{ props.item.city }}</td>
-                    <td class="text-xs-left">{{ props.item.bussiness }}</td>
-                    <td class="text-xs-left">{{ props.item.service }}</td>
-                    <v-menu>
-                      <template v-slot:activator="{ on }">
-                          <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
-                      </template>
-                      <v-list>
-                        <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
-                          <v-list-tile-content>Xem chi tiết</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
-                          <v-list-tile-content>Xóa Lead</v-list-tile-content>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-flex>
-        </v-layout>
+        <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+          <template v-slot:items="props">
+              <tr>
+              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                <td class="text-xs-left">{{ props.item.email }}</td>
+                <td class="text-xs-left">{{ props.item.phone }}</td>
+                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                <td class="text-xs-left">{{ props.item.city }}</td>
+                <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                <td class="text-xs-left">{{ props.item.service }}</td>
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                      <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                  </template>
+                  <v-list>
+                    <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                      <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                      <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+            </tr>
+          </template>
+        </v-data-table>
+        <v-data-table v-else-if="section == 'filter'" :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+          <template v-slot:items="props">
+              <tr>
+              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                <td class="text-xs-left">{{ props.item.email }}</td>
+                <td class="text-xs-left">{{ props.item.phone }}</td>
+                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                <td class="text-xs-left">{{ props.item.city }}</td>
+                <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                <td class="text-xs-left">{{ props.item.service }}</td>
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                      <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                  </template>
+                  <v-list>
+                    <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                      <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                      <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+            </tr>
+          </template>
+        </v-data-table>
+        <v-data-table v-else :loading="loadingTable" style="width: 100%" :headers="headersSearch" :items="contacts" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+          <template v-slot:items="props">
+              <tr>
+              <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                <td><a @click="$router.push(takeLink(props.item.contactId))">{{ props.item.fullname }}</a></td>
+                <td class="text-xs-left">{{ props.item.email }}</td>
+                <td class="text-xs-left">{{ props.item.phone }}</td>
+                <td class="text-xs-left">{{ props.item.lifecycleStage }}</td>
+                <td class="text-xs-left">{{ props.item.contactOwner }}</td>
+                <td class="text-xs-left">{{ props.item.city }}</td>
+                <td class="text-xs-left">{{ props.item.bussiness }}</td>
+                <td class="text-xs-left">{{ props.item.service }}</td>
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                      <td class="text-xs-right" ><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn> </td>
+                  </template>
+                  <v-list>
+                    <v-list-tile @click="$router.push(takeLink(props.item.contactId))">
+                      <v-list-tile-content>Xem chi tiết</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="canDelete(props.item.contactOwner)" @click="confirmDeleteContact(props.item.contactId)">
+                      <v-list-tile-content>Xóa Lead</v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+            </tr>
+          </template>
+        </v-data-table>
         <div class="text-xs-center pt-2">
           <v-pagination :total-visible="7" v-model="page" :length="pages"></v-pagination>
         </div>
@@ -781,18 +829,22 @@
       uploadResult: {
         dialog: false,
         SUCCESS: {
+          display: false,
           count: 0,
           description: []
         },
         DUPLICATE: {
+          display: false,
           count: 0,
           description: []
         },
         ERROR: {
+          display: false,
           count: 0,
           description: []
         },
         FAIL: {
+          display: false,
           count: 0,
           description: []
         },
