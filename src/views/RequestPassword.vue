@@ -6,7 +6,7 @@
                <v-layout row wrap>
                    <v-flex d-flex xs12>
                        <v-layout row wrap fill-height>
-                           <v-flex  style="padding-top: 180px" d-flex xs12 sm12 md10 lg4 xl4 offset-md1 offset-lg8 offset-xl8 tile color="white" align-center>
+                           <v-flex style="padding-top: 180px" d-flex xs12 sm12 md10 lg4 xl4 offset-md1 offset-lg8 offset-xl8 tile color="white" align-center>
                                 <v-card flat>
                                     <v-card-title style="font-weight: bold; font-size: 35px;">
                                         Đặt lại mật khẩu
@@ -39,7 +39,6 @@
     </v-app>
 </template>
 <script>
-const qs = require('qs');
 import config from '../config'
 import alert from '@/components/alert'
 import moment from 'moment'
@@ -111,7 +110,7 @@ export default {
     },
 }
 </script>
-<style>
+<style scoped>
     @import url('https://fonts.googleapis.com/css?family=Be+Vietnam&display=swap');
     .app {
         font-family: 'Be Vietnam', sans-serif !important;

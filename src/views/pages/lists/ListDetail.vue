@@ -544,31 +544,34 @@
             <v-flex xs12 sm12 md9 lg9 xl9>
                 <v-layout row wrap>
                     <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-data-table
-                            hide-actions
-                            :loading="loadingTable"
-                            rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
-                            no-data-text="Không có kết quả nào phù hợp"
-                            :headers="headersLists"
-                            :items="contacts"
-                            class="elevation-1 mt-6"
-                            >
-                            <template v-slot:items="props">
-                                <td><a @click.stop="goToContactPage(props.item.contactId)">{{props.item.fullname}}</a></td>
-                                <td>{{ props.item.email }}</td>
-                                <td>{{ props.item.phone }}</td>
-                                <td>{{ props.item.lifecycleStage }}</td>
-                                <td>{{ props.item.contactOwner }}</td>
-                                <td>{{ props.item.city }}</td>
-                                <td>{{ props.item.bussiness }}</td>
-                                <td>{{ props.item.service }}</td>
-                            </template>
-                            <template v-slot:no-results>
-                                <v-alert :value="true" color="error" icon="warning">
-                                Your search for "{{ search }}" found no results.
-                                </v-alert>
-                            </template>
-                        </v-data-table>
+                        <div class="adstech-table">
+                            <v-data-table
+                                hide-actions
+                                :loading="loadingTable"
+                                rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]"
+                                no-data-text="Không có kết quả nào phù hợp"
+                                :headers="headersLists"
+                                :items="contacts"
+                                class="elevation-1 mt-6"
+                                >
+                                <template v-slot:items="props">
+                                    <td class="adstech-sticky-col"><a @click.stop="goToContactPage(props.item.contactId)">{{props.item.fullname}}</a></td>
+                                    <td class="adstech-sticky-col1">{{ props.item.email }}</td>
+                                    <td>{{ props.item.phone }}</td>
+                                    <td>{{ props.item.lifecycleStage }}</td>
+                                    <td>{{ props.item.contactOwner }}</td>
+                                    <td>{{ props.item.city }}</td>
+                                    <td>{{ props.item.bussiness }}</td>
+                                    <td>{{ props.item.service }}</td>
+                                </template>
+                                <template v-slot:no-results>
+                                    <v-alert :value="true" color="error" icon="warning">
+                                    Your search for "{{ search }}" found no results.
+                                    </v-alert>
+                                </template>
+                            </v-data-table>
+                        </div>
+                        
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <div class="text-xs-center pt-2">
@@ -657,49 +660,57 @@ export default {
                     text: 'TÊN',
                     align: 'left',
                     // sortable: false,
-                    value: 'fullname'
+                    value: 'fullname',
+                    class: ['adstech-sticky-header-col', 'adstech-header']
                 },
                 {
                     text: 'EMAIL',
                     align: 'left',
                     // sortable: false,
-                    value: 'email'
+                    value: 'email',
+                    class: ['adstech-sticky-header-col1', 'adstech-header']
                 },
                 {
                     text: 'SỐ ĐIỆN THOẠI',
                     align: 'left',
                     // sortable: false,
-                    value: 'phone'
+                    value: 'phone',
+                    class: 'adstech-header'
                 },
                 {
                     text: 'VÒNG ĐỜI',
                     align: 'left',
                     // sortable: false,
-                    value: 'lifecycleStage'
+                    value: 'lifecycleStage',
+                    class: 'adstech-header'
                 },
                 {
                     text: 'TÀI KHOẢN SỞ HỮU',
                     align: 'left',
                     // sortable: false,
-                    value: 'contactOwner'
+                    value: 'contactOwner',
+                    class: 'adstech-header'
                 },
                 {
                     text: 'THÀNH PHỐ',
                     align: 'left',
                     // sortable: false,
-                    value: 'city'
+                    value: 'city',
+                    class: 'adstech-header'
                 },
                 {
                     text: 'NGÀNH NGHỀ',
                     align: 'left',
                     // sortable: false,
-                    value: 'bussiness'
+                    value: 'bussiness',
+                    class: 'adstech-header'
                 },
                 {
                     text: 'DỊCH VỤ',
                     align: 'left',
                     // sortable: false,
-                    value: 'service'
+                    value: 'service',
+                    class: 'adstech-header'
                 },
             ],
             list: {
@@ -1310,4 +1321,107 @@ export default {
         height: 600px;
         overflow-y: scroll;
     }
+    /* .adstech-table {
+        position: relative;
+        background-color: #fff
+    }
+
+    .adstech-table .v-table__overflow .v-datatable {
+        border: none !important;
+        border-right: solid 1px #fff !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        overflow-x: scroll !important;
+        overflow-y: scroll !important;
+    }
+
+    .adstech-table .v-table__overflow {
+        margin-left: 60% !important;
+        width: 75% !important;
+
+    }
+
+    .adstech-table .v-table__overflow .v-datatable thead {
+        position: sticky;
+        top: 0
+    }
+
+    .adstech-table .v-table__overflow .v-datatable thead th {
+        background-color: #fff !important;
+        border: none !important;
+        color: #a2a2a2 !important;
+        padding: 10px;
+        text-align: left !important;
+        text-shadow: 1px 1px 1px #fff !important;
+        white-space: nowrap !important;
+
+    }
+
+    .adstech-table .v-table__overflow .v-datatable tbody td {
+        background-color: #fff !important;
+        border-bottom: solid 1px #fff !important;
+        color: #333 !important;
+        padding: 10px !important;
+        text-shadow: 1px 1px 1px #fff !important;
+        white-space: nowrap !important;
+    }
+
+    .adstech-table .adstech-sticky-col {
+        border-left: solid 1px #fff;
+        border-right: solid 1px #fff;
+        left: 0;
+        position: absolute;
+        top: auto;
+        width: 50%;
+        height: 61px
+    }
+
+    .adstech-table .adstech-sticky-col1 {
+        border-left: solid 1px #fff;
+        border-right: solid 1px #fff;
+        left: 50%;
+        position: absolute;
+        top: auto;
+        width: 14%;
+        height: 61px;
+        overflow: hidden;
+    }
+
+    .adstech-table .adstech-sticky-header-col {
+        border-left: solid 1px #DDEFEF;
+        border-right: solid 1px #DDEFEF;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 76px;
+        padding-top: 20px !important
+    }
+
+    .adstech-table .adstech-sticky-header-col1 {
+        border-left: solid 1px #DDEFEF;
+        border-right: solid 1px #DDEFEF;
+        left: 50%;
+        position: absolute;
+        top: 0;
+        width: 14%;
+        height: 76px;
+        padding-top: 20px !important
+    }
+
+    .adstech-table .theme--light.v-datatable .v-datatable__actions {
+        border-top: none !important
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 10px;
+        z-index: 999;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 15px;
+        border-radius: 15px;
+        background: #eff2f9;
+    } */
 </style>

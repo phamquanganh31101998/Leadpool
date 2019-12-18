@@ -25,6 +25,7 @@ import updateGroupbtn from './views/pages/updateBtn.vue'
 import UserNotActive from './views/pages/UserNotActive.vue'
 import DealService from './views/pages/DealService.vue'
 import RequestPassWord from './views/RequestPassword.vue'
+import Report from './views/pages/Report.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -215,6 +216,18 @@ const router = new Router({
             path: '/contacts/:idAccount/emailservice',
             name: 'emailservice',
             component: EmailService,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/report',
+            name: 'report',
+            component: Report,
             props(route) {
                 const props = {
                     ...route.params

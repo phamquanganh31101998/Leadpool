@@ -496,6 +496,13 @@ export default {
             })
         }, 
         drawChart5(){
+
+
+
+
+
+
+            
             // let data = [
             //     {
             //         category: "10-2019-ductbm@adsplus.vn",
