@@ -9,7 +9,8 @@
       > -->
     </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
-      <v-btn depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
+      <img style="height: 50px; " src="/favicon.ico" alt="logo"/>
+      <v-btn class="ml-3" depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
         LEADS 
         <v-icon color="white" class="ml-2">people_outline</v-icon>
         <!-- <v-icon color="#ff7a59">keyboard_arrow_down</v-icon> -->
@@ -49,7 +50,11 @@
         Lead Hub
         <v-icon color="white" class="ml-2">device_hub</v-icon>
       </v-btn>
-
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn :color="background[7]" @click="goToReportPage()" depressed style="height: 50px; margin-bottom: 15px;">
+        Báo cáo
+        <v-icon color="white" class="ml-2">bar_chart</v-icon>
+      </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -259,6 +264,10 @@
       },
       goToSettingsPage(){
         let link = `/settings/${this.currentUser.accountId}/userandteam`;
+        this.$router.push(link);
+      },
+      goToReportPage(){
+        let link = `/contacts/${this.currentUser.accountId}/report`;
         this.$router.push(link);
       },
     },

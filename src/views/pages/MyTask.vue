@@ -469,6 +469,14 @@ export default {
             },
     }),
     methods: {
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
         changeType(taskId, item){
             this.viewTask.task.type = item;
             this.updateTask(taskId, 'a', 'type', item);

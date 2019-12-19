@@ -37,7 +37,7 @@
                           <input type="file" value="Click để chọn file để tải lên" id="file" ref="file" v-on:change="handleFileUpload()"/>
                           <br>
                           <br>
-                          <a href="https://drive.google.com/uc?export=download&id=ttps://drive.google.com/open?id=1EbaWwVxqHvh-4nPnpKbwH2qg_AEAzUy" download>Tải file mẫu tại đây</a><v-icon>attach_file</v-icon>
+                          <a href="https://drive.google.com/uc?export=download&id=17GK6txShIoewWnthjD3tlNB3MvRHJfek" download>Tải file mẫu tại đây</a><v-icon>attach_file</v-icon>
                         </label>
                       </div>
                     </div>
