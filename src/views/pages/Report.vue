@@ -1,17 +1,47 @@
 <template>
     <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
-            <v-flex xs12 sm12 md11 lg11 xl11>
+            <v-flex xs8 sm8 md8 lg8 xl8>
                 <h1 class="ml-3">Báo cáo tổng quan</h1>
             </v-flex>
-            <v-flex xs12 sm12 md1 lg1 xl1>
-
+            <v-flex xs2 sm2 md2 lg2 xl2>
+                <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="date"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                    >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field label="Tính từ" v-on="on" v-model="date"></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="date"
+                        type="month"
+                        no-title
+                        scrollable
+                        >
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                    </v-date-picker>
+                </v-menu>
             </v-flex>
+            <v-flex xs2 sm2 md2 lg2 xl2>
+                <v-select :items="selectSection" v-model="section" label="Chọn loại báo cáo"></v-select>
+            </v-flex>
+            
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row wrap>
-            <v-flex xs12 sm12 md6 lg6 xl6>
-                <v-card style="height: 550px;">
+        <v-layout v-show="section == 'contact'">
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-card style="height: 100%;">
                     <v-card-title>
                         <h2>Biến động Lead theo tháng</h2>
                     </v-card-title>
@@ -21,39 +51,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md6 lg6 xl6>
-                <v-card style="height: 550px;">
-                    <v-card-title>
-                        <h2>Biến động Lead theo tháng</h2>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-btn @click="getDealAmountStaff()">Click</v-btn>
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-3 md-3">
-                <v-card style="height: 100%">
-                    <v-card-title>
-                        <h2>Số lượng Lead của mỗi tài khoản</h2>
-                    </v-card-title>
-                    <v-card-text>
-                        <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv2">
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-3 md-3">
-                <v-card style="height: 100%;">
-                    <v-card-title>
-                        <h2>Số lượng Lead theo Trạng thái Lead</h2>
-                    </v-card-title>
-                    <v-card-text>
-                        <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv3">
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-            <v-flex xs12 sm12 md12 lg12 xl12 class="mt-3 md-3">
+            <v-flex xs12 sm12 md12 lg12 xl12 class="ml-3">
                 <v-card style="height: 100%;">
                     <v-card-title>
                         <h2>Số lượng Lead được chăm sóc thường xuyên</h2>
@@ -64,10 +62,37 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs6 sm6 md6 lg6 xl6>
+            
+        </v-layout>
+        <v-layout v-show="section == 'contact'">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 md-3">
+                <v-card style="height: 100%">
+                    <v-card-title>
+                        <h2>Số lượng Lead của mỗi tài khoản</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv2">
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 ml-3 md-3">
                 <v-card style="height: 100%;">
                     <v-card-title>
-                        <h2>Thống kê thỏa thuận theo từng tháng</h2>
+                        <h2>Số lượng Lead theo Trạng thái của các tài khoản</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv3">
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout v-show="section == 'deal'">
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 md-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Thống kê thỏa thuận theo nhân viên</h2>
                     </v-card-title>
                     <v-card-text>
                         <v-data-table style="width: 100%" :headers="chart5.headers" :items="chart5.data">
@@ -76,21 +101,72 @@
                                 <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
                                     <td class="text-xs-left">{{ props.item.date }}</td>
                                     <td class="text-xs-left">{{ props.item.owner }}</td>
-                                    <td class="text-xs-left">{{ props.item.count }}</td>
                                     <td class="text-xs-left">{{ props.item.SumAmount }}</td>
+                                    <td class="text-xs-left">{{ props.item.count }}</td>
                                 </tr>
                             </template>
                         </v-data-table>
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md6 lg6 xl6>
-                <v-card>
-                    
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 ml-3 md-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Tỉ lệ theo số thỏa thuận (%)</h2>
+                    </v-card-title>
+                    <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv5a">
+                    </div>
                 </v-card>
             </v-flex>
-
-            
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 md-3 ml-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Tỉ lệ theo giá trị thỏa thuận (%)</h2>
+                    </v-card-title>
+                    <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv5b">
+                    </div>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout v-show="section == 'deal'">
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 md-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Thống kê thỏa thuận theo các giai đoạn</h2>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-data-table style="width: 100%" :headers="chart6.headers" :items="chart6.data">
+                            <template v-slot:items="props">
+                                <tr>
+                                <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                                    <td class="text-xs-left">{{ props.item.date }}</td>
+                                    <td class="text-xs-left">{{ props.item.stage }}</td>
+                                    <td class="text-xs-left">{{ props.item.SumAmount }}</td>
+                                    <td class="text-xs-left">{{ props.item.count }}</td>
+                                </tr>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 ml-3 md-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Tỉ lệ theo số thỏa thuận (%)</h2>
+                    </v-card-title>
+                    <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv6a">
+                    </div>
+                </v-card>
+            </v-flex>
+            <v-flex xs12 sm12 md12 lg4 xl4 class="mt-3 md-3 ml-3">
+                <v-card style="height: 100%;" >
+                    <v-card-title>
+                        <h2>Tỉ lệ theo giá trị thỏa thuận (%)</h2>
+                    </v-card-title>
+                    <div style="width: 100%; height: 550px; padding: 8px;" class="hello" ref="chartdiv6b">
+                    </div>
+                </v-card>
+            </v-flex>
         </v-layout>
     </v-content>
 </template>
@@ -118,30 +194,50 @@ export default {
 
     },
     data: vm => ({
+        date: new Date().toISOString().substr(0, 7),
+        menu: false,
+        modal: false,
+        section: 'contact',
+        selectSection: [
+            {
+                text: 'Báo cáo theo Lead',
+                value: 'contact',
+            },
+            {
+                text: 'Báo cáo theo thỏa thuận',
+                value: 'deal',
+            },
+        ],
         divider: true,
         chart1: {
             data: [],
-            chart: null
+            chart: null,
+            loading: true
         },
         chart2: {
             data: [],
-            chart: null
+            chart: null,
+            loading: true
         },
         chart3: {
             data: [],
-            chart: null
+            chart: null,
+            loading: true
         },
         chart4: {
             data: [],
-            chart: null
+            chart: null,
+            loading: true
         },
         chart5: {
             data: [],
-            chart: null,
+            drawData: [],
+            chart5a: null,
+            chart5b: null,
             headers: [{
                     text: 'THỜI GIAN',
                     align: 'left',
-                    value: '',
+                    value: 'date',
                     // sortable: false
                 },
                 {
@@ -151,9 +247,37 @@ export default {
                     // sortable: false
                 },
                 {
-                    text: 'SỐ THỎA THUẬN',
+                    text: 'GIÁ TRỊ',
+                    align: 'left',
+                    value: 'SumAmount',
+                    // sortable: false
+                },
+                {
+                    text: 'SỐ LƯỢNG',
                     align: 'left',
                     value: 'count',
+                    // sortable: false
+                },
+                
+            ],
+            loading5a: true,
+            loading5b: true
+        },
+        chart6: {
+            data: [],
+            drawData: [],
+            chart6a: null,
+            chart6b: null,
+            headers: [{
+                    text: 'THỜI GIAN',
+                    align: 'left',
+                    value: 'date',
+                    // sortable: false
+                },
+                {
+                    text: 'GIAI ĐOẠN',
+                    align: 'left',
+                    value: 'stage',
                     // sortable: false
                 },
                 {
@@ -162,7 +286,16 @@ export default {
                     value: 'SumAmount',
                     // sortable: false
                 },
+                {
+                    text: 'SỐ LƯỢNG',
+                    align: 'left',
+                    value: 'count',
+                    // sortable: false
+                },
+                
             ],
+            loading6a: true,
+            loading6b: true
         }
     }),
     methods: {
@@ -192,16 +325,22 @@ export default {
             let categoryAxis = this.chart1.chart.xAxes.push(new am4charts.CategoryAxis());
             categoryAxis.dataFields.category = "date";
             categoryAxis.title.text = "Thời gian";
-
+            categoryAxis.labelRotation = 90;
             let valueAxis = this.chart1.chart.yAxes.push(new am4charts.ValueAxis());
             valueAxis.title.text = "Số Lead";
 
-            var series = this.chart1.chart.series.push(new am4charts.ColumnSeries());
+            var series = this.chart1.chart.series.push(new am4charts.LineSeries());
             series.dataFields.valueY = "count";
             series.dataFields.categoryX = "date";
             series.name = "Biến động Lead theo thời gian";
-            series.columns.template.tooltipText = "Tháng {categoryX}\nSố Lead: {valueY}";
-            series.columns.template.fill = am4core.color("#039BE5");
+            series.tooltipText = "Tháng {date}: [bold]{count}[/]"
+
+            series.tooltip.pointerOrientation = "vertical";
+
+            this.chart1.chart.cursor = new am4charts.XYCursor();
+            this.chart1.chart.cursor.snapToSeries = series;
+            this.chart1.chart.cursor.xAxis = categoryAxis;
+
         },
         getContactPerMonth(){
             this.chart1.data = [];
@@ -219,6 +358,7 @@ export default {
                         }
                         this.chart1.data.push(obj)
                     }
+                    this.drawChart1()
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -226,7 +366,7 @@ export default {
             }).catch(error => {
                 console.log(error)
             }).finally(() => {
-                this.drawChart1()
+                
             })
         },
         getContactPerStaff(){
@@ -245,7 +385,8 @@ export default {
                         }
                         this.chart2.data.push(obj)
                     }
-                    // console.log(this.chart2.data)
+                    this.drawChart2()
+                    this.getContactRegularlyCare()
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -253,8 +394,7 @@ export default {
             }).catch(error => {
                 console.log(error)
             }).finally(() => {
-                this.drawChart2()
-                this.getContactRegularlyCare()
+                
             })
         },
         createSeriesForChart2(field, name){
@@ -291,20 +431,6 @@ export default {
             var  valueAxis = this.chart2.chart.xAxes.push(new am4charts.ValueAxis()); 
             valueAxis.renderer.opposite = true;
             this.createSeriesForChart2("count", "Số lượng");
-            // this.chart2.chart = am4core.create(this.$refs.chartdiv2, am4charts.XYChart);
-            // this.chart2.chart.data = this.chart2.data;
-            // let categoryAxis = this.chart2.chart.xAxes.push(new am4charts.CategoryAxis());
-            // categoryAxis.dataFields.category = "contactOwner";
-            // categoryAxis.title.text = "Tài khoản sở hữu";
-
-            // let valueAxis = this.chart2.chart.yAxes.push(new am4charts.ValueAxis());
-            // valueAxis.title.text = "Số Lead";
-            // var series = this.chart2.chart.series.push(new am4charts.ColumnSeries());
-            // series.dataFields.valueY = "count";
-            // series.dataFields.categoryX = "contactOwner";
-            // series.name = "Biến động Lead theo thời gian";
-            // series.columns.template.tooltipText = "Tài khoản: {categoryX}\nSố Lead: {valueY}";
-            // series.columns.template.fill = am4core.color("#039BE5");
             
         },
         getContactPerStaffDetail(){
@@ -334,15 +460,16 @@ export default {
                     for (let element of listValue){
                         this.chart3.data.push(Object.assign({}, element));
                     }
+                    this.drawChart3();
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-            }).catch(error => {
-                console.log(error)
-            }).finally(() => {
-                this.drawChart3();
-            })
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    
+                })
         },
         // Create series
         createSeriesForChart3(field, name) {
@@ -379,14 +506,6 @@ export default {
 
             var  valueAxis = this.chart3.chart.xAxes.push(new am4charts.ValueAxis()); 
             valueAxis.renderer.opposite = true;
-            // var categoryAxis = this.chart3.chart.xAxes.push(new am4charts.CategoryAxis());
-            // categoryAxis.dataFields.category = "contactOwner";
-            // categoryAxis.renderer.grid.template.location = 0;
-
-            // var valueAxis = this.chart3.chart.yAxes.push(new am4charts.ValueAxis());
-            // valueAxis.renderer.inside = true;
-            // valueAxis.renderer.labels.template.disabled = true;
-            // valueAxis.min = 0;
             this.createSeriesForChart3("none", "Không có trạng thái");
             this.createSeriesForChart3("New", "New");
             this.createSeriesForChart3("Open", "Open");
@@ -398,7 +517,8 @@ export default {
             this.createSeriesForChart3("Bad Timing", "Bad Timing");
 
             // Legend
-            this.chart3.chart.legend = new am4charts.Legend();
+            // this.chart3.chart.legend = new am4charts.Legend();
+            // this.chart3.chart.legend.position = "top"
         },
         getContactRegularlyCare(){
             this.chart4.data = [...this.chart2.data]
@@ -425,13 +545,13 @@ export default {
                     for (let element of listValue){
                         this.chart4.data.push(Object.assign({}, element));
                     }
-                    // console.log(this.chart4.data)
+                    this.drawChart4();
                 }
                 
             }).catch(error => {
                 console.log(error)
             }).finally(() => {
-                this.drawChart4();
+                
             })
         },
         drawChart4(){
@@ -461,13 +581,13 @@ export default {
             valueLabel.label.hideOversized = false;
             valueLabel.label.truncate = false;
 
-            var categoryLabel = series.bullets.push(new am4charts.LabelBullet());
-            categoryLabel.label.text = "{name}";
-            categoryLabel.label.horizontalCenter = "right";
-            categoryLabel.label.dx = -10;
-            categoryLabel.label.fill = am4core.color("#fff");
-            categoryLabel.label.hideOversized = false;
-            categoryLabel.label.truncate = false;
+            // var categoryLabel = series.bullets.push(new am4charts.LabelBullet());
+            // categoryLabel.label.text = "{name}";
+            // categoryLabel.label.horizontalCenter = "right";
+            // categoryLabel.label.dx = -10;
+            // categoryLabel.label.fill = am4core.color("#fff");
+            // categoryLabel.label.hideOversized = false;
+            // categoryLabel.label.truncate = false;
         },
         getDealAmountStaff(){
             this.chart5.data = [];
@@ -487,100 +607,111 @@ export default {
                         this.chart5.data.unshift(obj);
                     }
                     // console.log(this.chart5.data)
+                    let ownerIndexes = [];
+                    for(let i = 0; i < this.chart5.data.length; i++){
+                        let obj = this.chart5.data[i];
+                        // console.log(obj.owner)
+
+                        if(ownerIndexes.includes(obj.owner)){
+                            let index = ownerIndexes.indexOf(obj.owner)
+                            this.chart5.drawData[index].count += obj.count;
+                            this.chart5.drawData[index].SumAmount += obj.SumAmount;
+                        }
+                        else {
+                            this.chart5.drawData.push(obj);
+                            ownerIndexes.push(obj.owner)
+                        }
+                    }
+                    this.drawChart5a()
+                    this.drawChart5b();
                 }
                 
             }).catch(error => {
                 console.log(error);
             }).finally(() => {
-                // this.drawChart5()
+                
             })
         }, 
-        drawChart5(){
+        drawChart5a(){
+            this.chart5.chart5a = am4core.create(this.$refs.chartdiv5a, am4charts.PieChart);
+            this.chart5.chart5a.data = this.chart5.drawData
+            var pieSeries = this.chart5.chart5a.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "count";
+            pieSeries.dataFields.category = "owner";
+            pieSeries.labels.template.disabled = true;
+            pieSeries.ticks.template.disabled = true;
+        },
+        drawChart5b(){
+            this.chart5.chart5b = am4core.create(this.$refs.chartdiv5b, am4charts.PieChart);
+            this.chart5.chart5b.data = this.chart5.drawData
+            var pieSeries = this.chart5.chart5b.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "SumAmount";
+            pieSeries.dataFields.category = "owner";
+            pieSeries.labels.template.disabled = true;
+            pieSeries.ticks.template.disabled = true;
 
+        },
+        getDealAmountStage(){
+            this.chart6.data = [];
+            reportAPI.getDealAmountStage(this.idAccount).then(result => {
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    let tempRes = [];
+                    for (let i = 0; i < res.length; i++ ){
+                        let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
+                        let obj = {
+                            // category: date + '-' + res[i].stage,
+                            date: date,
+                            stage: res[i].stage,
+                            count: res[i].count,
+                            SumAmount: res[i].SumAmount
+                        }
+                        this.chart6.data.unshift(obj);
+                    }
+                    console.log(this.chart6.data)
+                    let stageIndexes = [];
+                    for(let i = 0; i < this.chart6.data.length; i++){
+                        let obj = this.chart6.data[i];
+                        // console.log(obj.stage)
 
-
-
-
-
-            
-            // let data = [
-            //     {
-            //         category: "10-2019-ductbm@adsplus.vn",
-            //         name_fr: "10-2019",
-            //         owner: "ductbm@adsplus.vn",
-            //         count: 1,
-            //         SumAmount: 150000,
-            //     },
-            //     {
-            //         category: "10-2019-anhpq@adsplus.vn",
-            //         name_fr: "10-2019",
-            //         owner: "anhpq@adsplus.vn",
-            //         count: 1,
-            //         SumAmount: 150000,
-            //     },
-            //     {
-            //         category: "11-2019-ductbm@adsplus.vn",
-            //         name_fr: "11-2019",
-            //         owner: "ductbm@adsplus.vn",
-            //         count: 1,
-            //         SumAmount: 150000,
-            //     },
-            // ]
-            // let byName = _.groupBy(data, "name_fr");
-            // let guides = _.map(byName, function(items, key) {
-            //     return {
-            //         category: _.first(items).category,
-            //         toCategory: _.last(items).category,
-            //         lineAlpha: 0,
-            //         expand: true,
-            //         label: key,
-            //         labelRotation: 0,
-            //         tickLength: 80
-            //     };
-            // });
-            // let config = 
-            //     {
-            //         type: "serial",
-            //         theme: "light",
-            //         graphs: [
-            //             {
-            //                 "type": "column",
-            //                 "fillAlphas": .9,
-            //                 "title": "Số hợp đồng",
-            //                 "valueField": "count",
-            //             },
-            //             {
-            //                 "type": "column",
-            //                 "fillAlphas": .9,
-            //                 "title": "Giá trị hợp đồng",
-            //                 "valueField": "SumAmount"
-            //             },
-            //         ],
-            //         columnSpacing: 1,
-            //         valueAxes: [
-            //             {
-            //                 "position": "left",
-            //                 "title": "Số hợp đồng"
-            //             },
-            //         ],
-            //         legend: {
-            //             "useGraphSettings": true,
-            //             "position": "bottom",
-            //             "align": "center"
-            //         },
-            //         categoryField: "category",
-            //         categoryAxis: {
-            //             "gridAlpha": 0,
-            //             "labelRotation": 90,
-            //             "guides": guides,
-            //             "labelFunction": function(label, item) {
-            //                 return item.dataContext.date;
-            //             }
-            //         },
-            //         dataProvider: data
-            //     }
-            // this.chart5.chart = am4core.createFromConfig(config, this.$refs.chartdiv5, am4charts.XYChart);
-            
+                        if(stageIndexes.includes(obj.stage)){
+                            let index = stageIndexes.indexOf(obj.stage)
+                            this.chart6.drawData[index].count += obj.count;
+                            this.chart6.drawData[index].SumAmount += obj.SumAmount;
+                        }
+                        else {
+                            this.chart6.drawData.push(obj);
+                            stageIndexes.push(obj.stage)
+                        }
+                    }
+                    console.log(this.chart6.drawData)
+                    this.drawChart6a()
+                    this.drawChart6b();
+                }
+                
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                
+            })
+        },
+        drawChart6a(){
+            this.chart6.chart6a = am4core.create(this.$refs.chartdiv6a, am4charts.PieChart);
+            this.chart6.chart6a.data = this.chart6.drawData
+            var pieSeries = this.chart6.chart6a.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "count";
+            pieSeries.dataFields.category = "stage";
+            pieSeries.labels.template.disabled = true;
+            pieSeries.ticks.template.disabled = true;
+        },
+        drawChart6b(){
+            this.chart6.chart6b = am4core.create(this.$refs.chartdiv6b, am4charts.PieChart);
+            this.chart6.chart6b.data = this.chart6.drawData
+            var pieSeries = this.chart6.chart6b.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "SumAmount";
+            pieSeries.dataFields.category = "stage";
+            pieSeries.labels.template.disabled = true;
+            pieSeries.ticks.template.disabled = true;
         }
     },
     created(){
@@ -599,21 +730,35 @@ export default {
         if (this.chart4.chart) {
             this.chart4.chart.dispose();
         }
-        if (this.chart5.chart) {
-            this.chart5.chart.dispose();
+        if (this.chart5a.chart) {
+            this.chart5a.chart.dispose();
         }
+        if (this.chart5b.chart) {
+            this.chart5b.chart.dispose();
+        }
+        if (this.chart6a.chart) {
+            this.chart6a.chart.dispose();
+        }
+        if (this.chart6b.chart) {
+            this.chart6b.chart.dispose();
+        }
+        
+    },
+    watch: {
+
     },
     mounted(){
         this.getContactPerMonth()
         this.getContactPerStaffDetail()
         this.getContactPerStaff();
         this.getDealAmountStaff();
+        this.getDealAmountStage();
     }
 }
 </script>
 <style scoped>
 .hello {
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  height: 100%;
 }
 </style>
