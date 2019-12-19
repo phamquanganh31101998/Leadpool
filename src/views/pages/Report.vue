@@ -26,10 +26,8 @@
                         type="month"
                         no-title
                         scrollable
+                        @input="$refs.menu.save(date)"
                         >
-                        <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-                        <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
                     </v-date-picker>
                 </v-menu>
             </v-flex>
@@ -168,6 +166,9 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <v-layout>
+            <v-btn block @click="getDealAmountStage()">Update chart 1</v-btn>
+        </v-layout>
     </v-content>
 </template>
 <script>
@@ -194,10 +195,10 @@ export default {
 
     },
     data: vm => ({
-        date: new Date().toISOString().substr(0, 7),
+        date: '',
         menu: false,
         modal: false,
-        section: 'contact',
+        section: 'deal',
         selectSection: [
             {
                 text: 'Báo cáo theo Lead',
@@ -369,6 +370,33 @@ export default {
                 
             })
         },
+        updateContactPerMonth(date){
+            this.chart1.data = [];
+            reportAPI.getContactPerMonth(this.idAccount, date).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        let obj = {
+                            date: this.checkString(res[i].month) + '-' + this.checkString(res[i].year),
+                            count: res[i].count
+                        }
+                        this.chart1.data.push(obj)
+                    }
+                    this.chart1.chart.data = this.chart1.data;
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                
+            })
+        },
         getContactPerStaff(){
             this.chart2.data = [];
             reportAPI.getContactPerStaff(this.idAccount).then(result => {
@@ -387,6 +415,35 @@ export default {
                     }
                     this.drawChart2()
                     this.getContactRegularlyCare()
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                
+            })
+        },
+        updateContactPerStaff(date){
+            this.chart2.data = [];
+            reportAPI.getContactPerStaff(this.idAccount, date).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    for (let i = 0; i < res.length; i++){
+                        let obj = {
+                            contactOwner: (res[i]._id == null) ? 'Không có chủ sở hữu' : res[i]._id,
+                            count: res[i].count
+                        }
+                        this.chart2.data.push(obj)
+                    }
+                    
+                    this.chart2.chart.data = this.chart2.data;
+                    this.updateContactRegularlyCare(this.date + '-01');
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -461,6 +518,44 @@ export default {
                         this.chart3.data.push(Object.assign({}, element));
                     }
                     this.drawChart3();
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    
+                })
+        },
+        updateContactPerStaffDetail(date){
+            this.chart3.data = [];
+            reportAPI.getContactPerStaffDetail(this.idAccount, date).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let bieudo = []
+                    let res = result.response;
+                    for(let i = 0; i < res.length; i++){
+                        if (res[i].leadStatus == null || res[i].leadStatus == undefined){
+                            res[i].leadStatus = "none";
+                        }
+                        let phantu=[];
+                        if (bieudo[res[i].contactOwner]!=null || bieudo[res[i].contactOwner]!=undefined){
+                            phantu = bieudo[res[i].contactOwner];
+                        }
+                        phantu["contactOwner"] = (res[i].contactOwner == undefined) ? 'None' : res[i].contactOwner;
+                        phantu[res[i].leadStatus] = res[i].count;
+                        bieudo[res[i].contactOwner] = phantu;
+                    }
+
+                    let listValue = Object.values(bieudo)
+                    for (let element of listValue){
+                        this.chart3.data.push(Object.assign({}, element));
+                    }
+                    this.chart3.chart.data = this.chart3.data;
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -554,6 +649,40 @@ export default {
                 
             })
         },
+        updateContactRegularlyCare(date){
+            this.chart4.data = [...this.chart2.data]
+            reportAPI.getContactRegularlyCare(this.idAccount, date).then(result => {
+                if(result.code == 'SUCCESS'){
+                    let careArray = [];
+                    for (let i = 0; i < result.response.length; i++){
+                        let obj = {
+                            _id: (result.response[i]._id == null) ? 'Không có chủ sở hữu' : result.response[i]._id,
+                            count: result.response[i].count
+                        }
+                        careArray.push(obj)
+                    }
+                    let kq = [];
+                    // console.log(this.chart4.data)
+                    for (let i = 0; i < this.chart4.data.length;i++){
+                        kq[this.chart4.data[i].contactOwner] = this.chart4.data[i]
+                    }
+                    for (let i = 0; i < careArray.length;i++){
+                        kq[careArray[i]._id].care = careArray[i].count;
+                    }
+                    let listValue = Object.values(kq)
+                    this.chart4.data = []
+                    for (let element of listValue){
+                        this.chart4.data.push(Object.assign({}, element));
+                    }
+                    this.chart4.chart.data = this.chart4.data
+                }
+                
+            }).catch(error => {
+                console.log(error)
+            }).finally(() => {
+                
+            })
+        },
         drawChart4(){
             this.chart4.chart = am4core.create(this.$refs.chartdiv4, am4charts.XYChart);
             this.chart4.chart.data = this.chart4.data;
@@ -591,6 +720,7 @@ export default {
         },
         getDealAmountStaff(){
             this.chart5.data = [];
+            this.chart5.drawData = [];
             reportAPI.getDealAmountStaff(this.idAccount).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
@@ -598,7 +728,6 @@ export default {
                     for (let i = 0; i < res.length; i++ ){
                         let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
                         let obj = {
-                            // category: date + '-' + res[i].owner,
                             date: date,
                             owner: res[i].owner,
                             count: res[i].count,
@@ -606,11 +735,9 @@ export default {
                         }
                         this.chart5.data.unshift(obj);
                     }
-                    // console.log(this.chart5.data)
                     let ownerIndexes = [];
                     for(let i = 0; i < this.chart5.data.length; i++){
-                        let obj = this.chart5.data[i];
-                        // console.log(obj.owner)
+                        let obj = Object.assign({}, this.chart5.data[i]);
 
                         if(ownerIndexes.includes(obj.owner)){
                             let index = ownerIndexes.indexOf(obj.owner)
@@ -624,6 +751,47 @@ export default {
                     }
                     this.drawChart5a()
                     this.drawChart5b();
+                }
+                
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                
+            })
+        }, 
+        updateDealAmountStaff(date){
+            this.chart5.data = [];
+            this.chart5.drawData = [];
+            reportAPI.getDealAmountStaff(this.idAccount, date).then(result => {
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    let tempRes = [];
+                    for (let i = 0; i < res.length; i++ ){
+                        let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
+                        let obj = {
+                            date: date,
+                            owner: res[i].owner,
+                            count: res[i].count,
+                            SumAmount: res[i].SumAmount
+                        }
+                        this.chart5.data.unshift(obj);
+                    }
+                    let ownerIndexes = [];
+                    for(let i = 0; i < this.chart5.data.length; i++){
+                        let obj = Object.assign({}, this.chart5.data[i]);
+
+                        if(ownerIndexes.includes(obj.owner)){
+                            let index = ownerIndexes.indexOf(obj.owner)
+                            this.chart5.drawData[index].count += obj.count;
+                            this.chart5.drawData[index].SumAmount += obj.SumAmount;
+                        }
+                        else {
+                            this.chart5.drawData.push(obj);
+                            ownerIndexes.push(obj.owner)
+                        }
+                    }
+                    this.chart5.chart6a.data = this.chart5.drawData;
+                    this.chart5.chart6b.data = this.chart5.drawData;
                 }
                 
             }).catch(error => {
@@ -653,6 +821,7 @@ export default {
         },
         getDealAmountStage(){
             this.chart6.data = [];
+            this.chart6.drawData = [];
             reportAPI.getDealAmountStage(this.idAccount).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
@@ -666,13 +835,11 @@ export default {
                             count: res[i].count,
                             SumAmount: res[i].SumAmount
                         }
-                        this.chart6.data.unshift(obj);
+                        this.chart6.data.push(obj);
                     }
-                    console.log(this.chart6.data)
                     let stageIndexes = [];
                     for(let i = 0; i < this.chart6.data.length; i++){
-                        let obj = this.chart6.data[i];
-                        // console.log(obj.stage)
+                        let obj = Object.assign({}, this.chart6.data[i]);
 
                         if(stageIndexes.includes(obj.stage)){
                             let index = stageIndexes.indexOf(obj.stage)
@@ -684,9 +851,49 @@ export default {
                             stageIndexes.push(obj.stage)
                         }
                     }
-                    console.log(this.chart6.drawData)
                     this.drawChart6a()
                     this.drawChart6b();
+                }
+                
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                
+            })
+        },
+        updateDealAmountStage(date){
+            this.chart6.data = [];
+            this.chart6.drawData = [];
+            reportAPI.getDealAmountStage(this.idAccount, date).then(result => {
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    let tempRes = [];
+                    for (let i = 0; i < res.length; i++ ){
+                        let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
+                        let obj = {
+                            date: date,
+                            stage: res[i].stage,
+                            count: res[i].count,
+                            SumAmount: res[i].SumAmount
+                        }
+                        this.chart6.data.unshift(obj);
+                    }
+                    let stageIndexes = [];
+                    for(let i = 0; i < this.chart6.data.length; i++){
+                        let obj = Object.assign({}, this.chart6.data[i]);
+
+                        if(stageIndexes.includes(obj.stage)){
+                            let index = stageIndexes.indexOf(obj.stage)
+                            this.chart6.drawData[index].count += obj.count;
+                            this.chart6.drawData[index].SumAmount += obj.SumAmount;
+                        }
+                        else {
+                            this.chart6.drawData.push(obj);
+                            stageIndexes.push(obj.stage)
+                        }
+                    }
+                    this.chart6.chart6a.data = this.chart6.drawData;
+                    this.chart6.chart6b.data = this.chart6.drawData;
                 }
                 
             }).catch(error => {
@@ -712,7 +919,7 @@ export default {
             pieSeries.dataFields.category = "stage";
             pieSeries.labels.template.disabled = true;
             pieSeries.ticks.template.disabled = true;
-        }
+        },
     },
     created(){
         this.$store.state.colorNumber = 7;
@@ -745,7 +952,15 @@ export default {
         
     },
     watch: {
-
+        date(){
+            let fullDate = this.date + '-01';
+            this.updateContactPerMonth(fullDate);
+            this.updateContactPerStaff(fullDate);
+            // this.updateContactRegularlyCare(fullDate);
+            this.updateContactPerStaffDetail(fullDate);
+            this.updateDealAmountStaff(fullDate);
+            this.updateDealAmountStage(fullDate);
+        }
     },
     mounted(){
         this.getContactPerMonth()
