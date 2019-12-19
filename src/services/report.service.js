@@ -5,7 +5,7 @@ const qs = require('qs');
 
 export default {
     getContactPerMonth, getContactPerStaff, getContactPerStaffDetail,
-    getContactRegularlyCare, getDealAmountStaff
+    getContactRegularlyCare, getDealAmountStaff, getDealAmountStage
 }
 
 function getContactPerMonth(idAccount){
@@ -50,5 +50,14 @@ function getDealAmountStaff(idAccount){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/deals/amount-staff`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getDealAmountStage(idAccount){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/deals/amount-stage`
     return responseService.fetchRetry(endpoint, request, 1)
 }
