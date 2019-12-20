@@ -26,7 +26,7 @@
                     </v-card-title>
                     <v-layout row wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4" v-if="checkOverdue(task.dueDate)">
-                            <v-btn color="error" outline small class="ml-4">Quá hạn</v-btn>
+                            <v-btn color="error" outline small class="ml-4 disable-events">Quá hạn</v-btn>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12 class="pl-5 mt-3">
                             <v-layout row>
@@ -933,3 +933,8 @@ import alert from '@/components/alert'
         }
     }
 </script>
+<style scoped>
+    .disable-events {
+        pointer-events: none
+    }
+</style>

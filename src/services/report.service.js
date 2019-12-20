@@ -76,12 +76,20 @@ function getContactRegularlyCare(idAccount, time){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getDealAmountStaff(idAccount){
+function getDealAmountStaff(idAccount, time){
+    let a = null; 
+    let _qs = null;
+    if (time) {
+        a = {
+            time: time
+        }
+        _qs = qs.stringify(a);
+    }
     let request = {
         method: 'GET',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idAccount}/deals/amount-staff`
+    let endpoint = (_qs == null) ? `${config.apiContact}/${idAccount}/deals/amount-staff` : `${config.apiContact}/${idAccount}/deals/amount-staff?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
