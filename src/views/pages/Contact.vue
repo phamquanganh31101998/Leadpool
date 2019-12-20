@@ -13,7 +13,6 @@
               </template>
               Tìm kiếm (phân biệt chữ thường, chữ hoa và có dấu)
             </v-tooltip>
-            
           </v-flex>
           <v-flex xs7 sm7 md7 lg7 xl7>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
@@ -140,21 +139,6 @@
               </v-card>
             </v-dialog>
           </v-flex>
-          <v-dialog v-model="uploadFileDialog.resultDialog">
-            <v-card>
-                <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Kết quả Import</span>
-                </v-card-title>
-                <v-card-text style="padding: 0px 0px;">
-                  <v-layout row>
-                    Thành công: {{}}
-                  </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn color="red" flat @click="uploadFileDialog.uploadFileDialog.resultDialog = false">Đóng</v-btn>
-                </v-card-actions>
-              </v-card>
-          </v-dialog>
           <v-flex xs2 sm2 md2 lg2 xl2 class="ml-4">
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
@@ -803,10 +787,6 @@
 </template>
 <script>
   const axios = require('axios');
-  function validateFormOnSubmit(theForm) {
-      console.log(theForm)
-      return false;
-  }
   import {authHeader} from '../../helpers/auth-header'
   import config from '../../config'
   import UploadButton from 'vuetify-upload-button';
@@ -1330,10 +1310,10 @@
               this.uploadResult.DUPLICATE.count = result.data.response.DUPLICATE.count;
               this.uploadResult.ERROR.count = result.data.response.ERROR.count;
               this.uploadResult.FAIL.count = result.data.response.FAIL.count;
-              this.uploadResult.SUCCESS.description = this.checkString(result.data.response.SUCCESS.description.split(" "));
-              this.uploadResult.DUPLICATE.description = this.checkString(result.data.response.DUPLICATE.description.split(" "));
-              this.uploadResult.ERROR.description = this.checkString(result.data.response.ERROR.description.split(" "));
-              this.uploadResult.FAIL.description = this.checkString(result.data.response.FAIL.description.split(" "));
+              this.uploadResult.SUCCESS.description = this.checkString(result.data.response.SUCCESS.description).split(" ");
+              this.uploadResult.DUPLICATE.description = this.checkString(result.data.response.DUPLICATE.description).split(" ");
+              this.uploadResult.ERROR.description = this.checkString(result.data.response.ERROR.description).split(" ");
+              this.uploadResult.FAIL.description = this.checkString(result.data.response.FAIL.description).split(" ");
               console.log(this.uploadResult)
               this.uploadResult.dialog = true;
           }
@@ -1538,7 +1518,11 @@
           {
             "property": "bussiness",
             "value": (this.isOtherBussiness ? this.otherBussinessValue : this.bussiness)
-          }
+          },
+          {
+            "property": "leadStatus",
+            "value": "New"
+          },
         ]
         if(this.service != ''){
           let obj = {
@@ -1562,7 +1546,6 @@
           }
           else {
             this.createFailResponse = result.response;
-            // this.createFailDialog = true;
             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
           }
           this.getAllContact();

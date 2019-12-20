@@ -1527,3 +1527,8 @@
     // chuyển dc trang lấy dc các thông tin cần thiết
     // thêm được contact mới
 </script>
+<style scoped>
+    .disable-events {
+        pointer-events: none
+    }
+</style>

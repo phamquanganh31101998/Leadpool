@@ -67,7 +67,7 @@
                         <v-divider :divider="divider"></v-divider>
                         <v-layout row class="mt-2">
                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
-                                <v-btn outline style="color: black;" small :color="returnStatusColor(email.status)" class="ml-4" v-if="email.status">{{returnStatus(email.status)}}</v-btn>
+                                <v-btn class="disable-events ml-4" outline style="color: black;" small :color="returnStatusColor(email.status)" v-if="email.status">{{returnStatus(email.status)}}</v-btn>
                                 <template>
                                     <span class="ml-4">Số lượt mở: 
                                         <strong>{{email.open}}</strong>
@@ -657,3 +657,8 @@ import contact from '../../../services/contacts.service'
         }
     }
 </script>
+<style scoped>
+    .disable-events {
+        pointer-events: none
+    }
+</style>
