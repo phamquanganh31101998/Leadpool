@@ -55,16 +55,16 @@
                                     <v-form v-model="valid" style="width: 100%">
                                         <div style="color: white">
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field color="white" class="custom" readonly  label="Email" v-model="email"></v-text-field>
+                                                <v-text-field dark class="custom" readonly  label="Email" v-model="email"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field color="white" class="custom" :rules="nameRules" label="Nhập tên hiển thị" v-model="name"></v-text-field>
+                                                <v-text-field dark class="custom" :rules="nameRules" label="Nhập tên hiển thị" v-model="name"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field color="white" class="custom" :rules="passwordRules" label="Nhập mật khẩu" type="password" v-model="password"></v-text-field>
+                                                <v-text-field dark class="custom" :rules="passwordRules" label="Nhập mật khẩu" type="password" v-model="password"></v-text-field>
                                             </v-flex>
                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                <v-text-field color="white" class="custom" label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
+                                                <v-text-field dark class="custom" label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
                                             </v-flex>
                                         </div>
                                     </v-form>
@@ -209,7 +209,6 @@ export default {
         height: 38px;
         border-radius: 5px;
         background-color: #7DB4F5;
-        color: white;
     }
 
     .app {
