@@ -24,141 +24,142 @@
         <v-layout row>
             <v-flex xs12 sm12 md3 lg3 xl3>
                 <template v-if="!firstConditionMenu">
-                        <v-card>
-                            <v-card-text style="padding: 8px;">
-                                <template v-for="(orCondition, orIndex) in conditions">
-                                    <v-card flat style="border: 1px solid #CCCCCC">
-                                        <v-card-title style="padding: 8px 0px; margins: 4px 4px">
-                                            <v-layout row wrap>
-                                                <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
-                                                    <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
-                                                        Xóa
-                                                    </a>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-card-title>
-                                        <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
-                                            <template v-for="(andCondition, andIndex) in orCondition">
-                                                <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA;">
-                                                    <v-card-text style="padding: 8px 8px;">
-                                                        <v-layout row>
-                                                            <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
-                                                                <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
-                                                                    <template v-for="val in andCondition.value">
-                                                                        <v-chip>{{val}}</v-chip>
-                                                                    </template>
-                                                                </p>
-                                                                <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                                <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                                <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                                <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
-                                                            </v-flex>
-                                                            <v-flex xs2 sm2 md2 lg2 xl2>
-                                                                <v-tooltip right>
-                                                                    <template v-slot:activator="{ on }">
-                                                                        <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
-                                                                            <v-icon style="color: red;" >clear</v-icon>
-                                                                        </v-btn>
-                                                                    </template>
-                                                                    <span>Xóa điều kiện này</span>
-                                                                </v-tooltip>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-card-text>
-                                                </v-card>
-                                                <p>và</p>
+                    <v-card>
+                        <v-card-text style="padding: 8px;">
+                            <template v-for="(orCondition, orIndex) in conditions">
+                                <v-card flat style="border: 1px solid #CCCCCC">
+                                    <v-card-title style="padding: 8px 0px; margins: 4px 4px">
+                                        <v-layout row wrap>
+                                            <v-flex xs2 sm2 md2 lg2 xl2 offset-xs10 offset-sm10 offset-md10 offset-xl10 offset-lg10>
+                                                <a color="indigo" @click="deleteOrCondition(orIndex)" style="text-align: right;">
+                                                    Xóa
+                                                </a>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-title>
+                                    <v-card-text style="padding: 4px 8px; margin: 4px 4px;">
+                                        <template v-for="(andCondition, andIndex) in orCondition">
+                                            <v-card flat style="border: 1px solid #7C98B6; background-color: #F5F8FA;">
+                                                <v-card-text style="padding: 8px 8px;">
+                                                    <v-layout row>
+                                                        <v-flex xs10 sm10 md10 lg10 xl10 class="pt-3">
+                                                            <p v-if="andCondition.condition == 'IN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> có trong 
+                                                                <template v-for="val in andCondition.value">
+                                                                    <v-chip>{{val}}</v-chip>
+                                                                </template>
+                                                            </p>
+                                                            <p v-if="andCondition.condition == 'EQUAL'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> là <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                            <p v-if="andCondition.condition == 'LIKE'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> chứa <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                            <p v-if="andCondition.condition == 'GREAT_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> lớn hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                            <p v-if="andCondition.condition == 'LESS_THAN'"><span style="font-weight: bold;">{{getPropertyName(andCondition.property)}}</span> nhỏ hơn <span style="font-weight: bold;">{{andCondition.value}}</span></p>
+                                                        </v-flex>
+                                                        <v-flex xs2 sm2 md2 lg2 xl2>
+                                                            <v-tooltip right>
+                                                                <template v-slot:activator="{ on }">
+                                                                    <v-btn @click="deleteAndCondition(orIndex, andIndex)" flat v-on="on" fab>
+                                                                        <v-icon style="color: red;" >clear</v-icon>
+                                                                    </v-btn>
+                                                                </template>
+                                                                <span>Xóa điều kiện này</span>
+                                                            </v-tooltip>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-card-text>
+                                            </v-card>
+                                            <p>và</p>
+                                        </template>
+                                    </v-card-text>
+                                    <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
+                                        <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện và</v-btn>
                                             </template>
-                                        </v-card-text>
-                                        <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
-                                            <v-menu :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện và</v-btn>
-                                                </template>
-                                                <v-card style="width: 100%;">
-                                                    <v-card-text>
-                                                        <v-layout row wrap>
-                                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE', newCondition.value = ''"></v-select>
+                                            <v-card style="width: 100%;">
+                                                <v-card-text>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                            <v-select :items="newCondition.contactProperties" label="Thuộc tính" v-model="newCondition.chosenProperty" @input="newCondition.chosenConstant = 'LIKE', newCondition.value = ''"></v-select>
+                                                        </v-flex>
+                                                        <br>
+                                                        <v-flex xs6 sm6 md6 lg6 xl6>
+                                                            <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness' || newCondition.chosenProperty == 'service'" 
+                                                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
+                                                                label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
+                                                            <v-select v-if="newCondition.chosenProperty == 'contact_owner' || newCondition.chosenProperty == 'phone' || newCondition.chosenProperty == 'email'" 
+                                                                :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
+                                                                label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
+                                                        </v-flex>
+                                                        <br>
+                                                        <template v-if="newCondition.chosenProperty == 'lifecycle_stage'">
+                                                        <template v-if="newCondition.chosenConstant == 'IN'">
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="newCondition.chosenLifecycleStageValue"></v-select>
+                                                                <v-btn :disabled="newCondition.chosenLifecycleStageValue.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', 'IN', newCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
                                                             </v-flex>
-                                                            <br>
-                                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                                <v-select v-if="newCondition.chosenProperty == 'lifecycle_stage' || newCondition.chosenProperty == 'city' || newCondition.chosenProperty == 'bussiness' || newCondition.chosenProperty == 'service'" 
-                                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
-                                                                    label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
-                                                                <v-select v-if="newCondition.chosenProperty == 'contact_owner' || newCondition.chosenProperty == 'phone' || newCondition.chosenProperty == 'email'" 
-                                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
-                                                                    label="Chọn điều kiện lọc" v-model="newCondition.chosenConstant"></v-select>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenConstant == 'LIKE'">
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                             </v-flex>
-                                                            <br>
-                                                            <template v-if="newCondition.chosenProperty == 'lifecycle_stage'">
+                                                        </template>
+                                                        <template v-else>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-select :items="lifecycleStages" v-model="newCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
+                                                                <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', newCondition.chosenConstant, newCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            </v-flex>
+                                                        </template>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'contact_owner'">
+                                                        <template v-if="newCondition.chosenConstant == 'IN'">
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-text-field label="Nhập các tài khoản cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
+                                                                <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'contact_owner', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            </v-flex>
+                                                        </template>
+                                                        <template v-else>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'contact_owner', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            </v-flex>
+                                                        </template>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'phone'">
                                                             <template v-if="newCondition.chosenConstant == 'IN'">
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="newCondition.chosenLifecycleStageValue"></v-select>
-                                                                    <v-btn :disabled="newCondition.chosenLifecycleStageValue.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', 'IN', newCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenConstant == 'LIKE'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    <v-form v-model="newCondition.checkValidInPhone">
+                                                                        <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
+                                                                    </v-form>
+                                                                    
+                                                                    <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                                 </v-flex>
                                                             </template>
                                                             <template v-else>
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select :items="lifecycleStages" v-model="newCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
-                                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'lifecycle_stage', newCondition.chosenConstant, newCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    <v-text-field type="number" label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                                 </v-flex>
                                                             </template>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'contact_owner'">
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'email'">
+                                                        <template v-if="newCondition.chosenConstant == 'IN'">
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-text-field label="Nhập các email cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
+                                                                <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'email', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            </v-flex>
+                                                        </template>
+                                                        <template v-else>
+                                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'email', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            </v-flex>
+                                                        </template>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'city'">
                                                             <template v-if="newCondition.chosenConstant == 'IN'">
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập các tài khoản cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'contact_owner', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else>
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'contact_owner', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'phone'">
-                                                                <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-form v-model="newCondition.checkValidInPhone">
-                                                                            <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
-                                                                        </v-form>
-                                                                        
-                                                                        <v-btn :disabled="!newCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                                <template v-else>
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-text-field type="number" label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                        <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'phone', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'email'">
-                                                            <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập các email cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'email', 'IN', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else>
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'email', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'city'">
-                                                            <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select>
+                                                                    <v-combobox @input="removeNotCity(newCondition.chosenCities)" label="Chọn giá trị" :items="cities" multiple v-model="newCondition.chosenCities"></v-combobox>
+                                                                    <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select> -->
                                                                     <v-btn :disabled="newCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'IN', newCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
                                                                 </v-flex>
                                                             </template>
@@ -170,214 +171,217 @@
                                                             </template>
                                                             <template v-else>
                                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    <v-combobox  :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                                    <!-- <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                                    <v-btn :disabled="!cities.includes(newCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                                 </v-flex>
                                                             </template>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'bussiness'">
+                                                            <template v-if="newCondition.chosenConstant == 'IN'">
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-select label="Chọn giá trị" :items="allBussiness" multiple chips v-model="newCondition.chosenBussinesses"></v-select>
+                                                                    <v-btn :disabled="newCondition.chosenBussinesses.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', 'IN', newCondition.chosenBussinesses, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
                                                             </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'bussiness'">
-                                                                <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select label="Chọn giá trị" :items="allBussiness" multiple chips v-model="newCondition.chosenBussinesses"></v-select>
-                                                                        <v-btn :disabled="newCondition.chosenBussinesses.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', 'IN', newCondition.chosenBussinesses, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                                <template v-else-if="newCondition.chosenConstant == 'LIKE'">
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                        <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                                <template v-else>
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select :items="allBussiness" v-model="newCondition.chosenBussiness" label="Chọn giá trị"></v-select>
-                                                                        <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', newCondition.chosenConstant, newCondition.chosenBussiness, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
+                                                            <template v-else-if="newCondition.chosenConstant == 'LIKE'">
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
                                                             </template>
-                                                            <template v-else-if="newCondition.chosenProperty == 'service'">
-                                                                <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="newCondition.chosenServices"></v-select>
-                                                                        <v-btn :disabled="newCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                                <template v-else-if="newCondition.chosenConstant == 'LIKE'">
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                        <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
-                                                                <template v-else>
-                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select :items="allService" v-model="newCondition.value" label="Chọn giá trị"></v-select>
-                                                                        <v-btn :disabled="newCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                    </v-flex>
-                                                                </template>
+                                                            <template v-else>
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-select :items="allBussiness" v-model="newCondition.chosenBussiness" label="Chọn giá trị"></v-select>
+                                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'bussiness', newCondition.chosenConstant, newCondition.chosenBussiness, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
                                                             </template>
-                                                        </v-layout>
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-menu>
-                                            <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
-                                        </v-card-actions>
-                                    </v-card>
-                                    <p>hoặc</p>
+                                                        </template>
+                                                        <template v-else-if="newCondition.chosenProperty == 'service'">
+                                                            <template v-if="newCondition.chosenConstant == 'IN'">
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="newCondition.chosenServices"></v-select>
+                                                                    <v-btn :disabled="newCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'IN', newCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
+                                                            </template>
+                                                            <template v-else-if="newCondition.chosenConstant == 'LIKE'">
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
+                                                            </template>
+                                                            <template v-else>
+                                                                <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                    <v-select :items="allService" v-model="newCondition.value" label="Chọn giá trị"></v-select>
+                                                                    <v-btn :disabled="newCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, newCondition.chosenProperty, newCondition.chosenConstant, newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                </v-flex>
+                                                            </template>
+                                                        </template>
+                                                    </v-layout>
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-menu>
+                                        <!-- <v-btn @click="deleteOrCondition(orIndex)" class="red" outline round style="color: red;">Xóa</v-btn> -->
+                                    </v-card-actions>
+                                </v-card>
+                                <p>hoặc</p>
+                            </template>
+                        </v-card-text>
+                        <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
+                            <v-menu v-model="newOrCondition.menu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện hoặc</v-btn>
                                 </template>
-                            </v-card-text>
-                            <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
-                                <v-menu v-model="newOrCondition.menu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
-                                    <template v-slot:activator="{ on }">
-                                        <v-btn class="blue" outline round style="color: blue;" v-on="on"><v-icon>add</v-icon>Thêm điều kiện hoặc</v-btn>
-                                    </template>
-                                    <v-card style="width: 100%;">
-                                        <v-card-text>
-                                            <v-layout row wrap>
-                                                <v-flex xs6 sm6 md6 lg6 xl6>
-                                                    <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty" @input="newOrCondition.chosenConstant = 'LIKE', newOrCondition.value = ''"></v-select>
-                                                </v-flex>
-                                                <br>
-                                                <v-flex xs6 sm6 md6 lg6 xl6>
-                                                    <v-select v-if="newOrCondition.chosenProperty == 'lifecycle_stage' || newOrCondition.chosenProperty == 'city' || newOrCondition.chosenProperty == 'bussiness' || newOrCondition.chosenProperty == 'service'" 
-                                                        :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
-                                                        label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
-                                                    <v-select v-if="newOrCondition.chosenProperty == 'contact_owner' || newOrCondition.chosenProperty == 'phone' || newOrCondition.chosenProperty == 'email'" 
-                                                        :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
-                                                        label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
-                                                </v-flex>
-                                                <br>
-                                                <template v-if="newOrCondition.chosenProperty == 'lifecycle_stage'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="newOrCondition.chosenLifecycleStageValue"></v-select>
-                                                            <v-btn :disabled="newOrCondition.chosenLifecycleStageValue.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', 'IN', newOrCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="lifecycleStages" v-model="newOrCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', newOrCondition.chosenConstant, newOrCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                <v-card style="width: 100%;">
+                                    <v-card-text>
+                                        <v-layout row wrap>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <v-select :items="newOrCondition.contactProperties" label="Thuộc tính" v-model="newOrCondition.chosenProperty" @input="newOrCondition.chosenConstant = 'LIKE', newOrCondition.value = ''"></v-select>
+                                            </v-flex>
+                                            <br>
+                                            <v-flex xs6 sm6 md6 lg6 xl6>
+                                                <v-select v-if="newOrCondition.chosenProperty == 'lifecycle_stage' || newOrCondition.chosenProperty == 'city' || newOrCondition.chosenProperty == 'bussiness' || newOrCondition.chosenProperty == 'service'" 
+                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'là', value: 'EQUAL'}, {text: 'có trong', value: 'IN'}]" 
+                                                    label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
+                                                <v-select v-if="newOrCondition.chosenProperty == 'contact_owner' || newOrCondition.chosenProperty == 'phone' || newOrCondition.chosenProperty == 'email'" 
+                                                    :items="[{text: 'chứa từ khóa', value: 'LIKE'}, {text: 'có trong', value: 'IN'}]" 
+                                                    label="Chọn điều kiện lọc" v-model="newOrCondition.chosenConstant"></v-select>
+                                            </v-flex>
+                                            <br>
+                                            <template v-if="newOrCondition.chosenProperty == 'lifecycle_stage'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select label="Chọn giá trị" :items="lifecycleStages" multiple chips v-model="newOrCondition.chosenLifecycleStageValue"></v-select>
+                                                        <v-btn :disabled="newOrCondition.chosenLifecycleStageValue.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', 'IN', newOrCondition.chosenLifecycleStageValue, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'contact_owner'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập các tài khoản cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('contact_owner', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('contact_owner', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                                <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'phone'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-form v-model="newOrCondition.checkValidInPhone">
-                                                                <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
-                                                            </v-form>
-                                                            
-                                                            <v-btn :disabled="!newOrCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field type="number" label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select :items="lifecycleStages" v-model="newOrCondition.chosenLifecycleStage" label="Chọn giá trị"></v-select>
+                                                        <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('lifecycle_stage', newOrCondition.chosenConstant, newOrCondition.chosenLifecycleStage, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'email'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập các email cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('email', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('email', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'contact_owner'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập các tài khoản cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('contact_owner', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'city'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newOrCondition.chosenCities"></v-select>
-                                                            <v-btn :disabled="newOrCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('city', 'IN', newOrCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('city', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('city', newOrCondition.chosenConstant, newOrCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('contact_owner', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'bussiness'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select label="Chọn giá trị" :items="allBussiness" multiple chips v-model="newOrCondition.chosenBussinesses"></v-select>
-                                                            <v-btn :disabled="newOrCondition.chosenBussinesses.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', 'IN', newOrCondition.chosenBussinesses, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="allBussiness" v-model="newOrCondition.chosenBussiness" label="Chọn giá trị"></v-select>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', newOrCondition.chosenConstant, newOrCondition.chosenBussiness, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'phone'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-form v-model="newOrCondition.checkValidInPhone">
+                                                            <v-text-field :rules="phoneSearchInRules" label="Nhập các số điện thoại cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
+                                                        </v-form>
+                                                        
+                                                        <v-btn :disabled="!newOrCondition.checkValidInPhone"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                                <template v-else-if="newOrCondition.chosenProperty == 'service'">
-                                                    <template v-if="newOrCondition.chosenConstant == 'IN'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="newOrCondition.chosenServices"></v-select>
-                                                            <v-btn :disabled="newOrCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, 'IN', newOrCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
-                                                    <template v-else>
-                                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="allService" v-model="newOrCondition.value" label="Chọn giá trị"></v-select>
-                                                            <v-btn :disabled="newOrCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, newOrCondition.chosenConstant, newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                        </v-flex>
-                                                    </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field type="number" label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('phone', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
                                                 </template>
-                                            </v-layout>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-menu>
-                            </v-card-actions>
-                        </v-card>
-                        <v-btn dark color="#425B76" @click="newFilter()">Lọc</v-btn>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'email'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập các email cần tìm kiếm, phân tách nhau bằng dấu phẩy" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('email', 'IN', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('email', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'city'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-combobox @input="removeNotCity(newOrCondition.chosenCities)" label="Chọn giá trị" :items="cities" multiple v-model="newOrCondition.chosenCities"></v-combobox>
+                                                        <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newOrCondition.chosenCities"></v-select> -->
+                                                        <v-btn :disabled="newOrCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('city', 'IN', newOrCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('city', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-combobox  :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                        <!-- <v-select :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                        <v-btn :disabled="!cities.includes(newOrCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addOrCondition('city', newOrCondition.chosenConstant, newOrCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'bussiness'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select label="Chọn giá trị" :items="allBussiness" multiple chips v-model="newOrCondition.chosenBussinesses"></v-select>
+                                                        <v-btn :disabled="newOrCondition.chosenBussinesses.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', 'IN', newOrCondition.chosenBussinesses, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select :items="allBussiness" v-model="newOrCondition.chosenBussiness" label="Chọn giá trị"></v-select>
+                                                        <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('bussiness', newOrCondition.chosenConstant, newOrCondition.chosenBussiness, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                            </template>
+                                            <template v-else-if="newOrCondition.chosenProperty == 'service'">
+                                                <template v-if="newOrCondition.chosenConstant == 'IN'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select label="Chọn giá trị" :items="allService" multiple chips v-model="newOrCondition.chosenServices"></v-select>
+                                                        <v-btn :disabled="newOrCondition.chosenServices.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, 'IN', newOrCondition.chosenServices, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else-if="newOrCondition.chosenConstant == 'LIKE'">
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-text-field label="Nhập từ khóa" v-model="newOrCondition.value"></v-text-field>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, 'LIKE', newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                                <template v-else>
+                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                        <v-select :items="allService" v-model="newOrCondition.value" label="Chọn giá trị"></v-select>
+                                                        <v-btn :disabled="newOrCondition.value.length == 0" class="blue" outline round style="color: blue;" @click="addOrCondition(newOrCondition.chosenProperty, newOrCondition.chosenConstant, newOrCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    </v-flex>
+                                                </template>
+                                            </template>
+                                        </v-layout>
+                                    </v-card-text>
+                                </v-card>
+                            </v-menu>
+                        </v-card-actions>
+                    </v-card>
+                    <v-btn dark color="#425B76" @click="newFilter()">Lọc</v-btn>
                 </template>
                 <template v-else>
                     <br>
@@ -468,22 +472,24 @@
                                     </template>
                                     <template v-else-if="createFirstCondition.chosenProperty == 'city'">
                                         <template v-if="createFirstCondition.chosenConstant == 'IN'">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select>
-                                            <v-btn :disabled="createFirstCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'IN', createFirstCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                        </v-flex>
-                                        </template>
-                                        <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
-                                            <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                        </v-flex>
-                                        </template>
-                                        <template v-else>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                            <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                        </v-flex>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-combobox @input="removeNotCity(createFirstCondition.chosenCities)" :items="cities" v-model="createFirstCondition.chosenCities" multiple></v-combobox>
+                                                <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select> -->
+                                                <v-btn :disabled="createFirstCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'IN', createFirstCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            </v-flex>
+                                            </template>
+                                            <template v-else-if="createFirstCondition.chosenConstant == 'LIKE'">
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <v-text-field label="Nhập từ khóa" v-model="createFirstCondition.value"></v-text-field>
+                                                <v-btn :disabled="createFirstCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'LIKE', createFirstCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            </v-flex>
+                                            </template>
+                                            <template v-else>
+                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                                <!-- <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                <v-combobox :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                <v-btn :disabled="!cities.includes(createFirstCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            </v-flex>
                                         </template>
                                     </template>
                                     <template v-else-if="createFirstCondition.chosenProperty == 'bussiness'">
@@ -615,6 +621,7 @@
     </v-content>
 </template>
 <script>
+import accountAPI from '../../../services/accountsetting.service'
 import serviceAPI from '../../../services/service.service'
 import moment from 'moment'
 import listService from '../../../services/list.services'
@@ -774,11 +781,11 @@ export default {
                     },
                 ],
                 chosenProperty: 'lifecycle_stage',
-                chosenConstant: 'LIKE',
+                chosenConstant: 'LIKE', 
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -847,7 +854,7 @@ export default {
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -918,7 +925,7 @@ export default {
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -941,12 +948,7 @@ export default {
                 v => !!v || 'Chưa nhập tên',
                 // v => v.length <= 15 || 'Tên nhỏ hơn 15 kí tự',
             ],
-            cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-                'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-                'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-                'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-                'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
-            ],
+            cities: [],
             allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
                 'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
                 'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
@@ -955,6 +957,13 @@ export default {
         }
     },
     methods: {
+        removeNotCity(arr){
+            for (let i = 0; i < arr.length; i++){
+                if (this.cities.includes(arr[i]) == false){
+                    arr.splice(i, 1);
+                }
+            }
+        },
         changePage(){
             this.filter();
         },
@@ -1188,6 +1197,26 @@ export default {
                 console.log(error);
             })
         },
+        getCity(){
+            this.cities = [];
+            accountAPI.getCity(this.idAccount).then(result => {
+            const {
+                dispatch
+            } = this.$store;
+            let time = moment();
+            if(result.code == 'SUCCESS'){
+                let res = result.response;
+                for(let i = 0; i < res.length; i++){
+                    this.cities.push(res[i].name);
+                }
+            }
+            else {
+                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            } 
+            }).catch(error => {
+                console.log(error)
+            })
+        },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
@@ -1239,6 +1268,7 @@ export default {
     created(){
         this.getCurrentUser();
         this.getService();
+        this.getCity()
         this.$store.state.colorNumber = 1;
     }
 }

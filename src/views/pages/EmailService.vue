@@ -45,7 +45,7 @@
                                 <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
                                         <tr>
-                                            <td>{{props.item.text}}</td>
+                                            <td> <a @click="templateId = props.item.value, setChosenTemplate()">{{props.item.text}}</a> </td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
                                             <td>{{props.item.updatedBy}}</td>
