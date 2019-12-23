@@ -360,32 +360,33 @@
                                                     <v-layout row slot-scope="{ hover }">
                                                         <v-flex xs7 sm7 md7 lg8 xl8>
                                                             <template v-if="item.property == 'lifecycleStage'">
-                                                                <span><h4>Vòng đời</h4></span>
-                                                                <v-select :readonly="!access"  :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <!-- <span><h4>Vòng đời</h4></span> -->
+                                                                <v-select label="Vòng đời" :readonly="!access"  :items="lifecycleStages" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-if="item.property == 'service'">
-                                                                <span><h4>Dịch vụ</h4></span>
-                                                                <v-select :readonly="!access"  :items="allService" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <!-- <span><h4>Dịch vụ</h4></span> -->
+                                                                <v-select label="Dịch vụ" :readonly="!access"  :items="allService" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'contactOwner'">
-                                                                <span><h4>Tài khoản sở hữu</h4></span>
-                                                                <v-select :readonly="!access"  :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
+                                                                <!-- <span><h4>Tài khoản sở hữu</h4></span> -->
+                                                                <v-select label="Tài khoản sở hữu" :readonly="!access"  :items="allEmail" v-model="item.value" @change="confirmUpdateContactOwner(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'leadStatus'">
-                                                                <span><h4>Trạng thái</h4></span>
-                                                                <v-select :readonly="!access"  :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
+                                                                <!-- <span><h4>Trạng thái</h4></span> -->
+                                                                <v-select label="Trạng thái" :readonly="!access"  :items="allLeadStatus" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select>
                                                             </template>
                                                             <template v-else-if="item.property == 'city'" class="mb-4">
-                                                                <span><h4>Thành phố</h4></span>
-                                                                <model-select :options="cities" v-model="city"></model-select>
+                                                                <!-- <span><h4>Thành phố</h4></span> -->
+                                                                <v-combobox label="Thành phố" :readonly="!access" :items="cities" v-model="item.value" @input="updateCity(item.property, item.value)" ></v-combobox>
+                                                                <!-- <model-select :options="cities" v-model="city"></model-select> -->
                                                                 <br>
                                                                 <!-- <v-select :readonly="!access" label="Thành phố" :items="cities" v-model="item.value" @change="updateContactDetail(item.property, item.value)"></v-select> -->
                                                             </template>
                                                             <template v-else-if="item.property == 'bussiness'" class="mt-4">
-                                                                <span class="mt-4 pt-4"><h4>Ngành nghề</h4></span>
+                                                                <!-- <span class="mt-4 pt-4"><h4>Ngành nghề</h4></span> -->
                                                                 <v-layout row wrap>
                                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                        <v-select placeholder="Chọn ngành nghề" :readonly="!access" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
+                                                                        <v-select label="Ngành nghề" placeholder="Chọn ngành nghề" :readonly="!access" :items="allBussiness" v-model="item.value" @change="updateBussiness(item.property, item.value)"></v-select>
                                            
                                                                     </v-flex>
                                                                     <!-- <v-flex xs12 sm12 md12 lg12 xl12>
@@ -398,9 +399,9 @@
                                                                 
                                                             </template>
                                                             <template  v-else-if="item.property == 'phone'">
-                                                                <span><h4>Số điện thoại</h4></span>
+                                                                <!-- <span><h4>Số điện thoại</h4></span> -->
                                                                 <v-form v-model="validPhone">
-                                                                    <v-text-field v-model="item.value" :rules="phoneRules" :readonly="!access"
+                                                                    <v-text-field label="Số điện thoại" v-model="item.value" :rules="phoneRules" :readonly="!access"
                                                                         @change="updateContactDetailWithCondition(item.property, item.value, validPhone)">
                                                                     </v-text-field>
                                                                 </v-form>
@@ -991,14 +992,14 @@
             // access(){
             //     this.cannotEdit = !this.access;
             // }
-            city(){
-                if(this.changeCity == true){
-                    this.updateContactDetail('city', this.city);
-                }
-            },
-            items(){
-                console.log(this.items[7].value)
-            }
+            // city(){
+            //     if(this.changeCity == true){
+            //         this.updateContactDetail('city', this.city);
+            //     }
+            // },
+            // items(){
+            //     console.log(this.items[7].value)
+            // }
         },
         computed: {
             // bussinessChoice(){
@@ -1043,18 +1044,18 @@
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
                     for(let i = 0; i < res.length; i++){
-                    let obj = {
-                        text: res[i].name + ' - ' + res[i].countryCode,
-                        value: res[i].name
-                    }
-                    this.cities.push(obj);
+                    // let obj = {
+                    //     text: res[i].name + ' - ' + res[i].countryCode,
+                    //     value: res[i].name
+                    // }
+                        this.cities.push(res[i].name);
                     }
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 } 
                 }).catch(error => {
-                console.log(error)
+                    console.log(error)
                 })
             },
             updateEmail(){
@@ -1239,10 +1240,12 @@
                     this.items[8].otherBussiness = true;
                 }
             },
+            updateCity(property, value){
+                if (this.cities.includes(value)){
+                    this.updateContactDetail(property, value);
+                }
+            },
             updateContactDetail(property, value){
-                const {
-                    dispatch
-                } = this.$store;
                 let body = {
                     properties: [
                         {
@@ -1258,10 +1261,7 @@
                     let time = moment();
                     if(result.code == 'SUCCESS'){
                         dispatch('alert/success', `${result.message} (${this.coverTimeDetail(time)})`)
-                        // this.$emit('updateLastActivityDate');
-                        // eventBus.updateLogCallList();
-                        // this.deleteLogDialog.id = '';
-                        // this.deleteLogDialog.dialog = false;
+                        this.updateLastActivityDate();
                     }
                     else {
                         dispatch('alert/error', result.message)
@@ -1269,7 +1269,7 @@
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {
-                    this.updateLastActivityDate();
+                    
                 })
             },
             updateContactDetailWithCondition(property, value, valid){
@@ -1341,8 +1341,8 @@
                     })
                 }
                 else {
-                    console.log('done')
-                    console.log(contactRole)
+                    // console.log('done')
+                    // console.log(contactRole)
                     if (contactRole.includes('EVERYTHING')){
                         let body = {
                             properties: [
@@ -1412,7 +1412,7 @@
                     ]
                 }
                 contact.updateContactDetail(this.idAccount, this.idContact, body).then(result => {
-                    console.log(result);
+                    // console.log(result);
                 }).catch(error => {
                     console.log(error);
                 }).finally(() => {

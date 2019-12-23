@@ -340,7 +340,7 @@ export default {
             // if(this.allContacts.length > 0){
             //     this.detailDeal.contactId.push(this.allContacts[0])
             // }
-            console.log(this.detailDeal.contactId)
+            // console.log(this.detailDeal.contactId)
         },
         openDetailDialog(number){
             try {
