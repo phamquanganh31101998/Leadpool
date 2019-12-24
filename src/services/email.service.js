@@ -7,7 +7,7 @@ export default {
     sendEmailViaTemplate, getEmailHistory, createEmailSchedule,
     getEmailSchedule, activateSchedule, deactivateSchedule,
     getAllEmail, deleteEmailTemplate, trackingEmailActivities,
-    updateEmailTemplate
+    updateEmailTemplate, getEmailContent
 }
 function getAllEmail(idAccount){
     let request = {
@@ -129,5 +129,14 @@ function updateEmailTemplate(idAccount, body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiContact}/${idAccount}/emailTemplates`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getEmailContent(idAccount, idEmailTemplate){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/emailTemplates/${idEmailTemplate}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
