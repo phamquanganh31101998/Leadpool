@@ -1,7 +1,7 @@
 import config from '../config'
 import { authHeader } from '../helpers'
 import { responseService } from './response.service'
-
+const qs = require('qs');
 export default {
     sendEmail, createEmailTemplate, getEmailTemplate, 
     sendEmailViaTemplate, getEmailHistory, createEmailSchedule,
@@ -38,12 +38,18 @@ function createEmailTemplate(idAccount, body){
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function getEmailTemplate(idAccount){
+function getEmailTemplate(idAccount, page, sortBy, orderBy){
+    let a = {
+        page: page,
+        sortBy: sortBy,
+        orderBy: orderBy
+    }
     let request = {
         method: 'GET',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idAccount}/emailTemplates`
+    let _qs = qs.stringify(a);
+    let endpoint = `${config.apiContact}/${idAccount}/emailTemplates?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 

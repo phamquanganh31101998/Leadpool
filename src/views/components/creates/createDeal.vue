@@ -3,7 +3,7 @@
         <v-layout wrap>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Chủ sở hữu</h4></span>
-                <v-select solo v-model="owner" :items="allEmail"></v-select>
+                <v-select v-model="owner" :items="allEmail"></v-select>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Tên thỏa thuận</h4></span>
@@ -12,7 +12,7 @@
             <v-flex xs12 sm12 md12 lg12 xl12 style="padding-top: 20px;padding-bottom: 20px;">
                 <!-- <v-text-field :rules="numberRules" type="number" label="Giá trị hợp đồng" v-model="amount"></v-text-field> -->
                 <span style="padding-top: 20px; padding-bottom: 10px;"><h4>Giá trị</h4></span>
-                <money style="width: 100%; font-size: 16px; " v-model="amount" v-bind="money"></money>
+                <money style="width: 100%; margin-top: 0px; padding-top: 0px; font-size: 16px; border-bottom: 1px solid grey;" v-model="amount" v-bind="money"></money>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12 v-if="idContact == 'all'">
                 <span><h4>Các Lead có trong thỏa thuận</h4></span>
@@ -26,11 +26,11 @@
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Dịch vụ</h4></span>
-                <v-select solo v-model="service" :items="allService"></v-select>
+                <v-select v-model="service" :items="allService"></v-select>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Giai đoạn</h4></span>
-                <v-select solo v-model="stage" :items="allStage"></v-select>
+                <v-select v-model="stage" :items="allStage"></v-select>
             </v-flex>
         </v-layout>
         <br>

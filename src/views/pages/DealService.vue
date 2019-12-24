@@ -30,7 +30,7 @@
             </v-flex>
         </v-layout>
         <br>
-        <v-divider class="mt-4" :divider="divider"></v-divider>
+        <v-divider class="mt-2" :divider="divider"></v-divider>
         <v-layout row wrap v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
@@ -120,7 +120,7 @@
                     <v-layout wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Chủ sở hữu</h4></span>
-                            <v-select solo v-model="detailDeal.owner" :items="allEmail"></v-select>
+                            <v-select v-model="detailDeal.owner" :items="allEmail"></v-select>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Tên thỏa thuận</h4></span>
@@ -153,11 +153,11 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Dịch vụ</h4></span>
-                            <v-select solo v-model="detailDeal.service" :items="allService"></v-select>
+                            <v-select v-model="detailDeal.service" :items="allService"></v-select>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Giai đoạn</h4></span>
-                            <v-select solo v-model="detailDeal.stage" :items="allStage"></v-select>
+                            <v-select v-model="detailDeal.stage" :items="allStage"></v-select>
                         </v-flex>
                         
                     </v-layout>
