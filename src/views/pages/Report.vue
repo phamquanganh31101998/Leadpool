@@ -1,7 +1,7 @@
 <template>
     <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
-            <v-flex xs10 sm10 md10 lg10 xl10>
+            <v-flex xs8 sm8 md8 lg8 xl8>
                 <h1 class="ml-3">Báo cáo tổng quan</h1>
             </v-flex>
             <v-flex xs2 sm2 md2 lg2 xl2>
@@ -19,7 +19,7 @@
                     min-width="290px"
                     >
                     <template v-slot:activator="{ on }">
-                        <v-text-field readonly label="Chọn mốc thời gian" v-on="on" v-model="date"></v-text-field>
+                        <v-text-field readonly label="Chọn thời điểm tính" v-on="on" v-model="date"></v-text-field>
                     </template>
                     <v-date-picker
                         v-model="date"
@@ -141,20 +141,20 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout>
+        <v-layout class="mt-3">
             <v-flex xs12 sm12 md12 lg6 xl6>
                 <v-card style="height: 100%;" >
                     <v-card-title>
                         <h2>Thống kê thỏa thuận theo nhân viên</h2>
                     </v-card-title>
                     <v-card-text>
-                        <v-data-table :loading="chart5.loadingData" style="width: 100%" :headers="chart5.headers" :items="chart5.data">
+                        <v-data-table no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[10,25,50, {text: 'Tất cả', value: -1}]" :loading="chart5.loadingData" style="width: 100%" :headers="chart5.headers" :items="chart5.data">
                             <template v-slot:items="props">
                                 <tr>
                                 <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
                                     <td class="text-xs-left">{{ props.item.date }}</td>
                                     <td class="text-xs-left">{{ props.item.owner }}</td>
-                                    <td class="text-xs-left">{{ props.item.SumAmount }}</td>
+                                    <td class="text-xs-left">{{ formatNumber(props.item.SumAmount) }} VND</td>
                                     <td class="text-xs-left">{{ props.item.count }}</td>
                                 </tr>
                             </template>
@@ -168,13 +168,13 @@
                         <h2>Thống kê thỏa thuận theo các giai đoạn</h2>
                     </v-card-title>
                     <v-card-text>
-                        <v-data-table :loading="chart6.loadingData" style="width: 100%" :headers="chart6.headers" :items="chart6.data">
+                        <v-data-table no-data-text="Không có dữ liệu" rows-per-page-text="Hiển thị" :rows-per-page-items="[10,25,50, {text: 'Tất cả', value: -1}]" :loading="chart6.loadingData" style="width: 100%" :headers="chart6.headers" :items="chart6.data">
                             <template v-slot:items="props">
                                 <tr>
                                 <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
                                     <td class="text-xs-left">{{ props.item.date }}</td>
                                     <td class="text-xs-left">{{ props.item.stage }}</td>
-                                    <td class="text-xs-left">{{ props.item.SumAmount }}</td>
+                                    <td class="text-xs-left">{{ formatNumber(props.item.SumAmount) }} VND</td>
                                     <td class="text-xs-left">{{ props.item.count }}</td>
                                 </tr>
                             </template>
@@ -288,7 +288,7 @@ var _ = require('lodash');
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
+import numberFormat from '../../helpers/numberformat'
 am4core.useTheme(am4themes_animated);
 import moment from 'moment'
 import reportAPI from '../../services/report.service'
@@ -414,6 +414,9 @@ export default {
         }
     }),
     methods: {
+        formatNumber(num){
+            return numberFormat.number_format(num);
+        },
         checkString(str){
             if (str == null || str == undefined){
                 return ''
