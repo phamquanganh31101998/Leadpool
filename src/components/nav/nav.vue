@@ -9,7 +9,7 @@
       > -->
     </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
-      <img style="height: 50px; " src="/favicon.ico" alt="logo"/>
+      <img style="height: 33px; margin-top: 8px;" src="/favicon.ico" alt="logo"/>
       <v-btn class="ml-3" depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
         LEADS 
         <v-icon color="white" class="ml-2">people_outline</v-icon>

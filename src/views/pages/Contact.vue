@@ -13,7 +13,6 @@
               </template>
               Tìm kiếm (phân biệt chữ thường, chữ hoa và có dấu)
             </v-tooltip>
-            
           </v-flex>
           <v-flex xs7 sm7 md7 lg7 xl7>
             <v-text-field label="Nhập từ khóa rồi nhấn Enter để tìm kiếm" v-model="search" @keyup.enter="section = 'search', searchContact() " append-icon="search" single-line hide-details></v-text-field>
@@ -140,21 +139,6 @@
               </v-card>
             </v-dialog>
           </v-flex>
-          <v-dialog v-model="uploadFileDialog.resultDialog">
-            <v-card>
-                <v-card-title style="background-color:#1E88E5;color:#fff">
-                  <span class="headline">Kết quả Import</span>
-                </v-card-title>
-                <v-card-text style="padding: 0px 0px;">
-                  <v-layout row>
-                    Thành công: {{}}
-                  </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn color="red" flat @click="uploadFileDialog.uploadFileDialog.resultDialog = false">Đóng</v-btn>
-                </v-card-actions>
-              </v-card>
-          </v-dialog>
           <v-flex xs2 sm2 md2 lg2 xl2 class="ml-4">
             <v-dialog v-model="checkInfo" persistent max-width="600px">
               <template v-slot:activator="{ on }">
@@ -186,24 +170,25 @@
                           </v-text-field>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <span><h3>Vòng đời</h3></span>
-                          <v-select solo v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
+                          <!-- <span><h3>Vòng đời</h3></span> -->
+                          <v-select v-model="lifecycleStage" :items="lifecycleStages" :rules="[v => !!v || 'Chưa chọn']"
                             label="Vòng đời" required></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <span><h3>Dịch vụ</h3></span>
-                          <v-select solo v-model="service" :items="allService"></v-select>
+                          <!-- <span><h3>Dịch vụ</h3></span> -->
+                          <v-select label="Dịch vụ" v-model="service" :items="allService"></v-select>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;" class="mb-4">
-                          <span><h3>Thành phố</h3></span>
+                          <!-- <span><h3>Thành phố</h3></span> -->
                           <!-- <v-select label="Thành phố" v-model="city" :items="cities" :rules="[v => !!v || 'Chưa chọn']"></v-select> -->
-                          <model-select :options="cities" v-model="city" label="Chọn thành phố"></model-select>
+                          <!-- <model-select :options="cities" v-model="city" label="Chọn thành phố"></model-select> -->
+                          <v-combobox item-text="text" item-value="value" v-model="city" :items="cities" label="Chọn thành phố"></v-combobox>
                         </v-flex>
                         <v-flex xs12 md12 lg12 xl12 style="padding: 0px 16px;">
-                          <span class="mt-4"><h3>Ngành nghề</h3></span>
+                          <!-- <span class="mt-4"><h3>Ngành nghề</h3></span> -->
                           <v-layout row wrap>
                             <v-flex xs12 sm12 md12 lg12 xl12>
-                              <v-select solo label="Ngành nghề" v-model="bussiness" :items="allBussiness" @change="changeBussiness(bussiness)"></v-select>
+                              <v-select label="Ngành nghề" v-model="bussiness" :items="allBussiness" @change="changeBussiness(bussiness)"></v-select>
                             </v-flex>
                             <!-- <v-flex xs4 sm4 md4 lg4 xl4>
                               <v-checkbox v-model="isOtherBussiness" label="Ngành nghề khác:"></v-checkbox>
@@ -253,9 +238,23 @@
         <template v-if="!firstConditionMenu">
           <v-card class="mr-3">
             <v-card-text>
-                <h3>Bộ lọc kết quả</h3>
+              <v-layout>
+                <v-flex xs10 sm10 md10 lg10 xl10>
+                  <h3>Bộ lọc kết quả</h3>
+                </v-flex>
+                <v-flex xs2 sm2 md2 lg2 xl2>
+                  <v-tooltip right>
+                    <template v-slot:activator="{ on }">
+                      <v-icon color="primary" dark v-on="on" @click="deleteFilterDialog = true">delete_forever</v-icon>
+                    </template>
+                    <span>Xóa bộ lọc này</span>
+                  </v-tooltip>
+                </v-flex>
+              </v-layout>
+                
+                
                 <br>
-                <v-text-field :rules="nameRules" label="Tên bộ lọc" v-model="filterName"></v-text-field>
+                <!-- <v-text-field :rules="nameRules" label="Tên bộ lọc" v-model="filterName"></v-text-field> -->
                 <template v-for="(orCondition, orIndex) in conditions">
                     <v-card flat>
                         <v-card-text style="padding: 0px 0px; margins: 0px 0px">
@@ -290,7 +289,6 @@
                             </v-card>
                             <br>
                           </template>
-                            
                         </v-card-text>
                         <v-card-actions style="padding: 8px 8px; margins: 0px 0px">
                             <v-menu v-model="newCondition.menu" :close-on-content-click="false" :nudge-width="100" offset-x max-width="400">
@@ -380,7 +378,8 @@
                                             <template v-else-if="newCondition.chosenProperty == 'city'">
                                               <template v-if="newCondition.chosenConstant == 'IN'">
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select>
+                                                    <v-combobox @input="removeNotCity(newCondition.chosenCities)" label="Chọn giá trị" :items="cities" multiple v-model="newCondition.chosenCities"></v-combobox>
+                                                    <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select> -->
                                                     <v-btn :disabled="newCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'IN', newCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
@@ -392,8 +391,9 @@
                                               </template>
                                               <template v-else>
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
-                                                    <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                    <!-- <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                    <v-combobox :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                    <v-btn :disabled="!cities.includes(newCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                 </v-flex>
                                               </template>
                                             </template>
@@ -449,15 +449,51 @@
           <br>
           <v-layout row wrap>
             <v-flex>
-              <v-btn style="backgroundColor: #425B76" dark @click="filter()">Lọc</v-btn>
+              <v-dialog width="30%" v-model="saveFilterDialog" v-if="filterId != ''" persistent>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" >Cập nhật</v-btn>
+                </template>
+                <v-card>
+                    <v-card-title style="background-color:#1E88E5;color:#fff">
+                        <span class="headline">Cập nhật bộ lọc</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <span class="mt-4"><strong>Tên bộ lọc </strong></span>
+                        <span class="ml-4"><v-text-field :rules="nameRules" v-model="filterName"></v-text-field></span>
+                    </v-card-text>
+                    <v-divider :divider="divider"></v-divider>
+                    <v-card-actions>
+                        <v-btn flat color="primary" @click="updateFilter(filterId), saveFilterDialog = false" :disabled="filterName == ''">Tạo</v-btn>
+                        <v-btn flat color="red" @click="saveFilterDialog = false">Đóng</v-btn>
+                    </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-else width="30%" v-model="createFilterDialog" persistent>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" >Tạo mới</v-btn>
+                </template>
+                <v-card>
+                    <v-card-title style="background-color:#1E88E5;color:#fff">
+                        <span class="headline">Tạo bộ lọc mới</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <span class="mt-4"><strong>Tên bộ lọc </strong></span>
+                        <span class="ml-4"><v-text-field :rules="nameRules" v-model="filterName"></v-text-field></span>
+                    </v-card-text>
+                    <v-divider :divider="divider"></v-divider>
+                    <v-card-actions>
+                        <v-btn flat color="primary" @click="createFilter(filterName, conditions), createFilterDialog = false" :disabled="filterName == ''">Tạo</v-btn>
+                        <v-btn flat color="red" @click="createFilterDialog = false">Đóng</v-btn>
+                    </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <!-- <v-btn v-else :disabled="filterName ==''" @click="createFilter(filterName, conditions)">Tạo mới</v-btn> -->
             </v-flex>
             <v-flex>
-              <v-btn v-if="filterId != ''" @click="updateFilter(filterId)">Cập nhật</v-btn>
-              <v-btn v-else :disabled="filterName ==''" @click="createFilter(filterName, conditions)">Tạo mới</v-btn>
+              <v-btn v-if="filterBtn" style="backgroundColor: #425B76" dark @click="filter()">Lọc</v-btn>
             </v-flex>
-            <v-flex>
-              <v-btn color="error" v-if="filterId != ''" @click="deleteFilterDialog = true">Xóa bộ lọc</v-btn>
-            </v-flex>
+            
+            
           </v-layout>
           <br>
           <br>
@@ -556,7 +592,8 @@
                           <template v-else-if="createFirstCondition.chosenProperty == 'city'">
                             <template v-if="createFirstCondition.chosenConstant == 'IN'">
                               <v-flex xs12 sm12 md12 lg12 xl12>
-                                  <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select>
+                                <v-combobox @input="removeNotCity(createFirstCondition.chosenCities)" :items="cities" v-model="createFirstCondition.chosenCities" multiple></v-combobox>
+                                  <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select> -->
                                   <v-btn :disabled="createFirstCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'IN', createFirstCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
                             </template>
@@ -568,8 +605,9 @@
                             </template>
                             <template v-else>
                               <v-flex xs12 sm12 md12 lg12 xl12>
-                                  <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                  <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                  <!-- <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                  <v-combobox :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                  <v-btn :disabled="!cities.includes(createFirstCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
                               </v-flex>
                             </template>
                           </template>
@@ -803,10 +841,6 @@
 </template>
 <script>
   const axios = require('axios');
-  function validateFormOnSubmit(theForm) {
-      console.log(theForm)
-      return false;
-  }
   import {authHeader} from '../../helpers/auth-header'
   import config from '../../config'
   import UploadButton from 'vuetify-upload-button';
@@ -826,6 +860,9 @@
       },
     },
     data: () => ({
+      filterBtn: false,
+      saveFilterDialog: false,
+      createFilterDialog: false,
       uploadResult: {
         dialog: false,
         SUCCESS: {
@@ -1161,7 +1198,7 @@
         chosenLifecycleStage: 'Lead',
         chosenLifecycleStageValue: [],
         chosenCities: [],
-        chosenCity: 'Hà Nội',
+        chosenCity: '',
         chosenBussiness: 'Khác',
         chosenBussinesses: [],
         value: '',
@@ -1227,7 +1264,7 @@
         chosenLifecycleStage: 'Lead',
         chosenLifecycleStageValue: [],
         chosenCities: [],
-        chosenCity: 'Hà Nội',
+        chosenCity: '',
         chosenBussiness: 'Khác',
         chosenBussinesses: [],
         chosenServices: [],
@@ -1238,11 +1275,7 @@
         firstConditionMenu: false
       },
       firstConditionMenu: true,
-      saveFilter: {
-        dialog: false,
-        name: '',
-        shareWith: 'private'
-      },
+      
       lists: [],
       chosenList: null,
       deleteContactDialog: {
@@ -1297,6 +1330,13 @@
       'upload-btn': UploadButton
     },
     methods: {
+      removeNotCity(arr){
+          for (let i = 0; i < arr.length; i++){
+              if (this.cities.includes(arr[i]) == false){
+                  arr.splice(i, 1);
+              }
+          }
+      },
       checkFileExtension(filename) {
         let ext = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
         if(this.uploadFileDialog.extension.includes(ext)){
@@ -1330,10 +1370,10 @@
               this.uploadResult.DUPLICATE.count = result.data.response.DUPLICATE.count;
               this.uploadResult.ERROR.count = result.data.response.ERROR.count;
               this.uploadResult.FAIL.count = result.data.response.FAIL.count;
-              this.uploadResult.SUCCESS.description = this.checkString(result.data.response.SUCCESS.description.split(" "));
-              this.uploadResult.DUPLICATE.description = this.checkString(result.data.response.DUPLICATE.description.split(" "));
-              this.uploadResult.ERROR.description = this.checkString(result.data.response.ERROR.description.split(" "));
-              this.uploadResult.FAIL.description = this.checkString(result.data.response.FAIL.description.split(" "));
+              this.uploadResult.SUCCESS.description = this.checkString(result.data.response.SUCCESS.description).split(" ");
+              this.uploadResult.DUPLICATE.description = this.checkString(result.data.response.DUPLICATE.description).split(" ");
+              this.uploadResult.ERROR.description = this.checkString(result.data.response.ERROR.description).split(" ");
+              this.uploadResult.FAIL.description = this.checkString(result.data.response.FAIL.description).split(" ");
               console.log(this.uploadResult)
               this.uploadResult.dialog = true;
           }
@@ -1397,13 +1437,13 @@
           if(result.code == 'SUCCESS'){
             let res = result.response;
             for(let i = 0; i < res.length; i++){
-              let obj = {
-                text: res[i].name + ' - ' + res[i].countryCode,
-                value: res[i].name
-              }
-              this.cities.push(obj);
+              // let obj = {
+              //   text: res[i].name + ' - ' + res[i].countryCode,
+              //   value: res[i].name
+              // }
+              this.cities.push(res[i].name);
             }
-            this.city = this.cities[0].value;
+            this.city = this.cities[0];
           }
           else {
               dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1504,7 +1544,7 @@
         }
       },
       createContacts() {
-        this.createWaiting = true;
+        // this.createWaiting = true;
         let userInfo = JSON.parse(localStorage.getItem('user'));
         let userName = userInfo.username;
         let contact = [{
@@ -1538,7 +1578,11 @@
           {
             "property": "bussiness",
             "value": (this.isOtherBussiness ? this.otherBussinessValue : this.bussiness)
-          }
+          },
+          {
+            "property": "leadStatus",
+            "value": "New"
+          },
         ]
         if(this.service != ''){
           let obj = {
@@ -1562,7 +1606,6 @@
           }
           else {
             this.createFailResponse = result.response;
-            // this.createFailDialog = true;
             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
           }
           this.getAllContact();
@@ -1806,6 +1849,7 @@
               this.contacts = this.allContacts;
               this.page = result.response.page;
               this.pages = result.response.totalPage;
+              this.filterBtn = false;
           }
           else {
               dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1988,11 +2032,8 @@
           this.conditions = [];
           this.firstConditionMenu = false;
           let obj = Object.assign({}, this.getFilterFromId(this.filterId));
-          // console.log(obj)
           this.conditions = Array.from(obj.conditions)
-          // console.log(this.conditions)
           this.filterName = obj.name;
-          
           this.filter();
         }
         else {
@@ -2001,6 +2042,9 @@
           this.conditions = [];
           this.filterName = '';
         }
+      },
+      conditions(){
+        this.filterBtn = true;
       }
 
     },

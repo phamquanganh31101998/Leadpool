@@ -164,24 +164,26 @@
                                                             </template>
                                                             </template>
                                                             <template v-else-if="newCondition.chosenProperty == 'city'">
-                                                            <template v-if="newCondition.chosenConstant == 'IN'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select>
-                                                                    <v-btn :disabled="newCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'IN', newCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else-if="newCondition.chosenConstant == 'LIKE'">
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
-                                                                    <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
-                                                            <template v-else>
-                                                                <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                    <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                                                    <v-btn class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
-                                                                </v-flex>
-                                                            </template>
+                                                                <template v-if="newCondition.chosenConstant == 'IN'">
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-combobox @input="removeNotCity(newCondition.chosenCities)" label="Chọn giá trị" :items="cities" multiple v-model="newCondition.chosenCities"></v-combobox>
+                                                                        <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newCondition.chosenCities"></v-select> -->
+                                                                        <v-btn :disabled="newCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'IN', newCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    </v-flex>
+                                                                </template>
+                                                                <template v-else-if="newCondition.chosenConstant == 'LIKE'">
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-text-field label="Nhập từ khóa" v-model="newCondition.value"></v-text-field>
+                                                                        <v-btn :disabled="newCondition.value.length == 0"  class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', 'LIKE', newCondition.value, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    </v-flex>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                                                        <v-combobox  :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                                        <!-- <v-select :items="cities" v-model="newCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                                        <v-btn :disabled="!cities.includes(newCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addAndCondition(orIndex, 'city', newCondition.chosenConstant, newCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                                    </v-flex>
+                                                                </template>
                                                             </template>
                                                             <template v-else-if="newCondition.chosenProperty == 'bussiness'">
                                                                 <template v-if="newCondition.chosenConstant == 'IN'">
@@ -322,7 +324,8 @@
                                                 <template v-else-if="newOrCondition.chosenProperty == 'city'">
                                                     <template v-if="newOrCondition.chosenConstant == 'IN'">
                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newOrCondition.chosenCities"></v-select>
+                                                            <v-combobox @input="removeNotCity(newOrCondition.chosenCities)" label="Chọn giá trị" :items="cities" multiple v-model="newOrCondition.chosenCities"></v-combobox>
+                                                            <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="newOrCondition.chosenCities"></v-select> -->
                                                             <v-btn :disabled="newOrCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addOrCondition('city', 'IN', newOrCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
                                                         </v-flex>
                                                     </template>
@@ -334,8 +337,9 @@
                                                     </template>
                                                     <template v-else>
                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                            <v-select :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                                            <v-btn class="blue" outline round style="color: blue;" @click="addOrCondition('city', newOrCondition.chosenConstant, newOrCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                                            <!-- <v-select :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                                            <v-combobox  :items="cities" v-model="newOrCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                                            <v-btn :disabled="!cities.includes(newOrCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addOrCondition('city', newOrCondition.chosenConstant, newOrCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                                         </v-flex>
                                                     </template>
                                                 </template>
@@ -478,7 +482,8 @@
                                     <template v-else-if="createFirstCondition.chosenProperty == 'city'">
                                         <template v-if="createFirstCondition.chosenConstant == 'IN'">
                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select>
+                                            <v-combobox @input="removeNotCity(createFirstCondition.chosenCities)" :items="cities" v-model="createFirstCondition.chosenCities" multiple></v-combobox>
+                                            <!-- <v-select label="Chọn giá trị" :items="cities" multiple chips v-model="createFirstCondition.chosenCities"></v-select> -->
                                             <v-btn :disabled="createFirstCondition.chosenCities.length == 0"  class="blue" outline round style="color: blue;" @click="addFirstCondition('city', 'IN', createFirstCondition.chosenCities, true)"><v-icon>add</v-icon>Thêm</v-btn>
                                         </v-flex>
                                         </template>
@@ -490,8 +495,9 @@
                                         </template>
                                         <template v-else>
                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select>
-                                            <v-btn class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
+                                            <v-combobox :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-combobox>
+                                            <!-- <v-select :items="cities" v-model="createFirstCondition.chosenCity" label="Chọn giá trị"></v-select> -->
+                                            <v-btn :disabled="!cities.includes(createFirstCondition.chosenCity)" class="blue" outline round style="color: blue;" @click="addFirstCondition('city', createFirstCondition.chosenConstant, createFirstCondition.chosenCity, false)"><v-icon>add</v-icon>Thêm</v-btn>
                                         </v-flex>
                                         </template>
                                     </template>
@@ -616,6 +622,7 @@
 </template>
 <script>
 import moment from 'moment'
+import accountAPI from '../../../services/accountsetting.service'
 import serviceAPI from '../../../services/service.service'
 import listService from '../../../services/list.services'
 export default {
@@ -777,7 +784,7 @@ export default {
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -846,7 +853,7 @@ export default {
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -917,7 +924,7 @@ export default {
                 chosenLifecycleStage: 'Lead',
                 chosenLifecycleStageValue: [],
                 chosenCities: [],
-                chosenCity: 'Hà Nội',
+                chosenCity: '',
                 chosenBussiness: 'Khác',
                 chosenBussinesses: [],
                 value: '',
@@ -940,12 +947,7 @@ export default {
                 v => !!v || 'Chưa nhập tên',
                 // v => v.length <= 15 || 'Tên nhỏ hơn 15 kí tự',
             ],
-            cities: ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Bình Định', 'Bạc Liêu', 'Bắc Giang', 'Bắc Kạn', 'Bắc Ninh',
-                'Bến Tre', 'Cao Bằng', 'Cà Mau', 'Cần Thơ', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', ' Hòa Bình', 'Hưng Yên', 'Hải Dương', 'Hải Phòng', 'Hậu Giang',
-                'Hồ Chí Minh', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Long An', 'Lào Cai', 'Lâm Đồng', 'Lạng Sơn', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận',
-                'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Thanh Hóa', 'Thái Bình', 'Thái Nguyên', 'Thừa Thiên Huế',
-                'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Tây Ninh', 'Gia Lai', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Điện Biên', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Đồng Nai', 'Đồng Tháp'
-            ],
+            cities: [],
             allBussiness: ['Giáo dục (Trường ĐH, cao đẳng, TT ngoại ngữ', 'Đồ gia dụng (Điện tử, điện lạnh, đồ dùng bếp...)', 'Dịch vụ (Pháp lí, kế toán, sửa chữa...)', 'Bất động sản',
                 'Nội thất', 'Thương mại điện tử', 'Mỹ phẩm', 'Du học/ Định cư', 'Làm đẹp (Spa, salon, thẩm mỹ viện,...)', 'Thời trang (Quần áo, giày dép, túi xách...)',
                 'Chăn ga gối đệm', 'Hàng tiêu dùng', 'Xây dựng (Thi công, thiết kế, nội thất)', 'Sức khỏe (Dược, phòng khám, bệnh viện, thiết bị y tế...)', 'Du lịch', 'Phần mềm',
@@ -986,6 +988,13 @@ export default {
         }
     },
     methods: {
+        removeNotCity(arr){
+            for (let i = 0; i < arr.length; i++){
+                if (this.cities.includes(arr[i]) == false){
+                    arr.splice(i, 1);
+                }
+            }
+        },
         changePage(){
             this.filter();
         },
@@ -1286,6 +1295,26 @@ export default {
             //     this.loadingTable = false;
             // })
         },
+        getCity(){
+            this.cities = [];
+            accountAPI.getCity(this.idAccount).then(result => {
+            const {
+                dispatch
+            } = this.$store;
+            let time = moment();
+            if(result.code == 'SUCCESS'){
+                let res = result.response;
+                for(let i = 0; i < res.length; i++){
+                    this.cities.push(res[i].name);
+                }
+            }
+            else {
+                dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            } 
+            }).catch(error => {
+                console.log(error)
+            })
+        },
         updateList(){
             let body = {
                 "contactConditionGroupId": this.list.contactConditionGroupId,
@@ -1311,6 +1340,7 @@ export default {
     },
     created(){
         this.getCurrentUser();
+        this.getCity();
         this.$store.state.colorNumber = 1;
         // this.getThisList();
     }

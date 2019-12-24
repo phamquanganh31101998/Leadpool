@@ -2,18 +2,11 @@
     <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <!-- <h3 style="position: absolute; font-size: 36px;" class="ml-3">Quản lý mẫu email</h3> -->
                 <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý email</h1>
                 <br>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6>
                 <v-layout row>
-                    <!-- <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
-                        <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
-                    </v-flex> -->
-                    <!-- <v-flex xs2 md2 lg2 xl2>
-                        <v-btn dark color="warning" @click="createTask = true">Create Task</v-btn>
-                    </v-flex> -->
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -41,11 +34,10 @@
                         <span><v-btn class="mt-3" round color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                         <v-card class=" mt-3">
                             <v-card-text>
-                                <!-- <div id="templateBody" style="width: 100%; margin: 10px;"></div> -->
-                                <v-data-table :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
+                                <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
                                         <tr>
-                                            <td>{{props.item.text}}</td>
+                                            <td> <a @click="templateId = props.item.value, setChosenTemplate(props.item.value)">{{props.item.text}}</a> </td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
                                             <td>{{props.item.updatedBy}}</td>
@@ -55,7 +47,7 @@
                                                     <td class="text-xs-right"><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn></td>
                                                 </template>
                                                 <v-list>
-                                                    <v-list-tile @click="templateId = props.item.value, setChosenTemplate()">
+                                                    <v-list-tile @click="templateId = props.item.value, setChosenTemplate(props.item.value)">
                                                         <v-list-tile-content>Xem nội dung mẫu</v-list-tile-content>
                                                     </v-list-tile>
                                                     <v-list-tile @click="createBtn = false, templateId = props.item.value, getHTMLAndCSS(props.item.value)">
@@ -69,6 +61,9 @@
                                         </tr>
                                     </template>
                                 </v-data-table>
+                                <div class="text-xs-center pt-2">
+                                    <v-pagination :total-visible="7" v-model="templatePage" :length="templateTotalPages"></v-pagination>
+                                </div>
                             </v-card-text>
                         </v-card>
                     </v-flex>
@@ -252,27 +247,6 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <!-- <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
-                        <v-card flat style="height: 300px; margin-top: 100px;" >
-                            <v-card-text style="height: 300px; background-color: #FDEDEE; border: 1px solid red;">
-                                <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
-                                    <v-card-title>
-                                        <h2>Không có quyền truy cập</h2>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        Bạn phải có quyền <span style="font-weight: bold">Xem tất cả</span> và <span style="font-weight: bold">Liên lạc tất cả</span> đối với Lead thì mới có thể sử dụng chức năng này.
-                                        <br>
-                                        Hãy liên hệ với Quản lý để được cấp quyền truy cập.
-                                    </v-card-text>
-                                </v-card>
-                            </v-card-text>
-                        </v-card>
-                    </v-flex>
-                    <v-flex xs8 sm8 md8 lg8 xl8>
-                        <v-card flat style="height: 500px; margin-top: 100px;">
-                            <v-img alt="ảnh ở đây" width="100%" src="../../../sms2.png"></v-img>
-                        </v-card>
-                    </v-flex> -->
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -299,7 +273,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        
         <v-dialog v-model="viewDialog" persistent>
             <v-card>
                 <v-toolbar dark color="primary">
@@ -309,8 +282,6 @@
                     <v-toolbar-title>Nội dung mẫu email</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        
-                       
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-card-text>
@@ -326,15 +297,6 @@
                     </v-btn>
                     <v-toolbar-title>Mẫu email</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <!-- <v-toolbar-items>
-                        <v-tooltip top v-if="!create.btn">
-                            <template v-slot:activator="{ on }">
-                                <v-icon color="primary" dark v-on="on">help</v-icon>
-                            </template>
-                            <span>Kéo các thành phần vào ở cột bên trái, chỉnh sửa thuộc tính của thành phần ở cột bên phải</span>
-                            <span></span>
-                        </v-tooltip>
-                    </v-toolbar-items> -->
                     <v-toolbar-items>
                         <v-btn dark flat v-if="createBtn" @click="create.dialog = true">Tạo</v-btn>
                         <v-btn dark flat v-else @click="updateTemplate(templateId)">Lưu lại</v-btn>
@@ -449,6 +411,8 @@
     </v-content>
 </template>
 <script>
+import 'grapesjs/dist/css/grapes.min.css';
+import grapesjs from 'grapesjs';
 import alert from '@/components/alert'
 import listService from '../../services/list.services'
 import moment from 'moment'
@@ -472,6 +436,8 @@ export default {
             templateSelect: [],
             templateId: '',
             chosenTemplate: null,
+            templatePage: 1,
+            templateTotalPages: 1,
             htmlText: '',
             divider: true,
             editor: null,
@@ -756,12 +722,14 @@ export default {
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    this.templates = result.response.reverse();
+                    this.templates = result.response.results.reverse();
                     this.templateSelect = [];
                     this.templateSelect = this.setSelectEmailTemplate(this.templates);
+                    this.templateTotalPages = result.response.totalPage;
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    
                 }
             }).catch(error => {
                 console.log(error);
@@ -779,22 +747,29 @@ export default {
                     createdAt: this.covertime(templateArray[i].createdAt),
                     updatedBy: templateArray[i].updatedBy,
                     updatedAt: this.covertime(templateArray[i].updateAt),
-                    content: templateArray[i].content
                 }
                 result.push(obj);
             }
             return result;
         },
-        setChosenTemplate(){
-            for (let i = 0; i < this.templates.length; i++){
-                if(this.templates[i].emailTemplateId == this.templateId){
-                    this.chosenTemplate = this.templates[i];
+        setChosenTemplate(id){
+            emailService.getEmailContent(this.idAccount, id).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let regex = /\\\"/gi
+                    this.htmlText = result.response.content;
+                    document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+                    this.viewDialog = true;
                 }
-            }
-            let regex = /\\\"/gi
-            this.htmlText = this.chosenTemplate.content;
-            document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
-            this.viewDialog = true;
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         },
         grape(){
             this.editor = null;
@@ -1260,6 +1235,7 @@ export default {
 
             console.log(this.editor)
         },
+
         getImageFromGGDriveLink(link){
             let result = '';
             result = link.replace('open?', 'uc?');
@@ -1269,33 +1245,31 @@ export default {
             // alert('hú');
         },
         getHTMLAndCSS(id){
-            try {
-                let obj = {};
-                for (let i = 0; i < this.templates.length; i++){
-                    if(this.templates[i].emailTemplateId == id){
-                        obj = this.templates[i];
-                    }
+            emailService.getEmailContent(this.idAccount, id).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let regex = /\\\"/gi
+                    let newStr = result.response.content.replace(regex, "\"");
+                    let startHTML = newStr.indexOf('<body>');
+                    let endHTML = newStr.lastIndexOf('</body>');
+                    let startCSS = newStr.indexOf('<style>');
+                    let endCSS = newStr.indexOf('</style>')
+                    let HTML = newStr.substring(startHTML + 6, endHTML);
+                    let CSS = newStr.substring(startCSS + 7, endCSS);
+                    localStorage.setItem('gjs-html', HTML);
+                    localStorage.setItem('gjs-css', CSS);
+                    this.create.editorDialog = true;    
+                    this.load()
                 }
-                let regex = /\\\"/gi
-                let newStr = obj.content.replace(regex, "\"");
-                let startHTML = newStr.indexOf('<body>');
-                let endHTML = newStr.lastIndexOf('</body>');
-                let startCSS = newStr.indexOf('<style>');
-                let endCSS = newStr.indexOf('</style>')
-                let HTML = newStr.substring(startHTML + 6, endHTML);
-                let CSS = newStr.substring(startCSS + 7, endCSS);
-                localStorage.setItem('gjs-html', HTML);
-                localStorage.setItem('gjs-css', CSS);
-                
-            } catch (error) {
-                
-            }
-            finally {
-                // this.load();
-                this.create.editorDialog = true;    
-                this.load()
-            }
-            
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         },
         load(){
             this.editor.load();
@@ -1446,11 +1420,6 @@ export default {
             this.getAdditionalContactsOnOtherPage();
         },
         getList(){
-            // let allContact = {
-            //     text: 'Tất cả các Lead',
-            //     value: 'all'
-            // }
-            // this.createSchedule.list.push(allContact)
             listService.getList(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -1719,7 +1688,6 @@ export default {
             })
         },
         getTemplateNameFromId(id){
-            
             let name = '';
             for(let i = 0; i < this.templateSelect.length; i++){
                 if (this.templateSelect[i].value == id){
@@ -1732,32 +1700,22 @@ export default {
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
-            // for (let i = 0; i < role.length;i++){
-            //     if ((role[i] == 'ROLE_CONTACT_COMMUNICATE_EVERYTHING' && role[i] == 'ROLE_CONTACT_VIEW_EVERYTHING') || role[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-            //         this.access = true;
-            //     }
-            // }
             if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
                 this.access = true;
             }
             this.getEmailTemplate();
             this.getList();
             this.getAllEmail()
-            if (this.access == true){
-                this.grape();
-                
-                
-                // this.getSchedule();
-            }
+            this.grape();
+            // if (this.access == true){
+            //     this.grape();
+            // }
         }
     },
 
     created(){
         this.$store.state.colorNumber = 4;
         this.getCurrentUser();
-        
-        // console.log(result)
-        // this.grape()
     }
 }
 </script>

@@ -99,7 +99,7 @@
                                 {{chosenName}}
                             </a>
                         </template>
-                        <v-card style="height: 100%">
+                        <v-card style="height: 100%" width="300px">
                             <v-card-title style="height: 100%">
                                 <v-layout row wrap style="height: 100%">
                                     <!-- <v-flex xs12 sm12 md12 lg12 xl12>
@@ -108,6 +108,7 @@
                                     <br> -->
                                     <v-flex xs12 sm12 md12 lg12 xl12 style="height: 100%">
                                         <!-- <v-select :items="searchedEmail" v-model="chosenEmail" @input="assignMenu = false"></v-select> -->
+                                        <!-- <v-combobox :items="searchedEmail" v-model="chosenEmail"  @input="assignMenu = false"></v-combobox> -->
                                         <model-select :options="searchedEmail" v-model="chosenEmail" label="Chọn thành phố"></model-select>
                                     </v-flex>
                                 </v-layout>
@@ -374,6 +375,7 @@
                 this.dateFormatted = this.formatDate(this.date)
             },
             chosenEmail(){
+                console.log(this.chosenEmail)
                 this.assignMenu = false;
                 this.allEmail.filter(e => {
                     if(this.chosenEmail == e.value){

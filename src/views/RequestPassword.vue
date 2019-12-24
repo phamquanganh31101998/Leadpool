@@ -2,7 +2,7 @@
     <v-app id="inspire">
         <v-content class="login-custom app">
             <!-- fluid grid-list-sm pa-0 fill-height style="background-image: url('../assets/resetPassword.jpg') center center/cover no-repeat !important;" -->
-            <v-container >
+            <v-container>
                <v-layout row wrap>
                    <v-flex d-flex xs12>
                        <v-layout row wrap fill-height>
@@ -128,7 +128,7 @@ export default {
         padding: 5px 20px;
         height: 38px;
         border-radius: 5px;
-        background-color: #f3f3f3
+        background-color: #f3f3f3;
     }
     .custom.v-text-field>.v-input__control>.v-input__slot:before {
         border-style: none;
