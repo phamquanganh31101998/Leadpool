@@ -107,9 +107,10 @@
                                     </v-flex>
                                     <br> -->
                                     <v-flex xs12 sm12 md12 lg12 xl12 style="height: 100%">
+                                        <v-autocomplete v-model="chosenEmail" :items="searchedEmail"></v-autocomplete>
                                         <!-- <v-select :items="searchedEmail" v-model="chosenEmail" @input="assignMenu = false"></v-select> -->
-                                        <!-- <v-combobox :items="searchedEmail" v-model="chosenEmail"  @input="assignMenu = false"></v-combobox> -->
-                                        <model-select :options="searchedEmail" v-model="chosenEmail" label="Chọn thành phố"></model-select>
+                                        <!-- <v-combobox :items="searchedEmail" v-model="chosenEmail"></v-combobox> -->
+                                        <!-- <model-select :options="searchedEmail" v-model="chosenEmail" label="Chọn thành phố"></model-select> -->
                                     </v-flex>
                                 </v-layout>
                                 <!-- <v-layout>
@@ -326,6 +327,7 @@
             day: 'The day of',
             allEmail: [],
             searchedEmail: [],
+            chosenPerson: '',
             chosenEmail: '',
             chosenName: '',
             searchEmail: '',
@@ -376,7 +378,22 @@
             },
             chosenEmail(){
                 console.log(this.chosenEmail)
-                this.assignMenu = false;
+                this.assignMenu = false               ;
+                this.allEmail.filter(e => {
+                    if(this.chosenEmail == e.value){
+                        this.chosenName = e.name;
+                    }
+                })
+            },
+            chosenPerson(){
+                console.log(typeof(this.chosenPerson))
+                if(typeof(this.chosenPerson) == 'object'){
+                    
+                }
+                else if (typeof(this.chosenPerson) == 'string'){
+                    this.chosenPerson = '';
+                }
+                this.assignMenu = false               ;
                 this.allEmail.filter(e => {
                     if(this.chosenEmail == e.value){
                         this.chosenName = e.name;
@@ -469,6 +486,7 @@
                         this.searchedEmail.push(obj);
                     });
                     this.chosenEmail = this.allEmail[0].value;
+                    this.chosenPerson = this.allEmail[0].value;
                     this.chosenName = this.allEmail[0].name;
                 })
             },
@@ -519,7 +537,7 @@
                         "status":"NOTCOMPLETED"
                     }
                 }
-                
+                // console.log(task)
                 taskService.createTask(this.idAccount, task).then(result => {
                     const {
                         dispatch
@@ -549,11 +567,11 @@
                 })
 
             },
-            handleImageUpload(event){
-                const files = event.target.files
-                const formData = new FormData()
-                formData.append('myFile', files[0])
-                console.log(event)
+            // handleImageUpload(event){
+                // const files = event.target.files
+                // const formData = new FormData()
+                // formData.append('myFile', files[0])
+                // console.log(event)
                 // fetch('/saveImage', {
                 //     method: 'POST',
                 //     body: formData
@@ -565,13 +583,13 @@
                 // .catch(error => {
                 //     console.error(error)
                 // })
-            }
+            // }
         },
         created(){
             this.getAllEmail();
-            document.querySelector('#fileUpload').addEventListener('change', event => {
-                this.handleImageUpload(event)
-            })
+            // document.querySelector('#fileUpload').addEventListener('change', event => {
+            //     this.handleImageUpload(event)
+            // })
         }
     }
 </script>

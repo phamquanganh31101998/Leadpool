@@ -1,14 +1,19 @@
 <template>
     <v-content>
-        <v-layout row wrap class="mt-5 pl-2 pr-5">
+        <v-layout row wrap class="mt-3 pl-2 pr-5">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <h1 class="ml-3">Cài đặt</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row wrap class="mt-5 pl-2 pr-5">
+        <v-layout row wrap class="mt-4 pl-2 pr-5">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
+                    <v-list-tile @click="goToMyInfoPage()">
+                        <v-list-tile-content>
+                            Tài khoản của tôi
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile>
                         <v-list-tile-content style="font-weight: bold;">
                             Tài khoản và nhóm
@@ -19,11 +24,7 @@
                             Cài đặt tổ chức
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="goToMyInfoPage()">
-                        <v-list-tile-content>
-                            Tài khoản của tôi
-                        </v-list-tile-content>
-                    </v-list-tile>
+                    
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
                         <v-list-tile-content>
                             Quản lý hệ thống
@@ -815,17 +816,6 @@ export default {
             if(this.access == true){
                 this.findUserByAccount()
             }
-            // for(let i = 0; i < this.currentUser.authorities.length;i++){
-            //     if(this.currentUser.authorities[i] == 'ROLE_ADMIN_ADDANDEDITUSERS_ACCEPT' || this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-            //        
-            //         this.isAdmin = true;
-            //     }
-            // }
-            // for(let i = 0; i < this.currentUser.authorities.length;i++){
-            //     if(this.currentUser.authorities[i] == 'ROLE_SYSADMIN_SYSADMIN_ACCEPT'){
-            //         this.isSysadmin = true;
-            //     }
-            // }
             
         },
         closePermissionDialog(){
@@ -878,7 +868,7 @@ export default {
     },
     
     created(){
-        this.$store.state.colorNumber = 7;
+        this.$store.state.colorNumber = 8;
         this.getCurrentUser();
         
     }

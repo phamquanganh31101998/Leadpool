@@ -1,5 +1,45 @@
 <template>
     <v-content class="mt-4 pl-3 pr-3">
+        <v-dialog
+            v-model="gettingEmailContentDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung mẫu email...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog
+            v-model="gettingEmailScheduleDetailDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung chi tiết lịch gửi...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý email</h1>
@@ -204,7 +244,7 @@
                                                 </td>
                                             </template>
                                             <v-list>
-                                                <v-list-tile @click="templateId = props.item.templateId, setChosenTemplate()">
+                                                <v-list-tile @click="templateId = props.item.templateId, setChosenTemplate(props.item.templateId)">
                                                     <v-list-tile-content>Xem nội dung email</v-list-tile-content>
                                                 </v-list-tile>
                                                 <v-list-tile @click="openScheduleDetailDialog(props.item.id)">
@@ -297,6 +337,7 @@
                     <v-toolbar-title>Mẫu email</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
+                        <!-- <v-btn dark flat @click="load()">Log something for fun</v-btn> -->
                         <v-btn dark flat v-if="createBtn" @click="create.dialog = true">Tạo</v-btn>
                         <v-btn dark flat v-else @click="updateTemplate(templateId)">Lưu lại</v-btn>
                     </v-toolbar-items>
@@ -423,6 +464,8 @@ export default {
     },
     data(){
         return{
+            gettingEmailScheduleDetailDialog: false,
+            gettingEmailContentDialog: false,
             sortBy: 'title',
             orderBy: 'ASC',
             loadingTable: false,
@@ -793,6 +836,7 @@ export default {
             return result;
         },
         setChosenTemplate(id){
+            this.gettingEmailContentDialog = true;
             emailService.getEmailContent(this.idAccount, id).then(result => {
                 const {
                     dispatch
@@ -802,13 +846,17 @@ export default {
                     let regex = /\\\"/gi
                     this.htmlText = result.response.content;
                     document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+                    this.gettingEmailContentDialog = false;
                     this.viewDialog = true;
                 }
                 else {
+                    this.gettingEmailContentDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    
                 }
             }).catch(error => {
                 console.log(error)
+                this.gettingEmailContentDialog = false;
             })
         },
         grape(){
@@ -858,35 +906,9 @@ export default {
                         // instead of the `width` (default)
                         keyWidth: 'flex-basis',
                     },
-                    buttons: [
-                            // {
-                            //     id: 'show-layers',
-                            //     active: true,
-                            //     label: 'Layers',
-                            //     command: 'show-layers',
-                            //     // Once activated disable the possibility to turn it off
-                            //     togglable: false,
-                            // }, 
-                            // {
-                            //     id: 'show-style',
-                            //     active: true,
-                            //     label: 'Styles',
-                            //     command: 'show-styles',
-                            //     togglable: false,
-                            // },
-                            // {
-                            //     id: 'show-traits',
-                            //     active: true,
-                            //     label: 'Traits',
-                            //     command: 'show-traits',
-                            //     togglable: false,
-                            // }
-                        ]
+                    buttons: []
                     }]
                 },
-                // selectorManager: {
-                //     appendTo: '.styles-container'
-                // },
                 blockManager: {
                     appendTo: '#blocks',
                     blocks: [
@@ -1289,6 +1311,7 @@ export default {
             // alert('hú');
         },
         getHTMLAndCSS(id){
+            this.gettingEmailContentDialog = true;
             emailService.getEmailContent(this.idAccount, id).then(result => {
                 const {
                     dispatch
@@ -1305,13 +1328,16 @@ export default {
                     let CSS = newStr.substring(startCSS + 7, endCSS);
                     localStorage.setItem('gjs-html', HTML);
                     localStorage.setItem('gjs-css', CSS);
+                    this.gettingEmailContentDialog = false;
                     this.create.editorDialog = true;    
                     this.load()
                 }
                 else {
+                    this.gettingEmailContentDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
+                this.gettingEmailContentDialog = false;
                 console.log(error)
             })
         },
@@ -1708,6 +1734,7 @@ export default {
             }
         },
         openScheduleDetailDialog(id){
+            this.gettingEmailScheduleDetailDialog = true;
             let obj = null;
             emailService.getEmailSchedule(this.idAccount).then(result => {
                 const {
@@ -1720,14 +1747,18 @@ export default {
                         if (id == data[i].emailScheduleId){
                             obj = data[i];
                             this.manageSchedule.detail.listEmail = obj.emailScheduleDetails;
+                            this.gettingEmailScheduleDetailDialog = false;
                             this.manageSchedule.detail.dialog = true;
                         }
                     }
+
                 }
                 else {
+                    this.gettingEmailScheduleDetailDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
+                this.gettingEmailScheduleDetailDialog = false;
                 console.log(error);
             })
         },
@@ -1760,7 +1791,9 @@ export default {
             // }
         }
     },
-
+    // beforeDestroy(){
+    //     this.editor = null;
+    // },
     created(){
         this.$store.state.colorNumber = 4;
         this.getCurrentUser();
@@ -1768,79 +1801,79 @@ export default {
 }
 </script>
 <style scoped>
-/* We can remove the border we've set at the beginnig */
-#gjs {
-  border: none;
-  width: 100%;
-  height: 100%
-}
+    /* We can remove the border we've set at the beginnig */
+    #gjs {
+    border: none;
+    width: 100%;
+    height: 100%
+    }
 
-/* Theming */
+    /* Theming */
 
 
 
-/* Primary color for the background */
-.gjs-one-bg {
-  background-color: #47453e;
-}
+    /* Primary color for the background */
+    .gjs-one-bg {
+    background-color: #47453e;
+    }
 
-/* Secondary color for the text color */
-.gjs-two-color {
-  color: rgba(255, 255, 255, 0.7);
-}
+    /* Secondary color for the text color */
+    .gjs-two-color {
+    color: rgba(255, 255, 255, 0.7);
+    }
 
-/* Tertiary color for the background */
-.gjs-three-bg {
-  background-color: #ec5896;
-  color: white;
-}
+    /* Tertiary color for the background */
+    .gjs-three-bg {
+    background-color: #ec5896;
+    color: white;
+    }
 
-/* Quaternary color for the text color */
-.gjs-four-color,
-.gjs-four-color-h:hover {
-  color: #ec5896;
-}
-/* Reset some default styling */
-.gjs-cv-canvas {
-  width: 100%;
-  height: 100%;
+    /* Quaternary color for the text color */
+    .gjs-four-color,
+    .gjs-four-color-h:hover {
+    color: #ec5896;
+    }
+    /* Reset some default styling */
+    .gjs-cv-canvas {
+    width: 100%;
+    height: 100%;
 
-}
+    }
 
-.panel__top {
-  padding: 0;
-  width: 100%;
-  display: flex;
-  position: initial;
-  justify-content: center;
-  justify-content: space-between;
-}
-.panel__basic-actions {
-  position: initial;
-}
-.editor-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  height: 100%;
-}
+    .panel__top {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    position: initial;
+    justify-content: center;
+    justify-content: space-between;
+    }
+    .panel__basic-actions {
+    position: initial;
+    }
+    .editor-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    height: 100%;
+    }
 
-.editor-canvas {
-  flex-grow: 1;
-}
+    .editor-canvas {
+    flex-grow: 1;
+    }
 
-.panel__right {
-  flex-basis: 230px;
-  position: relative;
-  overflow-y: auto;
-}
+    .panel__right {
+    flex-basis: 230px;
+    position: relative;
+    overflow-y: auto;
+    }
 
-.panel__switcher {
-  position: initial;
-}
+    .panel__switcher {
+    position: initial;
+    }
 
-.gjs-editor {
-    padding-left: 50px;
-}
+    .gjs-editor {
+        padding-left: 50px;
+    }
 </style>
