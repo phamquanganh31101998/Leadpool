@@ -1,5 +1,25 @@
 <template>
     <v-content class="mt-4 pr-3 pd-3 pl-3">
+        <v-dialog
+            v-model="gettingSMSScheduleDetailDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung chi tiết lịch gửi...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 class="ml-3">Quản lý tin nhắn SMS</h1>
@@ -284,28 +304,26 @@
                     
                     
                 </v-layout>
-                <v-layout row v-if="page=='template'">
+                <v-layout row v-if="page=='template'" style="height: 400px;">
                     <v-flex xs3 sm3 md3 lg3 xl3>
-                        <v-card style="height: 400px;">
+                        <v-card>
                             <v-card-title>
                                 <h2>Mẫu tin nhắn</h2>
                             </v-card-title>
                             <v-card-text>
                                 <span class="mt-4"><strong>Chọn mẫu </strong></span>
                                 <span class="ml-4"><v-select :disabled="template.creatingTemplate" :items="template.currentTemplates" v-model="template.selectedTemplateId" @input="setTemplateContent()"></v-select></span>
-                            </v-card-text>
-                            <v-divider class="mt-5" :divider="divider"></v-divider>
-                            <v-card-text v-if="template.creatingTemplate"> 
-                                <span class="mt-4"><strong>Tên mẫu</strong></span>
-                                <v-text-field label="Nhập tên mẫu" v-model="template.name" ></v-text-field>
-                            </v-card-text>
-                            <v-card-actions>
                                 <v-btn block dark color="#3E82F7" :disabled="template.creatingTemplate" @click="startCreatingTemplate()"><v-icon>add</v-icon>Tạo mẫu mới</v-btn>
-                            </v-card-actions>
+                            </v-card-text>
+                            <v-divider class="" :divider="divider"></v-divider>
+                            <v-card-text v-if="template.creatingTemplate"> 
+                                <span><strong>Tên mẫu</strong></span>
+                                <v-text-field :rules="template.nameRules" placeholder="Nhập tên mẫu" v-model="template.name" ></v-text-field>
+                            </v-card-text>
                         </v-card>
                     </v-flex>
                     <v-flex xs9 sm9 md9 lg9 xl9 class="ml-3">
-                        <v-card style="height: 400px;">
+                        <v-card>
                             <v-card-title>
                                 <h2 v-if="!template.creatingTemplate">Nội dung tin nhắn</h2>
                                 <h2 v-else>Tạo mẫu tin nhắn mới</h2>
@@ -316,7 +334,7 @@
                                         <v-flex xs5 sm5 md5 lg5 xl5>
                                             <v-textarea 
                                                 label="Chỉnh sửa mẫu tin nhắn tại đây"
-                                                rows="4" 
+                                                rows="8" 
                                                 box 
                                                 counter="160"
                                                 maxlength="160"
@@ -328,7 +346,7 @@
                                             <v-textarea 
                                                 box
                                                 label="Nội dung hiển thị (không dấu)"
-                                                rows="4" 
+                                                rows="8" 
                                                 readonly
                                                 :value="normalText(template.selectedTemplateContent)"
                                             ></v-textarea>
@@ -358,27 +376,16 @@
                                             ></v-textarea>
                                         </v-flex>
                                     </v-layout>
-                                    <v-btn v-if="template.creatingTemplate" :disabled="template.content == '' || template.content.length > 160" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
+                                    <v-btn v-if="template.creatingTemplate" :disabled="template.content == '' || template.name == ''" color="primary" @click="createNewTemplate()"><v-icon>add</v-icon>Tạo mới</v-btn>
                                     <v-btn v-if="template.creatingTemplate" color="grey" dark @click="template.creatingTemplate = false">Quay lại</v-btn>
-                                    
-                                    <v-alert
-                                        :value="template.content.length > 160"
-                                        type="error"
-                                        >
-                                        Độ dài tin nhắn phải nhỏ hơn 160 kí tự.
-                                    </v-alert>
                                 </template>
-                                
                             </v-card-text>
-                            <v-card-actions>
-                                
-                            </v-card-actions>
                         </v-card>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="page=='schedule'">
                     <v-flex xs12 sm12 md12 lg12 xl12 class="mb-4">
-                        <v-btn dark round color = "#3E82F7" @click="page = 'send'">Tạo lịch gửi mới</v-btn>
+                        <v-btn dark round color = "#3E82F7" @click="page = 'send'"> <v-icon>add</v-icon> Tạo lịch gửi mới</v-btn>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg12 xl12>
                         <v-card width="100%">
@@ -516,11 +523,12 @@ export default {
     },
     data(){
         return {
+            gettingSMSScheduleDetailDialog: false,
             loadingTable: false,
             currentUser: null,
             access: false,
             fontWeight: ['', '', '', 'fontWeight: bold'],
-            page: 'schedule',
+            page: 'template',
             divider: true,
             saveKey: {
                 list: [],
@@ -612,6 +620,9 @@ export default {
                 creatingTemplate: false,
                 change: false,
                 oldContent: '',
+                nameRules: [
+                    v => !!v || 'Không được để trống'
+                ]
             },
             send: {
                 displayContacts: [],
@@ -1479,7 +1490,8 @@ export default {
             })
         },
         openScheduleDetailDialog(id){
-            this.loadingTable = true;
+            // this.loadingTable = true;
+            this.gettingSMSScheduleDetailDialog = true;
             let obj = null;
             SMSService.getSchedule(this.idAccount).then(result => {
                 const {
@@ -1493,18 +1505,21 @@ export default {
                             obj = data[i];
                             this.schedule.detail.content = obj.content;
                             this.schedule.detail.listPhone = obj.listPhone;
+                            this.gettingSMSScheduleDetailDialog = false;
                             this.schedule.detail.dialog = true;
                         }
                     }
                 }
                 else {
+                    this.gettingSMSScheduleDetailDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
                 
             }).catch(error => {
+                this.gettingSMSScheduleDetailDialog = false;
                 console.log(error);
             }).finally (() => {
-                this.loadingTable = false;
+                // this.loadingTable = false;
             })
         },
         changeScheduleStatus(number, status){

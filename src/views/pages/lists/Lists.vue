@@ -10,7 +10,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn round block dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>list</v-icon> Tạo mới</v-btn>
+                        <v-btn round block dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>add</v-icon> Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>

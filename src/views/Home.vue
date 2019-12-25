@@ -75,3 +75,8 @@ import alert from '@/components/alert'
     }
   }
 </script>
+<style scoped>
+  .gjs-resizer-c {
+    display: none;
+  }
+</style>

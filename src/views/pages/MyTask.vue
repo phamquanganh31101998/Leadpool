@@ -1,16 +1,36 @@
 <template>
     <v-content class="mt-4 pl-2 pr-3">
+        <v-dialog
+            v-model="gettingTaskDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung công việc...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-layout row wrap>
-            <v-flex xs12 sm12 md11 lg11 xl11>
+            <v-flex xs12 sm12 md10 lg10 xl10>
                 <h1 class="ml-3">Quản lý công việc</h1>
             </v-flex>
-            <v-flex xs12 sm12 md1 lg1 xl1>
+            <v-flex xs12 sm12 md2 lg2 xl2>
                 <v-layout row>
                     <!-- <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
                         <v-text-field append-icon="search" v-model="search" label="Search" single-line hide-details></v-text-field>
                     </v-flex> -->
                     <v-flex xs12 md12 lg12 xl12>
-                        <v-btn round block dark color="#3E82F7" @click="createTask = true"> Tạo công việc</v-btn>
+                        <v-btn round block dark color="#3E82F7" @click="createTask = true"> <v-icon>add</v-icon> Tạo công việc mới</v-btn>
                         <v-dialog v-model="createTask" persistent max-width="700px">
                             <v-card>
                                 <v-card-title style="background-color:#1E88E5;color:#fff">
@@ -193,7 +213,8 @@
                                                     </v-flex>
                                                     <br> -->
                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-select>
+                                                        <v-autocomplete :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-autocomplete>
+                                                        <!-- <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-select> -->
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card-title>
@@ -372,6 +393,7 @@ export default {
         },
     },
     data: vm => ({
+        gettingTaskDialog: false,
         loadingTable: false,
         currentUser: null,
         logoutDialog: false,
@@ -632,6 +654,7 @@ export default {
             return moment(time).format('HH:mm:ss, DD/MM/YYYY')
         },
         getTaskById(id){
+            this.gettingTaskDialog = true;
             taskService.getTaskById(this.idAccount, id).then(result => {
                 const {
                     dispatch
@@ -661,9 +684,11 @@ export default {
                     result.response.reminderMenu = false;
                     result.response.timeMenu = false;
                     this.viewTask.task = result.response;
+                    this.gettingTaskDialog = false;
                     this.viewTask.dialog = true;
                 }
                 else {
+                    this.gettingTaskDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
                 

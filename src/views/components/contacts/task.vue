@@ -83,7 +83,8 @@
                                                             </v-flex>
                                                             <br> -->
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select>
+                                                                <v-autocomplete :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
+                                                                <!-- <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select> -->
                                                             </v-flex>
                                                         </v-layout>
                                                     </v-card-title>
@@ -430,7 +431,8 @@
                                                                         </v-flex>
                                                                         <br> -->
                                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                            <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select>
+                                                                            <v-autocomplete :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
+                                                                            <!-- <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select> -->
                                                                         </v-flex>
                                                                     </v-layout>
                                                                 </v-card-title>

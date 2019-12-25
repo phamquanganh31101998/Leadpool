@@ -15,7 +15,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm lead theo tên" single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs3 md3 lg3 xl3>
-                        <v-btn block round dark color="#3E82F7" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)">Tạo danh sách</v-btn>
+                        <v-btn block round dark color="#3E82F7" :disabled="disableCreateButton" @click="createNewList(newListName, conditions)"> <v-icon>add</v-icon> Tạo danh sách</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
