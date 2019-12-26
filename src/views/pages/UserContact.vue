@@ -169,7 +169,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newEmail @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
+                                                                <newEmail :currentContact="this.detail" @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateEmailDialog="createEmail = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -215,7 +215,7 @@
                                                             </v-card-text> -->
                                                             <!-- <v-divider :divider="divider"></v-divider> -->
                                                             <!-- <v-card-text> -->
-                                                                <newSMS @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
+                                                                <newSMS :currentContact="this.detail" @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeSendSMSDialog="createSMS = false"/>
                                                             <!-- </v-card-text> -->
                                                             <v-divider :divider="divider"></v-divider>
                                                             <!-- <v-card-actions>
@@ -303,7 +303,7 @@
                                                                 <span class="headline">Công việc</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newTask @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
+                                                                <newTask :allEmail="this.allEmail" :searchedEmail="this.searchedEmail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateTaskDialog="createTask = false"/>
                                                             </v-card-text>
                                                             <!-- <v-divider :divider="divider"></v-divider>
                                                             <v-card-actions>
@@ -334,7 +334,7 @@
                                                                 <span class="headline">Tạo Thỏa thuận</span>
                                                             </v-card-title>
                                                             <v-card-text>
-                                                                <newDeal :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
+                                                                <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
                                                             </v-card-text>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
@@ -590,12 +590,12 @@
                                     </v-card>
                                 </v-menu>
                             </v-layout> -->
-                            <note @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note :currentContact="this.detail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <!-- <email @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/> -->
-                            <task @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <call @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <meet @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
-                            <deal @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task :currentContact="this.detail" :allEmail="this.allEmail" :searchedEmail="this.searchedEmail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call :currentContact="this.detail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet :currentContact="this.detail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <deal :currentContact="this.detail" :allEmail="this.allEmail" @updateLastActivityDate="updateLastActivityDate()" :idAccount="this.idAccount" :idContact="this.idContact"/>
                             <!-- <activity :idAccount="this.idAccount" :idContact="this.idContact"></activity> -->
                         </v-tab-item>
                         <v-tab-item value="tab-2">
@@ -605,7 +605,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <note :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <note @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-3">
                             <v-layout row>
@@ -615,7 +615,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <email :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <email @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-4">
                             <v-layout row>
@@ -624,7 +624,7 @@
                                     <!-- <v-btn dark depressed small color="#425b76">Tạo cuộc gọi</v-btn> -->
                                 </v-flex>
                             </v-layout>
-                            <call :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <call @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-5">
                             <v-layout row>
@@ -633,7 +633,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <task :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <task @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :allEmail="this.allEmail" :searchedEmail="this.searchedEmail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-6">
                             <v-layout row>
@@ -643,7 +643,7 @@
                                     </v-btn> -->
                                 </v-flex>
                             </v-layout>
-                            <meet :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <meet @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                         <v-tab-item value="tab-7">
                             <v-layout row>
@@ -651,7 +651,7 @@
                                     <v-btn small color="grey lighten-3" @click="createDeal=true" v-if="access">Tạo Thỏa thuận mới</v-btn>
                                 </v-flex>
                             </v-layout>
-                            <deal :idAccount="this.idAccount" :idContact="this.idContact"/>
+                            <deal @updateLastActivityDate="updateLastActivityDate()" :currentContact="this.detail" :allEmail="this.allEmail" :idAccount="this.idAccount" :idContact="this.idContact"/>
                         </v-tab-item>
                     </v-tabs>
                 </v-layout>
@@ -783,7 +783,6 @@
             changeCity: false,
             allService: [],
             actionLog: {
-                
                 failDialog: false,
                 dialog: false,
                 changeArray: [],
@@ -964,6 +963,7 @@
             basicInfoDialog: false,
             basicInfoValid: true,
             allEmail: [],
+            searchedEmail: [],
             failDialog: false,
             access: false,
             canSendSMS: false,
@@ -1042,6 +1042,7 @@
             },
             getAllEmail(){
                 this.allEmail = [];
+                this.searchedEmail = [];
                 contact.getAllEmail(this.idAccount).then(result => {
                     const {
                         dispatch
@@ -1055,6 +1056,7 @@
                                 name: e.name
                             }
                             this.allEmail.push(obj);
+                            this.searchedEmail.push(obj);
                         });
                     }
                     else {

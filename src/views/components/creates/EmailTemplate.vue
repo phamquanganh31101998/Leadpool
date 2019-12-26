@@ -37,7 +37,6 @@
                     <v-form v-model="valid">
                         <v-layout row>
                             <span class="mt-2"><strong>Đến</strong></span>
-                            <!-- <span class="ml-4 mt-2">{{currentContact.lastName}} {{currentContact.firstName}} ({{currentContact.email}})</span> -->
                             <span class="ml-4" style="width: 100%"><v-text-field readonly v-model="to" :rules="emailRules"></v-text-field></span>
                         </v-layout>
                         <br>
@@ -122,6 +121,10 @@ export default {
         idContact: {
             type: String,
             default: null,
+        },
+        currentContact: {
+            type: Object,
+            default: null
         }
     },
     computed: {
@@ -142,7 +145,14 @@ export default {
             else{
                 this.createEmailTemplate.button = true
             }
-        }
+        },
+        currentContact(){
+            if(this.currentContact != null){
+                this.to = this.currentContact.email;
+                
+                // this.getCurrentUser();
+            }
+        },
     },
     data(){
         return{
@@ -153,7 +163,7 @@ export default {
             iframe: null,
             btn: null,
             htmlText: '',
-            currentContact: null,
+            // currentContact: null,
             to: '',
             emailRules: [
                 v => !!v || 'Chưa nhập E-mail',
@@ -258,12 +268,12 @@ export default {
         closeEmailTemplateDialog(){
             this.$emit('closeEmailTemplateDialog');
         },
-        getCurrentContact(){
-            contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
-                this.currentContact = result.response;
-                this.to = this.currentContact.email;
-            })
-        },
+        // getCurrentContact(){
+        //     contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
+        //         this.currentContact = result.response;
+        //         this.to = this.currentContact.email;
+        //     })
+        // },
         checkString(str){
             if (str == null || str == undefined){
                 return ''
@@ -381,12 +391,12 @@ export default {
         }
     },
     created(){
-        this.getCurrentContact();
+        // this.getCurrentContact();
         this.getEmailTemplate();
         // this.getEmailTemplate();
         this.getCurrentUser();
         eventBus.$on('updateEmail', () => {
-            this.getCurrentContact();
+            // this.getCurrentContact();
         })
     }
 }

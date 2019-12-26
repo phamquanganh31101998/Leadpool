@@ -328,6 +328,10 @@ import contact from '../../../services/contacts.service'
             idContact: {
                 type: String,
                 default: null,
+            },
+            currentContact: {
+                type: Object,
+                default: null
             }
         },
         data: vm => ({
@@ -347,7 +351,7 @@ import contact from '../../../services/contacts.service'
                 dialog: false,
                 id: ''
             },
-            currentContact: null,
+            // currentContact: null,
             currentUser: null,
             access: false,
         }),
@@ -357,13 +361,18 @@ import contact from '../../../services/contacts.service'
             }
         },
         watch: {
+            currentContact(){
+                if(this.currentContact != null){
+                    this.getCurrentUser();
+                }
+            },
             dateLog(val) {
                 this.dateFormatted = this.formatDate(this.dateLog)
             }
         },
         methods: {
             viewEmailContent(body){
-                console.log(body);
+                // console.log(body);
                 let regex = /\\\"/gi
                 document.getElementById("templateBody").innerHTML = body.replace(regex, "\"");
                 this.viewEmailContentDialog = true;
@@ -435,15 +444,15 @@ import contact from '../../../services/contacts.service'
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm:ss, DD/MM/YYYY')
             },
-            getDetail(){
-                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    this.currentContact = result.response
-                }).catch(error => {
-                    console.log(error);
-                }).finally(() => {
-                    this.getCurrentUser()
-                })
-            },
+            // getDetail(){
+            //     contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+            //         this.currentContact = result.response
+            //     }).catch(error => {
+            //         console.log(error);
+            //     }).finally(() => {
+            //         this.getCurrentUser()
+            //     })
+            // },
             getCurrentUser(){
                 this.currentUser = JSON.parse(localStorage.getItem('user'));
                 let role = this.currentUser.authorities;
@@ -640,7 +649,7 @@ import contact from '../../../services/contacts.service'
             }
         },
         created(){
-            this.getDetail();
+            // this.getDetail();
             this.getEmail();
             eventBus.$on('updateEmailList', ()=>{
                 this.getEmail();

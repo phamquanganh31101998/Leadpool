@@ -66,7 +66,7 @@ function getdetailContact(idAccount,idContact){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/contacts/${idContact}`
-    return responseService.fetchRetry(endpoint, request, 1)
+    return responseService.fetchRetry(endpoint, request, 5)
 }
 
 function deleteContact(idAccount, idContact){
@@ -113,7 +113,7 @@ function getAllEmail(idAccount){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/user/getAllEmail`
-    return responseService.fetchRetry(endpoint, request, 1)
+    return responseService.fetchRetry(endpoint, request, 5)
 }
 
 
