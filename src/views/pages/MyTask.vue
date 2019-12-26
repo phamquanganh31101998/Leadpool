@@ -37,7 +37,7 @@
                                     <span class="headline">Công việc mới</span>
                                 </v-card-title>
                                 <v-card-text>
-                                    <newTask :idAccount="this.idAccount" @closeCreateTaskDialog="createTask = false"/>
+                                    <newTask :allEmail="this.viewTask.allEmail" :searchedEmail="this.viewTask.searchedEmail" :idAccount="this.idAccount" @closeCreateTaskDialog="createTask = false"/>
                                 </v-card-text>
                             </v-card>
                         </v-dialog>
@@ -213,7 +213,7 @@
                                                     </v-flex>
                                                     <br> -->
                                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                                        <v-autocomplete :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-autocomplete>
+                                                        <v-autocomplete :items="viewTask.searchedEmail" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-autocomplete>
                                                         <!-- <v-select :items="viewTask.searchedEmail" item-text="displayText" item-value="email" v-model="viewTask.task.assignedTo" @input="updateTask(viewTask.task.taskId, 'a', 'assignedTo', viewTask.task.assignedTo), viewTask.task.assignMenu = false"></v-select> -->
                                                     </v-flex>
                                                 </v-layout>
@@ -537,6 +537,7 @@ export default {
         },
         getAllEmail(){
             this.viewTask.allEmail = [];
+            this.viewTask.searchedEmail = [];
             taskService.getAllEmail(this.idAccount).then(result => {
                 const {
                     dispatch
@@ -544,9 +545,13 @@ export default {
                 let time = moment();
                 if(result.code == 'SUCCESS'){
                     result.response.filter(e => {
-                        e.displayText = e.name + ' (' + e.email + ')'
-                        this.viewTask.allEmail.push(e);
-                        this.viewTask.searchedEmail.push(e);
+                        const obj = {
+                            text: e.name + ' (' + e.email + ')',
+                            value: e.email,
+                            name: e.name
+                        }
+                        this.viewTask.allEmail.push(obj);
+                        this.viewTask.searchedEmail.push(obj);
                     });
                 }
                 else {

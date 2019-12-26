@@ -176,6 +176,10 @@
             idContact: {
                 type: String,
                 default: null,
+            },
+            currentContact: {
+                type: Object,
+                default: null
             }
         },
         data: vm => ({
@@ -219,7 +223,7 @@
                 dialog: false,
                 id: ''
             },
-            currentContact: null,
+            // currentContact: null,
             currentUser: null,
             access: false,
         }),
@@ -230,6 +234,11 @@
         },
 
         watch: {
+            currentContact(){
+                if(this.currentContact != null){
+                    this.getCurrentUser();
+                }
+            },
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
             }
@@ -351,15 +360,15 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm')
             },
-            getDetail(){
-                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    this.currentContact = result.response
-                }).catch(error => {
-                    console.log(error);
-                }).finally(() => {
-                    this.getCurrentUser()
-                })
-            },
+            // getDetail(){
+            //     contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+            //         this.currentContact = result.response
+            //     }).catch(error => {
+            //         console.log(error);
+            //     }).finally(() => {
+            //         this.getCurrentUser()
+            //     })
+            // },
             getCurrentUser(){
                 this.currentUser = JSON.parse(localStorage.getItem('user'));
                 let role = this.currentUser.authorities;
@@ -376,7 +385,7 @@
             }
         },
         created(){
-            this.getDetail();
+            // this.getDetail();
             this.getCallsList();
             eventBus.$on('updateLogCallList', ()=>{
                 this.getCallsList();

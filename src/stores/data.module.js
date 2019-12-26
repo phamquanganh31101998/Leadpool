@@ -5,6 +5,7 @@ export const data = {
     state:{
         note: [],
         task: [],
+        
     },
     actions:{
         updateNote({commit}, data){

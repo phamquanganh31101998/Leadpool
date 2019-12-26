@@ -137,7 +137,18 @@ export default {
         idContact: {
             type: String,
             default: null,
+        },
+        currentContact: {
+            type: Object,
+            default: null
         }
+    },
+    watch: {
+        currentContact(){
+            if(this.currentContact != null){
+                this.getCurrentUser();
+            }
+        },
     },
     data(){
         return{
@@ -147,7 +158,7 @@ export default {
                 dialog: false,
                 id: ''
             },
-            currentContact: null,
+            // currentContact: null,
             currentUser: null,
             access: false,
         }
@@ -240,15 +251,15 @@ export default {
                 });
             }
         },
-        getDetail(){
-            contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                this.currentContact = result.response
-            }).catch(error => {
-                console.log(error);
-            }).finally(() => {
-                this.getCurrentUser()
-            })
-        },
+        // getDetail(){
+        //     contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+        //         this.currentContact = result.response
+        //     }).catch(error => {
+        //         console.log(error);
+        //     }).finally(() => {
+        //         this.getCurrentUser()
+        //     })
+        // },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
             let role = this.currentUser.authorities;
@@ -265,7 +276,7 @@ export default {
         }
     },
     created(){
-        this.getDetail();
+        // this.getDetail();
         eventBus.$on('updateNoteList', () => {
             this.getNotesList();
         })

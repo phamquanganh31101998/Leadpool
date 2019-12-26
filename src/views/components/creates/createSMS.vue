@@ -106,6 +106,10 @@ export default {
         idContact: {
             type: String,
             default: null,
+        },
+        currentContact: {
+            type: Object,
+            default: null
         }
     },
     
@@ -128,7 +132,7 @@ export default {
             allTemplates: [],
             allDeviceKey: [],
             deviceKey: '',
-            currentContact: null,
+            // currentContact: null,
             waiting: false,
             successfulDialog: false,
             failDialog: false,
@@ -137,6 +141,12 @@ export default {
         }
     },
     watch: {
+        currentContact(){
+            if(this.currentContact != null){
+                this.to = this.currentContact.phone;
+                this.getCurrentUser();
+            }
+        },
         smsType(){
             if(this.smsType == 'normal'){
                 this.content = '';
@@ -154,7 +164,6 @@ export default {
             contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
                 this.currentContact = result.response;
                 this.to = this.currentContact.phone;
-                
             }).catch(error => {
                 console.log(error);
             }).finally(() => {
@@ -268,9 +277,9 @@ export default {
     },
     created(){
         this.getCurrentUser();
-        this.getCurrentContact()
+        // this.getCurrentContact()
         eventBus.$on('updatePhone', () => {
-            this.getCurrentContact();
+            // this.getCurrentContact();
         })
     }
 }
