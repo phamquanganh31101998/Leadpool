@@ -42,10 +42,10 @@
                 </v-layout>
             </v-container>
         </v-content>
-        <v-content class="app login-custom"  v-else-if="$vuetify.breakpoint.lgAndUp" >
+        <v-content class="app login-custom"  v-else-if="$vuetify.breakpoint.smAndUp" >
             <v-container fluid>
                 <v-layout row wrap>
-                    <v-flex d-flex xs3 lg3 md3 xl3 offset-xs4>
+                    <v-flex d-flex xs3 sm6 md6 lg3 xl3 offset-lg4 offset-xl4>
                         <v-card flat img="/phone.png" style="height: 703px; ">
                             <v-card-title style="margin-top: 150px; margin-left: 50px; color: white;">
                                 <h1>Đăng ký</h1>
@@ -78,15 +78,11 @@
                 </v-layout>
             </v-container>
         </v-content>
-        <v-content class="app" v-else style="background-image: url('layer3.jpg') !important; padding: 8% 5% 10% 5% background-repeat: no-repeat; background-size: cover">
+        <!-- <v-content class="app" v-else style="background-image: url('layer3.jpg') !important; padding: 8% 5% 10% 5% background-repeat: no-repeat; background-size: cover">
             <v-container>
                 <v-layout row wrap>
                     <v-flex class="signupcard" xs10 sm10 md10 lg10 xl10>
                         <v-card flat >
-                            <!-- <v-card-text class="text-xs-center" >
-                                <img height="100" src="../assets/adstech-logo1.png" alt="avatar">
-                            </v-card-text> -->
-                            
                             <v-card-text class="text-xs-center content">
                                 <v-layout row wrap>
                                     <v-flex xs12 sm12 md12 lg12 xl12>
@@ -119,7 +115,7 @@
                     </v-flex>
                 </v-layout>
             </v-container>
-        </v-content>
+        </v-content> -->
         <alert/>
     </v-app>
 </template>

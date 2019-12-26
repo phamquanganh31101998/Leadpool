@@ -1,5 +1,25 @@
 <template>
     <v-content class="mt-4 pl-3 pr-3">
+        <v-dialog
+            v-model="gettingDealDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung thỏa thuận...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 class="ml-3"> Quản lý Thỏa thuận</h1>
@@ -30,7 +50,7 @@
             </v-flex>
         </v-layout>
         <br>
-        <v-divider class="mt-4" :divider="divider"></v-divider>
+        <v-divider class="mt-2" :divider="divider"></v-divider>
         <v-layout row wrap v-if="access">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-data-table
@@ -120,7 +140,7 @@
                     <v-layout wrap>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Chủ sở hữu</h4></span>
-                            <v-select solo v-model="detailDeal.owner" :items="allEmail"></v-select>
+                            <v-select v-model="detailDeal.owner" :items="allEmail"></v-select>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Tên thỏa thuận</h4></span>
@@ -153,11 +173,11 @@
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Dịch vụ</h4></span>
-                            <v-select solo v-model="detailDeal.service" :items="allService"></v-select>
+                            <v-select v-model="detailDeal.service" :items="allService"></v-select>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12 xl12>
                             <span><h4>Giai đoạn</h4></span>
-                            <v-select solo v-model="detailDeal.stage" :items="allStage"></v-select>
+                            <v-select v-model="detailDeal.stage" :items="allStage"></v-select>
                         </v-flex>
                         
                     </v-layout>
@@ -207,6 +227,7 @@ export default {
     },
     data(){
         return{
+            gettingDealDialog: false,
             searchContactText: '',
             loadingTable: false,
             inputText: '',
@@ -343,6 +364,7 @@ export default {
             // console.log(this.detailDeal.contactId)
         },
         openDetailDialog(number){
+            this.gettingDealDialog = true;
             try {
                 // console.log(this.allDeal[number])
                 this.detailDeal = Object.assign({}, this.allDeal[number]);
@@ -381,6 +403,7 @@ export default {
                 console.log(error)
             }
             finally {
+                this.gettingDealDialog = false;
                 this.detailDialog = true;
             }
             

@@ -323,7 +323,7 @@
                                         <v-flex xs2 sm2 md2 lg2 xl2>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12 class="text-xs-center">
-                                                    <v-dialog v-model="createDeal" persistent width="700px">
+                                                    <v-dialog v-model="createDeal" persistent width="600px">
                                                         <template v-slot:activator="{ on }">
                                                             <v-btn fab small :disabled="!access" color="#E0E0E0" v-on="on">
                                                                 <v-icon dark>thumb_up</v-icon>
@@ -416,9 +416,20 @@
                                                                 </v-form>
                                                                 
                                                             </template>
-                                                            <template v-else>
+                                                            <template v-else-if="item.property == 'lastActivityDate'">
                                                                 <!-- <span><h4>Thời gian hoạt động gần nhất</h4></span> -->
-                                                                <v-text-field :label="item.title" v-model="item.value" readonly>
+                                                                <v-text-field label="Thời gian hoạt động gần nhất" v-model="item.value" readonly>
+                                                                </v-text-field>
+                                                            </template>
+                                                            <template v-else-if="item.property == 'lastContacted'">
+                                                                <!-- <span><h4>Thời gian liên lạc gần nhất</h4></span> -->
+                                                                <v-text-field label="Thời gian liên lạc gần nhất" v-model="item.value" readonly>
+                                                                    </v-text-field>
+                                                            </template>
+
+                                                            <template v-else-if="item.property == 'sourceFromMar'">
+                                                                <!-- <span><h4>Thời gian hoạt động gần nhất</h4></span> -->
+                                                                <v-text-field label="Nguồn Lead" v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template>
                                                             <!-- <template v-else>

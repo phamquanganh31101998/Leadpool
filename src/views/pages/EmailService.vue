@@ -1,5 +1,45 @@
 <template>
     <v-content class="mt-4 pl-3 pr-3">
+        <v-dialog
+            v-model="gettingEmailContentDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung mẫu email...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog
+            v-model="gettingEmailScheduleDetailDialog"
+            hide-overlay
+            persistent
+            width="300"
+            >
+            <v-card
+                color="primary"
+                dark
+                >
+                <v-card-text>
+                    Đang lấy nội dung chi tiết lịch gửi...
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
                 <h1 style="position: absolute; font-size: 28px;"  class="ml-3">Quản lý email</h1>
@@ -34,14 +74,14 @@
                         <span><v-btn class="mt-3" round color="#3E82F7" dark @click="startCreatingTemplate()"> <v-icon>add</v-icon> Tạo mẫu email mới</v-btn></span>
                         <v-card class=" mt-3">
                             <v-card-text>
-                                <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
+                                <v-data-table no-data-text="Không có kết quả nào phù hợp" :custom-sort="customSort" hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" :headers="headers" :items="templateSelect">
                                     <template v-slot:items="props">
                                         <tr>
-                                            <td> <a @click="templateId = props.item.value, setChosenTemplate(props.item.value)">{{props.item.text}}</a> </td>
+                                            <td> <a @click="templateId = props.item.value, setChosenTemplate(props.item.value)">{{props.item.title}}</a> </td>
                                             <td>{{props.item.createdBy}}</td>
                                             <td>{{props.item.createdAt}}</td>
                                             <td>{{props.item.updatedBy}}</td>
-                                            <td>{{props.item.updatedAt}}</td>
+                                            <td>{{props.item.updateAt}}</td>
                                             <v-menu>
                                                 <template v-slot:activator="{ on }">
                                                     <td class="text-xs-right"><v-btn flat fab small v-on="on"><v-icon>more_vert</v-icon></v-btn></td>
@@ -62,7 +102,7 @@
                                     </template>
                                 </v-data-table>
                                 <div class="text-xs-center pt-2">
-                                    <v-pagination :total-visible="7" v-model="templatePage" :length="templateTotalPages"></v-pagination>
+                                    <v-pagination @input="getEmailTemplate()" :total-visible="7" v-model="templatePage" :length="templateTotalPages" ></v-pagination>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -86,9 +126,8 @@
                                     <v-card-text>
                                         <span class="ml-4"><v-select prepend-icon="account_box" :items="allEmail" v-model="createSchedule.from" label="Chọn tài khoản gửi email"></v-select></span>
                                         <span class="ml-4"><v-text-field prepend-icon="title" v-model="createSchedule.title" label="Tiêu đề"></v-text-field></span>
-                                        <span class="ml-4"><v-select :items="templateSelect" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
-
-                                        <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate()">Xem mẫu email </a></span>
+                                        <span class="ml-4"><v-select :items="emailTemplateToSend" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
+                                        <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate(templateId)">Xem mẫu email </a></span>
                                         <br>
                                         <br>
                                         <v-divider :divider="divider"></v-divider>
@@ -205,7 +244,7 @@
                                                 </td>
                                             </template>
                                             <v-list>
-                                                <v-list-tile @click="templateId = props.item.templateId, setChosenTemplate()">
+                                                <v-list-tile @click="templateId = props.item.templateId, setChosenTemplate(props.item.templateId)">
                                                     <v-list-tile-content>Xem nội dung email</v-list-tile-content>
                                                 </v-list-tile>
                                                 <v-list-tile @click="openScheduleDetailDialog(props.item.id)">
@@ -298,6 +337,7 @@
                     <v-toolbar-title>Mẫu email</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
+                        <!-- <v-btn dark flat @click="load()">Log something for fun</v-btn> -->
                         <v-btn dark flat v-if="createBtn" @click="create.dialog = true">Tạo</v-btn>
                         <v-btn dark flat v-else @click="updateTemplate(templateId)">Lưu lại</v-btn>
                     </v-toolbar-items>
@@ -424,6 +464,10 @@ export default {
     },
     data(){
         return{
+            gettingEmailScheduleDetailDialog: false,
+            gettingEmailContentDialog: false,
+            sortBy: 'title',
+            orderBy: 'ASC',
             loadingTable: false,
             createBtn: true,
             title: 'Tạo mẫu email mới',
@@ -432,6 +476,7 @@ export default {
             access: false,
             page: 'manage',
             fontWeight: ['font-weight: bold', '', ''],
+            emailTemplateToSend: [],
             templates: [],
             templateSelect: [],
             templateId: '',
@@ -447,7 +492,7 @@ export default {
                     text: 'TÊN MẪU',
                     align: 'left',
                     // sortable: false,
-                    value: 'text'
+                    value: 'title'
                 },
                 {
                     text: 'NGƯỜI TẠO',
@@ -471,7 +516,7 @@ export default {
                     text: 'THỜI GIAN CHỈNH SỬA CUỐI CÙNG',
                     align: 'left',
                     // sortable: false,
-                    value: 'updatedAt'
+                    value: 'updateAt'
                 },
                 {
                     text: 'HÀNH ĐỘNG',
@@ -659,6 +704,12 @@ export default {
             this.createSchedule.ignoreContact = [];
             this.getDisplayContactsOnPage1();
         },
+        sortBy(){
+            this.getEmailTemplate()
+        },
+        orderBy(){
+            this.getEmailTemplate()
+        }
     },
     computed: {
         createScheduleDialog(){
@@ -716,14 +767,16 @@ export default {
         },
         getEmailTemplate(){
             this.loadingTable = true;
-            emailService.getEmailTemplate(this.idAccount).then(result => {
+            this.templates = [];
+            this.templateSelect = [];
+            emailService.getEmailTemplate(this.idAccount, this.templatePage, this.sortBy, this.orderBy).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    this.templates = result.response.results.reverse();
-                    this.templateSelect = [];
+                    this.templates = result.response.results;
+                    // this.templateSelect = [];
                     this.templateSelect = this.setSelectEmailTemplate(this.templates);
                     this.templateTotalPages = result.response.totalPage;
                 }
@@ -737,22 +790,53 @@ export default {
                 this.loadingTable = false;
             })
         },
+        getEmailTemplateToSend(){
+            this.emailTemplateToSend = [];
+            emailService.getEmailTemplate(this.idAccount, this.templatePage, this.sortBy, this.orderBy).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    for (let i = 1; i <= result.response.totalPage; i++){
+                        emailService.getEmailTemplate(this.idAccount, i, this.sortBy, this.orderBy).then(result => {
+                            for (let k = 0; k < result.response.results.length; k++){
+                                
+                                let res = result.response.results[k];
+                                let obj = {
+                                    text: this.checkString(res.title),
+                                    value: this.checkString(res.emailTemplateId)
+                                }
+                                this.emailTemplateToSend.push(obj)
+                            }
+                        })
+                    }
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         setSelectEmailTemplate(templateArray){
             let result = [];
             for (let i = 0; i < templateArray.length;i++){
                 const obj = {
-                    text: templateArray[i].title,
-                    value: templateArray[i].emailTemplateId,
-                    createdBy: templateArray[i].createdBy,
+                    title: this.checkString(templateArray[i].title),
+                    text: this.checkString(templateArray[i].title),
+                    value: this.checkString(templateArray[i].emailTemplateId),
+                    createdBy: this.checkString(templateArray[i].createdBy),
                     createdAt: this.covertime(templateArray[i].createdAt),
-                    updatedBy: templateArray[i].updatedBy,
-                    updatedAt: this.covertime(templateArray[i].updateAt),
+                    updatedBy: this.checkString(templateArray[i].updatedBy),
+                    updateAt: this.covertime(templateArray[i].updateAt),
                 }
                 result.push(obj);
             }
             return result;
         },
         setChosenTemplate(id){
+            this.gettingEmailContentDialog = true;
             emailService.getEmailContent(this.idAccount, id).then(result => {
                 const {
                     dispatch
@@ -762,13 +846,17 @@ export default {
                     let regex = /\\\"/gi
                     this.htmlText = result.response.content;
                     document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+                    this.gettingEmailContentDialog = false;
                     this.viewDialog = true;
                 }
                 else {
+                    this.gettingEmailContentDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                    
                 }
             }).catch(error => {
                 console.log(error)
+                this.gettingEmailContentDialog = false;
             })
         },
         grape(){
@@ -818,35 +906,9 @@ export default {
                         // instead of the `width` (default)
                         keyWidth: 'flex-basis',
                     },
-                    buttons: [
-                            // {
-                            //     id: 'show-layers',
-                            //     active: true,
-                            //     label: 'Layers',
-                            //     command: 'show-layers',
-                            //     // Once activated disable the possibility to turn it off
-                            //     togglable: false,
-                            // }, 
-                            // {
-                            //     id: 'show-style',
-                            //     active: true,
-                            //     label: 'Styles',
-                            //     command: 'show-styles',
-                            //     togglable: false,
-                            // },
-                            // {
-                            //     id: 'show-traits',
-                            //     active: true,
-                            //     label: 'Traits',
-                            //     command: 'show-traits',
-                            //     togglable: false,
-                            // }
-                        ]
+                    buttons: []
                     }]
                 },
-                // selectorManager: {
-                //     appendTo: '.styles-container'
-                // },
                 blockManager: {
                     appendTo: '#blocks',
                     blocks: [
@@ -1233,9 +1295,13 @@ export default {
                 // alert('hú');
             });
 
-            console.log(this.editor)
+            // console.log(this.editor)
         },
-
+        customSort(items, index, isDescending){
+            this.sortBy = index;
+            this.orderBy = (isDescending) ? 'DSC' : 'ASC';
+            return items;
+        },
         getImageFromGGDriveLink(link){
             let result = '';
             result = link.replace('open?', 'uc?');
@@ -1245,6 +1311,7 @@ export default {
             // alert('hú');
         },
         getHTMLAndCSS(id){
+            this.gettingEmailContentDialog = true;
             emailService.getEmailContent(this.idAccount, id).then(result => {
                 const {
                     dispatch
@@ -1261,13 +1328,16 @@ export default {
                     let CSS = newStr.substring(startCSS + 7, endCSS);
                     localStorage.setItem('gjs-html', HTML);
                     localStorage.setItem('gjs-css', CSS);
+                    this.gettingEmailContentDialog = false;
                     this.create.editorDialog = true;    
                     this.load()
                 }
                 else {
+                    this.gettingEmailContentDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
+                this.gettingEmailContentDialog = false;
                 console.log(error)
             })
         },
@@ -1664,6 +1734,7 @@ export default {
             }
         },
         openScheduleDetailDialog(id){
+            this.gettingEmailScheduleDetailDialog = true;
             let obj = null;
             emailService.getEmailSchedule(this.idAccount).then(result => {
                 const {
@@ -1676,14 +1747,18 @@ export default {
                         if (id == data[i].emailScheduleId){
                             obj = data[i];
                             this.manageSchedule.detail.listEmail = obj.emailScheduleDetails;
+                            this.gettingEmailScheduleDetailDialog = false;
                             this.manageSchedule.detail.dialog = true;
                         }
                     }
+
                 }
                 else {
+                    this.gettingEmailScheduleDetailDialog = false;
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             }).catch(error => {
+                this.gettingEmailScheduleDetailDialog = false;
                 console.log(error);
             })
         },
@@ -1703,16 +1778,22 @@ export default {
             if ((role.includes('ROLE_SYSADMIN_SYSADMIN_ACCEPT')) || (role.includes('ROLE_CONTACT_COMMUNICATE_EVERYTHING') && role.includes("ROLE_CONTACT_VIEW_EVERYTHING"))){
                 this.access = true;
             }
-            this.getEmailTemplate();
-            this.getList();
-            this.getAllEmail()
-            this.grape();
+            if(this.access == true){
+                this.getEmailTemplate();
+                this.getEmailTemplateToSend()
+                this.getList();
+                this.getAllEmail()
+                this.grape();
+            }
+            
             // if (this.access == true){
             //     this.grape();
             // }
         }
     },
-
+    // beforeDestroy(){
+    //     this.editor = null;
+    // },
     created(){
         this.$store.state.colorNumber = 4;
         this.getCurrentUser();
@@ -1720,79 +1801,79 @@ export default {
 }
 </script>
 <style scoped>
-/* We can remove the border we've set at the beginnig */
-#gjs {
-  border: none;
-  width: 100%;
-  height: 100%
-}
+    /* We can remove the border we've set at the beginnig */
+    #gjs {
+    border: none;
+    width: 100%;
+    height: 100%
+    }
 
-/* Theming */
+    /* Theming */
 
 
 
-/* Primary color for the background */
-.gjs-one-bg {
-  background-color: #47453e;
-}
+    /* Primary color for the background */
+    .gjs-one-bg {
+    background-color: #47453e;
+    }
 
-/* Secondary color for the text color */
-.gjs-two-color {
-  color: rgba(255, 255, 255, 0.7);
-}
+    /* Secondary color for the text color */
+    .gjs-two-color {
+    color: rgba(255, 255, 255, 0.7);
+    }
 
-/* Tertiary color for the background */
-.gjs-three-bg {
-  background-color: #ec5896;
-  color: white;
-}
+    /* Tertiary color for the background */
+    .gjs-three-bg {
+    background-color: #ec5896;
+    color: white;
+    }
 
-/* Quaternary color for the text color */
-.gjs-four-color,
-.gjs-four-color-h:hover {
-  color: #ec5896;
-}
-/* Reset some default styling */
-.gjs-cv-canvas {
-  width: 100%;
-  height: 100%;
+    /* Quaternary color for the text color */
+    .gjs-four-color,
+    .gjs-four-color-h:hover {
+    color: #ec5896;
+    }
+    /* Reset some default styling */
+    .gjs-cv-canvas {
+    width: 100%;
+    height: 100%;
 
-}
+    }
 
-.panel__top {
-  padding: 0;
-  width: 100%;
-  display: flex;
-  position: initial;
-  justify-content: center;
-  justify-content: space-between;
-}
-.panel__basic-actions {
-  position: initial;
-}
-.editor-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  height: 100%;
-}
+    .panel__top {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    position: initial;
+    justify-content: center;
+    justify-content: space-between;
+    }
+    .panel__basic-actions {
+    position: initial;
+    }
+    .editor-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    height: 100%;
+    }
 
-.editor-canvas {
-  flex-grow: 1;
-}
+    .editor-canvas {
+    flex-grow: 1;
+    }
 
-.panel__right {
-  flex-basis: 230px;
-  position: relative;
-  overflow-y: auto;
-}
+    .panel__right {
+    flex-basis: 230px;
+    position: relative;
+    overflow-y: auto;
+    }
 
-.panel__switcher {
-  position: initial;
-}
+    .panel__switcher {
+    position: initial;
+    }
 
-.gjs-editor {
-    padding-left: 50px;
-}
+    .gjs-editor {
+        padding-left: 50px;
+    }
 </style>

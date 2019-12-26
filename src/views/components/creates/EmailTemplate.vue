@@ -58,12 +58,12 @@
                     <v-divider :divider="divider"></v-divider>
                     <br>
                     <span class="mt-2"><strong>Chọn mẫu</strong></span>
-                    <span class="ml-4" ><v-select :items="templateSelect" v-model="templateId" @input="setChosenTemplate()"></v-select></span>
+                    <span class="ml-4" ><v-select :items="emailTemplateToSend" v-model="templateId" @input="setChosenTemplate(templateId)"></v-select></span>
                     <!-- <span><a @click.stop="createNewTemplateSection()">Tạo mẫu mới</a></span> -->
                 </v-flex>
                 <v-flex xs12 sm12 md9 lg9 xl9> 
                     <h4 class="pl-3">Mẫu email</h4>
-                    <div id="templateBody" style="width: 100%; overflow-y: scroll; height: 500px; margin: 10px; border: 1px solid #DDDDDD"></div>
+                    <div id="templateBody2" style="width: 100%; overflow-y: scroll; height: 500px; margin: 10px; border: 1px solid #DDDDDD"></div>
                 </v-flex>
             </v-layout>
         </v-card-text>
@@ -106,8 +106,6 @@
             <v-btn flat color="green" @click="createTemplate()" :disabled="!createEmailTemplate.button">Tạo mẫu</v-btn>
             <v-btn flat color="red" @click="createEmailTemplate.dialog = false">Quay lại</v-btn>
         </v-card-actions>
-        
-        
     </v-card> -->
 </template>
 <script>
@@ -166,6 +164,7 @@ export default {
             subject: '',
             templates: [],
             templateSelect: [],
+            emailTemplateToSend: [],
             templateId: '',
             chosenTemplate: null,
             htmlText: '',
@@ -218,21 +217,32 @@ export default {
         }
     },
     methods: {
-        // createNewTemplateSection(){
-        //     document.getElementById("templateBody").innerHTML = '';
-        //     this.createEmailTemplate.dialog = true
-        // },
-        setChosenTemplate(){
-            let obj = null;
-            for (let i = 0; i < this.templates.length; i++){
-                if(this.templates[i].emailTemplateId == this.templateId){
-                    this.chosenTemplate = this.templates[i];
+        setChosenTemplate(id){
+            emailServices.getEmailContent(this.idAccount, id).then(result => {
+                const {
+                    dispatch
+                } = this.$store;
+                let time = moment();
+                // console.log(result)
+                if(result.code == 'SUCCESS'){
+                    let regex = /\\\"/gi
+                    this.htmlText = result.response.content.replace(regex, "\"");
+                    console.log(this.htmlText)
+                    document.getElementById("templateBody2").innerHTML = this.htmlText;
                 }
-            }
-            let regex = /\\\"/gi
-            this.htmlText = this.chosenTemplate.content;
-            console.log(this.htmlText)
-            document.getElementById("templateBody").innerHTML = this.htmlText.replace(regex, "\"");
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+            // let obj = null;
+            // for (let i = 0; i < this.templates.length; i++){
+            //     if(this.templates[i].emailTemplateId == this.templateId){
+            //         this.chosenTemplate = this.templates[i];
+            //     }
+            // }
+            
 
             // document.getElementById("call").innerHTML = '';
         },
@@ -245,13 +255,6 @@ export default {
             console.log(this.templateId)
             console.log(this.chosenTemplate);
         },
-        // clickTranslate(){
-        //     try {
-        //         document.getElementById("call").innerHTML = this.createEmailTemplate.htmlText;
-        //     } catch (error) {
-        //         console.log(error)
-        //     }
-        // },
         closeEmailTemplateDialog(){
             this.$emit('closeEmailTemplateDialog');
         },
@@ -261,22 +264,58 @@ export default {
                 this.to = this.currentContact.email;
             })
         },
+        checkString(str){
+            if (str == null || str == undefined){
+                return ''
+            }
+            else {
+                return str;
+            }
+        },
         getEmailTemplate(){
-            emailServices.getEmailTemplate(this.idAccount).then(result => {
+            this.emailTemplateToSend = [];
+            emailServices.getEmailTemplate(this.idAccount, 1, 'title', 'ASC').then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    this.templates = result.response;
-                    this.templateSelect = [];
-                    this.templateSelect = this.setSelectEmailTemplate(this.templates);
+                    for (let i = 1; i <= result.response.totalPage; i++){
+                        
+                        emailServices.getEmailTemplate(this.idAccount, i, 'title', 'ASC').then(result => {
+                            for (let k = 0; k < result.response.results.length; k++){
+                                
+                                let res = result.response.results[k];
+                                let obj = {
+                                    text: this.checkString(res.title),
+                                    value: this.checkString(res.emailTemplateId)
+                                }
+                                this.emailTemplateToSend.push(obj)
+                            }
+                        })
+                    }
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-                
+            }).catch(error => {
+                console.log(error);
             })
+            // emailServices.getEmailTemplate(this.idAccount).then(result => {
+            //     const {
+            //         dispatch
+            //     } = this.$store;
+            //     let time = moment();
+            //     if(result.code == 'SUCCESS'){
+            //         this.templates = result.response;
+            //         this.templateSelect = [];
+            //         this.templateSelect = this.setSelectEmailTemplate(this.templates);
+            //     }
+            //     else {
+            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //     }
+                
+            // })
         },
         setSelectEmailTemplate(templateArray){
             let result = [];
@@ -296,7 +335,7 @@ export default {
                 subject: this.subject
             }
             this.waiting = true;
-            console.log(body)
+            // console.log(body)
             emailServices.sendEmailViaTemplate(idAccount, idContact, templateId, body).then(result => {
                 const {
                     dispatch
@@ -344,6 +383,7 @@ export default {
     created(){
         this.getCurrentContact();
         this.getEmailTemplate();
+        // this.getEmailTemplate();
         this.getCurrentUser();
         eventBus.$on('updateEmail', () => {
             this.getCurrentContact();

@@ -1,12 +1,12 @@
 <template>
     <v-content>
-        <v-layout row wrap class="mt-5 pl-2 pr-5">
+        <v-layout row wrap class="mt-3 pl-2 pr-5">
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <h1 class="ml-3">Cài đặt</h1>
             </v-flex>
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout row wrap class="mt-5 pl-2 pr-5">
+        <v-layout row wrap class="mt-2 pl-2 pr-5">
             <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-list>
                     <!-- <v-list-tile>
@@ -14,6 +14,11 @@
                             Sales
                         </v-list-tile-content>
                     </v-list-tile> -->
+                    <v-list-tile @click="goToMyInfoPage()">
+                        <v-list-tile-content>
+                            Tài khoản của tôi
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile @click="goToUserAndTeamSettingPage()">
                         <v-list-tile-content>
                             Tài khoản và nhóm
@@ -24,11 +29,7 @@
                             Cài đặt tổ chức
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="goToMyInfoPage()">
-                        <v-list-tile-content>
-                            Tài khoản của tôi
-                        </v-list-tile-content>
-                    </v-list-tile>
+                    
                     <v-list-tile @click="goToAccountSettingPage()" v-if="isSysadmin">
                         <v-list-tile-content >
                             Quản lý hệ thống
@@ -38,7 +39,6 @@
             </v-flex>
             <v-flex xs10 sm10 md10 lg10 xl10>
                 <h1>Cài đặt tổ chức </h1>
-                <br>
                 <v-layout row wrap v-if="access">
                     <v-card flat width="100%">
                         <v-card-title>
@@ -527,6 +527,7 @@ export default {
         }
     },
     created(){
+        this.$store.state.colorNumber = 8;
         this.getCurrentUser();
     }
 }
