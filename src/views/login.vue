@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-content class="login-custom  app">
+        <v-content class="login-custom app" v-if="$vuetify.breakpoint.mdAndUp" >
             <!-- fluid grid-list-sm pa-0 fill-height style="background-image: url('../assets/login-bg.jpg') center center/cover no-repeat !important;" -->
             <v-container fluid>
                <v-layout row wrap>
@@ -27,7 +27,7 @@
                                         <!-- <v-btn flat color="red" @click="forgotPassword.dialog = false">Đóng</v-btn> -->
                                     </v-card-actions>
                                     <v-card-actions>
-                                        <v-btn dark block style="height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="red" @click="page = 'login'">Về trang đăng nhập</v-btn>
+                                        <v-btn dark block style="color: #5661CE; height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="#C9E2FF" @click="page = 'login'">Về trang đăng nhập</v-btn>
                                     </v-card-actions>
                                 </v-card>
                            </v-flex>
@@ -66,7 +66,7 @@
                                         <span class="mt-4" style="color: #000"><strong>Hãy kiểm tra hòm thư của bạn, click vào link xác nhận đặt lại mật khẩu của chúng tôi</strong></span>
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-btn dark block style="height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="red" @click="page = 'login'">Về trang đăng nhập</v-btn>
+                                        <v-btn dark block style="color: #5661CE; height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="#C9E2FF" @click="page = 'login'">Về trang đăng nhập</v-btn>
                                     </v-card-actions>
                                 </v-card>
                            </v-flex>
@@ -74,6 +74,89 @@
                    </v-flex>
                </v-layout>
             </v-container>
+        </v-content>
+        <v-content class="appXs login-custom" v-else style="width: 100%; background-color: white">
+            <div style="width: 100%; background-color: white; margin: 0px;">
+                <v-layout>
+                    <v-img src="/logo_color-01.png" alt=""></v-img>
+                </v-layout>
+            </div>
+            <div style="width: 100%; height: 100%; background-color: #7DB4F5; border-top-right-radius: 20px;">
+                <v-layout d-flex row wrap>
+                    <v-flex d-flex xs12>
+                       <v-layout row wrap fill-height>
+                           <v-flex xs10 offset-xs1 style="text-align: center" v-if="page == 'forgotPassword'">
+                               <v-card class="text-xs-center" style="background-color: #7DB4F5" flat>
+                                   <v-card-title>
+                                        <v-img src="/Layer 1.png" alt=""></v-img>
+                                    </v-card-title>
+                                    <v-card-title style="display: inline-block;">
+                                        <h1 class="no-transparent" style="color: white">Quên mật khẩu</h1>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <span class="mt-4" style="color: #fff"><strong>Nhập email tại đây. Chúng tôi sẽ gửi mã xác nhận yêu cầu đặt lại mật khẩu ngay</strong></span>
+                                        <v-form v-model="forgotPassword.valid">
+                                            <span class="ml-4">
+                                                <v-text-field placeholder="Nhập email" dark title="Nhập email" :rules="emailRules" v-model="forgotPassword.email"></v-text-field>
+                                            </span>
+                                        </v-form>
+                                    </v-card-text>
+                                    <!-- <v-divider :divider="divider"></v-divider> -->
+                                    <v-card-actions>
+                                        <v-btn dark block style="height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="#2F318E" @click="requestForgotPassword(forgotPassword.email)" :disabled="!forgotPassword.valid">Nhận mã xác nhận</v-btn><br>
+                                        <br>
+                                    </v-card-actions>
+                                    <v-card-actions>
+                                        <v-btn dark block style="color: #5661CE; height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="#C9E2FF" @click="page = 'login'">Về trang đăng nhập</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                           </v-flex>
+                           <v-flex d-flex xs10 offset-xs1 v-if="page == 'login'">
+                                <v-card flat style="background-color: #7DB4F5" >
+                                    <v-card-title>
+                                        <v-img src="/Layer-2.png" alt=""></v-img>
+                                    </v-card-title>
+                                    <v-card-title style="color: white;">
+                                        <h1>Đăng nhập</h1>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap>
+                                            <v-flex xs12 sm12 >
+                                                <v-text-field class="customXs" dark :rules="textRules" label="Nhập email" v-model="userName"></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm12 >
+                                                <v-text-field class="customXs" dark :rules="textRules" label="Nhập mật khẩu" type="password" v-model="password" @keyup.enter="loginWithPass()"></v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 sm12 >
+                                                <v-btn color="#2F318E" dark style="height: 50px; width: 100%; border-radius: 60px;" @click="loginWithPass()"><span style="font-weight: bold;">Đăng nhập</span></v-btn><br>
+                                                <a @click.stop="page = 'forgotPassword'" style="color: white; margin-left: 40%;">Quên mật khẩu?</a>
+                                                <v-btn color="#C9E2FF" dark style="color: #5661CE; height: 50px; width: 100%; border-radius: 60px;" @click="login"><span style="font-weight: bold;">Đăng nhập với Google</span></v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                        
+                                    </v-card-text>
+                                </v-card>
+                           </v-flex>
+                           <v-flex xs10 sm10 offset-xs1 style="text-align: center" v-if="page == 'linkWasSent'">
+                               <v-card class="text-xs-center" flat style="background-color: #7DB4F5" >
+                                   <v-card-title>
+                                        <v-img src="/Layer-2.png" alt=""></v-img>
+                                    </v-card-title>
+                                    <v-card-title style="color: #2F318E; display: inline-block;">
+                                        <h1 class="no-transparent" style="color: white;">Gửi link xác nhận thành công</h1>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <span class="mt-4" style="color: white;"><strong>Hãy kiểm tra link xác nhận đặt lại mật khẩu vừa được gửi tới hòm thư của bạn</strong></span>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn dark block style="color: #5661CE; height: 50px; margin-left: 5%; margin-right: 5%; border-radius: 60px;" color="#C9E2FF" @click="page = 'login'">Về trang đăng nhập</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                           </v-flex>
+                       </v-layout>
+                   </v-flex>
+                </v-layout>
+            </div>
         </v-content>
         <alert/>
     </v-app>
@@ -203,6 +286,13 @@ export default {
         background-color: #7DB4F5;
     }
 
+    .customXs {
+        margin-bottom: 15%;
+        height: 38px;
+        border-radius: 5px;
+        background-color: #7DB4F5;
+    }
+
     .app {
         background: url('/layer3.jpg') no-repeat center center fixed; 
         -webkit-background-size: cover;
@@ -218,5 +308,9 @@ export default {
 
     .no-transparent {
         opacity: 1;
+    }
+
+    .appXs {
+        background-color: #7DB4F5;
     }
 </style>
