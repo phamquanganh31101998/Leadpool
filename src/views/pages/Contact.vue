@@ -463,7 +463,7 @@
                     </v-card-text>
                     <v-divider :divider="divider"></v-divider>
                     <v-card-actions>
-                        <v-btn flat color="primary" @click="updateFilter(filterId), saveFilterDialog = false" :disabled="filterName == ''">Tạo</v-btn>
+                        <v-btn flat color="primary" @click="updateFilter(filterId), saveFilterDialog = false" :disabled="filterName == ''">Cập nhật</v-btn>
                         <v-btn flat color="red" @click="saveFilterDialog = false">Đóng</v-btn>
                     </v-card-actions>
                 </v-card>
