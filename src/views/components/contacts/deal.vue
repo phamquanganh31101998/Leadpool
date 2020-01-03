@@ -57,14 +57,14 @@
                             <v-flex xs11 sm11 md11 lg11 xl11 class="pl-5">
                                 <v-layout row >
                                     <v-flex xs3 sm3 md3 lg3 xl3>
-                                        <v-select label="Chủ sở hữu" :items="allEmail" v-model="deal.owner"></v-select>
+                                        <v-select :readonly="!access" label="Chủ sở hữu" :items="allEmail" v-model="deal.owner"></v-select>
                                     </v-flex>
                                     <v-flex xs3 offset-xs1 sm3 offset-sm1 md3 offset-md1 lg3 offset-lg1 xl3 offset-xl1>
                                         <v-text-field outlined label="Tên thỏa thuận" v-model="deal.name" :readonly="!access"></v-text-field>
                                     </v-flex>
                                     <v-flex xs3 offset-xs1 sm3 offset-sm1 md3 offset-md1 lg3 offset-lg1 xl3 offset-xl1 class="ml-6">
                                         <span style="margin-bottom: 0px; padding-bottom: 0px; font-size: 12px; color: #7C7C7C">Giá trị</span>
-                                        <money style="width: 100%; margin-top: 0px; padding-top: 0px; font-size: 16px; border-bottom: 1px solid grey;" v-model="deal.amount" v-bind="money"></money>
+                                        <money :readonly="!access" style="width: 100%; margin-top: 0px; padding-top: 0px; font-size: 16px; border-bottom: 1px solid grey;" v-model="deal.amount" v-bind="money"></money>
                                         <!-- <v-text-field outlined type="number" label="Giá trị" v-model="deal.amount" :readonly="!access"></v-text-field> -->
                                     </v-flex>
                                     
@@ -125,7 +125,19 @@ export default {
         idContact: {
             type: String,
             default: null,
+        },
+        allEmail: {
+            type: Array,
+            default: null
+        },
+        currentContact: {
+            type: Object,
+            default: null
         }
+        // searchedEmail: {
+        //     type: Array,
+        //     default: []
+        // }
     },
     data(){
         return {
@@ -139,9 +151,9 @@ export default {
             },
             access: false,
             allDeal: [],
-            currentContact: null,
+            // currentContact: null,
             currentUser: null,
-            allEmail: [],
+            // allEmail: [],
             allService: [],
             divider: true,
             allStage: ['Có nhu cầu', 'Đã đề xuất', 'Chốt', 'Won', 'Lost'],
@@ -150,6 +162,13 @@ export default {
                 dialog: false,
             }
         }
+    },
+    watch: {
+        currentContact(){
+            if(this.currentContact != null){
+                this.getCurrentUser();
+            }
+        },
     },
     methods: {
         logging(){
@@ -179,29 +198,29 @@ export default {
                 console.log(error)
             })
         },
-        getAllEmail(){
-            this.allEmail = [];
-            dealService.getAllEmail(this.idAccount).then(result => {
-                const {
-                    dispatch
-                } = this.$store;
-                let time = moment();
-                if(result.code == 'SUCCESS'){
-                    result.response.filter(e => {
-                        const obj = {
-                            text: e.name + ' (' + e.email + ')',
-                            value: e.email,
-                            name: e.name
-                        }
-                        this.allEmail.push(obj);
-                    });
-                }
-                else {
-                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                }
+        // getAllEmail(){
+        //     this.allEmail = [];
+        //     dealService.getAllEmail(this.idAccount).then(result => {
+        //         const {
+        //             dispatch
+        //         } = this.$store;
+        //         let time = moment();
+        //         if(result.code == 'SUCCESS'){
+        //             result.response.filter(e => {
+        //                 const obj = {
+        //                     text: e.name + ' (' + e.email + ')',
+        //                     value: e.email,
+        //                     name: e.name
+        //                 }
+        //                 this.allEmail.push(obj);
+        //             });
+        //         }
+        //         else {
+        //             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+        //         }
                 
-            })
-        },
+        //     })
+        // },
         getService(){
             this.allService = [];
             serviceAPI.getService(this.idAccount).then(result => {
@@ -256,7 +275,7 @@ export default {
                     }
                 }
             }
-            this.getAllEmail();
+            // this.getAllEmail();
             this.getService();
         },
         updateDeal(number){
@@ -321,7 +340,7 @@ export default {
         }
     },
     created(){
-        this.getDetail();
+        // this.getDetail();
         this.getDealByContact();
         eventBus.$on('updateDealList', () => {
             this.getDealByContact();

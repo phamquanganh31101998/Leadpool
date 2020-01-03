@@ -1,16 +1,19 @@
 <template>
     <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
-            <v-flex xs8 sm8 md8 lg8 xl8>
+            <v-flex xs6 sm6 md6 lg6 xl6>
                 <h1 class="ml-3">Báo cáo tổng quan</h1>
             </v-flex>
             <v-flex xs2 sm2 md2 lg2 xl2>
+                <h3 class="mt-4 ml-5">Chọn thời điểm tính: </h3>
+            </v-flex>
+            <v-flex xs2 sm2 md2 lg2 xl2>
                 <v-menu
-                    ref="menu"
-                    v-model="menu"
+                    ref="fromMenu"
+                    v-model="fromMenu"
                     :close-on-content-click="false"
                     :nudge-right="40"
-                    :return-value.sync="date"
+                    :return-value.sync="fromDate"
                     lazy
                     transition="scale-transition"
                     offset-y
@@ -19,14 +22,39 @@
                     min-width="290px"
                     >
                     <template v-slot:activator="{ on }">
-                        <v-text-field readonly label="Chọn thời điểm tính" v-on="on" v-model="date"></v-text-field>
+                        <v-text-field clearable prepend-icon="date_range" readonly label="Từ" v-on="on" v-model="fromDate"></v-text-field>
                     </template>
                     <v-date-picker
-                        v-model="date"
-                        type="month"
+                        v-model="fromDate"
                         no-title
                         scrollable
-                        @input="$refs.menu.save(date)"
+                        @input="$refs.fromMenu.save(fromDate), fromMenu = false"
+                        >
+                    </v-date-picker>
+                </v-menu>
+            </v-flex>
+            <v-flex xs2 sm2 md2 lg2 xl2>
+                <v-menu
+                    ref="toMenu"
+                    v-model="toMenu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="toDate"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                    >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field clearable prepend-icon="date_range" readonly label="Đến" v-on="on" v-model="toDate"></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="toDate"
+                        no-title
+                        scrollable
+                        @input="$refs.toMenu.save(toDate), toMenu = false"
                         >
                     </v-date-picker>
                 </v-menu>
@@ -307,8 +335,10 @@ export default {
 
     },
     data: vm => ({
-        date: '',
-        menu: false,
+        fromDate: '',
+        fromMenu: false,
+        toDate: '',
+        toMenu: false,
         modal: false,
         section: 'contact',
         selectSection: [
@@ -489,10 +519,10 @@ export default {
                 
             })
         },
-        updateContactPerMonth(date){
+        updateContactPerMonth(from, to){
             this.chart1.loading = true;
             this.chart1.data = [];
-            reportAPI.getContactPerMonth(this.idAccount, date).then(result => {
+            reportAPI.getContactPerMonth(this.idAccount, from, to).then(result => {
                 const {
                     dispatch
                 } = this.$store;
@@ -547,10 +577,10 @@ export default {
                 
             })
         },
-        updateContactPerStaff(date){
+        updateContactPerStaff(from, to){
             this.chart2.loading = true;
             this.chart2.data = [];
-            reportAPI.getContactPerStaff(this.idAccount, date).then(result => {
+            reportAPI.getContactPerStaff(this.idAccount, from, to).then(result => {
                 const {
                     dispatch
                 } = this.$store;
@@ -566,7 +596,7 @@ export default {
                     }
                     
                     this.chart2.chart.data = this.chart2.data;
-                    this.updateContactRegularlyCare(this.date + '-01');
+                    this.updateContactRegularlyCare(this.fromDate, this.toDate);
                 }
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -653,10 +683,10 @@ export default {
                     
                 })
         },
-        updateContactPerStaffDetail(date){
+        updateContactPerStaffDetail(from, to){
             this.chart3.loading = true;
             this.chart3.data = [];
-            reportAPI.getContactPerStaffDetail(this.idAccount, date).then(result => {
+            reportAPI.getContactPerStaffDetail(this.idAccount, from, to).then(result => {
                 const {
                     dispatch
                 } = this.$store;
@@ -778,10 +808,10 @@ export default {
                 
             })
         },
-        updateContactRegularlyCare(date){
+        updateContactRegularlyCare(from, to){
             this.chart4.loading = true;
             this.chart4.data = [...this.chart2.data]
-            reportAPI.getContactRegularlyCare(this.idAccount, date).then(result => {
+            reportAPI.getContactRegularlyCare(this.idAccount, from, to).then(result => {
                 if(result.code == 'SUCCESS'){
                     let careArray = [];
                     for (let i = 0; i < result.response.length; i++){
@@ -897,13 +927,13 @@ export default {
                 
             })
         }, 
-        updateDealAmountStaff(date){
+        updateDealAmountStaff(from, to){
             this.chart5.loadingData = true;
             this.chart5.loading5a = true;
             this.chart5.loading5b = true;
             this.chart5.data = [];
             this.chart5.drawData = [];
-            reportAPI.getDealAmountStaff(this.idAccount, date).then(result => {
+            reportAPI.getDealAmountStaff(this.idAccount, from, to).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
                     let tempRes = [];
@@ -931,8 +961,8 @@ export default {
                             ownerIndexes.push(obj.owner)
                         }
                     }
-                    this.chart5.chart6a.data = this.chart5.drawData;
-                    this.chart5.chart6b.data = this.chart5.drawData;
+                    this.chart5.chart5a.data = this.chart5.drawData;
+                    this.chart5.chart5b.data = this.chart5.drawData;
                 }
                 
             }).catch(error => {
@@ -1022,13 +1052,13 @@ export default {
                 
             })
         },
-        updateDealAmountStage(date){
+        updateDealAmountStage(from, to){
             this.chart6.loadingData = true;
             this.chart6.loading6a = true;
             this.chart6.loading6b = true;
             this.chart6.data = [];
             this.chart6.drawData = [];
-            reportAPI.getDealAmountStage(this.idAccount, date).then(result => {
+            reportAPI.getDealAmountStage(this.idAccount, from, to).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
                     let tempRes = [];
@@ -1098,6 +1128,21 @@ export default {
             this.chart6.chart6b.legend.position = "right";
             this.chart6.loading6b = false;
         },
+        // allowedDates(val){
+        //     if(this.fromDate == ''){
+        //         return true;
+        //     }
+        //     else {
+        //         let fromMoment = moment(this.fromDate);
+        //         let toMoment = moment(val);
+        //         if(toMoment.isAfter(fromMoment)){
+        //             return true;
+        //         }
+        //         else { 
+        //             return false;   
+        //         }
+        //     }
+        // }
     },
     created(){
         this.$store.state.colorNumber = 7;
@@ -1115,29 +1160,34 @@ export default {
         if (this.chart4.chart) {
             this.chart4.chart.dispose();
         }
-        if (this.chart5a.chart) {
-            this.chart5a.chart.dispose();
+        if (this.chart5.chart5a) {
+            this.chart5.chart5a.dispose();
         }
-        if (this.chart5b.chart) {
-            this.chart5b.chart.dispose();
+        if (this.chart5.chart5b) {
+            this.chart5.chart5b.dispose();
         }
-        if (this.chart6a.chart) {
-            this.chart6a.chart.dispose();
+        if (this.chart6.chart6a) {
+            this.chart6.chart6a.dispose();
         }
-        if (this.chart6b.chart) {
-            this.chart6b.chart.dispose();
+        if (this.chart6.chart6b) {
+            this.chart6.chart6b.dispose();
         }
         
     },
     watch: {
-        date(){
-            let fullDate = this.date + '-01';
-            this.updateContactPerMonth(fullDate);
-            this.updateContactPerStaff(fullDate);
-            this.updateContactRegularlyCare(fullDate);
-            this.updateContactPerStaffDetail(fullDate);
-            this.updateDealAmountStaff(fullDate);
-            this.updateDealAmountStage(fullDate);
+        fromDate(){
+            this.updateContactPerMonth(this.fromDate, this.toDate)
+            this.updateContactPerStaff(this.fromDate, this.toDate);
+            this.updateContactPerStaffDetail(this.fromDate, this.toDate);
+            this.updateDealAmountStaff(this.fromDate, this.toDate);
+            this.updateDealAmountStage(this.fromDate, this.toDate);
+        },
+        toDate(){
+            this.updateContactPerMonth(this.fromDate, this.toDate)
+            this.updateContactPerStaff(this.fromDate, this.toDate);
+            this.updateContactPerStaffDetail(this.fromDate, this.toDate);
+            this.updateDealAmountStaff(this.fromDate, this.toDate);
+            this.updateDealAmountStage(this.fromDate, this.toDate);
         }
     },
     mounted(){

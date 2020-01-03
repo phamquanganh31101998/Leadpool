@@ -39,7 +39,7 @@
                                     <span class="headline">Tạo Thỏa thuận</span>
                                 </v-card-title>
                                 <v-card-text>
-                                    <newDeal :idAccount="this.idAccount" :idContact="all" @closeCreateDealDialog="createDeal = false"/>
+                                    <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="all" @closeCreateDealDialog="createDeal = false"/>
                                 </v-card-text>
                                 <v-divider :divider="divider"></v-divider>
                             </v-card>
@@ -316,7 +316,6 @@ export default {
         }
     },
     watch: {
-
         searchContactText(){
             this.allContacts = [];
             if(this.searchContactText != '' && this.searchContactText != null){
@@ -342,7 +341,6 @@ export default {
                     console.log(error)
                 })
             }
-            
         }
     },
     methods: {

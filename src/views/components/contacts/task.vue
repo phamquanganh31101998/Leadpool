@@ -83,7 +83,7 @@
                                                             </v-flex>
                                                             <br> -->
                                                             <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                <v-autocomplete :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
+                                                                <v-autocomplete :items="searchedEmail" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
                                                                 <!-- <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select> -->
                                                             </v-flex>
                                                         </v-layout>
@@ -431,7 +431,7 @@
                                                                         </v-flex>
                                                                         <br> -->
                                                                         <v-flex xs12 sm12 md12 lg12 xl12>
-                                                                            <v-autocomplete :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
+                                                                            <v-autocomplete :items="searchedEmail" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-autocomplete>
                                                                             <!-- <v-select :items="searchedEmail" item-value="email" item-text="displayText" v-model="task.assignedTo" @change="updateTask(task.taskId, 'assignedTo', task.assignedTo), task.assignMenu = false"></v-select> -->
                                                                         </v-flex>
                                                                     </v-layout>
@@ -664,13 +664,25 @@ import alert from '@/components/alert'
             idContact: {
                 type: String,
                 default: null,
+            },
+            allEmail: {
+                type: Array,
+                default: null,
+            },
+            searchedEmail: {
+                type: Array,
+                default: null,
+            },
+            currentContact: {
+                type: Object,
+                default: null
             }
         },
         data(){
             return {
                 tasks: [],
-                allEmail: [],
-                searchedEmail: [],
+                // allEmail: [],
+                // searchedEmail: [],
                 progress: true,
                 timeToChoose: [
                     '00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', 
@@ -685,21 +697,26 @@ import alert from '@/components/alert'
                     '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45',
                     '20:00', '20:15', '20:30', '20:45', '21:00', '21:15', '21:30', '21:45',
                     '22:00', '22:15', '22:30', '22:45', '23:00', '23:15', '23:30', '23:45',],
-                searchEmail: '',
-                currentContact: null,
+                // searchEmail: '',
+                // currentContact: null,
                 currentUser: null,
                 access: false,
             }
         },
         watch: {
-            searchEmail(){
-                this.searchedEmail = [];
-                this.allEmail.filter(e => {
-                    if(e.name.toLowerCase().includes(this.searchEmail.toLowerCase())){
-                        this.searchedEmail.push(e);
-                    }
-                })
-            }
+            currentContact(){
+                if(this.currentContact != null){
+                    this.getCurrentUser();
+                }
+            },
+            // searchEmail(){
+            //     this.searchedEmail = [];
+            //     this.allEmail.filter(e => {
+            //         if(e.name.toLowerCase().includes(this.searchEmail.toLowerCase())){
+            //             this.searchedEmail.push(e);
+            //         }
+            //     })
+            // }
         },
         methods: {
             returnType(type){
@@ -743,6 +760,7 @@ import alert from '@/components/alert'
                 return moment(time).format('HH:mm')
             },
             getTask(){
+                this.progress = true;
                 taskService.getTask(this.idAccount, this.idContact).then(result => {
                     const {
                         dispatch
@@ -784,35 +802,35 @@ import alert from '@/components/alert'
                     this.progress = false;
                 })
             },
-            getAllEmail(){
-                // this.progress = true;
-                this.allEmail = [];
-                taskService.getAllEmail(this.idAccount).then(result => {
-                    const {
-                        dispatch
-                    } = this.$store;
-                    let time = moment();
-                    if(result.code == 'SUCCESS'){
-                        result.response.filter(e => {
-                            e.displayText = e.name + ' (' + e.email + ')'
-                            this.allEmail.push(e);
-                            this.searchedEmail.push(e);
-                        });
-                    }
-                    else {
-                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                    }
-                    this.getTask();
-                }).catch(error => {
-                    console.log(error);
-                    this.progress = false;
-                });
+            // getAllEmail(){
+            //     // this.progress = true;
+            //     this.allEmail = [];
+            //     taskService.getAllEmail(this.idAccount).then(result => {
+            //         const {
+            //             dispatch
+            //         } = this.$store;
+            //         let time = moment();
+            //         if(result.code == 'SUCCESS'){
+            //             result.response.filter(e => {
+            //                 e.displayText = e.name + ' (' + e.email + ')'
+            //                 this.allEmail.push(e);
+            //                 this.searchedEmail.push(e);
+            //             });
+            //         }
+            //         else {
+            //             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //         }
+            //         this.getTask();
+            //     }).catch(error => {
+            //         console.log(error);
+            //         this.progress = false;
+            //     });
                 
-            },
+            // },
             getNameFromEmail(email){
                 let result = '';
                 for(let i = 0; i< this.allEmail.length;i++){
-                    if(this.allEmail[i].email === email){
+                    if(this.allEmail[i].value === email){
                         result = this.allEmail[i].name;
                     }
                 }
@@ -901,15 +919,15 @@ import alert from '@/components/alert'
                     this.progress = false;
                 })
             },
-            getDetail(){
-                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    this.currentContact = result.response
-                }).catch(error => {
-                    console.log(error);
-                }).finally(() => {
-                    this.getCurrentUser()
-                })
-            },
+            // getDetail(){
+            //     contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+            //         this.currentContact = result.response
+            //     }).catch(error => {
+            //         console.log(error);
+            //     }).finally(() => {
+            //         this.getCurrentUser()
+            //     })
+            // },
             getCurrentUser(){
                 this.currentUser = JSON.parse(localStorage.getItem('user'));
                 let role = this.currentUser.authorities;
@@ -923,15 +941,16 @@ import alert from '@/components/alert'
                         }
                     }
                 }
+                this.getTask();
             }
 
         },
         created(){
-            this.getDetail();
+            // this.getDetail();
             eventBus.$on('updateTaskList', () => {
                 this.updateTaskList();
             })
-            this.getAllEmail();
+            // this.getAllEmail();
         }
     }
 </script>

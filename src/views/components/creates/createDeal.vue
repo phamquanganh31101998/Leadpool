@@ -16,13 +16,22 @@
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12 v-if="idContact == 'all'">
                 <span><h4>Các Lead có trong thỏa thuận</h4></span>
-                <multi-select :options="allContacts"
+                <!-- <multi-select :options="allContacts"
                     :selected-options="contacts"
                     @select="onSelect"
                     option-value="value"
                     option-text="text"
                     placeholder="Chọn Lead">
-                </multi-select>
+                </multi-select> -->
+                <v-combobox @input="removeNotObject()" v-model="contacts" small-chips :items="allContacts" :search-input.sync="searchContactText"
+                    outlined multiple>
+                    <template v-slot:selection="data">
+                        <v-chip close @input="remove(data)">
+                            <strong>{{ data.item.text }}</strong>
+                        </v-chip>
+                        <br>
+                    </template>
+                </v-combobox>
             </v-flex>
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <span><h4>Dịch vụ</h4></span>
@@ -60,10 +69,15 @@
             idContact: {
                 type: String,
 				default: null,
+            },
+            allEmail: {
+                type: Array,
+                default: null
             }
         },
         data(){
             return{
+                searchContactText: '',
                 money: {
                     decimal: ',',
                     thousands: '.',
@@ -72,7 +86,7 @@
                     precision: 0,
                     masked: false
                 },
-                allEmail: [],
+                // allEmail: [],
                 owner: '',
                 allService: [],
                 service: '',
@@ -94,13 +108,54 @@
         },
         computed: {
         },
+        watch: {
+            allEmail(){
+                if(this.allEmail != null){
+                    this.owner = this.allEmail[0].value;
+                }
+            },
+            searchContactText(){
+                this.allContacts = [];
+                if(this.searchContactText != '' && this.searchContactText != null){
+                    dealService.searchContactForDeal(this.idAccount, this.searchContactText).then(result => {
+                        const {
+                            dispatch
+                        } = this.$store;
+                        let time = moment();
+                        if(result.code == 'SUCCESS'){
+                            let res = result.response;
+                            for (let i = 0; i < res.length; i++){
+                                let obj = {
+                                    text: this.checkString(res[i].lastName) + ' ' + this.checkString(res[i].firstName) + ' (' + this.checkString(res[i].email) + ')',
+                                    value: this.checkString(res[i].contactId)
+                                }
+                                this.allContacts.push(obj)
+                            }
+                        }
+                        else {
+                            dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                }
+            }
+        },
         methods:{
+            removeNotObject(){
+                for (let i = 0; i < this.contacts.length; i++){
+                    if (typeof(this.contacts[i]) != 'object'){
+                        this.contacts.splice(i, 1)
+                    }
+                }
+            },
             createDeal(){
                 var contactArr = [];
                 if (this.idContact == 'all'){
                     for(let i = 0; i < this.contacts.length;i++){
                         contactArr.push(this.contacts[i].value)
                     }
+                    // contactArr = this.contacts;
                     var body = {
                         name: this.name, 
                         stage: this.stage,
@@ -139,30 +194,30 @@
                     console.log(error);
                 })
             },
-            getAllEmail(){
-                this.allEmail = [];
-                dealService.getAllEmail(this.idAccount).then(result => {
-                    const {
-                        dispatch
-                    } = this.$store;
-                    let time = moment();
-                    if(result.code == 'SUCCESS'){
-                        result.response.filter(e => {
-                            const obj = {
-                                text: e.name + ' (' + e.email + ')',
-                                value: e.email,
-                                name: e.name
-                            }
-                            this.allEmail.push(obj);
-                        });
-                        this.owner = this.allEmail[0].value;
-                    }
-                    else {
-                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                    }
+            // getAllEmail(){
+            //     this.allEmail = [];
+            //     dealService.getAllEmail(this.idAccount).then(result => {
+            //         const {
+            //             dispatch
+            //         } = this.$store;
+            //         let time = moment();
+            //         if(result.code == 'SUCCESS'){
+            //             result.response.filter(e => {
+            //                 const obj = {
+            //                     text: e.name + ' (' + e.email + ')',
+            //                     value: e.email,
+            //                     name: e.name
+            //                 }
+            //                 this.allEmail.push(obj);
+            //             });
+            //             this.owner = this.allEmail[0].value;
+            //         }
+            //         else {
+            //             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //         }
                     
-                })
-            },
+            //     })
+            // },
             coverTimeDetail(time){
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm:ss, DD/MM/YYYY')
@@ -203,54 +258,55 @@
                 this.contacts = items;
                 // console.log(this.contacts)
             },
-            getAllContact(){
-                this.allContacts = [];
-                contactAPI.getAllContact(this.idAccount, 1).then(result => {
-                    const {
-                        dispatch
-                    } = this.$store;
-                    let time = moment();
-                    if(result.code == 'SUCCESS'){
-                        for (let i = 1; i <= result.response.totalPage;i++){
-                            contactAPI.getAllContact(this.idAccount, i).then(result => {
-                                const {
-                                    dispatch
-                                } = this.$store;
-                                let time = moment();
-                                if(result.code == 'SUCCESS'){
-                                    for(let k = 0; k < result.response.results.length; k++){
-                                        let tempObj = result.response.results[k];
-                                        let obj = {
-                                            text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
-                                            value: this.checkString(tempObj.contactId)
-                                        }
-                                        this.allContacts.push(obj);
-                                    }
-                                }
-                                else {
-                                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                                }
-                            }).catch(error => {
-                                console.log(error);
-                            })
-                        }
+            // getAllContact(){
+            //     this.allContacts = [];
+            //     contactAPI.getAllContact(this.idAccount, 1).then(result => {
+            //         const {
+            //             dispatch
+            //         } = this.$store;
+            //         let time = moment();
+            //         if(result.code == 'SUCCESS'){
+            //             for (let i = 1; i <= result.response.totalPage;i++){
+            //                 contactAPI.getAllContact(this.idAccount, i).then(result => {
+            //                     const {
+            //                         dispatch
+            //                     } = this.$store;
+            //                     let time = moment();
+            //                     if(result.code == 'SUCCESS'){
+            //                         for(let k = 0; k < result.response.results.length; k++){
+            //                             let tempObj = result.response.results[k];
+            //                             let obj = {
+            //                                 text: this.checkString(tempObj.lastName) + ' ' + this.checkString(tempObj.firstName) + ' (' + this.checkString(tempObj.email) + ')',
+            //                                 value: this.checkString(tempObj.contactId)
+            //                             }
+            //                             this.allContacts.push(obj);
+            //                         }
+            //                     }
+            //                     else {
+            //                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //                     }
+            //                 }).catch(error => {
+            //                     console.log(error);
+            //                 })
+            //             }
                         
-                    }
-                    else {
-                        dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-                    }
+            //         }
+            //         else {
+            //             dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //         }
                     
-                }).catch(error => {
-                    console.log(error);
-                })
-            },
+            //     }).catch(error => {
+            //         console.log(error);
+            //     })
+            // },
         },
         created(){
-            this.getAllEmail();
+            // this.getAllEmail();
             this.getService();
-            if(this.idContact == 'all'){
-                this.getAllContact();
-            }
+            
+            // if(this.idContact == 'all'){
+            //     this.getAllContact();
+            // }
             // this.getAllContact();
         }
     }

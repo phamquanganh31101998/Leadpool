@@ -1,75 +1,89 @@
 <template>
     <v-app>
-        <v-content class="app" v-if="$vuetify.breakpoint.xsOnly" style="background-image: url('../../public/layer3.jpg') !important; padding: 8% 5% 10% 5% background-repeat: no-repeat; background-size: cover">
-            <v-container>
-                <v-layout row wrap>
-                    <v-flex class="signupcard" xs10 sm10 md10 lg10 xl10>
-                        <v-card flat >
+        <v-content class="appXs login-custom" v-if="$vuetify.breakpoint.smAndDown"  style="width: 100%; background-color: white">
+            <div style="width: 100%; height: 200px; background-color: white; margin: 0px;">
+                <v-layout>
+                    <v-img src="/logo_color-01.png" alt="" class="mt-4 mb-4"></v-img>
+                </v-layout>
+            </div>
+            <div style="width: 100%; height: 100%; background-color: #7DB4F5; border-top-right-radius: 20px;">
+                <v-layout d-flex row wrap style="border-top-right-radius: 25px;">
+                    <v-flex xs10 offset-xs1>
+                        <v-card flat style="background-color: #7DB4F5;">
                             <!-- <v-card-text class="text-xs-center" >
                                 <img height="100" src="../assets/adstech-logo1.png" alt="avatar">
                             </v-card-text> -->
-                            
+                            <v-card-title>
+                                <v-img src="/Layer-2.png" alt=""></v-img>
+                            </v-card-title>
                             <v-card-text class="text-xs-center content">
                                 <v-layout row wrap>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-text-field readonly  label="Nhập email" v-model="email"></v-text-field>
+                                    <v-flex xs12>
+                                        <h1 class="text-xs-left content mb-5" style="color: white">Đăng ký</h1>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                        <v-text-field dark readonly  label="Nhập email" v-model="email"></v-text-field>
                                     </v-flex>
                                     <v-form v-model="valid" style="width: 100%">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field :rules="nameRules" label="Tên hiển thị" v-model="name"></v-text-field>
+                                        <v-flex xs12>
+                                            <v-text-field dark :rules="nameRules" label="Tên hiển thị" v-model="name"></v-text-field>
                                         </v-flex>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field :rules="passwordRules" label="Mật khẩu" type="password" v-model="password"></v-text-field>
+                                        <v-flex xs12>
+                                            <v-text-field dark :rules="passwordRules" label="Mật khẩu" type="password" v-model="password"></v-text-field>
                                         </v-flex>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
+                                        <v-flex xs12>
+                                            <v-text-field dark label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
                                         </v-flex>
                                     </v-form>
-                                    <v-alert
+                                    <v-flex xs12>
+                                        <v-btn block dark style="height: 50px; border-radius: 60px;" color="#2F318E" :disabled="!valid" @click="signUp(email, name, password)">Đăng ký</v-btn>
+                                    </v-flex>
+                                    <!-- <v-alert
                                         style="width: 100%"
                                         :value="password != retypePassword && retypePassword != ''"
                                         type="warning"
                                         >
                                         Mật khẩu nhập lại không khớp
-                                    </v-alert>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-btn block color="primary" :disabled="!valid || (password != retypePassword)" @click="signUp(email, name, password)">Đăng kí</v-btn>
-                                    </v-flex>
+                                    </v-alert> -->
+                                    
                                 </v-layout>
                             </v-card-text>
                         </v-card>
                     </v-flex>
                 </v-layout>
-            </v-container>
+            </div>
+            <!-- <v-container fluid style="width: 100%; background-color: #7DB4F5">
+                
+            </v-container> -->
         </v-content>
-        <v-content class="app login-custom"  v-else-if="$vuetify.breakpoint.smAndUp" >
+        <v-content class="app login-custom"  v-else-if="$vuetify.breakpoint.mdAndUp">
             <v-container fluid>
-                <v-layout row wrap>
-                    <v-flex d-flex xs3 sm6 md6 lg3 xl3 offset-lg4 offset-xl4>
-                        <v-card flat img="/phone.png" style="height: 703px; ">
-                            <v-card-title style="margin-top: 150px; margin-left: 50px; color: white;">
+                <v-layout row wrap style="height: 720px">
+                    <v-flex d-flex sm6 md6 lg3 xl3 offset-sm2 offset-md2 offset-lg4 offset-xl4>
+                        <v-card flat img="/phone.png">
+                            <v-card-title style="margin-top: 40%; margin-left: 15%; color: white;">
                                 <h1>Đăng ký</h1>
                             </v-card-title>
                             <v-card-text class="text-xs-center">
-                                <v-layout row wrap style="margin-top: 40px;">
+                                <v-layout row wrap style="padding-top: 10%">
                                     <v-form v-model="valid" style="width: 100%">
                                         <div style="color: white">
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-flex sm12 md12 lg12 xl12>
                                                 <v-text-field dark class="custom" readonly  label="Email" v-model="email"></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-flex sm12 md12 lg12 xl12>
                                                 <v-text-field dark class="custom" :rules="nameRules" label="Nhập tên hiển thị" v-model="name"></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-flex sm12 md12 lg12 xl12>
                                                 <v-text-field dark class="custom" :rules="passwordRules" label="Nhập mật khẩu" type="password" v-model="password"></v-text-field>
                                             </v-flex>
-                                            <v-flex xs12 sm12 md12 lg12 xl12>
+                                            <v-flex sm12 md12 lg12 xl12>
                                                 <v-text-field dark class="custom" label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
                                             </v-flex>
                                         </div>
                                     </v-form>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-btn dark style="height: 50px; margin-left: 5%; margin-right: 5%; width: 75%; border-radius: 60px;" color="#2F318E" :disabled="!valid" @click="signUp(email, name, password)">Đăng ký</v-btn>
+                                    <v-flex sm12 md12 lg12 xl12>
+                                        <v-btn dark style="height: 40px; margin-left: 5%; margin-right: 5%; width: 75%; border-radius: 60px;" color="#2F318E" :disabled="!valid" @click="signUp(email, name, password)">Đăng ký</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-card-text>
@@ -78,44 +92,6 @@
                 </v-layout>
             </v-container>
         </v-content>
-        <!-- <v-content class="app" v-else style="background-image: url('layer3.jpg') !important; padding: 8% 5% 10% 5% background-repeat: no-repeat; background-size: cover">
-            <v-container>
-                <v-layout row wrap>
-                    <v-flex class="signupcard" xs10 sm10 md10 lg10 xl10>
-                        <v-card flat >
-                            <v-card-text class="text-xs-center content">
-                                <v-layout row wrap>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-text-field readonly  label="Nhập email" v-model="email"></v-text-field>
-                                    </v-flex>
-                                    <v-form v-model="valid" style="width: 100%">
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field :rules="nameRules" label="Tên hiển thị" v-model="name"></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field :rules="passwordRules" label="Mật khẩu" type="password" v-model="password"></v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 sm12 md12 lg12 xl12>
-                                            <v-text-field label="Nhập lại mật khẩu" v-model="retypePassword" :rules="passwordRules" type="password"></v-text-field>
-                                        </v-flex>
-                                    </v-form>
-                                    <v-alert
-                                        style="width: 100%"
-                                        :value="password != retypePassword && retypePassword != ''"
-                                        type="warning"
-                                        >
-                                        Mật khẩu nhập lại không khớp
-                                    </v-alert>
-                                    <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-btn block color="primary" :disabled="!valid || (password != retypePassword)" @click="signUp(email, name, password)">Đăng kí</v-btn>
-                                    </v-flex>
-                                </v-layout>
-                            </v-card-text>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        </v-content> -->
         <alert/>
     </v-app>
 </template>
@@ -201,18 +177,32 @@ export default {
         margin-bottom: 10%;
         margin-left: 10%;
         width: 80%;
-        padding: 0px 20px;
+        padding-left: 5%;
+        padding-right: 5%;
         height: 38px;
         border-radius: 5px;
         background-color: #7DB4F5;
     }
-
+    .custom-last {
+        margin-bottom: 6%;
+        margin-left: 10%;
+        width: 80%;
+        padding-left: 5%;
+        padding-right: 5%;
+        height: 38px;
+        border-radius: 5px;
+        background-color: #7DB4F5;
+    }
     .app {
         background: url('/layer3.jpg') no-repeat center center fixed; 
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
+    }
+
+    .appXs {
+        background-color: #7DB4F5;
     }
     #ads-background {
         background-image: url('/layer3.jpg'); 
@@ -222,8 +212,5 @@ export default {
         background-color: white!important;
         opacity: 0.65;
         border-color: transparent!important;
-    }
-    .theme--light {
-
     }
 </style>

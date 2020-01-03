@@ -96,7 +96,7 @@
                                     </v-flex>
                                     <v-flex xs4 sm4 md4 lg3 xl3 offset-lg2 offset-xl2>
                                         <!-- <p>Giờ</p> -->
-                                        <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" persistent lazy
+                                        <v-dialog ref="dialog" v-model="meetLog.modal2Log" :return-value.sync="timeLog" lazy
                                             full-width width="290px">
                                             <template v-slot:activator="{ on }">
                                                 <v-text-field v-model="meetLog.timeLog" label="Giờ"
@@ -176,6 +176,10 @@
             idContact: {
                 type: String,
                 default: null,
+            },
+            currentContact: {
+                type: Object,
+                default: null
             }
         },
         data: vm => ({
@@ -193,7 +197,7 @@
                 dialog: false,
                 id: ''
             },
-            currentContact: null,
+            // currentContact: null,
             currentUser: null,
             access: false,
         }),
@@ -203,6 +207,11 @@
             }
         },
         watch: {
+            currentContact(){
+                if(this.currentContact != null){
+                    this.getCurrentUser();
+                }
+            },
             dateLog(val) {
                 this.dateFormattedLog = this.formatDate(this.dateLog)
             }
@@ -317,15 +326,15 @@
                 if (_.isNull(time)) return '';
                 return moment(time).format('HH:mm')
             },
-            getDetail(){
-                contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
-                    this.currentContact = result.response
-                }).catch(error => {
-                    console.log(error);
-                }).finally(() => {
-                    this.getCurrentUser()
-                })
-            },
+            // getDetail(){
+            //     contact.getdetailContact(this.idAccount,this.idContact).then(result =>{
+            //         this.currentContact = result.response
+            //     }).catch(error => {
+            //         console.log(error);
+            //     }).finally(() => {
+            //         this.getCurrentUser()
+            //     })
+            // },
             getCurrentUser(){
                 this.currentUser = JSON.parse(localStorage.getItem('user'));
                 let role = this.currentUser.authorities;
@@ -342,7 +351,7 @@
             }
         },
         created(){
-            this.getDetail()
+            // this.getDetail()
             this.getMeetLogsList();
             eventBus.$on('updateLogMeetList', ()=>{
                 this.getMeetLogsList();

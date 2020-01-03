@@ -308,6 +308,14 @@
             idContact: {
                 type: String,
 				default: null,
+            },
+            allEmail: {
+                type: Array,
+				default: null,
+            },
+            searchedEmail: {
+                type: Array,
+				default: null,
             }
         },
         data: vm => ({
@@ -325,8 +333,8 @@
             type: 'To-do',
             days: ['The day of','The day before','The week before','Custom Date','No reminder'],
             day: 'The day of',
-            allEmail: [],
-            searchedEmail: [],
+            // allEmail: [],
+            // searchedEmail: [],
             chosenPerson: '',
             chosenEmail: '',
             chosenName: '',
@@ -369,15 +377,22 @@
                 else {
                     return false;
                 }
-            }
+            },
         },
 
         watch: {
+            allEmail(){
+                if(this.allEmail != null){
+                    this.chosenEmail = this.allEmail[0].value;
+                    this.chosenPerson = this.allEmail[0].value;
+                    this.chosenName = this.allEmail[0].name;
+                }
+            },
             date(val) {
                 this.dateFormatted = this.formatDate(this.date)
             },
             chosenEmail(){
-                console.log(this.chosenEmail)
+                // console.log(this.chosenEmail)
                 this.assignMenu = false               ;
                 this.allEmail.filter(e => {
                     if(this.chosenEmail == e.value){
@@ -386,7 +401,7 @@
                 })
             },
             chosenPerson(){
-                console.log(typeof(this.chosenPerson))
+                // console.log(typeof(this.chosenPerson))
                 if(typeof(this.chosenPerson) == 'object'){
                     
                 }
@@ -473,23 +488,23 @@
             closeCreateTaskDialog(){
                 this.$emit('closeCreateTaskDialog');
             },
-            getAllEmail(){
-                this.allEmail = [];
-                taskService.getAllEmail(this.idAccount).then(result => {
-                    result.response.filter(e => {
-                        const obj = {
-                            text: e.name + ' (' + e.email + ')',
-                            value: e.email,
-                            name: e.name
-                        }
-                        this.allEmail.push(obj);
-                        this.searchedEmail.push(obj);
-                    });
-                    this.chosenEmail = this.allEmail[0].value;
-                    this.chosenPerson = this.allEmail[0].value;
-                    this.chosenName = this.allEmail[0].name;
-                })
-            },
+            // getAllEmail(){
+            //     this.allEmail = [];
+            //     taskService.getAllEmail(this.idAccount).then(result => {
+            //         result.response.filter(e => {
+            //             const obj = {
+            //                 text: e.name + ' (' + e.email + ')',
+            //                 value: e.email,
+            //                 name: e.name
+            //             }
+            //             this.allEmail.push(obj);
+            //             this.searchedEmail.push(obj);
+            //         });
+            //         // this.chosenEmail = this.allEmail[0].value;
+            //         // this.chosenPerson = this.allEmail[0].value;
+            //         // this.chosenName = this.allEmail[0].name;
+            //     })
+            // },
             createTask(){
                 var date = moment(this.date);
                 // console.log(this.coverTime(date.subtract(10, 'days')));
@@ -586,7 +601,7 @@
             // }
         },
         created(){
-            this.getAllEmail();
+            // this.getAllEmail();
             // document.querySelector('#fileUpload').addEventListener('change', event => {
             //     this.handleImageUpload(event)
             // })

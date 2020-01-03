@@ -105,7 +105,7 @@
                     @click="closeCreateEmailDialog()">Đóng</v-btn>
             </v-flex>
             <v-dialog v-model="emailTemplateDialog" width="90%">
-                <emailTemplate @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
+                <emailTemplate :currentContact="this.currentContact" @updateLastContacted="updateLastContacted()" @updateLastActivityDate="updateLastActivityDate()" @closeEmailTemplateDialog="closeCreateEmailDialog()" :idAccount="this.idAccount" :idContact="this.idContact"/>
             </v-dialog>
         </v-layout>
         <v-dialog v-model="successfulDialog" @click:outside="successfulDialog = false" transition="dialog-bottom-transition" scrollable width="30%">
@@ -156,6 +156,10 @@
             idContact: {
                 type: String,
 				default: null,
+            },
+            currentContact: {
+                type: Object,
+                default: null
             }
         },
         data: () => ({
@@ -172,13 +176,21 @@
             type: 'text',
             subject: '',
             body: '',
-            currentContact: null,
+            // currentContact: null,
             valid: false,
             emailTemplateDialog: false,
             currentUser: null,
             successfulDialog: false,
             failDialog: false
         }),
+        watch: {
+            currentContact(){
+                if(this.currentContact != null){
+                    this.to = this.currentContact.email;
+                    // this.getCurrentUser();
+                }
+            },
+        },
         methods: {
             getCurrentContact(){
                 contactsService.getdetailContact(this.idAccount, this.idContact).then(result => {
@@ -242,10 +254,10 @@
             }
         },
         created(){
-            this.getCurrentContact();
+            // this.getCurrentContact();
             this.getCurrentUser();
             eventBus.$on('updateEmail', () => {
-                this.getCurrentContact();
+                // this.getCurrentContact();
             })
         }
     }
