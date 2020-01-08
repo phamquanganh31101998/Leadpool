@@ -3,6 +3,7 @@ window.onload = f
 function f() {
     var acId = ''
     var btnId = ''
+    var chatminiCRM = null;
     var scripts = document.getElementsByTagName("script");
     let a = localStorage.getItem('lead')
     if (a != null || a!= undefined || a != '') {
@@ -17,7 +18,9 @@ function f() {
             btnId = GbtnId.split('=')[1]
         }
     }
-    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}
+    //test: {{rooturl}}/leadhub/account/5d1dd258f0aa61074608b0e3/group-buttons/5e145b4353c3c2000149aa15 (note: on HTTP)
+    fetchRetry(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -28,14 +31,18 @@ function f() {
         var vertical = result.response.vertical
         var styleBtnCall = null
         var styleBtnForm = null
+        var styleBtnChat = null
         for (let i = 0; i < result.response.listButton.length; i++) {
             if (result.response.listButton[i].type == "CALL") {
                 styleBtnCall = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FORM") {
                 styleBtnForm = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "CHAT"){
+                styleBtnChat = result.response.listButton[i]
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId)
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId)
+        
     })
 }
 async function fetchRetry (url, options, n) {
@@ -63,10 +70,13 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId) {
     var html = ''
     var call = ''
     var form = ''
+    var chat = ''
+    var chatInputInfoDialog = '';
+    var chatWithAdmin = '';
     var form1 = ''
     var phone = ''
     var email = ''
@@ -201,6 +211,84 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                 </button>`
         }
     }
+    if (styleBtnChat == null || styleBtnChat == '') {
+        chat = ''
+    } else {
+        if (style.color == "#fff") {
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="http://localhost:8080/message-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                </button>`
+        } else if(style.color == "#000"){
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="http://localhost:8080/message-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                </button>`
+        }
+        chatInputInfoDialog = `
+            <div class="container" id="chatInputInfo" style="display: none;">
+                <div class="row">
+                    <div class="col-md-5 col-md-offset-7">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h6 class="panel-title">Liên lạc với chúng tôi hihi</h6>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <form id="sendInfo">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" required name="name" placeholder="Nhập tên">
+                                                <input type="text" class="form-control" required name="topic" placeholder="Nhập email/SDT">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+        chatWithAdmin = `
+            <div class="container" id="chatAdmin" style="display: none;"> 
+                <div class="row">
+                    <div class="col-md-5 col-md-offset-7">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h6 class="panel-title">Xin chào, <span id="txtName"></span></h6>
+                                        
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-12" id="scollDiv">
+                                                <table class="table table-hover" id="messageContainer">
+                                                    <tr></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <form id="sendMessage">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" id="txtText" placeholder="Nhập tin nhắn tại đây ..">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    }
     if (styleBtnForm == null || styleBtnForm == '') {
         form = ''
         form1 = ''
@@ -235,41 +323,73 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, acId) {
                         ${email}
                         ${city}
                         ${bussiness}
+                        
                         <div style="padding:0px 14px 0px 14px">
                             <button type="submit" class="btn">Xác nhận</button>
                             <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
                         </div>
                     </form>
-                </div> 
+                </div>
+                
                 <div id="adstech-alert">
                     ${styleBtnForm.formMessageReturn}
                 </div>`
+        
+        
     }
     if (vertical == false) {
-        html = `<div class="adstech-group-btn">
+        html = `
+                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+                <div class="adstech-group-btn">
                     ${form}
                     <br />
                     ${call}
+                    <br />
+                    ${chat}
                 </div>
+                ${chatInputInfoDialog}
+                ${chatWithAdmin}
                 ${form1}
-                ${css}`
+                ${css}
+                
+                `
     } else {
-        html = `<div class="adstech-group-btn">
+        html = `
+                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+                <div class="adstech-group-btn">
                     ${call}
                     ${form}
+                    ${chat}
                 </div>
+                ${chatInputInfoDialog}
+                ${chatWithAdmin}
                 ${form1}
-                ${css}`
+                ${css}
+                
+                `
+                
     }
 
     var div = document.createElement("div");
     div.id = "adstech-group-btn";
     document.body.appendChild(div);
     document.getElementById("adstech-group-btn").innerHTML = html;
+    // var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
         send(acId)
     }
-    
+    if(styleBtnChat != null && styleBtnChat != ''){
+        connectToFirebase()
+        
+    }
+}
+
+function openChat(){
+    document.getElementById("chatInputInfo").style.display = "block";
 }
 
 function openForm() {
@@ -286,6 +406,28 @@ function openAlert() {
 function closeAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 } 
+
+function connectToFirebase(){
+    let form = document.getElementById("sendInfo")
+    form.addEventListener('submit', e => {
+        const formData = new FormData(e.target)
+        let name = formData.get('name');
+        let topic = formData.get('topic');
+        // $('#txtName').text(name);
+        document.getElementById('txtName').innerText = name;
+        topic=encodeURIComponent(topic).replace(/\./g, '%2E');
+        var newItems = false;
+        e.preventDefault()
+        startChatting();
+    })
+    chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+}
+
+function startChatting(){
+    document.getElementById("chatInputInfo").style.display = "none";
+    document.getElementById("chatAdmin").style.display = "block";
+}
+
 function send(acId) {
     const form = document.getElementById("form-adstech")
     form.addEventListener('submit', e => {
