@@ -223,11 +223,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         if (style.color == "#fff") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://localhost:8080/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         } else if(style.color == "#000"){
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://localhost:8080/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         chatInputInfoDialog = `
