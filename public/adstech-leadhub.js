@@ -1,12 +1,19 @@
 window.onload = f
-
+var acId = '';
 function f() {
-    var acId = ''
+    var tag = document.createElement("script");
+    tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
+    document.getElementsByTagName("head")[0].appendChild(tag);
+    var tag2 = document.createElement("script");
+    tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js";
+    document.getElementsByTagName("head")[0].appendChild(tag2);
+    // var acId = ''
     var btnId = ''
+    var topic = '';
     var chatminiCRM = null;
     var scripts = document.getElementsByTagName("script");
     let a = localStorage.getItem('lead')
-    if (a != null || a!= undefined || a != '') {
+    if (a != null && a!= undefined && a != '') {
         createLead(a)
     }
     for (let i = 0; i < scripts.length; i++) {
@@ -216,15 +223,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         if (style.color == "#fff") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://localhost:8080/message-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://localhost:8080/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         } else if(style.color == "#000"){
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://localhost:8080/message-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://localhost:8080/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="display: none;">
+            <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
@@ -252,7 +259,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             </div>
         `
         chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="display: none;"> 
+            <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%;"> 
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
@@ -274,7 +281,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                     <div class="panel-footer">
                                         <form id="sendMessage">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" id="txtText" placeholder="Nhập tin nhắn tại đây ..">
+                                                <input type="text" required class="form-control" id="txtText" placeholder="Nhập tin nhắn tại đây ..">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
                                                 </span>
@@ -339,7 +346,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     }
     if (vertical == false) {
         html = `
-                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
@@ -357,7 +364,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 `
     } else {
         html = `
-                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
@@ -389,7 +396,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
 }
 
 function openChat(){
-    document.getElementById("chatInputInfo").style.display = "block";
+    let chatInputInfo = document.getElementById("chatInputInfo");
+    if(chatInputInfo.style.display != 'block'){
+        document.getElementById("chatInputInfo").style.display = "block";
+    }
+    
 }
 
 function openForm() {
@@ -409,23 +420,74 @@ function closeAlert() {
 
 function connectToFirebase(){
     let form = document.getElementById("sendInfo")
+    var newItems = false;
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
-        let name = formData.get('name');
-        let topic = formData.get('topic');
+        var name = formData.get('name');
+        topic = formData.get('topic');
         // $('#txtName').text(name);
         document.getElementById('txtName').innerText = name;
-        topic=encodeURIComponent(topic).replace(/\./g, '%2E');
+        topic= acId + '-' + topic.replace(/\./g, '-dot-');
+        chatminiCRM.child(topic).on('child_added', function (snapshot){
+            var message = snapshot.val();
+            let html = 
+            '<tr>' + 
+            '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
+            '<td>' + message.message + ' ('+message.time+')'+'</td>' + 
+            '</tr>';
+            $('#messageContainer tr:last').after(html);
+            $('#scollDiv').animate({
+                scrollTop: $('#scollDiv')[0].scrollHeight
+            }, 0);
+        })
         var newItems = false;
         e.preventDefault()
         startChatting();
     })
-    chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    try {
+        chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    } catch (error) {
+        console.log(error)
+    }
+    
 }
 
 function startChatting(){
     document.getElementById("chatInputInfo").style.display = "none";
     document.getElementById("chatAdmin").style.display = "block";
+    let form = document.getElementById("sendMessage")
+    form.addEventListener('submit', e => {
+        var text = $('#txtText').val();
+        try {
+            
+            var body = {
+                topic: topic,
+                name: document.getElementById('txtName').innerText,
+                message: text,
+                accountId: acId
+            }
+            sendMessage(body)
+        }
+        catch(error){
+            alert(error)
+        }
+        e.preventDefault()
+    })
+}
+
+function sendMessage(body){
+    fetchRetry('http://dev.adstech.vn:9000/leadhub/chats', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }, 5).then(result => {
+        console.log(result)
+    }).catch(error => {
+        console.log(error)
+    })
 }
 
 function send(acId) {

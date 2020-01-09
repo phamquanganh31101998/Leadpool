@@ -35,8 +35,8 @@
                                             <v-card class="pa-2" style="border-radius:7px"
                                                 @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = true">
                                                 <v-flex xs12 class="text-xs-center">
-                                                    <v-icon>message</v-icon><br>
-                                                    <span>Nhắn tin</span>
+                                                    <v-icon>question_answer</v-icon><br>
+                                                    <span>Chat</span>
                                                 </v-flex>
                                             </v-card>
                                             <v-checkbox v-model="chatObj.showChat" class="mx-2 ml-5"></v-checkbox>
@@ -118,9 +118,6 @@
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <!-- <v-btn @click="chatObj.demoChatDialog = true" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
-                                    <v-icon>message</v-icon>
-                                </v-btn> -->
                                 <v-menu style="max-width: 600px; max-height: 700px;" :close-on-content-click="false" offset-y top v-model="chatObj.demoChatDialog" width="200px" height="500px;">
                                     <template v-slot:activator="{ on }">
                                         
@@ -186,54 +183,7 @@
                                 <v-btn @click="chatObj.demoChatDialog = true" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
-                                <!-- <v-menu top offset-y v-model="chatObj.demoChatDialog" width="20%">
-                                    <template v-slot:activator="{ on }">
-                                        <br />
-                                        <v-btn v-on="on" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
-                                            <v-icon>message</v-icon>
-                                        </v-btn>
-                                        <br />
-                                    </template>
-                                    <v-card>
-                                        <v-toolbar card dark :color="chatObj.colorChat">
-                                            <v-toolbar-title>Chat with us</v-toolbar-title>
-                                            <v-spacer></v-spacer>
-                                            <v-btn icon dark @click="chatObj.demoChatDialog = false">
-                                                <v-icon>close</v-icon>
-                                            </v-btn>
-                                        </v-toolbar>
-                                        <v-card-text>
-                                            <v-layout row>
-                                                <v-flex>
-                                                    <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense></v-text-field>
-                                                    <v-text-field label="Email" v-model="chatObj.emailUser" outlined dense></v-text-field>
-                                                    <v-btn block dark :color="chatObj.colorChat">Chat now!</v-btn>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-menu> -->
                             </div>
-                            <!-- <v-menu close-on-content-click="false" absolute offset-y v-model="chatObj.demoChatDialog" width="20%">
-                                <v-card>
-                                    <v-toolbar card dark :color="chatObj.colorChat">
-                                        <v-toolbar-title>Chat with us</v-toolbar-title>
-                                        <v-spacer></v-spacer>
-                                        <v-btn icon dark @click="chatObj.demoChatDialog = false">
-                                            <v-icon>close</v-icon>
-                                        </v-btn>
-                                    </v-toolbar>
-                                    <v-card-text>
-                                        <v-layout row>
-                                            <v-flex>
-                                                <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense></v-text-field>
-                                                <v-text-field label="Email" v-model="chatObj.emailUser" outlined dense></v-text-field>
-                                                <v-btn block dark :color="chatObj.colorChat">Chat now!</v-btn>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-text>
-                                </v-card>
-                            </v-menu> -->
                         </v-flex>
                         <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
                             <v-card>
@@ -315,10 +265,6 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <!-- <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${numberProperties.length} trường`)">
-                                        Lưu
-                                    </v-btn> -->
                                     <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu</v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -326,7 +272,7 @@
                         <v-flex lg6 xl7 offset-lg1 v-if="chatObj.dialogChat">
                             <v-card>
                                 <v-card-title>
-                                    <h2>Cài đặt nút nhắn tin</h2>
+                                    <h2>Cài đặt nút Chat</h2>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
@@ -460,26 +406,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <!-- <v-menu top v-model="chatObj.demoChatDialog" width="20%">
-            <v-card>
-                <v-toolbar card dark :color="chatObj.colorChat">
-                    <v-toolbar-title>Chat with us</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon dark @click="chatObj.demoChatDialog = false">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-card-text>
-                    <v-layout row>
-                        <v-flex>
-                            <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense></v-text-field>
-                            <v-text-field label="Email" v-model="chatObj.emailUser" outlined dense></v-text-field>
-                            <v-btn block dark :color="chatObj.colorChat">Chat now!</v-btn>
-                        </v-flex>
-                    </v-layout>
-                </v-card-text>
-            </v-card>
-        </v-menu> -->
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
                 <v-card-title>
@@ -488,8 +414,6 @@
                 <v-card-text class="py-2">
                     <v-layout row wrap v-for="(item,key) in numberProperties" :key="key"
                         style="border:1px solid #999; border-radius:10px" class="pa-2 mt-2">
-                        <!-- <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
-                        </v-text-field> -->
                         <p class="ml-2 mt-1" v-if="item.value == 'lastName'"><strong>Họ và tên</strong></p>
                         <p class="ml-2 mt-1" v-if="item.value == 'phone'"><strong>Số điện thoại</strong></p>
                         <p class="ml-2 mt-1" v-if="item.value == 'email'"><strong>Đại chỉ email</strong></p>
