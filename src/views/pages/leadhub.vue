@@ -49,7 +49,7 @@
                 </v-card>
             </v-flex>
             <v-flex lg8>
-                <v-layout row class="mb-2" v-if="showCall === true || showForm == true">
+                <v-layout row class="mb-2" v-if="showCall === true || showForm == true || showChat == true">
                     <v-flex xs12>
                         <v-card style="width:100%">
                             <v-card-text>
@@ -94,6 +94,10 @@
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
+                                                    <br>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                        <v-icon>message</v-icon>
+                                                    </v-btn>
                                                 </div>
                                                 <div :style="styleBtn" v-if="show && selected.vertical == true">
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
@@ -101,6 +105,9 @@
                                                     </v-btn>
                                                     <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                        <v-icon>message</v-icon>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -117,6 +124,10 @@
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
+                                                    <br>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                        <v-icon>message</v-icon>
+                                                    </v-btn>
                                                 </div>
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
@@ -124,6 +135,9 @@
                                                     </v-btn>
                                                     <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
                                                         <v-icon>email</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                        <v-icon>message</v-icon>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -180,10 +194,12 @@
                 show: false,
                 styleBtnCall: null,
                 styleBtnForm: null,
+                styleBtnChat: null,
                 styleBtn: '',
                 styleBtnDesktop: '',
                 showCall: false,
                 showForm: false,
+                showChat: false,
                 checkData: true,
                 dark: true,
                 deleteConfirm: false,
@@ -246,6 +262,7 @@
                 this.selected = key
                 this.showCall = false
                 this.showForm = false
+                this.showChat = false
                 for (let i = 0; i < key.listButton.length; i++) {
                     if (key.listButton[i].type == "CALL") {
                         this.styleBtnCall = key.listButton[i]
@@ -253,6 +270,9 @@
                     } else if (key.listButton[i].type == "FORM") {
                         this.styleBtnForm = key.listButton[i]
                         this.showForm = true
+                    } else if (key.listButton[i].type == "CHAT"){
+                        this.styleBtnChat = key.listButton[i]
+                        this.showChat = true
                     }
                 }
                 if (key.style.color == "#fff") {

@@ -333,9 +333,7 @@
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Tạo Thỏa thuận</span>
                                                             </v-card-title>
-                                                            <v-card-text>
-                                                                <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
-                                                            </v-card-text>
+                                                            <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
                                                     </v-dialog>

@@ -11,9 +11,9 @@
                                 </v-flex>
                                 <v-flex xs12 class="mt-3">
                                     <v-layout row>
-                                        <v-flex xs5 class="pl-3 pr-3">
+                                        <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogCall = true, dialogForm = false">
+                                                @click="dialogCall = true, dialogForm = false, chatObj.dialogChat = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>phone_in_talk</v-icon><br>
                                                     <span>Gọi ngay</span>
@@ -21,15 +21,25 @@
                                             </v-card>
                                             <v-checkbox v-model="call" class="mx-2 ml-5"></v-checkbox>
                                         </v-flex>
-                                        <v-flex xs5 class="pl-3 pr-3">
+                                        <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogForm = true, dialogCall = false">
+                                                @click="dialogForm = true, dialogCall = false, chatObj.dialogChat = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>mail_outline</v-icon><br>
                                                     <span>Đăng ký</span>
                                                 </v-flex>
                                             </v-card>
                                             <v-checkbox v-model="form" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = true">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-icon>question_answer</v-icon><br>
+                                                    <span>Chat</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="chatObj.showChat" class="mx-2 ml-5"></v-checkbox>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -108,6 +118,57 @@
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
+                                <v-menu style="max-width: 600px; max-height: 700px;" :close-on-content-click="false" offset-y top v-model="chatObj.demoChatDialog" width="200px" height="500px;">
+                                    <template v-slot:activator="{ on }">
+                                        
+                                        <v-btn v-on="on" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                            <v-icon>message</v-icon>
+                                        </v-btn>
+                                        
+                                    </template>
+                                    <v-card v-if="chatObj.demoChatSection == 'signup'">
+                                        <v-toolbar card dark :color="chatObj.colorChat">
+                                            <v-toolbar-title>Chat with us</v-toolbar-title>
+                                            <v-spacer></v-spacer>
+                                            <v-btn icon dark @click="chatObj.demoChatDialog = false">
+                                                <v-icon>close</v-icon>
+                                            </v-btn>
+                                        </v-toolbar>
+                                        <v-card-text>
+                                            <v-layout row>
+                                                <v-flex>
+                                                    <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense></v-text-field>
+                                                    <v-text-field label="Email" v-model="chatObj.emailUser" outlined dense></v-text-field>
+                                                    <v-btn block dark :color="chatObj.colorChat" @click="chatObj.demoChatSection = 'signed'">Chat now!</v-btn>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-card v-if="chatObj.demoChatSection == 'signed'">
+                                        <v-toolbar card dark :color="chatObj.colorChat">
+                                            <v-toolbar-title>Chatting...</v-toolbar-title>
+                                            <v-spacer></v-spacer>
+                                            <v-btn icon dark @click="chatObj.demoChatSection = 'signup'">
+                                                <v-icon>close</v-icon>
+                                            </v-btn>
+                                        </v-toolbar>
+                                        <v-card-text>
+                                            <v-layout v-for="mess in chatObj.chatHistory">
+                                                <v-chip color="blue" v-if="mess.value == 'send'">
+                                                    {{mess.text}}
+                                                </v-chip>
+                                                <v-chip color="pink" v-if="mess.value == 'receive'">
+                                                    {{mess.text}}
+                                                </v-chip>
+                                            </v-layout>
+                                            <v-layout>
+                                                <v-flex>
+                                                    <v-text-field placeholder="type something"></v-text-field>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-menu>
                             </div>
                             <div :style="styleBtn" v-else>
                                 <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
@@ -117,6 +178,10 @@
                                 <br />
                                 <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
+                                </v-btn>
+                                <br />
+                                <v-btn @click="chatObj.demoChatDialog = true" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                    <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
                         </v-flex>
@@ -200,11 +265,29 @@
                                         Đóng
                                     </v-btn>
                                     <v-spacer></v-spacer>
-                                    <!-- <v-btn color="green darken-1" text dark
-                                        @click="form = true, alertSuccess(`Lưu nút form thành công với ${numberProperties.length} trường`)">
-                                        Lưu
-                                    </v-btn> -->
                                     <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="chatObj.dialogChat">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt nút Chat</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <v-btn class="mt-2 ml-5" :color="chatObj.colorChat" @click="chatObj.colorDialog = true" dark>
+                                                Chọn màu sắc nút</v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
+                                        Đóng
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" text dark>Lưu</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-flex>
@@ -293,6 +376,36 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="chatObj.colorDialog" max-width="500">
+            <v-card>
+                <v-card-title>
+                    Chọn màu cho nút
+                </v-card-title>
+                <v-card-text>
+                    <v-radio-group v-model="chatObj.colorChat" row>
+                        <div style="width:30px;height:30px;background-color:#8E00FF"></div>
+                        <v-radio value="#8E00FF"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#0c71c3"></div>
+                        <v-radio value="#0c71c3"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#7cda24"></div>
+                        <v-radio value="#7cda24"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#edf000"></div>
+                        <v-radio value="#edf000"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#e09900"></div>
+                        <v-radio value="#e09900"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#e02b20"></div>
+                        <v-radio value="#e02b20"></v-radio>
+                    </v-radio-group>
+                </v-card-text>
+                <v-card-actions>
+                    <v-flex class="text-xs-left">
+                        <v-btn color="gray" text @click="chatObj.colorDialog = false">
+                            Đóng
+                        </v-btn>
+                    </v-flex>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
                 <v-card-title>
@@ -301,8 +414,6 @@
                 <v-card-text class="py-2">
                     <v-layout row wrap v-for="(item,key) in numberProperties" :key="key"
                         style="border:1px solid #999; border-radius:10px" class="pa-2 mt-2">
-                        <!-- <v-text-field :key="key" style="width:100%" :placeholder="item.value" outlined dense>
-                        </v-text-field> -->
                         <p class="ml-2 mt-1" v-if="item.value == 'lastName'"><strong>Họ và tên</strong></p>
                         <p class="ml-2 mt-1" v-if="item.value == 'phone'"><strong>Số điện thoại</strong></p>
                         <p class="ml-2 mt-1" v-if="item.value == 'email'"><strong>Đại chỉ email</strong></p>
@@ -357,6 +468,34 @@
         },
         data() {
             return {
+                chatObj: {
+                    showChat: false,
+                    colorChat: '#8E00FF',
+                    dialogChat: false,
+                    colorDialog: false,
+                    demoChatDialog: false,
+                    nameUser: '',
+                    emailUser: '',
+                    demoChatSection: 'signup',
+                    chatHistory: [
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        }, 
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        },
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        },
+                        {
+                            text: 'def',
+                            value: 'receive'
+                        },
+                    ]
+                },
                 tab: 0,
                 tabs: [{
                     text: 'Điện thoại'
@@ -590,17 +729,65 @@
                     title: this.textCall,
                     type: "CALL",
                 }
-                if (this.call == true && this.form == true) {
-                    if (this.text == null || this.text == '') {
-                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                    } else {
+                let chat = {
+                    buttonColor: this.chatObj.colorChat,
+                    description: "Để lại thông tin của bạn rồi chat với chúng tôi",
+                    formMessage: "Cảm ơn vì đã liên lạc với chúng tôi",
+                    title: "Chat ngay thôi",
+                    type: "CHAT",
+                }
+                if(this.chatObj.showChat == true){
+                    if (this.call == true && this.form == true) {
+                        if (this.text == null || this.text == '') {
+                            this.alertError("Chưa điền số điện thoại ở nút Click to Call")
+                        } else {
+                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        form,
+                                        call,
+                                        chat
+                                    ],
+                                    style: {
+                                        bottom: 5,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: 2,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            } else {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        form,
+                                        call,
+                                        chat
+                                    ],
+                                    style: {
+                                        bottom: this.bottom,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: this.left,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            }
+                        }
+                    } else if (this.call == false && this.form == true) {
                         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
                                 listButton: [
-                                    form,
-                                    call
+                                    form, chat
                                 ],
                                 style: {
                                     bottom: 5,
@@ -617,8 +804,7 @@
                                 name: this.nameBtn,
                                 vertical: this.xy,
                                 listButton: [
-                                    form,
-                                    call
+                                    form, chat
                                 ],
                                 style: {
                                     bottom: this.bottom,
@@ -631,54 +817,136 @@
                             }
                             this.callApiCreate(btn)
                         }
-                    }
-                } else if (this.call == false && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                form
-                            ],
-                            style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: 2,
-                                size: `${this.sizeButton}`,
+                    } else if (this.call == true && this.form == false) {
+                        if (this.text == null || this.text == '') {
+                            this.alertError('Chưa điền số điện thoại ở nút Click to Call')
+                        } else {
+                            this.requestApi = true
+                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        call, chat
+                                    ],
+                                    style: {
+                                        bottom: 5,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: 2,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            } else {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        call, chat
+                                    ],
+                                    style: {
+                                        bottom: this.bottom,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: this.left,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
                             }
                         }
-                        this.callApiCreate(btn)
-                    } else {
-                        let btn = {
-                            name: this.nameBtn,
-                            vertical: this.xy,
-                            listButton: [
-                                form
-                            ],
-                            style: {
-                                bottom: this.bottom,
-                                top: this.top,
-                                right: this.right,
-                                color: this.colorText,
-                                left: this.left,
-                                size: `${this.sizeButton}`,
-                            }
-                        }
-                        this.callApiCreate(btn)
-                    }
-                } else if (this.call == true && this.form == false) {
-                    if (this.text == null || this.text == '') {
-                        this.alertError('Chưa điền số điện thoại ở nút Click to Call')
                     } else {
                         this.requestApi = true
+                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        chat
+                                    ],
+                                    style: {
+                                        bottom: 5,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: 2,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            } else {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        chat
+                                    ],
+                                    style: {
+                                        bottom: this.bottom,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: this.left,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            }
+                    }
+                }
+                else {
+                    if (this.call == true && this.form == true) {
+                        if (this.text == null || this.text == '') {
+                            this.alertError("Chưa điền số điện thoại ở nút Click to Call")
+                        } else {
+                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        form,
+                                        call
+                                    ],
+                                    style: {
+                                        bottom: 5,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: 2,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            } else {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        form,
+                                        call
+                                    ],
+                                    style: {
+                                        bottom: this.bottom,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: this.left,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            }
+                        }
+                    } else if (this.call == false && this.form == true) {
                         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                             let btn = {
                                 name: this.nameBtn,
                                 vertical: this.xy,
                                 listButton: [
-                                    call
+                                    form
                                 ],
                                 style: {
                                     bottom: 5,
@@ -695,7 +963,7 @@
                                 name: this.nameBtn,
                                 vertical: this.xy,
                                 listButton: [
-                                    call
+                                    form
                                 ],
                                 style: {
                                     bottom: this.bottom,
@@ -708,10 +976,52 @@
                             }
                             this.callApiCreate(btn)
                         }
+                    } else if (this.call == true && this.form == false) {
+                        if (this.text == null || this.text == '') {
+                            this.alertError('Chưa điền số điện thoại ở nút Click to Call')
+                        } else {
+                            this.requestApi = true
+                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        call
+                                    ],
+                                    style: {
+                                        bottom: 5,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: 2,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            } else {
+                                let btn = {
+                                    name: this.nameBtn,
+                                    vertical: this.xy,
+                                    listButton: [
+                                        call
+                                    ],
+                                    style: {
+                                        bottom: this.bottom,
+                                        top: this.top,
+                                        right: this.right,
+                                        color: this.colorText,
+                                        left: this.left,
+                                        size: `${this.sizeButton}`,
+                                    }
+                                }
+                                this.callApiCreate(btn)
+                            }
+                        }
+                    } else {
+                        this.alertError("Bạn chưa chọn nút cần tạo")
                     }
-                } else {
-                    this.alertError("Bạn chưa chọn nút cần tạo")
                 }
+                
             },
             callApiCreate(btn) {
                 if (this.requestApi == true) {
@@ -734,3 +1044,10 @@
         }
     }
 </script>
+<style scoped>
+    .v-dialog {
+        position: fixed !important; 
+        bottom: 0 !important;
+        right: 0 !important;
+    }
+</style>

@@ -26,6 +26,7 @@ import UserNotActive from './views/pages/UserNotActive.vue'
 import DealService from './views/pages/DealService.vue'
 import RequestPassWord from './views/RequestPassword.vue'
 import Report from './views/pages/Report.vue'
+import Chat from './views/pages/Chat.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -228,6 +229,18 @@ const router = new Router({
             path: '/contacts/:idAccount/report',
             name: 'report',
             component: Report,
+            props(route) {
+                const props = {
+                    ...route.params
+                }
+                props.idAccount
+                return props
+            },
+          },
+          {
+            path: '/contacts/:idAccount/chat',
+            name: 'chat',
+            component: Chat,
             props(route) {
                 const props = {
                     ...route.params
