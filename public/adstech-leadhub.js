@@ -238,13 +238,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title">Liên lạc với chúng tôi hihi</h6>
+                                        <h6 class="panel-title">Chat with us!</h6>
                                     </div>
                                     <div class="panel-footer">
                                         <form id="sendInfo">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" required name="name" placeholder="Nhập tên">
-                                                <input type="text" class="form-control" required name="topic" placeholder="Nhập email/SDT">
+                                                <input type="text" class="form-control" required name="name" placeholder="Your name">
+                                                <input type="text" class="form-control" required name="topic" placeholder="Your email/phone">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
                                                 </span>
@@ -266,7 +266,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title">Xin chào, <span id="txtName"></span></h6>
+                                        <h6 class="panel-title">Hello, <span id="txtName"></span></h6>
                                         
                                     </div>
                                     <div class="panel-body">
@@ -281,7 +281,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                     <div class="panel-footer">
                                         <form id="sendMessage">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" required class="form-control" id="txtText" placeholder="Nhập tin nhắn tại đây ..">
+                                                <input type="text" required class="form-control" id="txtText" placeholder="ask us a few question ..">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
                                                 </span>
