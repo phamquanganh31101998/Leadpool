@@ -4,15 +4,19 @@ import { responseService } from './response.service'
 const qs = require('qs');
 
 export default {
-    getAllTopic, getHistory, sendMessage
+    getTopic, getHistory, sendMessage, markReadTopic
 }
 
-function getAllTopic(idAccount){
+function getTopic(idAccount, page){
+    let a = {
+        page: page
+    }
+    let _qs = qs.stringify(a);
     let request = {
         method: 'GET',
         headers: authHeader()
     }
-    let endpoint = `${config.apiContact}/${idAccount}/list-topic`
+    let endpoint = `${config.apiContact}/${idAccount}/list-topic?${_qs}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
@@ -38,5 +42,14 @@ function sendMessage(body){
         body: JSON.stringify(body)
     }
     let endpoint = `${config.apiUrl}leadhub/chats`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function markReadTopic(idAccount, idTopic){
+    let request = {
+        method: 'PUT',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/chat-topic/${idTopic}/mark-read`
     return responseService.fetchRetry(endpoint, request, 1)
 }

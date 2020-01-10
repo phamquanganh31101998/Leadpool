@@ -1,5 +1,6 @@
 window.onload = f
 var acId = '';
+var topic = '';
 function f() {
     var tag = document.createElement("script");
     tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
@@ -9,7 +10,8 @@ function f() {
     document.getElementsByTagName("head")[0].appendChild(tag2);
     // var acId = ''
     var btnId = ''
-    var topic = '';
+    
+    
     var chatminiCRM = null;
     var scripts = document.getElementsByTagName("script");
     let a = localStorage.getItem('lead')
@@ -49,7 +51,12 @@ function f() {
             }
         }
         writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId)
-        
+        let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo');
+        if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != ''){
+            let chatInfo = JSON.parse(leadhub_chatInfo);
+            document.getElementById('txtName').innerText = chatInfo.name;
+            topic = chatInfo.topic;
+        }
     })
 }
 async function fetchRetry (url, options, n) {
@@ -259,19 +266,19 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             </div>
         `
         chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%;"> 
+            <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%"> 
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12" >
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
                                         <h6 class="panel-title">Hello, <span id="txtName"></span></h6>
                                         
                                     </div>
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="height: 500px; overflow-y: scroll;">
                                         <div class="row">
-                                            <div class="col-sm-12" id="scollDiv">
+                                            <div class="col-sm-12" id="scollDiv"; >
                                                 <table class="table table-hover" id="messageContainer">
                                                     <tr></tr>
                                                 </table>
@@ -391,14 +398,37 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     }
     if(styleBtnChat != null && styleBtnChat != ''){
         connectToFirebase()
-        
     }
 }
 
 function openChat(){
     let chatInputInfo = document.getElementById("chatInputInfo");
-    if(chatInputInfo.style.display != 'block'){
-        document.getElementById("chatInputInfo").style.display = "block";
+    let chatAdmin = document.getElementById("chatAdmin")
+    if(chatInputInfo.style.display == 'block' || chatAdmin.style.display == 'block'){
+        chatInputInfo.style.display = 'none';
+        chatAdmin.style.display = 'none';
+    }
+    else {
+        let hasInfo = window.localStorage.getItem('leadhub_chatInfo');
+        if(hasInfo != undefined && hasInfo != null && hasInfo != ''){
+            chatminiCRM.child(topic).on('child_added', function (snapshot){
+                var message = snapshot.val();
+                console.log(message)
+                let html = 
+                '<tr>' + 
+                '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
+                '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
+                '</tr>';
+                $('#messageContainer tr:last').after(html);
+                $('#scollDiv').animate({
+                    scrollTop: $('#scollDiv')[0].scrollHeight
+                }, 0);
+            })
+            startChatting()
+        }
+        else {
+            chatInputInfo.style.display = 'block';
+        }
     }
     
 }
@@ -418,22 +448,40 @@ function closeAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 } 
 
+function getHour(time){
+    let result = ''
+    let timeArr = time.split(' ');
+    result = timeArr[3];
+    return result;
+}
+
 function connectToFirebase(){
+    try {
+        chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    } catch (error) {
+        console.log(error)
+    }
     let form = document.getElementById("sendInfo")
     var newItems = false;
+    
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
         var name = formData.get('name');
         topic = formData.get('topic');
-        // $('#txtName').text(name);
         document.getElementById('txtName').innerText = name;
         topic= acId + '-' + topic.replace(/\./g, '-dot-');
+        let obj = {
+            name: name,
+            topic: topic
+        }
+        window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
         chatminiCRM.child(topic).on('child_added', function (snapshot){
             var message = snapshot.val();
+            console.log(message)
             let html = 
             '<tr>' + 
             '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
-            '<td>' + message.message + ' ('+message.time+')'+'</td>' + 
+            '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
             '</tr>';
             $('#messageContainer tr:last').after(html);
             $('#scollDiv').animate({
@@ -444,12 +492,6 @@ function connectToFirebase(){
         e.preventDefault()
         startChatting();
     })
-    try {
-        chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
-    } catch (error) {
-        console.log(error)
-    }
-    
 }
 
 function startChatting(){
@@ -458,18 +500,21 @@ function startChatting(){
     let form = document.getElementById("sendMessage")
     form.addEventListener('submit', e => {
         var text = $('#txtText').val();
-        try {
-            
-            var body = {
-                topic: topic,
-                name: document.getElementById('txtName').innerText,
-                message: text,
-                accountId: acId
+        if(text != ''){
+            try {
+                var body = {
+                    topic: topic,
+                    name: document.getElementById('txtName').innerText,
+                    message: text,
+                    accountId: acId,
+                    isCustomer: true
+                }
+                sendMessage(body)
+                document.getElementById('txtText').value = ''
             }
-            sendMessage(body)
-        }
-        catch(error){
-            alert(error)
+            catch(error){
+                alert(error)
+            }
         }
         e.preventDefault()
     })
