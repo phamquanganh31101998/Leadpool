@@ -54,6 +54,7 @@
                     <h2>{{this.decodeStr(topic)}}</h2>
                 </div>
                 <div style="height: 100%">
+                    <div class="stickToTop"></div>
                     <div class="messengerBox pl-3 pr-3" id="boxContainChat">
                         <template v-for="item in chatHistory">
                             <v-layout align-center justify-start row v-if="item.name != currentUser.displayName"> 
@@ -64,7 +65,7 @@
                                         </v-avatar>
                                         <v-chip color="grey" dark> {{item.message}} </v-chip>
                                     </template>
-                                    <span>{{item.name}}</span>
+                                    <span>{{item.name}} - {{item.time}}</span>
                                 </v-tooltip>
                                 
                             </v-layout>
@@ -76,7 +77,7 @@
                                             <img :src="avatar" alt="">
                                         </v-avatar>
                                     </template>
-                                    <span>{{item.name}}</span>
+                                    <span>{{item.name}} - {{item.time}}</span>
                                 </v-tooltip>
                             </v-layout>
                             
@@ -143,8 +144,10 @@ export default {
             dialog: false,
             dialogMessage: '',
             chatMess: '',
-            page: 1,
-            allPage: 1,
+            chatpage: 1,
+            allChatPage: 1,
+            topicPage: 1, 
+            allTopicPage: 1,
             currentUser: null,
             access: true,
             divider: true,
@@ -159,14 +162,19 @@ export default {
     watch: {
         hasNewMessage(){
             if(this.hasNewMessage == true){
+                
                 if(this.topic == this.topicChange){
-                    this.chatHistory.push(this.newMessage);
+                    if(this.newMessage.name != this.currentUser.displayName){
+                        this.chatHistory.push(this.newMessage);
+                        this.$store.dispatch('alert/success', `${this.newMessage.name} đã gửi một tin nhắn mới tại cuộc trò chuyện ${this.decodeStr(this.topicChange)} (${this.coverTimeHourOnly(moment())})`)
+                    }
+                    
                     $('#boxContainChat').animate({
 						scrollTop: $('#boxContainChat')[0].scrollHeight
 					}, 0);
                 }
                 else {
-                    this.$store.dispatch('alert/success', `${this.newMessage.name} đã gửi một tin nhắn mới tại cuộc trò chuyện ${this.decodeStr(this.topicChange)}`)
+                    this.$store.dispatch('alert/success', `${this.newMessage.name} đã gửi một tin nhắn mới tại cuộc trò chuyện ${this.decodeStr(this.topicChange)} (${this.coverTimeHourOnly(moment())})`)
                 }
             }
             this.$store.dispatch('noNewMessage')
@@ -198,7 +206,7 @@ export default {
         },
         coverTimeHourOnly(time){
             if (_.isNull(time)) return '';
-            return moment(time).format('HH:mm')
+            return moment(time).format('HH:mm:ss')
         },
         getCurrentUser(){
             this.currentUser = JSON.parse(localStorage.getItem('user'));
@@ -207,30 +215,29 @@ export default {
             //     this.access = true;
             // }
             if(this.access == true){
-                this.getAllTopic()
+                this.getTopic()
             }
         },
-        getAllTopic(){
+        getTopic(){
             this.dialogMessage = 'Đang lấy danh sách cuộc trò chuyện...'
             this.dialog = true;
-            chatAPI.getAllTopic(this.idAccount).then(result => {
+            chatAPI.getTopic(this.idAccount, this.topicPage).then(result => {
                 const {
                     dispatch
                 } = this.$store;
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    let res = result.response;
+                    let res = result.response.results;
                     for (let i = 0; i < res.length; i++){
                         let obj = {
-                            text: this.decodeStr(res[i]),
-                            value: res[i]
+                            text: this.decodeStr(res[i].topic),
+                            value: res[i].topic,
+                            status: res[i].status,
+                            lastTime: this.coverTimeDetail(res[i].nearTime)
                         }
-                        // console.log(obj)
                         this.allTopics.push(obj)
                         this.chatminiCRM.child(res[i]).on('child_added', function(snapshot){
                             var message = snapshot.val();
-                            // console.log(message)
-                            // console.log(`${message.name} đã gửi 1 tin nhắn mới tại cuộc trò chuyện ${obj.text}`)
                             dispatch('newMessage', message);
                             dispatch('topicChange', res[i]);
                             dispatch('hasNewMessage');
@@ -250,10 +257,10 @@ export default {
         getNewChatHistory(topic){
             this.topic = topic;
             this.chatHistory = [];
-            this.page = 1;
+            this.chatPage = 1;
             this.dialogMessage = 'Đang lấy lịch sử cuộc trò chuyện...'
             this.dialog = true;
-            chatAPI.getHistory(this.idAccount, topic, this.page).then(result => {
+            chatAPI.getHistory(this.idAccount, topic, this.chatPage).then(result => {
                 const {
                     dispatch
                 } = this.$store;
@@ -286,8 +293,16 @@ export default {
                     topic: this.topic,
                     name: this.currentUser.displayName,
                     message: this.chatMess,
-                    accountId: this.idAccount
+                    accountId: this.idAccount,
+                    isCustomer: false,
                 }
+                let newMessage = {
+                    name: this.currentUser.displayName,
+                    message: this.chatMess,
+                    time: this.coverTimeHourOnly(moment())
+                }
+                this.chatMess = '';
+                this.chatHistory.push(newMessage)
                 chatAPI.sendMessage(body).then(result => {
                     const {
                         dispatch
@@ -301,14 +316,18 @@ export default {
                         //     time: this.coverTimeHourOnly(res.createdAt)
                         // }
                         // this.chatHistory.push(obj)
-                        this.chatMess = ''
+                        // this.chatMess = ''
                     }
                     else {
+                        this.chatHistory.pop()
                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                     }
                     
                 }).catch(error => {
+                    this.chatHistory.pop()
                     console.log(error)
+                }).finally(() => {
+                    
                 })
             }
         },
@@ -334,10 +353,10 @@ export default {
         }
     },
     created(){
-        // this.decodeStr("5d1dd258f0aa61074608b0e3-1@gmail-dot-com-dot-vn-QAdeptrai")
+        this.$store.state.colorNumber = 8;
         this.getCurrentUser();
         this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
-        this.$store.state.colorNumber = 8;
+        
     }
 }
 </script>
@@ -357,6 +376,12 @@ export default {
     .stickToBottom {
         position: fixed;
         bottom: 0;
+        width: 73%;
+    }
+
+    .stickToTop {
+        position: fixed;
+        top: 0;
         width: 73%;
     }
 </style>
