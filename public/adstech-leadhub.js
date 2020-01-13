@@ -3,10 +3,18 @@ window.onload = f
 function f() {
     var acId = ''
     var btnId = ''
-    var chatminiCRM = null;
+    var head = document.querySelector("head")
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://cdn.firebase.com/js/client/2.2.1/firebase.js';
+    head.appendChild(script);
+    var script1 = document.createElement('script');
+    script1.type = 'text/javascript';
+    script1.src = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js';
+    head.appendChild(script1);
     var scripts = document.getElementsByTagName("script");
     let a = localStorage.getItem('lead')
-    if (a != null || a!= undefined || a != '') {
+    if (a != null && a!= undefined && a != '') {
         createLead(a)
     }
     for (let i = 0; i < scripts.length; i++) {
@@ -42,7 +50,6 @@ function f() {
             }
         }
         writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId)
-        
     })
 }
 async function fetchRetry (url, options, n) {
@@ -215,16 +222,16 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         chat = ''
     } else {
         if (style.color == "#fff") {
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}; position:relative" onclick="openChat()">
                     <img src="http://localhost:8080/message-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         } else if(style.color == "#000"){
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}; position:relative" onclick="openChat()">
                     <img src="http://localhost:8080/message-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="display: none;">
+            <div class="container" id="chatInputInfo" style="display: none;position:fixed; bottom:10%; right:10%">
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
@@ -339,8 +346,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     }
     if (vertical == false) {
         html = `
-                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${form}
@@ -357,8 +362,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 `
     } else {
         html = `
-                <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${call}
@@ -381,10 +384,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     // var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
         send(acId)
-    }
-    if(styleBtnChat != null && styleBtnChat != ''){
+    }else if(styleBtnChat != null && styleBtnChat != ''){
         connectToFirebase()
-        
     }
 }
 
@@ -420,7 +421,7 @@ function connectToFirebase(){
         e.preventDefault()
         startChatting();
     })
-    chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
 }
 
 function startChatting(){

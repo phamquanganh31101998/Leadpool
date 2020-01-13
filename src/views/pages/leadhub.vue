@@ -98,6 +98,14 @@
                                                     <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
                                                         <v-icon>message</v-icon>
                                                     </v-btn>
+                                                    <br>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <br />
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
                                                 </div>
                                                 <div :style="styleBtn" v-if="show && selected.vertical == true">
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
@@ -108,6 +116,12 @@
                                                     </v-btn>
                                                     <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -128,6 +142,14 @@
                                                     <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
                                                         <v-icon>message</v-icon>
                                                     </v-btn>
+                                                    <br>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <br />
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
                                                 </div>
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
                                                     <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
@@ -138,6 +160,12 @@
                                                     </v-btn>
                                                     <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -203,6 +231,8 @@
                 checkData: true,
                 dark: true,
                 deleteConfirm: false,
+                showFb: false,
+                showZalo: false
             }
         },
         watch: {
@@ -263,6 +293,8 @@
                 this.showCall = false
                 this.showForm = false
                 this.showChat = false
+                this.showFb = false
+                this.showZalo = false
                 for (let i = 0; i < key.listButton.length; i++) {
                     if (key.listButton[i].type == "CALL") {
                         this.styleBtnCall = key.listButton[i]
@@ -273,7 +305,11 @@
                     } else if (key.listButton[i].type == "CHAT"){
                         this.styleBtnChat = key.listButton[i]
                         this.showChat = true
-                    }
+                    } else if (key.listButton[i].type == "FACEBOOK"){
+                        this.showFb = true
+                    } else if (key.listButton[i].type == "ZALO"){
+                        this.showZalo = true
+                    } 
                 }
                 if (key.style.color == "#fff") {
                     this.dark = true
