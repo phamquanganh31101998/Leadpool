@@ -1,6 +1,8 @@
 window.onload = f
 var acId = '';
 var topic = '';
+var fb = '';
+var zl = '';
 function f() {
     var tag = document.createElement("script");
     tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
@@ -36,11 +38,14 @@ function f() {
             'Content-Type': 'application/json'
         })
     },4).then(result => {
+        console.log(result.response.listButton)
         var style = result.response.style
         var vertical = result.response.vertical
         var styleBtnCall = null
         var styleBtnForm = null
         var styleBtnChat = null
+        var styleBtnFacebook = null
+        var styleBtnZalo = null
         for (let i = 0; i < result.response.listButton.length; i++) {
             if (result.response.listButton[i].type == "CALL") {
                 styleBtnCall = result.response.listButton[i]
@@ -48,9 +53,13 @@ function f() {
                 styleBtnForm = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "CHAT"){
                 styleBtnChat = result.response.listButton[i]
+            } else if(result.response.listButton[i].type == "FACEBOOK"){
+                styleBtnFacebook = result.response.listButton[i]
+            } else if(result.response.listButton[i].type == "ZALO"){
+                styleBtnZalo = result.response.listButton[i]
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId)
+        writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId, styleBtnFacebook, styleBtnZalo)
         let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo');
         if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != ''){
             let chatInfo = JSON.parse(leadhub_chatInfo);
@@ -84,13 +93,15 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId) {
+function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId, styleBtnFacebook, styleBtnZalo) {
     var html = ''
     var call = ''
     var form = ''
     var chat = ''
-    var chatInputInfoDialog = '';
-    var chatWithAdmin = '';
+    var facebook = ''
+    var zalo = ''
+    var chatInputInfoDialog = ''
+    var chatWithAdmin = ''
     var form1 = ''
     var phone = ''
     var email = ''
@@ -213,16 +224,16 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         if (style.color == "#fff") {
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
-                    <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
-                    </a>
-                </button>`
+                        <a href="tel:${styleBtnCall.phoneNumber}">
+                            <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        </a>
+                    </button>`
         }else if(style.color == "#000"){
             call = `<button class="adstech-btn" style="background-color:${styleBtnCall.buttonColor}">
-                    <a href="tel:${styleBtnCall.phoneNumber}">
-                        <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
-                    </a>
-                </button>`
+                        <a href="tel:${styleBtnCall.phoneNumber}">
+                            <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                        </a>
+                    </button>`
         }
     }
     if (styleBtnChat == null || styleBtnChat == '') {
@@ -356,6 +367,18 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         
         
     }
+    if (styleBtnFacebook == null || styleBtnFacebook == ''){
+        facebook = ''
+    }else{
+        fb = styleBtnFacebook.phoneNumber
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="http://localhost:8080/mess.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+    }
+    if(styleBtnZalo == null || styleBtnZalo == ''){
+        zalo = ''
+    }else{
+        zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://localhost:8080/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+    }
     if (vertical == false) {
         html = `
                 <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
@@ -367,6 +390,10 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     ${call}
                     <br />
                     ${chat}
+                    <br />
+                    ${facebook}
+                    <br />
+                    ${zalo}
                 </div>
                 ${chatInputInfoDialog}
                 ${chatWithAdmin}
@@ -383,6 +410,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     ${call}
                     ${form}
                     ${chat}
+                    ${facebook}
+                    ${zalo}
                 </div>
                 ${chatInputInfoDialog}
                 ${chatWithAdmin}
@@ -455,6 +484,14 @@ function openAlert() {
 function closeAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 } 
+
+function openFacebook() {
+    window.open(fb)
+}
+
+function openZalo(){
+    window.open(zl)
+}
 
 function getHour(time){
     let result = ''

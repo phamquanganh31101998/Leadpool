@@ -49,7 +49,7 @@
                 </v-card>
             </v-flex>
             <v-flex lg8>
-                <v-layout row class="mb-2" v-if="showCall === true || showForm == true || showChat == true">
+                <v-layout row class="mb-2" v-if="showCall === true || showForm == true || showChat == true || showFb == true || showZalo == true">
                     <v-flex xs12>
                         <v-card style="width:100%">
                             <v-card-text>
