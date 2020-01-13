@@ -146,7 +146,7 @@
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <v-menu style="max-width: 600px; max-height: 700px;" :close-on-content-click="false" offset-y top v-model="chatObj.demoChatDialog" width="200px" height="500px;">
+                                <!-- <v-menu style="max-width: 600px; max-height: 700px;" :close-on-content-click="false" offset-y top v-model="chatObj.demoChatDialog" width="200px" height="500px;">
                                     <template v-slot:activator="{ on }">
 
                                         <v-btn v-on="on" v-show="chatObj.showChat" fab :dark="dark" :small="small"
@@ -200,8 +200,10 @@
                                             </v-layout>
                                         </v-card-text>
                                     </v-card>
-                                </v-menu>
-
+                                </v-menu> -->
+                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                    <v-icon>message</v-icon>
+                                </v-btn>
                             </div>
                             <div :style="styleBtn" v-else>
                                 <v-btn fab :small="small" :large="large" v-if="facebook.showBtn">
@@ -221,8 +223,7 @@
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
                                 <br />
-                                <v-btn @click="chatObj.demoChatDialog = true" v-show="chatObj.showChat" fab :dark="dark"
-                                    :small="small" :large="large" :color="chatObj.colorChat">
+                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
@@ -329,8 +330,6 @@
                                     <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
                                         Đóng
                                     </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark>Lưu</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-flex>
