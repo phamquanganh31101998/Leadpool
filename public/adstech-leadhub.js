@@ -1,17 +1,18 @@
 window.onload = f
-
+var acId = '';
+var topic = '';
 function f() {
-    var acId = ''
+    var tag = document.createElement("script");
+    tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
+    document.getElementsByTagName("head")[0].appendChild(tag);
+    var tag2 = document.createElement("script");
+    tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js";
+    document.getElementsByTagName("head")[0].appendChild(tag2);
+    // var acId = ''
     var btnId = ''
-    var head = document.querySelector("head")
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://cdn.firebase.com/js/client/2.2.1/firebase.js';
-    head.appendChild(script);
-    var script1 = document.createElement('script');
-    script1.type = 'text/javascript';
-    script1.src = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js';
-    head.appendChild(script1);
+    
+    
+    var chatminiCRM = null;
     var scripts = document.getElementsByTagName("script");
     let a = localStorage.getItem('lead')
     if (a != null && a!= undefined && a != '') {
@@ -50,6 +51,12 @@ function f() {
             }
         }
         writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId)
+        let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo');
+        if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != ''){
+            let chatInfo = JSON.parse(leadhub_chatInfo);
+            document.getElementById('txtName').innerText = chatInfo.name;
+            topic = chatInfo.topic;
+        }
     })
 }
 async function fetchRetry (url, options, n) {
@@ -222,29 +229,29 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         chat = ''
     } else {
         if (style.color == "#fff") {
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}; position:relative" onclick="openChat()">
-                    <img src="http://localhost:8080/message-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         } else if(style.color == "#000"){
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}; position:relative" onclick="openChat()">
-                    <img src="http://localhost:8080/message-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="display: none;position:fixed; bottom:10%; right:10%">
+            <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title">Liên lạc với chúng tôi hihi</h6>
+                                        <h6 class="panel-title">Chat with us!</h6>
                                     </div>
                                     <div class="panel-footer">
                                         <form id="sendInfo">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" required name="name" placeholder="Nhập tên">
-                                                <input type="text" class="form-control" required name="topic" placeholder="Nhập email/SDT">
+                                                <input type="text" class="form-control" required name="name" placeholder="Your name">
+                                                <input type="text" class="form-control" required name="topic" placeholder="Your email/phone">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
                                                 </span>
@@ -259,19 +266,19 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             </div>
         `
         chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="display: none;"> 
+            <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%"> 
                 <div class="row">
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12" >
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title">Xin chào, <span id="txtName"></span></h6>
+                                        <h6 class="panel-title">Hello, <span id="txtName"></span></h6>
                                         
                                     </div>
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="height: 500px; overflow-y: scroll;">
                                         <div class="row">
-                                            <div class="col-sm-12" id="scollDiv">
+                                            <div class="col-sm-12" id="scollDiv"; >
                                                 <table class="table table-hover" id="messageContainer">
                                                     <tr></tr>
                                                 </table>
@@ -281,7 +288,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                     <div class="panel-footer">
                                         <form id="sendMessage">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" id="txtText" placeholder="Nhập tin nhắn tại đây ..">
+                                                <input type="text" required class="form-control" id="txtText" placeholder="ask us a few question ..">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
                                                 </span>
@@ -346,6 +353,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     }
     if (vertical == false) {
         html = `
+                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${form}
@@ -362,6 +371,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 `
     } else {
         html = `
+                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${call}
@@ -390,7 +401,35 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
 }
 
 function openChat(){
-    document.getElementById("chatInputInfo").style.display = "block";
+    let chatInputInfo = document.getElementById("chatInputInfo");
+    let chatAdmin = document.getElementById("chatAdmin")
+    if(chatInputInfo.style.display == 'block' || chatAdmin.style.display == 'block'){
+        chatInputInfo.style.display = 'none';
+        chatAdmin.style.display = 'none';
+    }
+    else {
+        let hasInfo = window.localStorage.getItem('leadhub_chatInfo');
+        if(hasInfo != undefined && hasInfo != null && hasInfo != ''){
+            chatminiCRM.child(topic).on('child_added', function (snapshot){
+                var message = snapshot.val();
+                console.log(message)
+                let html = 
+                '<tr>' + 
+                '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
+                '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
+                '</tr>';
+                $('#messageContainer tr:last').after(html);
+                $('#scollDiv').animate({
+                    scrollTop: $('#scollDiv')[0].scrollHeight
+                }, 0);
+            })
+            startChatting()
+        }
+        else {
+            chatInputInfo.style.display = 'block';
+        }
+    }
+    
 }
 
 function openForm() {
@@ -408,25 +447,91 @@ function closeAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 } 
 
+function getHour(time){
+    let result = ''
+    let timeArr = time.split(' ');
+    result = timeArr[3];
+    return result;
+}
+
 function connectToFirebase(){
+    try {
+        chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    } catch (error) {
+        console.log(error)
+    }
     let form = document.getElementById("sendInfo")
+    var newItems = false;
+    
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
-        let name = formData.get('name');
-        let topic = formData.get('topic');
-        // $('#txtName').text(name);
+        var name = formData.get('name');
+        topic = formData.get('topic');
         document.getElementById('txtName').innerText = name;
-        topic=encodeURIComponent(topic).replace(/\./g, '%2E');
+        topic= acId + '-' + topic.replace(/\./g, '-dot-');
+        let obj = {
+            name: name,
+            topic: topic
+        }
+        window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
+        chatminiCRM.child(topic).on('child_added', function (snapshot){
+            var message = snapshot.val();
+            console.log(message)
+            let html = 
+            '<tr>' + 
+            '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
+            '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
+            '</tr>';
+            $('#messageContainer tr:last').after(html);
+            $('#scollDiv').animate({
+                scrollTop: $('#scollDiv')[0].scrollHeight
+            }, 0);
+        })
         var newItems = false;
         e.preventDefault()
         startChatting();
     })
-    var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
 }
 
 function startChatting(){
     document.getElementById("chatInputInfo").style.display = "none";
     document.getElementById("chatAdmin").style.display = "block";
+    let form = document.getElementById("sendMessage")
+    form.addEventListener('submit', e => {
+        var text = $('#txtText').val();
+        if(text != ''){
+            try {
+                var body = {
+                    topic: topic,
+                    name: document.getElementById('txtName').innerText,
+                    message: text,
+                    accountId: acId,
+                    isCustomer: true
+                }
+                sendMessage(body)
+                document.getElementById('txtText').value = ''
+            }
+            catch(error){
+                alert(error)
+            }
+        }
+        e.preventDefault()
+    })
+}
+
+function sendMessage(body){
+    fetchRetry('http://dev.adstech.vn:9000/leadhub/chats', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }, 5).then(result => {
+        console.log(result)
+    }).catch(error => {
+        console.log(error)
+    })
 }
 
 function send(acId) {

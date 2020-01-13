@@ -55,6 +55,11 @@
         Báo cáo
         <v-icon color="white" class="ml-2">bar_chart</v-icon>
       </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn :color="background[8]" @click="goToChatPage()" depressed style="height: 50px; margin-bottom: 15px;">
+        Chat
+        <v-icon color="white" class="ml-2">question_answer</v-icon>
+      </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat color="#fff" dark v-on="on">
@@ -198,7 +203,7 @@
       currentUser: null,
       contactViewEverything: true,
       contactCommunicateEverything: true,
-      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
+      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
     }),
     components: {
       loginAgen,
@@ -217,8 +222,8 @@
     },
     methods:{
       checkNavColor(number){
-        this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
-        if (number < 8){
+        this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
+        if (number < 9){
           this.background[number] = 'primary';
         }
       },
@@ -270,6 +275,10 @@
         let link = `/contacts/${this.currentUser.accountId}/report`;
         this.$router.push(link);
       },
+      goToChatPage(){
+        let link = `/contacts/${this.currentUser.accountId}/chat`;
+        this.$router.push(link);
+      }
     },
     created(){
       this.getCurrentUser();
