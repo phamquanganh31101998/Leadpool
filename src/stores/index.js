@@ -21,7 +21,8 @@ export const store = new vuex.Store({
         hasNewMessage: false,
         topicChange: '',
         hasNewTopic: false,
-        notification: false
+        notification: false,
+        newTopic: ''
     },
     actions:{
         turnOnExpiredDialog({commit}){
@@ -59,6 +60,9 @@ export const store = new vuex.Store({
         },
         noNewNotification({commit}){
             commit('noNewNotification')
+        },
+        addNewTopic({commit}, data){
+            commit('addNewTopic', data)
         }
     },
     mutations:{
@@ -97,6 +101,9 @@ export const store = new vuex.Store({
         },
         noNewNotification(state){
             state.notification = false
+        },
+        addNewTopic(state, payload){
+            state.newTopic = payload;
         }
     },
     getters: {
@@ -123,6 +130,9 @@ export const store = new vuex.Store({
         },
         notification: state => {
             return state.notification
+        },
+        newTopic: state => {
+            return state.newTopic
         }
     }
 })

@@ -24,7 +24,7 @@
             <v-flex xs12 sm12 md3 lg3 xl3 class="mr-3" style=" border-right: 1px solid #DCDCDC;">
                 <div style="height: 100%;">
                     <h1 class="ml-3"> Chat</h1>
-                    <div class="fullHeight pr-3">
+                    <div class="fullHeight pr-3" style="background-color: #FAFAFA">
                         <v-list two-line>
                             <v-subheader>
                                 Danh sách các cuộc trò chuyện
@@ -46,10 +46,13 @@
                                         <v-list-tile-title>{{item.text}}</v-list-tile-title>
                                         <v-list-tile-sub-title>{{item.lastTime}}</v-list-tile-sub-title>
                                     </v-list-tile-content>
+                                    <v-list-tile-action v-if="item.status == 'UNREAD'">
+                                        <v-icon style="font-size: 10px" color="blue">brightness_1</v-icon>
+                                    </v-list-tile-action>
                                 </v-list-tile>
                             </template>
                         </v-list>
-                        <v-btn block small v-if="topicPage < allTopicPage">Xem các cuộc trò chuyện cũ hơn</v-btn>
+                        <v-btn block small v-if="topicPage < allTopicPage" @click="getOlderTopic()">Xem các cuộc trò chuyện cũ hơn</v-btn>
                     </div>
                     
                 </div>
@@ -170,7 +173,7 @@ export default {
             chatminiCRM: null,
             avatar: '',
             countNewMessage: 0,
-            countNewTopic: 0
+            countNewTopic: 0,
             // chatminiCRMArr: []
         }
     },

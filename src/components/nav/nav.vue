@@ -60,131 +60,8 @@
         Chat
         <v-icon color="white" class="ml-2">question_answer</v-icon>
         <v-icon v-if="notification" color="red" class="ml-2" style="font-size: 10px">brightness_1</v-icon>
-         <!-- <span style="color: red;">(có tin nhắn mới)</span> -->
       </v-btn>
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Liên lạc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile @click="goToContactsPage()">
-            <v-list-tile-title>Các liên lạc</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Companies</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Activity Feed</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="goToListsPage()">
-            <v-list-tile-title>Danh sách</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Converations <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Inbox</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Chatflows</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Snippets</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Templates</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Marketing <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Inbox</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Sales <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Deals</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="goToMyTaskPage()">
-            <v-list-tile-title>Công việc</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Documents</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Meetings</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Services <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Tickets</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Reports <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Analytics tools</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Dashboards</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Marketplace <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Listings</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Provider Info</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Transaction</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
+      
     </v-toolbar-items>
     <v-spacer></v-spacer>
     <v-btn icon @click="goToSettingsPage()" style="padding-bottom: 20px;">
@@ -209,7 +86,8 @@
       currentUser: null,
       contactViewEverything: true,
       contactCommunicateEverything: true,
-      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
+      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'],
+
     }),
     components: {
       loginAgen,
@@ -218,7 +96,8 @@
     computed: {
           ...mapGetters({
               colorNumber: 'colorNumber',
-              notification: 'notification'
+              notification: 'notification',
+              newTopic: 'newTopic'
               // ...
       })
     },
@@ -226,12 +105,21 @@
       colorNumber(){
         this.checkNavColor(this.colorNumber);
       },
-      notification(){
-        console.log(this.notification)
-        if(this.notification == true){
-          this.$store.dispatch('noNewNotification')
-        }
+      newTopic(){
+        const {
+              dispatch
+          } = this.$store;
+        this.chatminiCRM.child(this.newTopic).on('child_added', function(snapshot){
+            console.log('Có tin nhắn mới')
+            dispatch('newNotification')
+          })
       }
+      // notification(){
+      //   console.log(this.notification)
+      //   if(this.notification == true){
+      //     // this.$store.dispatch('noNewNotification')
+      //   }
+      // }
     },
     methods:{
       getTopic(){
@@ -262,14 +150,20 @@
           const {
               dispatch
           } = this.$store;
-          if(this.newItem == true){
-              this.chatminiCRM.child("topic").child(this.currentUser.accountId, 1).on('child_added', function(message) {
-                  console.log('Có chủ đề mới')
-                  var message = message.val();
-                  dispatch('newNotification')
-              });
-          }
-          this.newItem == true
+          this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
+                console.log('Có chủ đề mới')
+                var message = message.val();
+                // console.log(message)
+                dispatch('newNotification')
+                dispatch('addNewTopic', message.topic)
+            });
+          // if(this.newItem == true){
+            
+          // }
+          // else {
+          //   this.newItem = true;
+          // }
+          // this.newItem = true
       },
       checkNavColor(number){
         this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
