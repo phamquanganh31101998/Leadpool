@@ -243,18 +243,20 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">
-                                        <h6 class="panel-title">Chat with us!</h6>
+                                <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                    <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <h6 style="color: white" class="panel-title">Leave your info here, then you can chat with us right now!</h6>
                                     </div>
                                     <div class="panel-footer">
                                         <form id="sendInfo">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" required name="name" placeholder="Your name">
-                                                <input type="text" class="form-control" required name="topic" placeholder="Your email/phone">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
-                                                </span>
+                                            <div class="input-group input-group-sm" style="width: 100%">
+                                                <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Your name">
+                                                <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Your email/phone">
+                                                
+                                            </div>
+                                            <br>
+                                            <div class="input-group-btn">
+                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn btn-block" type="submit" id="btnSend">Chat with us!</button>
                                             </div>
                                         </form>
                                     </div>
@@ -271,12 +273,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     <div class="col-md-5 col-md-offset-7">
                         <div class="row">
                             <div class="col-md-12" >
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">
-                                        <h6 class="panel-title">Hello, <span id="txtName"></span></h6>
-                                        
+                                <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                    <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <h6 class="panel-title" style="color: white; ">Hello, <span id="txtName"></span></h6>
+                                        <br>
+                                        <h6 class="panel-title" style="color: white">
+                                            Leave your message to connect with us! 
+                                        </h6>
                                     </div>
-                                    <div class="panel-body" style="height: 500px; overflow-y: scroll;">
+                                    <div class="panel-body" style="height: 400px; overflow-y: scroll;">
                                         <div class="row">
                                             <div class="col-sm-12" id="scollDiv"; >
                                                 <table class="table table-hover" id="messageContainer">
@@ -290,7 +295,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                             <div class="input-group input-group-sm">
                                                 <input type="text" required class="form-control" id="txtText" placeholder="ask us a few question ..">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="submit" id="btnSend">Send</button>
+                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Send</button>
                                                 </span>
                                             </div>
                                         </form>
@@ -382,10 +387,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 ${chatInputInfoDialog}
                 ${chatWithAdmin}
                 ${form1}
-                ${css}
-                
-                `
-                
+                ${css}`
     }
 
     var div = document.createElement("div");
@@ -413,11 +415,18 @@ function openChat(){
         if(hasInfo != undefined && hasInfo != null && hasInfo != ''){
             chatminiCRM.child(topic).on('child_added', function (snapshot){
                 var message = snapshot.val();
-                console.log(message)
+                let isCustomer = '';
+                if (message.isCustomer == true || message.isCustomer == null){
+                    isCustomer = '';
+                }
+                if (message.isCustomer == false){
+                    isCustomer = ' (Admin) '
+                }
+                // + getHour(message.time)
                 let html = 
                 '<tr>' + 
-                '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
-                '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
+                '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' + 
+                '<td>' + message.message + ' (' +')'+'</td>' + 
                 '</tr>';
                 $('#messageContainer tr:last').after(html);
                 $('#scollDiv').animate({
@@ -477,10 +486,11 @@ function connectToFirebase(){
         window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
         chatminiCRM.child(topic).on('child_added', function (snapshot){
             var message = snapshot.val();
-            console.log(message)
+            // console.log(message)
+            let isCustomerText = (message.isCustomer == false) ? '(admin)' : ''
             let html = 
             '<tr>' + 
-            '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + ': </td>' + 
+            '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' + 
             '<td>' + message.message + ' ('+ getHour(message.time) +')'+'</td>' + 
             '</tr>';
             $('#messageContainer tr:last').after(html);

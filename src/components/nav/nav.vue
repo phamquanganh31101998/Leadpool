@@ -59,6 +59,8 @@
       <v-btn :color="background[8]" @click="goToChatPage()" depressed style="height: 50px; margin-bottom: 15px;">
         Chat
         <v-icon color="white" class="ml-2">question_answer</v-icon>
+        <v-icon v-if="notification" color="red" class="ml-2" style="font-size: 10px">brightness_1</v-icon>
+         <!-- <span style="color: red;">(có tin nhắn mới)</span> -->
       </v-btn>
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -194,11 +196,15 @@
   </v-toolbar>
 </template>
 <script>
+  import chatAPI from '../../services/chat.service'
   import {mapGetters} from 'vuex'
   import loginAgen from './loginAgen'
   import user from './user'
+  import moment from 'moment'
   export default {
     data: () => ({
+      chatminiCRM: null,
+      newItem: false,
       divider: true,
       currentUser: null,
       contactViewEverything: true,
@@ -211,16 +217,60 @@
     },
     computed: {
           ...mapGetters({
-              colorNumber: 'colorNumber'
+              colorNumber: 'colorNumber',
+              notification: 'notification'
               // ...
       })
     },
     watch: {
       colorNumber(){
         this.checkNavColor(this.colorNumber);
+      },
+      notification(){
+        console.log(this.notification)
+        if(this.notification == true){
+          this.$store.dispatch('noNewNotification')
+        }
       }
     },
     methods:{
+      getTopic(){
+          chatAPI.getTopic(this.currentUser.accountId, 1).then(result => {
+              const {
+                  dispatch
+              } = this.$store;
+              let time = moment();
+              if(result.code == 'SUCCESS'){
+                  let res = result.response.results;
+                  for (let i = 0; i < res.length; i++){
+                      this.chatminiCRM.child(res[i].topic).on('child_added', function(snapshot){
+                        console.log('Có tin nhắn mới')
+                        dispatch('newNotification')
+                      })
+                  }
+              }
+              else {
+                  dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+              }
+          }).catch(error => {
+              console.log(error)
+          }).finally(() => {
+              this.setListenToNewTopic()
+          })
+      },
+      setListenToNewTopic(){
+          const {
+              dispatch
+          } = this.$store;
+          if(this.newItem == true){
+              this.chatminiCRM.child("topic").child(this.currentUser.accountId, 1).on('child_added', function(message) {
+                  console.log('Có chủ đề mới')
+                  var message = message.val();
+                  dispatch('newNotification')
+              });
+          }
+          this.newItem == true
+      },
       checkNavColor(number){
         this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
         if (number < 9){
@@ -238,6 +288,7 @@
             this.contactCommunicateEverything = true;
           } 
         }
+        this.getTopic()
       },
       goToContactsPage(){
         let link = `/contacts/${this.currentUser.accountId}`
@@ -278,10 +329,12 @@
       goToChatPage(){
         let link = `/contacts/${this.currentUser.accountId}/chat`;
         this.$router.push(link);
-      }
+      },
+      
     },
     created(){
       this.getCurrentUser();
+      this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     }
   }
 </script>
