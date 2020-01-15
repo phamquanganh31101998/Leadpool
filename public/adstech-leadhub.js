@@ -11,7 +11,7 @@ var utm_term = null;
 var utm_content = null;
 var gclid = null;
 var arrTrack = []
-var styleBtnChat = null;
+var styleBtnChat = '';
 function f() {
     var tag = document.createElement("script");
     tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
@@ -225,7 +225,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
 
                     /* Set a style for the submit/login button */
                     .form-container .btn {
-                        background-color:${styleBtnForm.buttonColor};
                         color: white;
                         border: none;
                         cursor: pointer;
@@ -400,7 +399,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         ${city}
                         ${bussiness}
                         <div style="padding:0px 14px 0px 14px">
-                            <button type="submit" class="btn">${styleBtnForm.description}</button>
+                            <button type="submit" class="btn" style="background-color:${styleBtnForm.buttonColor};">${styleBtnForm.description}</button>
                         </div>
                     </form>
                 </div>
