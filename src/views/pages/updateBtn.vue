@@ -133,43 +133,43 @@
                                 </v-layout>
                             </v-layout>
                             <div :style="styleBtn" v-if="xy">
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <v-btn v-if="facebook.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <v-btn v-if="zalo.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
-                                </v-btn>
-                                <v-btn v-show="facebook.showBtn" fab :small="small" :large="large" v-if="facebook.showBtn">
-                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
-                                </v-btn>
-                                <v-btn v-show="zalo.showBtn" fab :small="small" :large="large" v-if="zalo.showBtn">
-                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
                             </div>
                             <div :style="styleBtn" v-else>
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <v-btn v-if="facebook.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br v-if="zalo.showBtn"/>
+                                <v-btn v-if="zalo.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br v-if="form"/>
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <br v-if="call"/>
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <br v-if="chatObj.showChat"/>
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
-                                </v-btn>
-                                <br />
-                                <v-btn v-show="facebook.showBtn" fab :small="small" :large="large" v-if="facebook.showBtn">
-                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
-                                </v-btn>
-                                <br />
-                                <v-btn v-show="zalo.showBtn" fab :small="small" :large="large" v-if="zalo.showBtn">
-                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
                             </div>
                         </v-flex>
@@ -220,6 +220,8 @@
                                         <v-flex xs12>
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                            <h3>Thông điệp nút</h3>
+                                            <v-text-field v-model="formDescription" outlined dense></v-text-field>
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
@@ -592,6 +594,7 @@
                     label: 'Nghề nghiệp'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
+                formDescription: 'Đăng ký ngay',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
                 xy: true,
                 rule: [
@@ -755,7 +758,7 @@
                 const output = [...new Set(this.propertiesbtn)]
                 let form = {
                     buttonColor: this.colorForm,
-                    description: "Gửi ngay đó",
+                    description: this.formDescription,
                     formMessage: "Để lại lời nhắn",
                     formMessageReturn: this.alertFinish,
                     title: this.nameForm,
@@ -1011,6 +1014,7 @@
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
                             this.nameForm = result.response.listButton[i].title
+                            this.formDescription = result.response.listButton[i].description
                             for (let index = 0; index < result.response.listButton[i].properties
                                 .length; index++) {
                                 let a = {
