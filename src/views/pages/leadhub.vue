@@ -31,12 +31,12 @@
                                         <v-list-tile-action>
                                             <v-layout row>
                                                 <v-btn flat icon color="warning"
-                                                @click="updatedGbtn(item.leadHubButtonGroupId)">
-                                                <v-icon>edit</v-icon>
-                                            </v-btn>
-                                            <v-btn flat icon color="red" @click="deleteConfirm = true">
-                                                <v-icon>delete</v-icon>
-                                            </v-btn>
+                                                    @click="updatedGbtn(item.leadHubButtonGroupId)">
+                                                    <v-icon>edit</v-icon>
+                                                </v-btn>
+                                                <v-btn flat icon color="red" @click="deleteConfirm = true">
+                                                    <v-icon>delete</v-icon>
+                                                </v-btn>
                                             </v-layout>
                                         </v-list-tile-action>
 
@@ -49,7 +49,8 @@
                 </v-card>
             </v-flex>
             <v-flex lg8>
-                <v-layout row class="mb-2" v-if="showCall === true || showForm == true || showChat == true">
+                <v-layout row class="mb-2"
+                    v-if="showCall === true || showForm == true || showChat == true || showFb == true || showZalo == true">
                     <v-flex xs12>
                         <v-card style="width:100%">
                             <v-card-text>
@@ -87,27 +88,51 @@
                                             <v-img src="../../../mobile.png" height="600px"
                                                 style="position:relative; width:290px">
                                                 <div :style="styleBtn" v-if="show && selected.vertical == false">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor"
+                                                        v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor"
+                                                        v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor"
+                                                        v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <br>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <br />
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtn" v-if="show && selected.vertical == true">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor"
+                                                        v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor"
+                                                        v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor"
+                                                        v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -117,27 +142,51 @@
                                         <v-card flat>
                                             <v-img src="../../../desktop.png" height="500px" style="position:relative">
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == false">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor"
+                                                        v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor"
+                                                        v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
                                                     <br>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor"
+                                                        v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <br>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <br />
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                                 <div :style="styleBtnDesktop" v-if="show && selected.vertical == true">
-                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor"
+                                                        v-if="showCall">
                                                         <v-icon>phone_in_talk</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor"
+                                                        v-if="showForm">
                                                         <v-icon>email</v-icon>
                                                     </v-btn>
-                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                                                    <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor"
+                                                        v-if="showChat">
                                                         <v-icon>message</v-icon>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showFb">
+                                                        <v-img src="/mess.png" alt="facebook" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
+                                                    </v-btn>
+                                                    <v-btn fab small v-if="showZalo">
+                                                        <v-img src="/zalo.png" alt="zalo" style="width:100%"
+                                                            aspect-ratio="1"></v-img>
                                                     </v-btn>
                                                 </div>
                                             </v-img>
@@ -159,11 +208,11 @@
                     <p v-if="deleteConfirm">Gồm có: {{selected.listButton.length}} nút</p>
                 </v-card-text>
                 <v-card-actions>
-          
-          <v-btn color="gray" flat @click="deleteConfirm = false">Hủy bỏ</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" flat @click="deleteGbtn()">Đồng ý</v-btn>
-        </v-card-actions>
+
+                    <v-btn color="gray" flat @click="deleteConfirm = false">Hủy bỏ</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" flat @click="deleteGbtn()">Đồng ý</v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
         <alert />
@@ -203,6 +252,8 @@
                 checkData: true,
                 dark: true,
                 deleteConfirm: false,
+                showFb: false,
+                showZalo: false
             }
         },
         watch: {
@@ -242,7 +293,7 @@
             }
         },
         methods: {
-            returnTime(data){
+            returnTime(data) {
                 return moment(data).lang('vi').format('llll')
             },
             gotoSetting() {
@@ -263,6 +314,8 @@
                 this.showCall = false
                 this.showForm = false
                 this.showChat = false
+                this.showFb = false
+                this.showZalo = false
                 for (let i = 0; i < key.listButton.length; i++) {
                     if (key.listButton[i].type == "CALL") {
                         this.styleBtnCall = key.listButton[i]
@@ -270,14 +323,18 @@
                     } else if (key.listButton[i].type == "FORM") {
                         this.styleBtnForm = key.listButton[i]
                         this.showForm = true
-                    } else if (key.listButton[i].type == "CHAT"){
+                    } else if (key.listButton[i].type == "CHAT") {
                         this.styleBtnChat = key.listButton[i]
                         this.showChat = true
+                    } else if (key.listButton[i].type == "FACEBOOK") {
+                        this.showFb = true
+                    } else if (key.listButton[i].type == "ZALO") {
+                        this.showZalo = true
                     }
                 }
                 if (key.style.color == "#fff") {
                     this.dark = true
-                }else if(key.style.color == "#000"){
+                } else if (key.style.color == "#000") {
                     this.dark = false
                 }
             },

@@ -10,10 +10,10 @@
                                     <h3>Các tiện ích tương tác</h3>
                                 </v-flex>
                                 <v-flex xs12 class="mt-3">
-                                    <v-layout row>
+                                    <v-layout row wrap>
                                         <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogCall = true, dialogForm = false, chatObj.dialogChat = false">
+                                                @click="dialogCall = true, dialogForm = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>phone_in_talk</v-icon><br>
                                                     <span>Gọi ngay</span>
@@ -23,7 +23,7 @@
                                         </v-flex>
                                         <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogForm = true, dialogCall = false, chatObj.dialogChat = false">
+                                                @click="dialogForm = true, dialogCall = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>mail_outline</v-icon><br>
                                                     <span>Đăng ký</span>
@@ -33,13 +33,35 @@
                                         </v-flex>
                                         <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = true">
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = true, facebook.show = false, zalo.show = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>question_answer</v-icon><br>
                                                     <span>Chat</span>
                                                 </v-flex>
                                             </v-card>
                                             <v-checkbox v-model="chatObj.showChat" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = false, facebook.show = true, zalo.show = false">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-img src="/mess.png" alt="facebook"
+                                                        style="width:30px; margin-left:33%" aspect-ratio="1"></v-img>
+                                                    <span>FaceBook</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="facebook.showBtn" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = true">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-img src="/zalo.png" alt="facebook"
+                                                        style="width:30px; margin-left:33%" aspect-ratio="1"></v-img>
+                                                    <span>Zalo</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="zalo.showBtn" class="mx-2 ml-5"></v-checkbox>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -111,6 +133,12 @@
                                 </v-layout>
                             </v-layout>
                             <div :style="styleBtn" v-if="xy">
+                                <v-btn fab :small="small" :large="large" v-if="facebook.showBtn">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <v-btn fab :small="small" :large="large" v-if="zalo.showBtn">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
                                 <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
@@ -120,11 +148,12 @@
                                 </v-btn>
                                 <!-- <v-menu style="max-width: 600px; max-height: 700px;" :close-on-content-click="false" offset-y top v-model="chatObj.demoChatDialog" width="200px" height="500px;">
                                     <template v-slot:activator="{ on }">
-                                        
-                                        <v-btn v-on="on" v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+
+                                        <v-btn v-on="on" v-show="chatObj.showChat" fab :dark="dark" :small="small"
+                                            :large="large" :color="chatObj.colorChat">
                                             <v-icon>message</v-icon>
                                         </v-btn>
-                                        
+
                                     </template>
                                     <v-card v-if="chatObj.demoChatSection == 'signup'">
                                         <v-toolbar card dark :color="chatObj.colorChat">
@@ -137,9 +166,12 @@
                                         <v-card-text>
                                             <v-layout row>
                                                 <v-flex>
-                                                    <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense></v-text-field>
-                                                    <v-text-field label="Email" v-model="chatObj.emailUser" outlined dense></v-text-field>
-                                                    <v-btn block dark :color="chatObj.colorChat" @click="chatObj.demoChatSection = 'signed'">Chat now!</v-btn>
+                                                    <v-text-field label="Tên" v-model="chatObj.nameUser" outlined dense>
+                                                    </v-text-field>
+                                                    <v-text-field label="Email" v-model="chatObj.emailUser" outlined
+                                                        dense></v-text-field>
+                                                    <v-btn block dark :color="chatObj.colorChat"
+                                                        @click="chatObj.demoChatSection = 'signed'">Chat now!</v-btn>
                                                 </v-flex>
                                             </v-layout>
                                         </v-card-text>
@@ -174,6 +206,14 @@
                                 </v-btn>
                             </div>
                             <div :style="styleBtn" v-else>
+                                <v-btn fab :small="small" :large="large" v-if="facebook.showBtn">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br />
+                                <v-btn fab :small="small" :large="large" v-if="zalo.showBtn">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br />
                                 <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
@@ -280,7 +320,8 @@
                                 <v-card-text>
                                     <v-layout row wrap class="pl-5 pr-3">
                                         <v-flex xs12>
-                                            <v-btn class="mt-2 ml-5" :color="chatObj.colorChat" @click="chatObj.colorDialog = true" dark>
+                                            <v-btn class="mt-2 ml-5" :color="chatObj.colorChat"
+                                                @click="chatObj.colorDialog = true" dark>
                                                 Chọn màu sắc nút</v-btn>
                                         </v-flex>
                                     </v-layout>
@@ -288,6 +329,60 @@
                                 <v-card-actions>
                                     <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
                                         Đóng
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="facebook.show">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt Facebook</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <h4>Link facebook của bạn</h4>
+                                            <v-text-field v-model="facebook.url" :rules="rule"
+                                                placeholder="Nhập link facebook" outlined dense>
+                                            </v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="facebook.show = false">
+                                        Đóng
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" dark text
+                                        @click="alertSuccess('Lưu nút thành công'),facebook.show = false">
+                                        Lưu
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="zalo.show">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt zalo</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <h4>Số điện thoại zalo của bạn</h4>
+                                            <v-text-field v-model="zalo.url" :rules="rule"
+                                                placeholder="Nhập số điện thoại" outlined dense>
+                                            </v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="zalo.show = false">
+                                        Đóng
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" dark text
+                                        @click="alertSuccess('Lưu nút thành công'),zalo.show = false">
+                                        Lưu
                                     </v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -469,6 +564,16 @@
         },
         data() {
             return {
+                facebook: {
+                    url: '',
+                    show: false,
+                    showBtn: false
+                },
+                zalo: {
+                    url: '',
+                    show: false,
+                    showBtn: false
+                },
                 chatObj: {
                     showChat: false,
                     colorChat: '#8E00FF',
@@ -478,11 +583,10 @@
                     nameUser: '',
                     emailUser: '',
                     demoChatSection: 'signup',
-                    chatHistory: [
-                        {
+                    chatHistory: [{
                             text: 'abc',
                             value: 'send'
-                        }, 
+                        },
                         {
                             text: 'abc',
                             value: 'send'
@@ -709,10 +813,18 @@
                 }
                 const output = []
                 this.properties.forEach((element) => {
-	                    if (!output.includes(element)){
-    	                output.push(element)
+                    if (!output.includes(element)) {
+                        output.push(element)
                     }
                 });
+                let style = {
+                    bottom: null,
+                    top: null,
+                    left: null,
+                    right: null,
+                    color: this.colorText,
+                    size: `${this.sizeButton}`
+                }
                 let form = {
                     buttonColor: this.colorForm,
                     description: "Gửi ngay đó",
@@ -737,303 +849,58 @@
                     title: "Chat ngay thôi",
                     type: "CHAT",
                 }
-                if(this.chatObj.showChat == true){
-                    if (this.call == true && this.form == true) {
-                        if (this.text == null || this.text == '') {
-                            this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                        } else {
-                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        form,
-                                        call,
-                                        chat
-                                    ],
-                                    style: {
-                                        bottom: 5,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: 2,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            } else {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        form,
-                                        call,
-                                        chat
-                                    ],
-                                    style: {
-                                        bottom: this.bottom,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: this.left,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            }
-                        }
-                    } else if (this.call == false && this.form == true) {
-                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                listButton: [
-                                    form, chat
-                                ],
-                                style: {
-                                    bottom: 5,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: 2,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.callApiCreate(btn)
-                        } else {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                listButton: [
-                                    form, chat
-                                ],
-                                style: {
-                                    bottom: this.bottom,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: this.left,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.callApiCreate(btn)
-                        }
-                    } else if (this.call == true && this.form == false) {
-                        if (this.text == null || this.text == '') {
-                            this.alertError('Chưa điền số điện thoại ở nút Click to Call')
-                        } else {
-                            this.requestApi = true
-                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        call, chat
-                                    ],
-                                    style: {
-                                        bottom: 5,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: 2,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            } else {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        call, chat
-                                    ],
-                                    style: {
-                                        bottom: this.bottom,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: this.left,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            }
-                        }
-                    } else {
-                        this.requestApi = true
-                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        chat
-                                    ],
-                                    style: {
-                                        bottom: 5,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: 2,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            } else {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        chat
-                                    ],
-                                    style: {
-                                        bottom: this.bottom,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: this.left,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            }
-                    }
+                let facebook = {
+                    phoneNumber: this.facebook.url,
+                    type: "FACEBOOK"
                 }
-                else {
-                    if (this.call == true && this.form == true) {
-                        if (this.text == null || this.text == '') {
-                            this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                        } else {
-                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        form,
-                                        call
-                                    ],
-                                    style: {
-                                        bottom: 5,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: 2,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            } else {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        form,
-                                        call
-                                    ],
-                                    style: {
-                                        bottom: this.bottom,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: this.left,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            }
-                        }
-                    } else if (this.call == false && this.form == true) {
-                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                listButton: [
-                                    form
-                                ],
-                                style: {
-                                    bottom: 5,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: 2,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.callApiCreate(btn)
-                        } else {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                listButton: [
-                                    form
-                                ],
-                                style: {
-                                    bottom: this.bottom,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: this.left,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.callApiCreate(btn)
-                        }
-                    } else if (this.call == true && this.form == false) {
-                        if (this.text == null || this.text == '') {
-                            this.alertError('Chưa điền số điện thoại ở nút Click to Call')
-                        } else {
-                            this.requestApi = true
-                            if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        call
-                                    ],
-                                    style: {
-                                        bottom: 5,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: 2,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            } else {
-                                let btn = {
-                                    name: this.nameBtn,
-                                    vertical: this.xy,
-                                    listButton: [
-                                        call
-                                    ],
-                                    style: {
-                                        bottom: this.bottom,
-                                        top: this.top,
-                                        right: this.right,
-                                        color: this.colorText,
-                                        left: this.left,
-                                        size: `${this.sizeButton}`,
-                                    }
-                                }
-                                this.callApiCreate(btn)
-                            }
-                        }
-                    } else {
-                        this.alertError("Bạn chưa chọn nút cần tạo")
-                    }
+                let zalo = {
+                    phoneNumber: this.zalo.url,
+                    type: "ZALO"
                 }
-                
+                let btn = {
+                    name: this.nameBtn,
+                    vertical: this.xy,
+                    listButton: [],
+                    style: style
+                }
+                if(this.bottom == null && this.top == null && this.left == null && this.right == null){
+                    style.bottom = 5,
+                    style.top = null,
+                    style.right = 2,
+                    style.left = null
+                }else {
+                    style.bottom = this.bottom,
+                    style.top = this.top,
+                    style.right = this.right,
+                    style.left = this.left
+                }
+                if (this.chatObj.showChat == true){
+                    btn.listButton.push(chat)
+                }
+                if (this.call == true) {
+                    btn.listButton.push(call)
+                }
+                if (this.form == true) {
+                    btn.listButton.push(form)
+                }
+                if (this.facebook.showBtn == true) {
+                    btn.listButton.push(facebook)
+                }
+                if (this.zalo.showBtn == true) {
+                    btn.listButton.push(zalo)
+                }
+                this.callApiCreate(btn)
             },
             callApiCreate(btn) {
                 if (this.requestApi == true) {
                     leadhubService.createGbtn(this.idAccount, btn).then(result => {
-                    if (result.code == "SUCCESS") {
-                        this.alertSuccess('Thêm nút thành công')
-                        router.replace(`/contacts/${this.idAccount}/leadhub`)
-                    } else {
-                        this.alertError(result.message)
-                    }
-                })
+                        if (result.code == "SUCCESS") {
+                            this.alertSuccess('Thêm nút thành công')
+                            router.replace(`/contacts/${this.idAccount}/leadhub`)
+                        } else {
+                            this.alertError(result.message)
+                        }
+                    })
                 }
             },
             cancel() {
@@ -1047,7 +914,7 @@
 </script>
 <style scoped>
     .v-dialog {
-        position: fixed !important; 
+        position: fixed !important;
         bottom: 0 !important;
         right: 0 !important;
     }
