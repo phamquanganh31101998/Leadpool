@@ -139,10 +139,10 @@
                                 <v-btn fab :small="small" :large="large" v-if="zalo.showBtn">
                                     <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
@@ -201,7 +201,7 @@
                                         </v-card-text>
                                     </v-card>
                                 </v-menu> -->
-                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
@@ -209,21 +209,21 @@
                                 <v-btn fab :small="small" :large="large" v-if="facebook.showBtn">
                                     <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
-                                <br />
+                                <br v-if="zalo.showBtn"/>
                                 <v-btn fab :small="small" :large="large" v-if="zalo.showBtn">
                                     <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <br v-if="form"/>
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <br v-if="call"/>
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <br v-if="chatObj.showChat"/>
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
@@ -275,6 +275,8 @@
                                         <v-flex xs12>
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                            <h3>Thông điệp nút</h3>
+                                            <v-text-field v-model="formDescription" outlined dense></v-text-field>
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
@@ -652,6 +654,7 @@
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
+                formDescription: 'Gửi đăng ký',
                 xy: true,
                 rule: [
                     v => !!v || 'Trường này không được bỏ trống'
@@ -827,7 +830,7 @@
                 }
                 let form = {
                     buttonColor: this.colorForm,
-                    description: "Gửi ngay đó",
+                    description: this.formDescription,
                     formMessage: "Để lại lời nhắn",
                     formMessageReturn: this.alertFinish,
                     title: this.nameForm,

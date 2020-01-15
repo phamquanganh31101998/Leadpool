@@ -146,6 +146,10 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     var city = ''
     var bussiness = ''
     var position = ''
+    let brCall = ''
+    let brForm = ''
+    let brChat = ''
+    let brZalo = ''
     if (style.left == '45') {
         position = `.adstech-group-btn {
             position:fixed;
@@ -190,10 +194,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         z-index: 999999;
                         background-color:#fff;
                     }
-
+                    #adstech-form{
+                        padding-bottom:20px
+                    }
                     /* Add styles to the form container */
                     .form-container {
-                        max-width: 300px;
+                        max-width: 400px;
                         padding: 10px;
                         background-color: #fff;
                     }
@@ -219,11 +225,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
 
                     /* Set a style for the submit/login button */
                     .form-container .btn {
-                        background-color: #4CAF50;
+                        background-color:${styleBtnForm.buttonColor};
                         color: white;
                         border: none;
                         cursor: pointer;
-                        width: 50%;
+                        width: 100%;
                         margin-bottom: 10px;
                         opacity: 0.8;
                         float: left;
@@ -265,12 +271,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                             <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
                     </button>`
+            brCall = '<br />'
         } else if (style.color == "#000") {
             call = `<button class="adstech-btn" onclick="openCall()" style="background-color:${styleBtnCall.buttonColor}">
                         <a href="tel:${styleBtnCall.phoneNumber}">
                             <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
                     </button>`
+            brCall = '<br />'
         }
     }
     if (styleBtnChat == null || styleBtnChat == '') {
@@ -280,10 +288,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brChat = '<br />'
         } else if (style.color == "#000") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brChat = '<br />'
         }
         chatInputInfoDialog = `
             <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
@@ -373,12 +383,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
                     <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brForm = '<br />'
         } else if (style.color == "#000") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
                     <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brForm = '<br />'
         }
-        form1 = `<div class="adstech-form" id="myForm">
+        form1 = `<div class="adstech-form" id="adstech-form">
+                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px">&times;</button></div>
                     <form class="form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
                         ${name}
@@ -386,10 +399,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         ${email}
                         ${city}
                         ${bussiness}
-                        
                         <div style="padding:0px 14px 0px 14px">
-                            <button type="submit" class="btn">Xác nhận</button>
-                            <button type="button" class="btn cancel" onclick="closeForm()">Hủy bỏ</button>
+                            <button type="submit" class="btn">${styleBtnForm.description}</button>
                         </div>
                     </form>
                 </div>
@@ -397,8 +408,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 <div id="adstech-alert">
                     ${styleBtnForm.formMessageReturn}
                 </div>`
-
-
     }
     if (styleBtnFacebook == null || styleBtnFacebook == '') {
         facebook = ''
@@ -418,15 +427,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
-                    ${form}
-                    <br />
-                    ${call}
-                    <br />
-                    ${chat}
-                    <br />
                     ${facebook}
-                    <br />
+                    ${brZalo}
                     ${zalo}
+                    ${brForm}
+                    ${form}
+                    ${brCall}
+                    ${call}
+                    ${brChat}
+                    ${chat}
                 </div>
                 ${chatInputInfoDialog}
                 ${chatWithAdmin}
@@ -514,7 +523,7 @@ function openChat() {
 }
 
 function openForm() {
-    document.getElementById("myForm").style.display = "block";
+    document.getElementById("adstech-form").style.display = "block";
 }
 
 function openCall(){
@@ -522,7 +531,7 @@ function openCall(){
 }
 
 function closeForm() {
-    document.getElementById("myForm").style.display = "none";
+    document.getElementById("adstech-form").style.display = "none";
 }
 
 function openAlert() {
