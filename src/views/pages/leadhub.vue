@@ -85,7 +85,7 @@
                                 <v-tabs-items v-model="tab">
                                     <v-tab-item>
                                         <v-card flat style="padding-left:32%">
-                                            <v-img src="../../../mobile.png" height="600px"
+                                            <v-img src="../../../ip.png" height="600px"
                                                 style="position:relative; width:290px">
                                                 <div :style="styleBtn" v-if="show && selected.vertical == false">
                                                     <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor"

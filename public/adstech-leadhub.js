@@ -11,6 +11,7 @@ var utm_term = null;
 var utm_content = null;
 var gclid = null;
 var arrTrack = []
+var styleBtnChat = null;
 function f() {
     var tag = document.createElement("script");
     tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
@@ -67,7 +68,7 @@ function f() {
         }
     }
     //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}
-    //test: {{rooturl}}/leadhub/account/5d1dd258f0aa61074608b0e3/group-buttons/5e145b4353c3c2000149aa15 (note: on HTTP)
+    //test: http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId} (note: on HTTP)
     fetchRetry(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
@@ -80,7 +81,6 @@ function f() {
         var vertical = result.response.vertical
         var styleBtnCall = null
         var styleBtnForm = null
-        var styleBtnChat = null
         var styleBtnFacebook = null
         var styleBtnZalo = null
         for (let i = 0; i < result.response.listButton.length; i++) {
@@ -278,11 +278,11 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         if (style.color == "#fff") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         } else if (style.color == "#000") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
         }
         chatInputInfoDialog = `
@@ -293,18 +293,18 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                             <div class="col-md-12">
                                 <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
                                     <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 style="color: white" class="panel-title">Leave your info here, then you can chat with us right now!</h6>
-                                    </div>
+                                        <h6 style="color: white" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
+                                    </div> 
                                     <div class="panel-footer">
                                         <form id="sendInfo">
                                             <div class="input-group input-group-sm" style="width: 100%">
-                                                <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Your name">
-                                                <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Your email/phone">
+                                                <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
+                                                <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
                                                 
                                             </div>
                                             <br>
                                             <div class="input-group-btn">
-                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn btn-block" type="submit" id="btnSend">Chat with us!</button>
+                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn btn-block" type="submit" id="btnSend">Chat</button>
                                             </div>
                                         </form>
                                     </div>
@@ -318,21 +318,17 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         chatWithAdmin = `
             <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%"> 
                 <div class="row">
-                    <div class="col-md-5 col-md-offset-7">
+                    <div class="col-md-4 col-md-offset-8">
                         <div class="row">
                             <div class="col-md-12" >
                                 <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
                                     <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 class="panel-title" style="color: white; ">Hello, <span id="txtName"></span></h6>
-                                        <br>
-                                        <h6 class="panel-title" style="color: white">
-                                            Leave your message to connect with us! 
-                                        </h6>
+                                        <h6 class="panel-title" style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6>
                                     </div>
-                                    <div class="panel-body" style="height: 400px; overflow-y: scroll;">
+                                    <div class="panel-body" style="height: 350px; overflow-y: scroll;">
                                         <div class="row">
                                             <div class="col-sm-12" id="scollDiv"; >
-                                                <table class="table table-hover" id="messageContainer">
+                                                <table class="table" id="messageContainer">
                                                     <tr></tr>
                                                 </table>
                                             </div>
@@ -341,9 +337,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                     <div class="panel-footer">
                                         <form id="sendMessage">
                                             <div class="input-group input-group-sm">
-                                                <input type="text" required class="form-control" id="txtText" placeholder="ask us a few question ..">
+                                                <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
                                                 <span class="input-group-btn">
-                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Send</button>
+                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Gửi</button>
                                                 </span>
                                             </div>
                                         </form>
@@ -408,13 +404,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         facebook = ''
     } else {
         fb = styleBtnFacebook.phoneNumber
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="http://dev.adstech.vn:8090/mess.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://dev.adstech.vn:8090/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
     }
     if (vertical == false) {
         html = `
@@ -477,6 +473,7 @@ function openChat() {
     } else {
         let hasInfo = window.localStorage.getItem('leadhub_chatInfo');
         if (hasInfo != undefined && hasInfo != null && hasInfo != '') {
+            let customerInfo = JSON.parse(hasInfo)
             chatminiCRM.child(topic).on('child_added', function (snapshot) {
                 var message = snapshot.val();
                 let isCustomer = '';
@@ -484,14 +481,25 @@ function openChat() {
                     isCustomer = '';
                 }
                 if (message.isCustomer == false) {
-                    isCustomer = ' (Admin) '
+                    isCustomer = '(Admin)'
                 }
                 // + getHour(message.time)
-                let html =
-                    '<tr>' +
-                    '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
-                    '<td>' + message.message + '</td>' +
-                    '</tr>';
+                // let html =
+                //     '<tr>' +
+                //     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
+                //     '<td>' + message.message + '</td>' +
+                //     '</tr>';
+                let html = ''
+                if(message.name == customerInfo.name){
+                    html = `<tr style="padding-top: 5%;">
+                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    </tr>`
+                }
+                else {
+                    html = `<tr style="padding-top: 5%;">
+                        <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    </tr>`
+                }
                 $('#messageContainer tr:last').after(html);
                 $('#scollDiv').animate({
                     scrollTop: $('#scollDiv')[0].scrollHeight
@@ -569,7 +577,9 @@ function connectToFirebase() {
                 value: topic
             },
         ]
-        console.log(body)
+        // console.log(body)
+        //product: https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm
+        //test: http://dev.adstech.vn:9000/leadhub/contacts?source_from_mar=CHAT
         fetchRetry(`http://dev.adstech.vn:9000/leadhub/contacts?source_from_mar=CHAT`, {
             method: 'POST',
             headers: {
@@ -596,13 +606,29 @@ function connectToFirebase() {
                 isCustomer = '';
             }
             if (message.isCustomer == false) {
-                isCustomer = ' (Admin) '
+                isCustomer = '(Admin)'
             }
-            let html =
-                '<tr>' +
-                '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' +
-                '<td>' + message.message + '</td>' + 
-                '</tr>';
+            // let html =
+            //     '<tr>' +
+            //     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' +
+            //     '<td>' + message.message + '</td>' + 
+            //     '</tr>';
+            let html = '';
+            if(message.name == obj.name){
+                html = `<tr style="padding-top: 5%;">
+                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
+                        ${message.name}${isCustomer}: ${message.message}
+                    </td>
+                </tr>`
+            }
+            else {
+                html = `
+                <img src="http://localhost:8080/telephone_operator.png" alt="Gọi điện thoại">
+                <tr style="padding-top: 5%;">
+                
+                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                </tr>`
+            }
             $('#messageContainer tr:last').after(html);
             $('#scollDiv').animate({
                 scrollTop: $('#scollDiv')[0].scrollHeight
@@ -641,7 +667,9 @@ function startChatting() {
 }
 
 function sendMessage(body) {
-    fetchRetry('http://dev.adstech.vn:9000/leadhub/chats', {
+    //product: https://services.adstech.vn/leadpool/v1/leadhub/chats
+    //test: http://dev.adstech.vn:9000/leadhub/chats
+    fetchRetry(' http://dev.adstech.vn:9000/leadhub/chats', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -742,6 +770,8 @@ function sendTracing(type) {
     if(utm_term != null){body.utm_term = utm_term}
     if(utm_content != null){body.utm_content = utm_content}
     if(gclid != null){body.gclid = gclid}
+    //product: https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm
+    //test: http://dev.adstech.vn:9000/leadhub/tracking-source-utm
     fetchRetry(`http://dev.adstech.vn:9000/leadhub/tracking-source-utm`, {
         method: 'POST',
         headers: {

@@ -158,6 +158,16 @@
                 dispatch('addNewTopic', message.topic)
             });
           // if(this.newItem == true){
+          //   this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
+          //       // console.log('Có chủ đề mới')
+          //       var message = message.val();
+          //       // console.log(message.topic)
+          //       dispatch('newNotification')
+          //       dispatch('addNewTopic', message.topic)
+          //   });
+          // }
+          // this.newItem = true;
+          // if(this.newItem == true){
             
           // }
           // else {
