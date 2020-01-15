@@ -220,6 +220,8 @@
                                         <v-flex xs12>
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                            <h3>Thông điệp nút</h3>
+                                            <v-text-field v-model="formDescription" outlined dense></v-text-field>
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
@@ -592,6 +594,7 @@
                     label: 'Nghề nghiệp'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
+                formDescription: 'Đăng ký ngay',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
                 xy: true,
                 rule: [
@@ -755,7 +758,7 @@
                 const output = [...new Set(this.propertiesbtn)]
                 let form = {
                     buttonColor: this.colorForm,
-                    description: "Gửi ngay đó",
+                    description: this.formDescription,
                     formMessage: "Để lại lời nhắn",
                     formMessageReturn: this.alertFinish,
                     title: this.nameForm,
@@ -1011,6 +1014,7 @@
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
                             this.nameForm = result.response.listButton[i].title
+                            this.formDescription = result.response.listButton[i].description
                             for (let index = 0; index < result.response.listButton[i].properties
                                 .length; index++) {
                                 let a = {
