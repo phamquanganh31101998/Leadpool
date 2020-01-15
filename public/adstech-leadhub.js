@@ -490,7 +490,7 @@ function openChat() {
                 let html =
                     '<tr>' +
                     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
-                    '<td>' + message.message + ' (' + ')' + '</td>' +
+                    '<td>' + message.message + '</td>' +
                     '</tr>';
                 $('#messageContainer tr:last').after(html);
                 $('#scollDiv').animate({
@@ -555,6 +555,21 @@ function connectToFirebase() {
         const formData = new FormData(e.target)
         var name = formData.get('name');
         topic = formData.get('topic');
+        // let body = [
+        //     {
+        //         property: 'accountId',
+        //         value: acId
+        //     },
+        //     {
+        //         property: 'lastName',
+        //         value: name
+        //     },
+        //     {
+        //         property: 'email',
+        //         value: topic
+        //     },
+        // ]
+        // console.log(body)
         document.getElementById('txtName').innerText = name;
         topic = acId + '-' + topic.replace(/\./g, '-dot-');
         let obj = {
@@ -564,12 +579,17 @@ function connectToFirebase() {
         window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
         chatminiCRM.child(topic).on('child_added', function (snapshot) {
             var message = snapshot.val();
-            // console.log(message)
-            let isCustomerText = (message.isCustomer == false) ? '(admin)' : ''
+            let isCustomer = '';
+            if (message.isCustomer == true || message.isCustomer == null) {
+                isCustomer = '';
+            }
+            if (message.isCustomer == false) {
+                isCustomer = ' (Admin) '
+            }
             let html =
                 '<tr>' +
                 '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' +
-                '<td>' + message.message + ' (' + getHour(message.time) + ')' + '</td>' +
+                '<td>' + message.message + '</td>' + 
                 '</tr>';
             $('#messageContainer tr:last').after(html);
             $('#scollDiv').animate({

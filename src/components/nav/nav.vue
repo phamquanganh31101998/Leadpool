@@ -110,7 +110,7 @@
               dispatch
           } = this.$store;
         this.chatminiCRM.child(this.newTopic).on('child_added', function(snapshot){
-            console.log('Có tin nhắn mới')
+            // console.log('Có tin nhắn mới')
             dispatch('newNotification')
           })
       }
@@ -132,7 +132,7 @@
                   let res = result.response.results;
                   for (let i = 0; i < res.length; i++){
                       this.chatminiCRM.child(res[i].topic).on('child_added', function(snapshot){
-                        console.log('Có tin nhắn mới')
+                        // console.log('Có tin nhắn mới')
                         dispatch('newNotification')
                       })
                   }
@@ -151,9 +151,9 @@
               dispatch
           } = this.$store;
           this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
-                console.log('Có chủ đề mới')
+                // console.log('Có chủ đề mới')
                 var message = message.val();
-                // console.log(message)
+                // console.log(message.topic)
                 dispatch('newNotification')
                 dispatch('addNewTopic', message.topic)
             });

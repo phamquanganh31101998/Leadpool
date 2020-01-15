@@ -141,7 +141,8 @@ export default {
             hasNewMessage: 'hasNewMessage',
             topicChange: 'topicChange',
             newMessage: 'newMessage',
-            hasNewTopic: 'hasNewTopic'
+            hasNewTopic: 'hasNewTopic',
+            newTopic: 'newTopic'
             // ...
         })
     },
@@ -213,10 +214,15 @@ export default {
         hasNewTopic(){
             if(this.hasNewTopic == true){
                 this.countNewTopic++;
-                this.getFirstTopic()
+                // console.log('newTopic')
+                // this.getFirstTopic()
                 this.$store.dispatch('noNewTopic')
             }
             
+        },
+        newTopic(){
+            console.log(this.newTopic)
+            this.getFirstTopic(this.newTopic)
         }
     },
     methods: {
@@ -323,6 +329,8 @@ export default {
             if(this.newItem == true){
                 this.chatminiCRM.child("topic").child(this.idAccount).on('child_added', function(message) {
                     var message = message.val();
+                    // console.log('Có chủ đề mới')
+                    // console.log(message)
                     dispatch('hasNewTopic')
                 });
             }
@@ -559,15 +567,15 @@ export default {
                 }
             }
         },
-        getFirstTopic(){
-            chatAPI.getTopic(this.idAccount, 1).then(result => {
+        getFirstTopic(topicName){
+            // console.log(topicName)
+            chatAPI.getTopicByName(this.idAccount, topicName).then(result => {
                 const {
                     dispatch
-                } = this.$store;
+                } = this.$store; 
                 let time = moment();
                 if(result.code == 'SUCCESS'){
-                    let res = result.response.results[0];
-                    this.allTopicPage = result.response.totalPage;
+                    let res = result.response;
                     let obj = {
                         text: this.decodeStr(res.topic),
                         value: res.topic,
@@ -587,12 +595,40 @@ export default {
                 else {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
-            }).catch(error => {
-                console.log(error)
-            }).finally(() => {
-                this.dialog = false;
-                // this.getAvatar()
             })
+            // chatAPI.getTopic(this.idAccount, 1).then(result => {
+            //     const {
+            //         dispatch
+            //     } = this.$store;
+            //     let time = moment();
+            //     if(result.code == 'SUCCESS'){
+            //         let res = result.response.results[0];
+            //         this.allTopicPage = result.response.totalPage;
+            //         let obj = {
+            //             text: this.decodeStr(res.topic),
+            //             value: res.topic,
+            //             status: res.status,
+            //             lastTime: this.coverTimeDisplayForChat(res.nearTime),
+            //             chatTopicId: res.chatTopicId
+            //         }
+            //         this.allTopics.unshift(obj)
+            //         this.chatminiCRM.child(res.topic).on('child_added', function(snapshot){
+            //             var message = snapshot.val();
+            //             dispatch('newMessage', message);
+            //             dispatch('topicChange', res.topic);
+            //             dispatch('hasNewMessage');
+            //         })
+            //         dispatch('alert/success', `Bạn có 1 cuộc trò chuyện mới (${this.coverTimeDetail(time)})`)
+            //     }
+            //     else {
+            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //     }
+            // }).catch(error => {
+            //     console.log(error)
+            // }).finally(() => {
+            //     this.dialog = false;
+            //     // this.getAvatar()
+            // })
         }
     },
     created(){

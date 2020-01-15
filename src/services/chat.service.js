@@ -4,7 +4,7 @@ import { responseService } from './response.service'
 const qs = require('qs');
 
 export default {
-    getTopic, getHistory, sendMessage, markReadTopic
+    getTopic, getHistory, sendMessage, markReadTopic, getTopicByName
 }
 
 function getTopic(idAccount, page){
@@ -51,5 +51,14 @@ function markReadTopic(idAccount, idTopic){
         headers: authHeader()
     }
     let endpoint = `${config.apiContact}/${idAccount}/chat-topic/${idTopic}/mark-read`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getTopicByName(idAccount, topicName){
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let endpoint = `${config.apiContact}/${idAccount}/get-topic/${topicName}`
     return responseService.fetchRetry(endpoint, request, 1)
 }
