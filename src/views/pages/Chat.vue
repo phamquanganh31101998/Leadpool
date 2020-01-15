@@ -20,79 +20,86 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-layout row  v-if="access">
-            <v-flex xs12 sm12 md4 lg4 xl4>
-                <h1 class="ml-3"> Chat</h1>
-                <br>
-                <div class="fullHeight">
-                    <v-list two-line>
-                        <v-subheader>
-                            Danh sách các cuộc trò chuyện
-                        </v-subheader>
-                        <template v-for="(item, index) in allTopics">
-                            <v-list-tile avatar @click="markReadTopic(item.value, index), getNewChatHistory(item.value)">
-                                <v-list-tile-avatar>
-                                    <v-btn class="disable-events" small fab dark color="blue-grey">
-                                        <span style="font-size: 18px;">{{item.text[0]}}</span>
-                                    </v-btn>
-                                    <!-- <img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"> -->
-                                </v-list-tile-avatar>
+        <v-layout fill-height row v-if="access">
+            <v-flex xs12 sm12 md3 lg3 xl3 class="mr-3" style=" border-right: 1px solid #DCDCDC;">
+                <div style="height: 100%;">
+                    <h1 class="ml-3"> Chat</h1>
+                    <div class="fullHeight pr-3" style="background-color: #FAFAFA">
+                        <v-list two-line>
+                            <v-subheader>
+                                Danh sách các cuộc trò chuyện
+                            </v-subheader>
+                            <template v-for="(item, index) in allTopics">
+                                <v-list-tile avatar @click="markReadTopic(item.value, index), getNewChatHistory(item.value)">
+                                    <v-list-tile-avatar>
+                                        <v-btn class="disable-events" small fab dark color="blue-grey">
+                                            <span style="font-size: 18px;">{{item.text[0]}}</span>
+                                        </v-btn>
+                                        <!-- <img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"> -->
+                                    </v-list-tile-avatar>
 
-                                <v-list-tile-content v-if="item.status == 'UNREAD'" style="font-weight: bold;">
-                                    <v-list-tile-title>{{item.text}}</v-list-tile-title>
-                                    <v-list-tile-sub-title>{{item.lastTime}}</v-list-tile-sub-title>
-                                </v-list-tile-content>
-                                <v-list-tile-content v-if="item.status == 'READ'">
-                                    <v-list-tile-title>{{item.text}}</v-list-tile-title>
-                                    <v-list-tile-sub-title>{{item.lastTime}}</v-list-tile-sub-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <v-divider :divider="divider"></v-divider>
-                        </template>
-                    </v-list>
-                </div>
-            </v-flex>
-            <!-- <v-divider :vertical="vertical" :divider="divider"></v-divider> -->
-            <v-flex xs12 sm12 md8 lg8 xl8>
-                <div>
-                    <h2>{{this.decodeStr(topic)}}</h2>
-                </div>
-                <div style="height: 100%">
-                    <div>
-                        <v-btn small block color="#3E82F7" dark @click="getOlderHistory(topic)" v-if="chatPage < allChatPage">Xem các tin nhắn cũ hơn</v-btn>
-                    </div>
-                    <div class="messengerBox" id="boxContainChat">
-                        <template v-for="item in chatHistory" >
-                            <v-layout align-center justify-start row :key="item.chatMessageId" v-if="item.isCustomer == true || item.isCustomer == null"> 
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on }">
-                                        <v-avatar v-on="on" :tile="tile" size="20" color="blue-grey" style="color: white; font-size: 11px;">
-                                            {{item.name[0]}}
-                                        </v-avatar>
-                                        <v-chip color="grey" dark> {{item.message}} </v-chip>
-                                    </template>
-                                    <span>{{item.name}} - {{item.time}}</span>
-                                </v-tooltip>
-                            </v-layout>
-                            <v-layout align-center justify-end row :key="item.chatMessageId" v-if="item.isCustomer == false" >
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on }">
-                                        <v-chip color="blue" dark> {{item.message}}</v-chip>
-                                        <v-avatar v-on="on" :tile="tile" size="20" color="blue-grey" style="color: white; font-size: 11px;">
-                                            {{item.name[0]}}
-                                        </v-avatar>
-                                    </template>
-                                    <span>{{item.name}} (Admin) - {{item.time}}</span>
-                                </v-tooltip>
-                            </v-layout>
-                            
-                        </template>
+                                    <v-list-tile-content v-if="item.status == 'UNREAD'" style="font-weight: bold;">
+                                        <v-list-tile-title>{{item.text}}</v-list-tile-title>
+                                        <v-list-tile-sub-title>{{item.lastTime}}</v-list-tile-sub-title>
+                                    </v-list-tile-content>
+                                    <v-list-tile-content v-if="item.status == 'READ'">
+                                        <v-list-tile-title>{{item.text}}</v-list-tile-title>
+                                        <v-list-tile-sub-title>{{item.lastTime}}</v-list-tile-sub-title>
+                                    </v-list-tile-content>
+                                    <v-list-tile-action v-if="item.status == 'UNREAD'">
+                                        <v-icon style="font-size: 10px" color="blue">brightness_1</v-icon>
+                                    </v-list-tile-action>
+                                </v-list-tile>
+                            </template>
+                        </v-list>
+                        <v-btn block small v-if="topicPage < allTopicPage" @click="getOlderTopic()">Xem các cuộc trò chuyện cũ hơn</v-btn>
                     </div>
                     
-                    <div class="stickToBottom">
-                        <v-text-field append-icon="send" @keyup.enter="sendMessage()" @click:append="sendMessage()" v-if="topic != ''" v-model="chatMess" placeholder="Nhập tin nhắn tại đây"></v-text-field>
+                </div>
+                
+            </v-flex>
+            <v-flex xs12 sm12 md9 lg9 xl9>
+                <div>
+                    <div>
+                        <h2>{{this.decodeStr(topic)}}</h2>
+                    </div>
+                    <div style="height: 100%; width: 100%">
+                        <div>
+                            <v-btn small block color="#3E82F7" dark @click="getOlderHistory(topic)" v-if="chatPage < allChatPage">Xem các tin nhắn cũ hơn</v-btn>
+                        </div>
+                        <div class="messengerBox" id="boxContainChat">
+                            <template v-for="item in chatHistory" >
+                                <v-layout align-center justify-start row :key="item.chatMessageId" v-if="item.isCustomer == true || item.isCustomer == null"> 
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-avatar v-on="on" :tile="tile" size="20" color="blue-grey" style="color: white; font-size: 11px;">
+                                                {{item.name[0]}}
+                                            </v-avatar>
+                                            <v-chip color="grey" dark> {{item.message}} </v-chip>
+                                        </template>
+                                        <span>{{item.name}} - {{item.time}}</span>
+                                    </v-tooltip>
+                                </v-layout>
+                                <v-layout align-center justify-end row :key="item.chatMessageId" v-if="item.isCustomer == false" >
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-chip color="blue" dark> {{item.message}}</v-chip>
+                                            <v-avatar v-on="on" :tile="tile" size="20" color="blue-grey" style="color: white; font-size: 11px;">
+                                                {{item.name[0]}}
+                                            </v-avatar>
+                                        </template>
+                                        <span>{{item.name}} (Admin) - {{item.time}}</span>
+                                    </v-tooltip>
+                                </v-layout>
+                                
+                            </template>
+                        </div>
+                        <div class="stickToBottom">
+                            <v-text-field append-icon="send" @keyup.enter="sendMessage()" @click:append="sendMessage()" v-if="topic != ''" v-model="chatMess" placeholder="Nhập tin nhắn tại đây"></v-text-field>
+                        </div>
                     </div>
                 </div>
+                
             </v-flex>
         </v-layout>
         <v-layout v-else>
@@ -133,7 +140,9 @@ export default {
         ...mapGetters({
             hasNewMessage: 'hasNewMessage',
             topicChange: 'topicChange',
-            newMessage: 'newMessage'
+            newMessage: 'newMessage',
+            hasNewTopic: 'hasNewTopic',
+            newTopic: 'newTopic'
             // ...
         })
     },
@@ -145,6 +154,7 @@ export default {
     },
     data(){
         return{
+            newItem: false,
             vertical: true,
             divider: true,
             tile: false,
@@ -164,7 +174,7 @@ export default {
             chatminiCRM: null,
             avatar: '',
             countNewMessage: 0,
-            countNewTopic: 0
+            countNewTopic: 0,
             // chatminiCRMArr: []
         }
     },
@@ -200,6 +210,19 @@ export default {
                 this.allTopics.unshift(topicObjChange);
             }
             this.$store.dispatch('noNewMessage')
+        },
+        hasNewTopic(){
+            if(this.hasNewTopic == true){
+                this.countNewTopic++;
+                // console.log('newTopic')
+                // this.getFirstTopic()
+                this.$store.dispatch('noNewTopic')
+            }
+            
+        },
+        newTopic(){
+            console.log(this.newTopic)
+            this.getFirstTopic(this.newTopic)
         }
     },
     methods: {
@@ -269,6 +292,7 @@ export default {
                     dispatch
                 } = this.$store;
                 let time = moment();
+                this.allTopicPage = result.response.totalPage;
                 if(result.code == 'SUCCESS'){
                     let res = result.response.results;
                     for (let i = 0; i < res.length; i++){
@@ -295,8 +319,22 @@ export default {
                 console.log(error)
             }).finally(() => {
                 this.dialog = false;
-                // this.getAvatar()
+                this.setListenToNewTopic()
             })
+        },
+        setListenToNewTopic(){
+            const {
+                dispatch
+            } = this.$store;
+            if(this.newItem == true){
+                this.chatminiCRM.child("topic").child(this.idAccount).on('child_added', function(message) {
+                    var message = message.val();
+                    // console.log('Có chủ đề mới')
+                    // console.log(message)
+                    dispatch('hasNewTopic')
+                });
+            }
+            this.newItem == true
         },
         getOlderTopic(){
             if(this.countNewTopic == 0){
@@ -314,6 +352,7 @@ export default {
                     let time = moment();
                     if(result.code == 'SUCCESS'){
                         let res = result.response.results;
+                        this.allTopicPage = result.response.totalPage;
                         for (let i = topicToRemove; i < res.length; i++){
                             let obj = {
                                 text: this.decodeStr(res[i].topic),
@@ -528,38 +567,106 @@ export default {
                 }
             }
         },
+        getFirstTopic(topicName){
+            // console.log(topicName)
+            chatAPI.getTopicByName(this.idAccount, topicName).then(result => {
+                const {
+                    dispatch
+                } = this.$store; 
+                let time = moment();
+                if(result.code == 'SUCCESS'){
+                    let res = result.response;
+                    let obj = {
+                        text: this.decodeStr(res.topic),
+                        value: res.topic,
+                        status: res.status,
+                        lastTime: this.coverTimeDisplayForChat(res.nearTime),
+                        chatTopicId: res.chatTopicId
+                    }
+                    this.allTopics.unshift(obj)
+                    this.chatminiCRM.child(res.topic).on('child_added', function(snapshot){
+                        var message = snapshot.val();
+                        dispatch('newMessage', message);
+                        dispatch('topicChange', res.topic);
+                        dispatch('hasNewMessage');
+                    })
+                    dispatch('alert/success', `Bạn có 1 cuộc trò chuyện mới (${this.coverTimeDetail(time)})`)
+                }
+                else {
+                    dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+                }
+            })
+            // chatAPI.getTopic(this.idAccount, 1).then(result => {
+            //     const {
+            //         dispatch
+            //     } = this.$store;
+            //     let time = moment();
+            //     if(result.code == 'SUCCESS'){
+            //         let res = result.response.results[0];
+            //         this.allTopicPage = result.response.totalPage;
+            //         let obj = {
+            //             text: this.decodeStr(res.topic),
+            //             value: res.topic,
+            //             status: res.status,
+            //             lastTime: this.coverTimeDisplayForChat(res.nearTime),
+            //             chatTopicId: res.chatTopicId
+            //         }
+            //         this.allTopics.unshift(obj)
+            //         this.chatminiCRM.child(res.topic).on('child_added', function(snapshot){
+            //             var message = snapshot.val();
+            //             dispatch('newMessage', message);
+            //             dispatch('topicChange', res.topic);
+            //             dispatch('hasNewMessage');
+            //         })
+            //         dispatch('alert/success', `Bạn có 1 cuộc trò chuyện mới (${this.coverTimeDetail(time)})`)
+            //     }
+            //     else {
+            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+            //     }
+            // }).catch(error => {
+            //     console.log(error)
+            // }).finally(() => {
+            //     this.dialog = false;
+            //     // this.getAvatar()
+            // })
+        }
     },
     created(){
         this.$store.state.colorNumber = 8;
         this.getCurrentUser();
         this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
-        
+        this.$store.dispatch('noNewNotification')
     }
 }
 </script>
 <style>
     .fullHeight{
         height: 100%;
-        width: 80%;
+        width: 100%;
         position: relative;
     }
 
+
+    /* #boxContainChat {
+        border-left: 1px solid #DCDCDC
+    }    */
     .messengerBox {
+        /* border-left: 1px solid #DCDCDC; */
         height: 70%;
-        width: 65%;
+        width: 73%;
         position: fixed;
         overflow-y: scroll;
     }
     .stickToBottom {
         position: fixed;
         bottom: 0;
-        width: 65%;
+        width: 73%;
     }
 
     .stickToTop {
         position: fixed;
         top: 0;
-        width: 65%;
+        width: 73%;
     }
     .disable-events {
         pointer-events: none

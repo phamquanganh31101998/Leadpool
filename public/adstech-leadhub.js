@@ -408,13 +408,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         facebook = ''
     } else {
         fb = styleBtnFacebook.phoneNumber
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="http://localhost:8080/mess.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="http://dev.adstech.vn:8090/mess.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://localhost:8080/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://dev.adstech.vn:8090/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
     }
     if (vertical == false) {
         html = `
@@ -490,7 +490,7 @@ function openChat() {
                 let html =
                     '<tr>' +
                     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
-                    '<td>' + message.message + ' (' + ')' + '</td>' +
+                    '<td>' + message.message + '</td>' +
                     '</tr>';
                 $('#messageContainer tr:last').after(html);
                 $('#scollDiv').animate({
@@ -555,6 +555,33 @@ function connectToFirebase() {
         const formData = new FormData(e.target)
         var name = formData.get('name');
         topic = formData.get('topic');
+        let body = [
+            {
+                property: 'accountId',
+                value: acId
+            },
+            {
+                property: 'lastName',
+                value: name
+            },
+            {
+                property: 'email',
+                value: topic
+            },
+        ]
+        console.log(body)
+        fetchRetry(`http://dev.adstech.vn:9000/leadhub/contacts?source_from_mar=CHAT`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }, 4).then(result => {
+            console.log(result)
+        }).catch(error => {
+            console.log(error)
+        })
         document.getElementById('txtName').innerText = name;
         topic = acId + '-' + topic.replace(/\./g, '-dot-');
         let obj = {
@@ -564,12 +591,17 @@ function connectToFirebase() {
         window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
         chatminiCRM.child(topic).on('child_added', function (snapshot) {
             var message = snapshot.val();
-            // console.log(message)
-            let isCustomerText = (message.isCustomer == false) ? '(admin)' : ''
+            let isCustomer = '';
+            if (message.isCustomer == true || message.isCustomer == null) {
+                isCustomer = '';
+            }
+            if (message.isCustomer == false) {
+                isCustomer = ' (Admin) '
+            }
             let html =
                 '<tr>' +
                 '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' +
-                '<td>' + message.message + ' (' + getHour(message.time) + ')' + '</td>' +
+                '<td>' + message.message + '</td>' + 
                 '</tr>';
             $('#messageContainer tr:last').after(html);
             $('#scollDiv').animate({

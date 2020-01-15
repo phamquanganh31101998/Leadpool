@@ -59,130 +59,9 @@
       <v-btn :color="background[8]" @click="goToChatPage()" depressed style="height: 50px; margin-bottom: 15px;">
         Chat
         <v-icon color="white" class="ml-2">question_answer</v-icon>
+        <v-icon v-if="notification" color="red" class="ml-2" style="font-size: 10px">brightness_1</v-icon>
       </v-btn>
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Liên lạc <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile @click="goToContactsPage()">
-            <v-list-tile-title>Các liên lạc</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Companies</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Activity Feed</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="goToListsPage()">
-            <v-list-tile-title>Danh sách</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Converations <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Inbox</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Chatflows</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Snippets</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Templates</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Marketing <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Inbox</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Sales <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Deals</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="goToMyTaskPage()">
-            <v-list-tile-title>Công việc</v-list-tile-title>
-          </v-list-tile>
-          <v-divider :divider="divider"></v-divider>
-          <v-list-tile>
-            <v-list-tile-title>Documents</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Meetings</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Services <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Tickets</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Reports <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Analytics tools</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Dashboards</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn flat color="#fff" dark v-on="on">
-            Marketplace <v-icon color="#ff7a59">keyboard_arrow_down</v-icon>
-          </v-btn>
-        </template>
-        <v-list dark style="background-color:#253342">
-          <v-list-tile>
-            <v-list-tile-title>Listings</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Provider Info</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Transaction</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu> -->
+      
     </v-toolbar-items>
     <v-spacer></v-spacer>
     <v-btn icon @click="goToSettingsPage()" style="padding-bottom: 20px;">
@@ -194,16 +73,21 @@
   </v-toolbar>
 </template>
 <script>
+  import chatAPI from '../../services/chat.service'
   import {mapGetters} from 'vuex'
   import loginAgen from './loginAgen'
   import user from './user'
+  import moment from 'moment'
   export default {
     data: () => ({
+      chatminiCRM: null,
+      newItem: false,
       divider: true,
       currentUser: null,
       contactViewEverything: true,
       contactCommunicateEverything: true,
-      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7']
+      background: ['primary', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'],
+
     }),
     components: {
       loginAgen,
@@ -211,16 +95,76 @@
     },
     computed: {
           ...mapGetters({
-              colorNumber: 'colorNumber'
+              colorNumber: 'colorNumber',
+              notification: 'notification',
+              newTopic: 'newTopic'
               // ...
       })
     },
     watch: {
       colorNumber(){
         this.checkNavColor(this.colorNumber);
+      },
+      newTopic(){
+        const {
+              dispatch
+          } = this.$store;
+        this.chatminiCRM.child(this.newTopic).on('child_added', function(snapshot){
+            // console.log('Có tin nhắn mới')
+            dispatch('newNotification')
+          })
       }
+      // notification(){
+      //   console.log(this.notification)
+      //   if(this.notification == true){
+      //     // this.$store.dispatch('noNewNotification')
+      //   }
+      // }
     },
     methods:{
+      getTopic(){
+          chatAPI.getTopic(this.currentUser.accountId, 1).then(result => {
+              const {
+                  dispatch
+              } = this.$store;
+              let time = moment();
+              if(result.code == 'SUCCESS'){
+                  let res = result.response.results;
+                  for (let i = 0; i < res.length; i++){
+                      this.chatminiCRM.child(res[i].topic).on('child_added', function(snapshot){
+                        // console.log('Có tin nhắn mới')
+                        dispatch('newNotification')
+                      })
+                  }
+              }
+              else {
+                  dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
+              }
+          }).catch(error => {
+              console.log(error)
+          }).finally(() => {
+              this.setListenToNewTopic()
+          })
+      },
+      setListenToNewTopic(){
+          const {
+              dispatch
+          } = this.$store;
+          this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
+                // console.log('Có chủ đề mới')
+                var message = message.val();
+                // console.log(message.topic)
+                dispatch('newNotification')
+                dispatch('addNewTopic', message.topic)
+            });
+          // if(this.newItem == true){
+            
+          // }
+          // else {
+          //   this.newItem = true;
+          // }
+          // this.newItem = true
+      },
       checkNavColor(number){
         this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
         if (number < 9){
@@ -238,6 +182,7 @@
             this.contactCommunicateEverything = true;
           } 
         }
+        this.getTopic()
       },
       goToContactsPage(){
         let link = `/contacts/${this.currentUser.accountId}`
@@ -278,10 +223,12 @@
       goToChatPage(){
         let link = `/contacts/${this.currentUser.accountId}/chat`;
         this.$router.push(link);
-      }
+      },
+      
     },
     created(){
       this.getCurrentUser();
+      this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     }
   }
 </script>

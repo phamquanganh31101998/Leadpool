@@ -19,7 +19,10 @@ export const store = new vuex.Store({
         colorNumber: 0,
         newMessage: {},
         hasNewMessage: false,
-        topicChange: ''
+        topicChange: '',
+        hasNewTopic: false,
+        notification: false,
+        newTopic: ''
     },
     actions:{
         turnOnExpiredDialog({commit}){
@@ -37,6 +40,12 @@ export const store = new vuex.Store({
         hasNewMessage({commit}){
             commit('hasNewMessage')
         },
+        hasNewTopic({commit}){
+            commit('hasNewTopic');
+        },
+        noNewTopic({commit}){
+            commit('noNewTopic')
+        },
         noNewMessage({commit}){
             commit('noNewMessage');
         },
@@ -45,6 +54,15 @@ export const store = new vuex.Store({
         },
         topicChange({commit}, data){
             commit('topicChange', data)
+        },
+        newNotification({commit}){
+            commit('newNotification')
+        },
+        noNewNotification({commit}){
+            commit('noNewNotification')
+        },
+        addNewTopic({commit}, data){
+            commit('addNewTopic', data)
         }
     },
     mutations:{
@@ -66,11 +84,26 @@ export const store = new vuex.Store({
         noNewMessage(state){
             state.hasNewMessage = false;
         },
+        hasNewTopic(state){
+            state.hasNewTopic = true
+        },
+        noNewTopic(state){
+            state.hasNewTopic = false;
+        },
         newMessage(state, payload){
             state.newMessage = payload;
         },
         topicChange(state, payload){
             state.topicChange = payload;
+        },
+        newNotification(state){
+            state.notification = true
+        },
+        noNewNotification(state){
+            state.notification = false
+        },
+        addNewTopic(state, payload){
+            state.newTopic = payload;
         }
     },
     getters: {
@@ -91,6 +124,15 @@ export const store = new vuex.Store({
         },
         hasNewMessage: state => {
             return state.hasNewMessage
+        },
+        hasNewTopic: state => {
+            return state.hasNewTopic
+        },
+        notification: state => {
+            return state.notification
+        },
+        newTopic: state => {
+            return state.newTopic
         }
     }
 })
