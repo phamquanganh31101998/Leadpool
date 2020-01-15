@@ -146,6 +146,10 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     var city = ''
     var bussiness = ''
     var position = ''
+    let brCall = ''
+    let brForm = ''
+    let brChat = ''
+    let brZalo = ''
     if (style.left == '45') {
         position = `.adstech-group-btn {
             position:fixed;
@@ -265,12 +269,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                             <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
                     </button>`
+            brCall = '<br />'
         } else if (style.color == "#000") {
             call = `<button class="adstech-btn" onclick="openCall()" style="background-color:${styleBtnCall.buttonColor}">
                         <a href="tel:${styleBtnCall.phoneNumber}">
                             <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
                     </button>`
+            brCall = '<br />'
         }
     }
     if (styleBtnChat == null || styleBtnChat == '') {
@@ -280,10 +286,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brChat = '<br />'
         } else if (style.color == "#000") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brChat = '<br />'
         }
         chatInputInfoDialog = `
             <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
@@ -377,10 +385,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
                     <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brForm = '<br />'
         } else if (style.color == "#000") {
             form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
                     <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
+            brForm = '<br />'
         }
         form1 = `<div class="adstech-form" id="myForm">
                     <form class="form-container" id="form-adstech" method="POST">
@@ -415,6 +425,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
         zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://dev.adstech.vn:8090/zalo.png" alt="Gọi điện thoại" width="100%" height="100%"></a></button>'
+        brZalo = '<br />'
     }
     if (vertical == false) {
         html = `
@@ -422,15 +433,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
-                    ${form}
-                    <br />
-                    ${call}
-                    <br />
-                    ${chat}
-                    <br />
                     ${facebook}
-                    <br />
+                    ${brZalo}
                     ${zalo}
+                    ${brForm}
+                    ${form}
+                    ${brCall}
+                    ${call}
+                    ${brChat}
+                    ${chat}
                 </div>
                 ${chatInputInfoDialog}
                 ${chatWithAdmin}
