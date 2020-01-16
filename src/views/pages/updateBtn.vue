@@ -805,7 +805,16 @@
                     listButton.push(chat)
                 }
                 if (this.facebook.showBtn == true) {
-                    listButton.push(facebook)
+                    if(this.facebook.url.indexOf('https://www.facebook.com/') == 0){
+                        facebook.phoneNumber = this.facebook.url.replace("https://www.facebook.com/","")
+                        listButton.push(facebook)
+                    }else if(this.facebook.url.indexOf('https://www.facebook.com/')){
+                        facebook.phoneNumber = this.facebook.url.replace("http://www.facebook.com/","")
+                        listButton.push(facebook)
+                    }else{
+                        facebook.phoneNumber = this.facebook.url
+                        listButton.push(facebook)
+                    }
                 }
                 if (this.zalo.showBtn == true) {
                     listButton.push(zalo)
@@ -850,141 +859,6 @@
                         this.updateGbtn(btn)
                     }
                 }
-                
-                // if (this.call == true && this.form == true) {
-                //     if (this.text == null || this.text == '') {
-                //         this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                //     } else {
-                //         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                //             let btn = {
-                //                 name: this.nameBtn,
-                //                 vertical: this.xy,
-                //                 leadHubButtonGroupId: this.idGroupBtn,
-                //                 accountId: this.idAccount,
-                //                 listButton: [
-                //                     form,
-                //                     call
-                //                 ],
-                //                 style: {
-                //                     bottom: 5,
-                //                     top: this.top,
-                //                     right: this.right,
-                //                     color: this.colorText,
-                //                     left: 2,
-                //                     size: `${this.sizeButton}`,
-                //                 }
-                //             }
-                //             this.updateGbtn(btn)
-                //         } else {
-                //             let btn = {
-                //                 name: this.nameBtn,
-                //                 vertical: this.xy,
-                //                 leadHubButtonGroupId: this.idGroupBtn,
-                //                 accountId: this.idAccount,
-                //                 listButton: [
-                //                     form,
-                //                     call
-                //                 ],
-                //                 style: {
-                //                     bottom: this.bottom,
-                //                     top: this.top,
-                //                     right: this.right,
-                //                     color: this.colorText,
-                //                     left: this.left,
-                //                     size: `${this.sizeButton}`,
-                //                 }
-                //             }
-                //             this.updateGbtn(btn)
-                //         }
-                //     }
-                // } else if (this.call == false && this.form == true) {
-                //     if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                //         let btn = {
-                //             name: this.nameBtn,
-                //             vertical: this.xy,
-                //             leadHubButtonGroupId: this.idGroupBtn,
-                //             accountId: this.idAccount,
-                //             listButton: [
-                //                 form
-                //             ],
-                //             style: {
-                //                 bottom: 5,
-                //                 top: this.top,
-                //                 right: this.right,
-                //                 color: this.colorText,
-                //                 left: 2,
-                //                 size: `${this.sizeButton}`,
-                //             }
-                //         }
-                //         this.updateGbtn(btn)
-                //     } else {
-                //         let btn = {
-                //             name: this.nameBtn,
-                //             vertical: this.xy,
-                //             leadHubButtonGroupId: this.idGroupBtn,
-                //             accountId: this.idAccount,
-                //             listButton: [
-                //                 form
-                //             ],
-                //             style: {
-                //                 bottom: this.bottom,
-                //                 top: this.top,
-                //                 right: this.right,
-                //                 color: this.colorText,
-                //                 left: this.left,
-                //                 size: `${this.sizeButton}`,
-                //             }
-                //         }
-                //         this.updateGbtn(btn)
-                //     }
-                // } else if (this.call == true && this.form == false) {
-                //     if (this.text == null || this.text == '') {
-                //         this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                //     } else {
-                //         this.requestApi = true
-                //         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                //             let btn = {
-                //                 name: this.nameBtn,
-                //                 vertical: this.xy,
-                //                 leadHubButtonGroupId: this.idGroupBtn,
-                //                 accountId: this.idAccount,
-                //                 listButton: [
-                //                     call
-                //                 ],
-                //                 style: {
-                //                     bottom: 5,
-                //                     top: this.top,
-                //                     right: this.right,
-                //                     color: this.colorText,
-                //                     left: 2,
-                //                     size: `${this.sizeButton}`,
-                //                 }
-                //             }
-                //             this.updateGbtn(btn)
-                //         } else {
-                //             let btn = {
-                //                 name: this.nameBtn,
-                //                 vertical: this.xy,
-                //                 leadHubButtonGroupId: this.idGroupBtn,
-                //                 accountId: this.idAccount,
-                //                 listButton: [
-                //                     call
-                //                 ],
-                //                 style: {
-                //                     bottom: this.bottom,
-                //                     top: this.top,
-                //                     right: this.right,
-                //                     color: this.colorText,
-                //                     left: this.left,
-                //                     size: `${this.sizeButton}`,
-                //                 }
-                //             }
-                //             this.updateGbtn(btn)
-                //         }
-                //     }
-                // } else {
-                //     this.alertError("Bạn chưa chọn nút cần tạo")
-                // }
             },
             updateGbtn(btn) {
                 if (this.requestApi == true) {
@@ -1027,7 +901,11 @@
                             this.chatObj.colorChat = result.response.listButton[i].buttonColor
                         }else if(result.response.listButton[i].type == "FACEBOOK"){
                             this.facebook.showBtn = true
-                            this.facebook.url = result.response.listButton[i].phoneNumber
+                            if (result.response.listButton[i].phoneNumber.indexOf('https://www.facebook.com/') == 0 || result.response.listButton[i].phoneNumber.indexOf('http://www.facebook.com/') == 0) {
+                                this.facebook.url = result.response.listButton[i].phoneNumber
+                            }else{
+                                this.facebook.url = `https://www.facebook.com/${result.response.listButton[i].phoneNumber}`
+                            }
                         }else if(result.response.listButton[i].type == "ZALO"){
                             this.zalo.showBtn = true
                             this.zalo.url = result.response.listButton[i].phoneNumber
