@@ -3,17 +3,26 @@ import vuex from 'vuex';
 import { user } from './user.module'
 import { alert } from './alert.module'
 import { data } from './data.module'
+// import { chat } from './chat.module'
 vue.use(vuex)
 export const store = new vuex.Store({
 	modules: {
         user,
         alert,
-        data
+        data,
+        // chat
+        
 	},
 	state:{
         expiredDialog: false,
         forbiddenDialog: false,
         colorNumber: 0,
+        newMessage: {},
+        hasNewMessage: false,
+        topicChange: '',
+        hasNewTopic: false,
+        notification: false,
+        newTopic: ''
     },
     actions:{
         turnOnExpiredDialog({commit}){
@@ -27,6 +36,33 @@ export const store = new vuex.Store({
         },
         turnOffForbiddenDialog({commit}){
             commit('turnOffForbiddenDialog');
+        },
+        hasNewMessage({commit}){
+            commit('hasNewMessage')
+        },
+        hasNewTopic({commit}){
+            commit('hasNewTopic');
+        },
+        noNewTopic({commit}){
+            commit('noNewTopic')
+        },
+        noNewMessage({commit}){
+            commit('noNewMessage');
+        },
+        newMessage({commit}, data){
+            commit('newMessage', data)
+        },
+        topicChange({commit}, data){
+            commit('topicChange', data)
+        },
+        newNotification({commit}){
+            commit('newNotification')
+        },
+        noNewNotification({commit}){
+            commit('noNewNotification')
+        },
+        addNewTopic({commit}, data){
+            commit('addNewTopic', data)
         }
     },
     mutations:{
@@ -41,6 +77,33 @@ export const store = new vuex.Store({
         },
         turnOffForbiddenDialog(state){
             state.forbiddenDialog = false;
+        },
+        hasNewMessage(state){
+            state.hasNewMessage = true
+        },
+        noNewMessage(state){
+            state.hasNewMessage = false;
+        },
+        hasNewTopic(state){
+            state.hasNewTopic = true
+        },
+        noNewTopic(state){
+            state.hasNewTopic = false;
+        },
+        newMessage(state, payload){
+            state.newMessage = payload;
+        },
+        topicChange(state, payload){
+            state.topicChange = payload;
+        },
+        newNotification(state){
+            state.notification = true
+        },
+        noNewNotification(state){
+            state.notification = false
+        },
+        addNewTopic(state, payload){
+            state.newTopic = payload;
         }
     },
     getters: {
@@ -52,6 +115,24 @@ export const store = new vuex.Store({
         },
         colorNumber: state => {
             return state.colorNumber;
+        },
+        newMessage: state => {
+            return state.newMessage
+        },
+        topicChange: state => {
+            return state.topicChange
+        },
+        hasNewMessage: state => {
+            return state.hasNewMessage
+        },
+        hasNewTopic: state => {
+            return state.hasNewTopic
+        },
+        notification: state => {
+            return state.notification
+        },
+        newTopic: state => {
+            return state.newTopic
         }
     }
 })

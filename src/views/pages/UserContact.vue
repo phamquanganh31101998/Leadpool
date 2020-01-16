@@ -80,7 +80,7 @@
                             <v-layout row wrap>
                                 <v-card-text class="text-xs-center">
                                     <v-flex xs12 sm12 md12 lg12 xl12>
-                                        <v-btn fab dark large color="blue-grey">
+                                        <v-btn class="disable-events" fab dark large color="blue-grey">
                                             {{basicInfo.lastName[0]}}{{basicInfo.firstName[0]}}
                                         </v-btn>
                                     </v-flex>
@@ -333,9 +333,7 @@
                                                             <v-card-title style="background-color:#1E88E5;color:#fff">
                                                                 <span class="headline">Tạo Thỏa thuận</span>
                                                             </v-card-title>
-                                                            <v-card-text>
-                                                                <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
-                                                            </v-card-text>
+                                                            <newDeal :allEmail="allEmail" :idAccount="this.idAccount" :idContact="this.idContact" @closeCreateDealDialog="createDeal = false"/>
                                                             <v-divider :divider="divider"></v-divider>
                                                         </v-card>
                                                     </v-dialog>

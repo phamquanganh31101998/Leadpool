@@ -10,10 +10,10 @@
                                     <h3>Các tiện ích tương tác</h3>
                                 </v-flex>
                                 <v-flex xs12 class="mt-3">
-                                    <v-layout row>
-                                        <v-flex xs5 class="pl-3 pr-3">
+                                    <v-layout row wrap>
+                                        <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogCall = true, dialogForm = false">
+                                                @click="dialogCall = true, dialogForm = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>phone_in_talk</v-icon><br>
                                                     <span>Gọi ngay</span>
@@ -21,15 +21,47 @@
                                             </v-card>
                                             <v-checkbox v-model="call" class="mx-2 ml-5"></v-checkbox>
                                         </v-flex>
-                                        <v-flex xs5 class="pl-3 pr-3">
+                                        <v-flex xs4 class="pl-3 pr-3">
                                             <v-card class="pa-2" style="border-radius:7px"
-                                                @click="dialogForm = true, dialogCall = false">
+                                                @click="dialogForm = true, dialogCall = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = false">
                                                 <v-flex xs12 class="text-xs-center">
                                                     <v-icon>mail_outline</v-icon><br>
                                                     <span>Đăng ký</span>
                                                 </v-flex>
                                             </v-card>
                                             <v-checkbox v-model="form" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = true, facebook.show = false, zalo.show = false">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-icon>question_answer</v-icon><br>
+                                                    <span>Chat</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="chatObj.showChat" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = false, facebook.show = true, zalo.show = false">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-img src="/mess.png" alt="facebook"
+                                                        style="width:30px; margin-left:33%" aspect-ratio="1"></v-img>
+                                                    <span>FaceBook</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="facebook.showBtn" class="mx-2 ml-5"></v-checkbox>
+                                        </v-flex>
+                                        <v-flex xs4 class="pl-3 pr-3">
+                                            <v-card class="pa-2" style="border-radius:7px"
+                                                @click="dialogCall = false, dialogForm = false, chatObj.dialogChat = false, facebook.show = false, zalo.show = true">
+                                                <v-flex xs12 class="text-xs-center">
+                                                    <v-img src="/zalo.png" alt="facebook"
+                                                        style="width:30px; margin-left:33%" aspect-ratio="1"></v-img>
+                                                    <span>Zalo</span>
+                                                </v-flex>
+                                            </v-card>
+                                            <v-checkbox v-model="zalo.showBtn" class="mx-2 ml-5"></v-checkbox>
                                         </v-flex>
                                     </v-layout>
                                 </v-flex>
@@ -101,22 +133,43 @@
                                 </v-layout>
                             </v-layout>
                             <div :style="styleBtn" v-if="xy">
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <v-btn v-if="facebook.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <v-btn v-if="zalo.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
+                                </v-btn>
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                    <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
                             <div :style="styleBtn" v-else>
-                                <v-btn v-show="form" @click="showForDialog = true" fab :dark="dark" :small="small"
+                                <v-btn v-if="facebook.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br v-if="zalo.showBtn"/>
+                                <v-btn v-if="zalo.showBtn" fab :small="small" :large="large">
+                                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                                </v-btn>
+                                <br v-if="form"/>
+                                <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <br />
-                                <v-btn v-show="call" fab :dark="dark" :small="small" :large="large" :color="color">
+                                <br v-if="call"/>
+                                <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
+                                </v-btn>
+                                <br v-if="chatObj.showChat"/>
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                    <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
                         </v-flex>
@@ -167,6 +220,8 @@
                                         <v-flex xs12>
                                             <h3>Tiêu đề</h3>
                                             <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                            <h3>Thông điệp nút</h3>
+                                            <v-text-field v-model="formDescription" outlined dense></v-text-field>
                                             <h3>Thông báo</h3>
                                             <v-text-field v-model="alertFinish" outlined dense></v-text-field>
                                             <h3 class="mb-3">Custom input</h3>
@@ -201,6 +256,80 @@
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="green darken-1" text dark @click="form = true, checkForm()">
+                                        Lưu
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="chatObj.dialogChat">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt nút Chat</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <v-btn class="mt-2 ml-5" :color="chatObj.colorChat" @click="chatObj.colorDialog = true" dark>
+                                                Chọn màu sắc nút</v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
+                                        Đóng
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="facebook.show">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt Facebook</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <h4>Link facebook của bạn</h4>
+                                            <v-text-field v-model="facebook.url" :rules="rule"
+                                                placeholder="Nhập link facebook" outlined dense>
+                                            </v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="facebook.show = false">
+                                        Đóng
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" dark text
+                                        @click="alertSuccess('Lưu nút thành công'),facebook.show = false">
+                                        Lưu
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                        <v-flex lg6 xl7 offset-lg1 v-if="zalo.show">
+                            <v-card>
+                                <v-card-title>
+                                    <h2>Cài đặt zalo</h2>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-layout row wrap class="pl-5 pr-3">
+                                        <v-flex xs12>
+                                            <h4>Số điện thoại zalo của bạn</h4>
+                                            <v-text-field v-model="zalo.url" :rules="rule"
+                                                placeholder="Nhập số điện thoại" outlined dense>
+                                            </v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn color="gray darken-1" text @click="zalo.show = false">
+                                        Đóng
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" dark text
+                                        @click="alertSuccess('Lưu nút thành công'),zalo.show = false">
                                         Lưu
                                     </v-btn>
                                 </v-card-actions>
@@ -285,6 +414,36 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="chatObj.colorDialog" max-width="500">
+            <v-card>
+                <v-card-title>
+                    Chọn màu cho nút
+                </v-card-title>
+                <v-card-text>
+                    <v-radio-group v-model="chatObj.colorChat" row>
+                        <div style="width:30px;height:30px;background-color:#8E00FF"></div>
+                        <v-radio value="#8E00FF"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#0c71c3"></div>
+                        <v-radio value="#0c71c3"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#7cda24"></div>
+                        <v-radio value="#7cda24"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#edf000"></div>
+                        <v-radio value="#edf000"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#e09900"></div>
+                        <v-radio value="#e09900"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#e02b20"></div>
+                        <v-radio value="#e02b20"></v-radio>
+                    </v-radio-group>
+                </v-card-text>
+                <v-card-actions>
+                    <v-flex class="text-xs-left">
+                        <v-btn color="gray" text @click="chatObj.colorDialog = false">
+                            Đóng
+                        </v-btn>
+                    </v-flex>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-dialog v-model="showForDialog" max-width="400">
             <v-card>
                 <v-card-title :background-color="colorForm">
@@ -351,6 +510,44 @@
         },
         data() {
             return {
+                facebook: {
+                    url: '',
+                    show: false,
+                    showBtn: false
+                },
+                zalo: {
+                    url: '',
+                    show: false,
+                    showBtn: false
+                },
+                chatObj: {
+                    showChat: false,
+                    colorChat: '#8E00FF',
+                    dialogChat: false,
+                    colorDialog: false,
+                    demoChatDialog: false,
+                    nameUser: '',
+                    emailUser: '',
+                    demoChatSection: 'signup',
+                    chatHistory: [
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        }, 
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        },
+                        {
+                            text: 'abc',
+                            value: 'send'
+                        },
+                        {
+                            text: 'def',
+                            value: 'receive'
+                        },
+                    ]
+                },
                 tab: 0,
                 tabs: [{
                     text: 'Điện thoại'
@@ -397,6 +594,7 @@
                     label: 'Nghề nghiệp'
                 }],
                 nameForm: 'Đăng ký để nhận khuyến mãi',
+                formDescription: 'Đăng ký ngay',
                 styleBtn: 'position: fixed; bottom:10px; left:0;z-index: 999999',
                 xy: true,
                 rule: [
@@ -560,7 +758,7 @@
                 const output = [...new Set(this.propertiesbtn)]
                 let form = {
                     buttonColor: this.colorForm,
-                    description: "Gửi ngay đó",
+                    description: this.formDescription,
                     formMessage: "Để lại lời nhắn",
                     formMessageReturn: this.alertFinish,
                     title: this.nameForm,
@@ -576,81 +774,70 @@
                     title: "Vui lòng để lại số điện thoại, chúng tôi sẽ gọi lại ngay sau 5 phút.",
                     type: "CALL",
                 }
-                if (this.call == true && this.form == true) {
+                let chat = {
+                    buttonColor: this.chatObj.colorChat,
+                    description: "Để lại thông tin của bạn rồi chat với chúng tôi",
+                    formMessage: "Cảm ơn vì đã liên lạc với chúng tôi",
+                    title: "Chat ngay thôi",
+                    type: "CHAT",
+                }
+                let facebook = {
+                    phoneNumber: this.facebook.url,
+                    type: "FACEBOOK"
+                }
+                let zalo = {
+                    phoneNumber: this.zalo.url,
+                    type: "ZALO"
+                }
+                let listButton = [];
+                if(this.call == true){
                     if (this.text == null || this.text == '') {
                         this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                    } else {
-                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                leadHubButtonGroupId: this.idGroupBtn,
-                                accountId: this.idAccount,
-                                listButton: [
-                                    form,
-                                    call
-                                ],
-                                style: {
-                                    bottom: 5,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: 2,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.updateGbtn(btn)
-                        } else {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                leadHubButtonGroupId: this.idGroupBtn,
-                                accountId: this.idAccount,
-                                listButton: [
-                                    form,
-                                    call
-                                ],
-                                style: {
-                                    bottom: this.bottom,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: this.left,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.updateGbtn(btn)
-                        }
                     }
-                } else if (this.call == false && this.form == true) {
-                    if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                    else {
+                        listButton.push(call)
+                    }
+                }
+                if(this.form == true){
+                    listButton.push(form)
+                }
+                if(this.chatObj.showChat == true){
+                    listButton.push(chat)
+                }
+                if (this.facebook.showBtn == true) {
+                    listButton.push(facebook)
+                }
+                if (this.zalo.showBtn == true) {
+                    listButton.push(zalo)
+                }
+                if(listButton.length == 0){
+                    this.alertError("Bạn chưa chọn nút cần tạo")
+                }else{
+                    if (this.bottom == null && this.top == null && this.left == null && this.right == null){
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
                             accountId: this.idAccount,
-                            listButton: [
-                                form
-                            ],
+                            listButton: listButton,
                             style: {
-                                bottom: 5,
-                                top: this.top,
-                                right: this.right,
+                                bottom: 2,
+                                top: null,
+                                right: 5,
                                 color: this.colorText,
-                                left: 2,
+                                left: null,
                                 size: `${this.sizeButton}`,
                             }
                         }
                         this.updateGbtn(btn)
-                    } else {
+                    }
+                    else {
                         let btn = {
                             name: this.nameBtn,
                             vertical: this.xy,
                             leadHubButtonGroupId: this.idGroupBtn,
                             accountId: this.idAccount,
-                            listButton: [
-                                form
-                            ],
+                            listButton: listButton,
                             style: {
                                 bottom: this.bottom,
                                 top: this.top,
@@ -662,54 +849,142 @@
                         }
                         this.updateGbtn(btn)
                     }
-                } else if (this.call == true && this.form == false) {
-                    if (this.text == null || this.text == '') {
-                        this.alertError("Chưa điền số điện thoại ở nút Click to Call")
-                    } else {
-                        this.requestApi = true
-                        if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                leadHubButtonGroupId: this.idGroupBtn,
-                                accountId: this.idAccount,
-                                listButton: [
-                                    call
-                                ],
-                                style: {
-                                    bottom: 5,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: 2,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.updateGbtn(btn)
-                        } else {
-                            let btn = {
-                                name: this.nameBtn,
-                                vertical: this.xy,
-                                leadHubButtonGroupId: this.idGroupBtn,
-                                accountId: this.idAccount,
-                                listButton: [
-                                    call
-                                ],
-                                style: {
-                                    bottom: this.bottom,
-                                    top: this.top,
-                                    right: this.right,
-                                    color: this.colorText,
-                                    left: this.left,
-                                    size: `${this.sizeButton}`,
-                                }
-                            }
-                            this.updateGbtn(btn)
-                        }
-                    }
-                } else {
-                    this.alertError("Bạn chưa chọn nút cần tạo")
                 }
+                
+                // if (this.call == true && this.form == true) {
+                //     if (this.text == null || this.text == '') {
+                //         this.alertError("Chưa điền số điện thoại ở nút Click to Call")
+                //     } else {
+                //         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                //             let btn = {
+                //                 name: this.nameBtn,
+                //                 vertical: this.xy,
+                //                 leadHubButtonGroupId: this.idGroupBtn,
+                //                 accountId: this.idAccount,
+                //                 listButton: [
+                //                     form,
+                //                     call
+                //                 ],
+                //                 style: {
+                //                     bottom: 5,
+                //                     top: this.top,
+                //                     right: this.right,
+                //                     color: this.colorText,
+                //                     left: 2,
+                //                     size: `${this.sizeButton}`,
+                //                 }
+                //             }
+                //             this.updateGbtn(btn)
+                //         } else {
+                //             let btn = {
+                //                 name: this.nameBtn,
+                //                 vertical: this.xy,
+                //                 leadHubButtonGroupId: this.idGroupBtn,
+                //                 accountId: this.idAccount,
+                //                 listButton: [
+                //                     form,
+                //                     call
+                //                 ],
+                //                 style: {
+                //                     bottom: this.bottom,
+                //                     top: this.top,
+                //                     right: this.right,
+                //                     color: this.colorText,
+                //                     left: this.left,
+                //                     size: `${this.sizeButton}`,
+                //                 }
+                //             }
+                //             this.updateGbtn(btn)
+                //         }
+                //     }
+                // } else if (this.call == false && this.form == true) {
+                //     if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                //         let btn = {
+                //             name: this.nameBtn,
+                //             vertical: this.xy,
+                //             leadHubButtonGroupId: this.idGroupBtn,
+                //             accountId: this.idAccount,
+                //             listButton: [
+                //                 form
+                //             ],
+                //             style: {
+                //                 bottom: 5,
+                //                 top: this.top,
+                //                 right: this.right,
+                //                 color: this.colorText,
+                //                 left: 2,
+                //                 size: `${this.sizeButton}`,
+                //             }
+                //         }
+                //         this.updateGbtn(btn)
+                //     } else {
+                //         let btn = {
+                //             name: this.nameBtn,
+                //             vertical: this.xy,
+                //             leadHubButtonGroupId: this.idGroupBtn,
+                //             accountId: this.idAccount,
+                //             listButton: [
+                //                 form
+                //             ],
+                //             style: {
+                //                 bottom: this.bottom,
+                //                 top: this.top,
+                //                 right: this.right,
+                //                 color: this.colorText,
+                //                 left: this.left,
+                //                 size: `${this.sizeButton}`,
+                //             }
+                //         }
+                //         this.updateGbtn(btn)
+                //     }
+                // } else if (this.call == true && this.form == false) {
+                //     if (this.text == null || this.text == '') {
+                //         this.alertError("Chưa điền số điện thoại ở nút Click to Call")
+                //     } else {
+                //         this.requestApi = true
+                //         if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
+                //             let btn = {
+                //                 name: this.nameBtn,
+                //                 vertical: this.xy,
+                //                 leadHubButtonGroupId: this.idGroupBtn,
+                //                 accountId: this.idAccount,
+                //                 listButton: [
+                //                     call
+                //                 ],
+                //                 style: {
+                //                     bottom: 5,
+                //                     top: this.top,
+                //                     right: this.right,
+                //                     color: this.colorText,
+                //                     left: 2,
+                //                     size: `${this.sizeButton}`,
+                //                 }
+                //             }
+                //             this.updateGbtn(btn)
+                //         } else {
+                //             let btn = {
+                //                 name: this.nameBtn,
+                //                 vertical: this.xy,
+                //                 leadHubButtonGroupId: this.idGroupBtn,
+                //                 accountId: this.idAccount,
+                //                 listButton: [
+                //                     call
+                //                 ],
+                //                 style: {
+                //                     bottom: this.bottom,
+                //                     top: this.top,
+                //                     right: this.right,
+                //                     color: this.colorText,
+                //                     left: this.left,
+                //                     size: `${this.sizeButton}`,
+                //                 }
+                //             }
+                //             this.updateGbtn(btn)
+                //         }
+                //     }
+                // } else {
+                //     this.alertError("Bạn chưa chọn nút cần tạo")
+                // }
             },
             updateGbtn(btn) {
                 if (this.requestApi == true) {
@@ -739,6 +1014,7 @@
                             this.colorForm = result.response.listButton[i].buttonColor
                             this.alertFinish = result.response.listButton[i].formMessageReturn
                             this.nameForm = result.response.listButton[i].title
+                            this.formDescription = result.response.listButton[i].description
                             for (let index = 0; index < result.response.listButton[i].properties
                                 .length; index++) {
                                 let a = {
@@ -746,6 +1022,15 @@
                                 }
                                 this.properties.push(a)
                             }
+                        }else if (result.response.listButton[i].type == "CHAT"){
+                            this.chatObj.showChat = true
+                            this.chatObj.colorChat = result.response.listButton[i].buttonColor
+                        }else if(result.response.listButton[i].type == "FACEBOOK"){
+                            this.facebook.showBtn = true
+                            this.facebook.url = result.response.listButton[i].phoneNumber
+                        }else if(result.response.listButton[i].type == "ZALO"){
+                            this.zalo.showBtn = true
+                            this.zalo.url = result.response.listButton[i].phoneNumber
                         }
                     }
                     this.colorText = result.response.style.color

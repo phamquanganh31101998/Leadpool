@@ -119,105 +119,105 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-layout row>
-                    <v-flex xs12 sm12 md12 lg12 xl12>
-                        <v-layout row>
-                            <v-flex xs12 sm12 md3 lg3 xl3>
-                                <v-card flat>
-                                    <v-card-text>
-                                        <span class="ml-4"><v-select prepend-icon="account_box" :items="allEmail" v-model="createSchedule.from" label="Chọn tài khoản gửi email"></v-select></span>
-                                        <span class="ml-4"><v-text-field prepend-icon="title" v-model="createSchedule.title" label="Tiêu đề"></v-text-field></span>
-                                        <span class="ml-4"><v-select :items="emailTemplateToSend" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
-                                        <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate(templateId)">Xem mẫu email </a></span>
-                                        <br>
-                                        <br>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <v-select prepend-icon="people" :items="createSchedule.list" label="Chọn danh sách gửi" v-model="createSchedule.selectedListToSendSMS"></v-select>
-                                        <v-divider :divider="divider"></v-divider>
-                                        <span class="ml-4">
-                                            <v-menu ref="menu1" v-model="createSchedule.menu1" :close-on-content-click="false" lazy
-                                                transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-text-field v-model="createSchedule.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
-                                                        v-on="on">
-                                                    </v-text-field>
+                        <v-flex xs12 sm12 md12 lg12 xl12>
+                            <v-layout row>
+                                <v-flex xs12 sm12 md3 lg3 xl3>
+                                    <v-card flat>
+                                        <v-card-text>
+                                            <span class="ml-4"><v-select prepend-icon="account_box" :items="allEmail" v-model="createSchedule.from" label="Chọn tài khoản gửi email"></v-select></span>
+                                            <span class="ml-4"><v-text-field prepend-icon="title" v-model="createSchedule.title" label="Tiêu đề"></v-text-field></span>
+                                            <span class="ml-4"><v-select :items="emailTemplateToSend" v-model="createSchedule.chosenContentId" prepend-icon="textsms" label="Chọn nội dung email"></v-select></span>
+                                            <span class="ml-4"><a v-if="createSchedule.chosenContentId != ''" @click="templateId = createSchedule.chosenContentId, setChosenTemplate(templateId)">Xem mẫu email </a></span>
+                                            <br>
+                                            <br>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <v-select prepend-icon="people" :items="createSchedule.list" label="Chọn danh sách gửi" v-model="createSchedule.selectedListToSendSMS"></v-select>
+                                            <v-divider :divider="divider"></v-divider>
+                                            <span class="ml-4">
+                                                <v-menu ref="menu1" v-model="createSchedule.menu1" :close-on-content-click="false" lazy
+                                                    transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-text-field v-model="createSchedule.date" label="Chọn ngày gửi"  persistent-hint prepend-icon="event"
+                                                            v-on="on">
+                                                        </v-text-field>
+                                                    </template>
+                                                    <v-date-picker v-model="createSchedule.date"  no-title @input="createSchedule.menu1 = false"></v-date-picker>
+                                                </v-menu>
+                                            </span>
+                                            <span class="ml-4">
+                                                <v-select  prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
+                                            </span>
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-card flat>
+                                        <v-card-actions>
+                                            <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == '' || createSchedule.selectedListToSendSMS == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-flex>
+                                <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
+                                    <v-card flat>
+                                        <v-card-title>
+                                            <v-layout row wrap>
+                                                <v-flex xs6 sm6 md6 lg6 xl6>
+                                                    <h2>Danh sách</h2>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
+                                                <template v-slot:items="props">
+                                                    <tr>
+                                                        <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
+                                                        <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                v-model="props.item.chosen" 
+                                                                @change="checkDisplayContact(props.item.contactId, props.item.chosen)"
+                                                                >
+                                                                </v-checkbox></td>
+                                                        <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
+                                                        <td>{{ props.item.email }}</td>
+                                                    </tr>
                                                 </template>
-                                                <v-date-picker v-model="createSchedule.date"  no-title @input="createSchedule.menu1 = false"></v-date-picker>
-                                            </v-menu>
-                                        </span>
-                                        <span class="ml-4">
-                                            <v-select  prepend-icon="access_time" label="Chọn giờ gửi" v-model="createSchedule.time" :items="createSchedule.timeToChoose"></v-select>
-                                        </span>
-                                    </v-card-text>
-                                </v-card>
-                                <v-card flat>
-                                    <v-card-actions>
-                                        <v-btn dark block color="#3E82F7" :disabled="createSchedule.from == '' || createSchedule.title == '' || createSchedule.chosenContentId == '' || createSchedule.selectedListToSendSMS == ''" @click="sendEmail()">Đặt lịch gửi</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-flex>
-                            <v-flex xs12 sm12 md9 lg9 xl9 class="ml-3">
-                                <v-card flat>
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Danh sách</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.displayContacts" class="elevation-1" no-data-text="Chưa chọn danh sách ">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="checkDisplayContact(props.item.contactId, props.item.chosen)"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
-                                                    <td>{{ props.item.email }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <v-pagination :total-visible="7" v-model="createSchedule.page" :length="createSchedule.pages" @input="getDisplayContactsOnOtherPage()"></v-pagination>
-                                        <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
-                                        <br>
-                                    </v-card-text>
-                                </v-card>
-                                <v-card flat class="mt-3">
-                                    <v-card-title>
-                                        <v-layout row wrap>
-                                            <v-flex xs6 sm6 md6 lg6 xl6>
-                                                <h2>Chọn thêm người nhận</h2>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
-                                        <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
-                                                            v-model="props.item.chosen" 
-                                                            @change="checkAdditionalContact(props.item.contactId, props.item.chosen)"
-                                                            >
-                                                            </v-checkbox></td>
-                                                    <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
-                                                    <td>{{ props.item.email }}</td>
-                                                </tr>
-                                            </template>
-                                        </v-data-table>
-                                        <br>
-                                        <v-pagination :total-visible="7" v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
-                                        
-                                        <br>
-                                    </v-card-text>
-                                </v-card>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                </v-layout>
+                                            </v-data-table>
+                                            <br>
+                                            <v-pagination :total-visible="7" v-model="createSchedule.page" :length="createSchedule.pages" @input="getDisplayContactsOnOtherPage()"></v-pagination>
+                                            <!-- <v-pagination v-model="send.page" :length="send.pages"></v-pagination> -->
+                                            <br>
+                                        </v-card-text>
+                                    </v-card>
+                                    <v-card flat class="mt-3">
+                                        <v-card-title>
+                                            <v-layout row wrap>
+                                                <v-flex xs6 sm6 md6 lg6 xl6>
+                                                    <h2>Chọn thêm người nhận</h2>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <!-- <v-select label="Danh sách người nhận" :items="['Theo danh sách', 'Tự chọn']"></v-select> -->
+                                            <v-data-table hide-actions :loading="loadingTable" rows-per-page-text="Hiển thị" :rows-per-page-items="[25,10,5, {text: 'Tất cả', value: -1}]" dense :headers="createSchedule.headers" :items="createSchedule.additionalContacts"  class="elevation-1">
+                                                <template v-slot:items="props">
+                                                    <tr>
+                                                        <td><v-checkbox style="padding: 0px 0px 0px 0px; height: 30px;" 
+                                                                v-model="props.item.chosen" 
+                                                                @change="checkAdditionalContact(props.item.contactId, props.item.chosen)"
+                                                                >
+                                                                </v-checkbox></td>
+                                                        <td>{{ props.item.lastName }} {{ props.item.firstName}}</td>
+                                                        <td>{{ props.item.email }}</td>
+                                                    </tr>
+                                                </template>
+                                            </v-data-table>
+                                            <br>
+                                            <v-pagination :total-visible="7" v-model="createSchedule.bonusPage" :length="createSchedule.bonusPages" @input="getAdditionalContactsOnOtherPage()"></v-pagination>
+                                            
+                                            <br>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                    </v-layout>
                 </v-card>
             </v-dialog>
             <v-flex xs10 sm10 md10 lg10 xl10 v-if="page=='manageSchedule'">

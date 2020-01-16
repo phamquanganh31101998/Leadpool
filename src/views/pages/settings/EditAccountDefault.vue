@@ -527,7 +527,7 @@ export default {
         }
     },
     created(){
-        this.$store.state.colorNumber = 8;
+        this.$store.state.colorNumber = 9;
         this.getCurrentUser();
     }
 }

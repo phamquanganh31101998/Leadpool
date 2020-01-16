@@ -2,7 +2,53 @@
     <v-content class="mt-4 pl-3 pr-3">
         <v-layout row wrap>
             <v-flex xs12 sm12 md5 lg6 xl6>
-                <h1 class="ml-3"> Quản lý danh sách các Lead</h1>
+                <h1 class="ml-3 mt-2">
+                    Quản lý danh sách các Lead
+                    <v-tooltip top v-if="0 == 1">
+                        <template v-slot:activator="{ on }">
+                            <v-icon size="35" class="ml-3" color="#3E82F7" v-on="on" @click="tutorialDialog = true">help</v-icon>
+                        </template>
+                        HƯỚNG DẪN SỬ DỤNG
+                    </v-tooltip>
+                    <v-dialog persistent width="60%" height="80%" v-model="tutorialDialog">
+                        <v-card>
+                            <v-toolbar card dark color="#3E82F7">
+                                <v-toolbar-title>HƯỚNG DẪN SỬ DỤNG</v-toolbar-title>
+                                <v-spacer></v-spacer>
+                                <v-btn icon dark @click="tutorialDialog = false">
+                                    <v-icon>close</v-icon>
+                                </v-btn>
+                            </v-toolbar>
+                            <v-card-text>
+                                <v-layout row v-if="tutorialPage == 1">
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <h1>trang 1</h1>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row v-if="tutorialPage == 2">
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <h1>trang 2</h1>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row v-if="tutorialPage == 3">
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <h1>trang 3</h1>
+                                    </v-flex>
+                                </v-layout>
+                                <v-layout row v-if="tutorialPage == 4">
+                                    <v-flex xs12 sm12 md12 lg12 xl12>
+                                        <h1>trang 4</h1>
+                                    </v-flex>
+                                </v-layout>
+                            </v-card-text>
+                            <v-layout row wrap>
+                                <v-btn flat large color="primary" @click="tutorialPage--" v-show="tutorialPage != 1">Quay lại</v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn flat large color="primary" @click="tutorialPage++" v-show="tutorialPage < maxPage">Tiếp theo</v-btn>
+                            </v-layout>
+                        </v-card>
+                    </v-dialog>
+                </h1>
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6 v-if="access">
                 <v-layout row>
@@ -10,7 +56,7 @@
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
                     </v-flex>
                     <v-flex xs2 md2 lg2 xl2>
-                        <v-btn round block dark color="#3E82F7" @click="goToNewListPage()"> <v-icon>add</v-icon> Tạo mới</v-btn>
+                        <v-btn round block dark color="#3E82F7" class="mt-2" @click="goToNewListPage()"> <v-icon>add</v-icon> Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -20,11 +66,11 @@
         <v-dialog v-model="deleteListDialog.dialog" @click:outside="deleteListDialog.dialog = false" transition="dialog-bottom-transition" scrollable width="30%">
             <v-card tile>
                 <v-toolbar card dark color="red">
-                    <v-toolbar-title>Xóa?</v-toolbar-title>
+                    <v-toolbar-title>Xác nhận xóa</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-card-text>
-                    Bạn có chắc chắn muốn xóa Lead này?
+                    Bạn có chắc chắn muốn xóa danh sách này?
                 </v-card-text>
                 <v-card-actions>
                     <v-btn flat color="red" @click="deleteList(deleteListDialog.id)">Xóa</v-btn>
@@ -84,7 +130,6 @@
             </v-dialog>
         </v-layout>
         <v-layout v-else>
-            
             <v-flex xs12 sm12 md12 lg12 xl12>
                 <v-layout style="height: 350px;">
                     <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
@@ -125,6 +170,9 @@ export default {
     },
     data(){
         return{
+            tutorialDialog: false,
+            tutorialPage: 1,
+            maxPage: 4,
             loadingTable: false,
             deleteListDialog: {
                 dialog: false,
@@ -177,6 +225,9 @@ export default {
         }
     },
     methods: {
+        logging(){
+            alert('bam cai lon')
+        },
         confirmDeleteList(id){
             this.deleteListDialog.id = id;
             this.deleteListDialog.dialog = true;

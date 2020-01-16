@@ -393,7 +393,7 @@
                                 <template v-slot:items="props">
                                     <tr>
                                         <!-- @change="checkChosenContact(props.item.contactId, props.item.chosen)" -->
-                                        <td>{{ props.item.campaign}}</td>
+                                        <td> <a @click.stop="openScheduleDetailDialog(props.item.id)">{{ props.item.campaign}}</a> </td>
                                         <td>{{ props.item.time }} </td>
                                         <td style="color: red" v-if="props.item.status == 'INACTIVE'">{{ returnStatus(props.item.status) }}</td>
                                         <td style="color: green" v-if="props.item.status == 'ACTIVE'">{{ returnStatus(props.item.status) }}</td>
@@ -528,7 +528,7 @@ export default {
             currentUser: null,
             access: false,
             fontWeight: ['', '', '', 'fontWeight: bold'],
-            page: 'template',
+            page: 'schedule',
             divider: true,
             saveKey: {
                 list: [],
@@ -691,7 +691,7 @@ export default {
             schedule: {
                 headers: [
                     {
-                        text: 'TÊN MẪU TIN NHẮN',
+                        text: 'TÊN CHIẾN DỊCH GỬI',
                         align: 'left',
                         value: 'campaign',
                         // sortable: false
