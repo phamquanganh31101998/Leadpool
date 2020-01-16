@@ -404,7 +404,7 @@
                 </v-card-actions>
             </v-card>
         </v-layout>
-        <v-dialog v-model="dialog" max-width="500">
+        <v-dialog v-model="dialog" max-width="400">
             <v-card>
                 <v-card-title>
                     <h1>Màu sắc</h1>
@@ -443,7 +443,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="dialog1" max-width="500">
+        <v-dialog v-model="dialog1" max-width="400">
             <v-card>
                 <v-card-title>
                     Màu sắc
@@ -482,7 +482,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="chatObj.colorDialog" max-width="500">
+        <v-dialog v-model="chatObj.colorDialog" max-width="400">
             <v-card>
                 <v-card-title>
                     Chọn màu cho nút
