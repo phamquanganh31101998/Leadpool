@@ -297,7 +297,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         chatInputInfoDialog = `
             <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
                 <div class="row">
-                    <div class="col-md-5 col-md-offset-7">
+                    <div class="col-md-4 col-md-offset-8">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
@@ -624,7 +624,8 @@ function connectToFirebase() {
             //     '</tr>';
             let html = '';
             if(message.name == obj.name){
-                html = `<tr style="padding-top: 5%;">
+                html = `
+                <tr style="padding-top: 5%;">
                     <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
                         ${message.name}${isCustomer}: ${message.message}
                     </td>
@@ -632,10 +633,10 @@ function connectToFirebase() {
             }
             else {
                 html = `
-                <img src="http://localhost:8080/telephone_operator.png" alt="Gọi điện thoại">
                 <tr style="padding-top: 5%;">
-                
-                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">
+                        ${message.name}${isCustomer}: ${message.message}
+                    </td>
                 </tr>`
             }
             $('#messageContainer tr:last').after(html);
