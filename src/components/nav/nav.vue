@@ -51,16 +51,17 @@
         <v-icon color="white" class="ml-2">device_hub</v-icon>
       </v-btn>
       <v-divider :divider="divider" vertical></v-divider>
-      <v-btn :color="background[7]" @click="goToReportPage()" depressed style="height: 50px; margin-bottom: 15px;">
-        Báo cáo
-        <v-icon color="white" class="ml-2">bar_chart</v-icon>
-      </v-btn>
-      <v-divider :divider="divider" vertical></v-divider>
       <v-btn :color="background[8]" @click="goToChatPage()" depressed style="height: 50px; margin-bottom: 15px;">
         Chat
         <v-icon color="white" class="ml-2">question_answer</v-icon>
         <v-icon v-if="notification" color="red" class="ml-2" style="font-size: 10px">brightness_1</v-icon>
       </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
+      <v-btn :color="background[7]" @click="goToReportPage()" depressed style="height: 50px; margin-bottom: 15px;">
+        Báo cáo
+        <v-icon color="white" class="ml-2">bar_chart</v-icon>
+      </v-btn>
+      <v-divider :divider="divider" vertical></v-divider>
       
     </v-toolbar-items>
     <v-spacer></v-spacer>

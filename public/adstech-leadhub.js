@@ -411,14 +411,14 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     if (styleBtnFacebook == null || styleBtnFacebook == '') {
         facebook = ''
     } else {
-        fb = styleBtnFacebook.phoneNumber
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="http://dev.adstech.vn:8090/mess.png" alt="Facebook" width="100%" height="100%"></a></button>'
+        fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="http://dev.adstech.vn:8090/zalo.png" alt="Zalo" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
@@ -490,7 +490,7 @@ function openChat() {
                     isCustomer = '';
                 }
                 if (message.isCustomer == false) {
-                    isCustomer = '(Admin)'
+                    isCustomer = ' (Admin)'
                 }
                 // + getHour(message.time)
                 // let html =
@@ -615,7 +615,7 @@ function connectToFirebase() {
                 isCustomer = '';
             }
             if (message.isCustomer == false) {
-                isCustomer = '(Admin)'
+                isCustomer = ' (Admin)'
             }
             // let html =
             //     '<tr>' +

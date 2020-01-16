@@ -887,7 +887,16 @@
                     btn.listButton.push(form)
                 }
                 if (this.facebook.showBtn == true) {
-                    btn.listButton.push(facebook)
+                    if(this.facebook.url.indexOf('https://www.facebook.com/') == 0){
+                        facebook.phoneNumber = this.facebook.url.replace("https://www.facebook.com/","")
+                        btn.listButton.push(facebook)
+                    }else if(this.facebook.url.indexOf('https://www.facebook.com/')){
+                        facebook.phoneNumber = this.facebook.url.replace("http://www.facebook.com/","")
+                        btn.listButton.push(facebook)
+                    }else{
+                        facebook.phoneNumber = this.facebook.url
+                        btn.listButton.push(facebook)
+                    }
                 }
                 if (this.zalo.showBtn == true) {
                     btn.listButton.push(zalo)
