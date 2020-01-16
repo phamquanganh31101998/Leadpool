@@ -411,18 +411,22 @@
                 </v-card-title>
                 <v-card-text>
                     <v-radio-group v-model="color" row>
-                        <div style="width:30px;height:30px;background-color:#8300e9"></div>
-                        <v-radio value="#8300e9"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#0c71c3"></div>
-                        <v-radio value="#0c71c3"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#7cda24"></div>
-                        <v-radio value="#7cda24"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#edf000"></div>
-                        <v-radio value="#edf000"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e09900"></div>
-                        <v-radio value="#e09900"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e02b20"></div>
-                        <v-radio value="#e02b20"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#0000ff"></div>
+                        <v-radio value="#0000ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#008000"></div>
+                        <v-radio value="#008000"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#cc66ff"></div>
+                        <v-radio value="#cc66ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ff6600"></div>
+                        <v-radio value="#ff6600"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ffd800"></div>
+                        <v-radio value="#ffd800"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#333333"></div>
+                        <v-radio value="#333333"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#989898"></div>
+                        <v-radio value="#989898"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#d0d0d0"></div>
+                        <v-radio value="#d0d0d0"></v-radio>
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
@@ -446,18 +450,22 @@
                 </v-card-title>
                 <v-card-text>
                     <v-radio-group v-model="colorForm" row>
-                        <div style="width:30px;height:30px;background-color:#8300e9"></div>
-                        <v-radio value="#8300e9"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#0c71c3"></div>
-                        <v-radio value="#0c71c3"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#7cda24"></div>
-                        <v-radio value="#7cda24"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#edf000"></div>
-                        <v-radio value="#edf000"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e09900"></div>
-                        <v-radio value="#e09900"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e02b20"></div>
-                        <v-radio value="#e02b20"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#0000ff"></div>
+                        <v-radio value="#0000ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#008000"></div>
+                        <v-radio value="#008000"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#cc66ff"></div>
+                        <v-radio value="#cc66ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ff6600"></div>
+                        <v-radio value="#ff6600"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ffd800"></div>
+                        <v-radio value="#ffd800"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#333333"></div>
+                        <v-radio value="#333333"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#989898"></div>
+                        <v-radio value="#989898"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#d0d0d0"></div>
+                        <v-radio value="#d0d0d0"></v-radio>
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>
@@ -481,18 +489,22 @@
                 </v-card-title>
                 <v-card-text>
                     <v-radio-group v-model="chatObj.colorChat" row>
-                        <div style="width:30px;height:30px;background-color:#8E00FF"></div>
-                        <v-radio value="#8E00FF"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#0c71c3"></div>
-                        <v-radio value="#0c71c3"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#7cda24"></div>
-                        <v-radio value="#7cda24"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#edf000"></div>
-                        <v-radio value="#edf000"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e09900"></div>
-                        <v-radio value="#e09900"></v-radio>
-                        <div style="width:30px;height:30px;background-color:#e02b20"></div>
-                        <v-radio value="#e02b20"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#0000ff"></div>
+                        <v-radio value="#0000ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#008000"></div>
+                        <v-radio value="#008000"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#cc66ff"></div>
+                        <v-radio value="#cc66ff"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ff6600"></div>
+                        <v-radio value="#ff6600"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#ffd800"></div>
+                        <v-radio value="#ffd800"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#333333"></div>
+                        <v-radio value="#333333"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#989898"></div>
+                        <v-radio value="#989898"></v-radio>
+                        <div style="width:30px;height:30px;background-color:#d0d0d0"></div>
+                        <v-radio value="#d0d0d0"></v-radio>
                     </v-radio-group>
                 </v-card-text>
                 <v-card-actions>

@@ -157,6 +157,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             left: ${parseInt(style.left)+2}%;
             right: ${style.right}%;
             top:${style.top}%;
+            z-index: 99999999;
         }`
     } else {
         position = `.adstech-group-btn {
@@ -165,6 +166,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             left: ${parseInt(style.left) -1}%;
             right: ${parseInt(style.right) -1}%;
             top:${style.top}%;
+            z-index: 99999999;
         }`
     }
     var css = `<style>
@@ -191,7 +193,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         top: 50%;
                         transform: translate(-50%,-50%);
                         border: 3px solid #f1f1f1;
-                        z-index: 999999;
+                        z-index: 9999999;
                         background-color:#fff;
                     }
                     #adstech-form{
@@ -257,7 +259,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         text-align:center;
                         left: 50%;
                         top: 50%;
-                        z-index: 999999;
+                        z-index: 9999999;
                         transform: translate(-50%,-50%);
                       }
                 </style>`
