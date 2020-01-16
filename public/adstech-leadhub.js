@@ -200,16 +200,16 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         padding-bottom:20px
                     }
                     /* Add styles to the form container */
-                    .form-container {
+                    .adstech-form-container {
                         max-width: 400px;
                         padding: 10px;
                         background-color: #fff;
                     }
 
                     /* Full-width input fields */
-                    .form-container input[type=text],
-                    .form-container input[type=email], 
-                    .form-container input[type=tel]{
+                    .adstech-form-container input[type=text],
+                    .adstech-form-container input[type=email], 
+                    .adstech-form-container input[type=tel]{
                         width: 90%;
                         padding: 15px;
                         margin: 5px 0 22px 0;
@@ -218,15 +218,15 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     }
 
                     /* When the inputs get focus, do something */
-                    .form-container input[type=text]:focus,
-                    .form-container input[type=email]:focus,
-                    .form-container input[type=tel]:focus {
+                    .adstech-form-container input[type=text]:focus,
+                    .adstech-form-container input[type=email]:focus,
+                    .adstech-form-container input[type=tel]:focus {
                         background-color: #ddd;
                         outline: none;
                     }
 
                     /* Set a style for the submit/login button */
-                    .form-container .btn {
+                    .adstech-form-container .btn {
                         color: white;
                         border: none;
                         cursor: pointer;
@@ -239,12 +239,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     }
 
                     /* Add a red background color to the cancel button */
-                    .form-container .cancel {
+                    .adstech-form-container .cancel {
                         background-color: #999;
                     }
 
                     /* Add some hover effects to buttons */
-                    .form-container .btn:hover,
+                    .adstech-form-container .btn:hover,
                     .open-button:hover {
                         opacity: 1;
                     }
@@ -393,7 +393,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         }
         form1 = `<div class="adstech-form" id="adstech-form">
                     <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px">&times;</button></div>
-                    <form class="form-container" id="form-adstech" method="POST">
+                    <form class="adstech-form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
                         ${name}
                         ${phone}
@@ -427,7 +427,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         html = `
                 <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${facebook}
                     ${brZalo}
@@ -449,7 +448,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         html = `
                 <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
                 <div class="adstech-group-btn">
                     ${call}
                     ${form}
