@@ -238,7 +238,7 @@
     },
     created(){
       this.getCurrentUser();
-      this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+      this.chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
     }
   }
 </script>

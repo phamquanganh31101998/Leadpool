@@ -634,7 +634,7 @@ export default {
     created(){
         this.$store.state.colorNumber = 8;
         this.getCurrentUser();
-        this.chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+        this.chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
         this.$store.dispatch('noNewNotification')
     }
 }
