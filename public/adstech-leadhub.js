@@ -69,7 +69,7 @@ function f() {
     }
     //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}
     //test: http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId} (note: on HTTP)
-    fetchRetry(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
@@ -285,12 +285,12 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     } else {
         if (style.color == "#fff") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://dev.adstech.vn:8090/question_answer-white.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brChat = '<br />'
         } else if (style.color == "#000") {
             chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="http://dev.adstech.vn:8090/question_answer-black.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
+                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brChat = '<br />'
         }
@@ -587,9 +587,9 @@ function connectToFirebase() {
             },
         ]
         // console.log(body)
-        //product: https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm
+        //product: https://services.adstech.vn/leadpool/v1/leadhub/contacts?source_from_mar=CHAT
         //test: http://dev.adstech.vn:9000/leadhub/contacts?source_from_mar=CHAT
-        fetchRetry(`http://dev.adstech.vn:9000/leadhub/contacts?source_from_mar=CHAT`, {
+        fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/contacts?source_from_mar=CHAT`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -678,7 +678,7 @@ function startChatting() {
 function sendMessage(body) {
     //product: https://services.adstech.vn/leadpool/v1/leadhub/chats
     //test: http://dev.adstech.vn:9000/leadhub/chats
-    fetchRetry(' http://dev.adstech.vn:9000/leadhub/chats', {
+    fetchRetry('https://services.adstech.vn/leadpool/v1/leadhub/chats', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -781,7 +781,7 @@ function sendTracing(type) {
     if(gclid != null){body.gclid = gclid}
     //product: https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm
     //test: http://dev.adstech.vn:9000/leadhub/tracking-source-utm
-    fetchRetry(`http://dev.adstech.vn:9000/leadhub/tracking-source-utm`, {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
