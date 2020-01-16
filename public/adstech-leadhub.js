@@ -561,7 +561,7 @@ function getHour(time) {
 
 function connectToFirebase() {
     try {
-        chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+        chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
     } catch (error) {
         console.log(error)
     }
