@@ -234,7 +234,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         margin-bottom: 10px;
                         opacity: 0.8;
                         float: left;
-                        z-index: initial;
+                        z-index: 9999999;
                         height:40px;
                     }
 
@@ -297,7 +297,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             brChat = '<br />'
         }
         chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="display: none;  position: fixed; bottom: 5%; right: 5%;">
+            <div class="container" id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%;">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-8">
                         <div class="row">
@@ -327,7 +327,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             </div>
         `
         chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="display: none; position: fixed; bottom: 5%; right: 5%"> 
+            <div class="container" id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%;"> 
                 <div class="row">
                     <div class="col-md-4 col-md-offset-8">
                         <div class="row">
