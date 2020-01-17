@@ -69,7 +69,7 @@ function f() {
     }
     //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}
     //test: http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId} (note: on HTTP)
-    fetchRetry(`http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
