@@ -321,7 +321,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
                                     <div class="panel-footer" style="padding:15px; background-color:#fff"> 
-                                        <form id="sendInfo">
+                                        <form id="sendInfo" method="POST">
                                             <div class="input-group input-group-sm" style="width: 100%">
                                                 <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
                                                 <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
@@ -359,7 +359,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                         </div>
                                     </div>
                                     <div style="background-color:#fff">
-                                        <form id="sendMessage">
+                                        <form id="sendMessage" method="POST">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
                                                 <span class="input-group-btn">
