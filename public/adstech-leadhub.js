@@ -413,13 +413,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         facebook = ''
     } else {
         fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
-        facebook = '<button class="adstech-btn" id="at-open-fb" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" alt="Facebook" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" id="at-open-fb" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" class="leadhub-adstech-fb" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" id="at-open-zl" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" alt="Zalo" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" id="at-open-zl" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" class="leadhub-adstech-zl" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
@@ -441,7 +441,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 ${chatWithAdmin}
                 ${form1}
                 ${css}
-                
+
                 `
     } else {
         html = `
@@ -543,14 +543,14 @@ function closeAlert() {
 
 function openFacebook() {
     sendTracing('FACEBOOK')
-    var element = document.getElementById("at-open-fb");
+    var element = document.getElementById("adstech-open-fb");
     element.classList.add("at-onclick-fb");
     window.open(fb)
 }
 
 function openZalo() {
     sendTracing('ZALO')
-    var element = document.getElementById("at-open-zl");
+    var element = document.getElementById("adstech-open-zl");
     element.classList.add("at-onclick-zl");
     window.open(zl)
 }
