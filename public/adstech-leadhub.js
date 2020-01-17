@@ -184,6 +184,9 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                         box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
                     }
                     
+                    #chatAdmin .input-group-sm>.form-control:not(textarea) {
+                        height: calc(1.5em + 1rem + 2px) !important;
+                    }
                     .adstech-form {
                         display: none;
                         position: fixed;
@@ -197,6 +200,18 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                     }
                     #adstech-form{
                         padding-bottom:20px
+                    }
+                    #adstech-form ::-webkit-scrollbar {
+                        width: 8px;
+                        height: 10px;
+                        z-index: 999;
+                    }
+                
+                    /* Handle */
+                    #adstech-form ::-webkit-scrollbar-thumb {
+                        -webkit-border-radius: 15px;
+                        border-radius: 15px;
+                        background: #eff2f9;
                     }
                     /* Add styles to the form container */
                     .adstech-form-container {
@@ -296,21 +311,20 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             brChat = '<br />'
         }
         chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%;">
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-8">
-                        <div class="row">
-                            <div class="col-md-12">
+            <div class="container" id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px">
+                <div style="width:100%">
+                    <div style="width:30%;margin-left:70%">
+                        <div style="width:100%">
+                            <div style="width:100%">
                                 <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                    <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 style="color: white" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
+                                    <div class="panel-heading" style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
-                                    <div class="panel-footer">
+                                    <div class="panel-footer" style="padding:15px; background-color:#fff"> 
                                         <form id="sendInfo">
                                             <div class="input-group input-group-sm" style="width: 100%">
                                                 <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
                                                 <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
-                                                
                                             </div>
                                             <br>
                                             <div class="input-group-btn">
@@ -326,25 +340,25 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             </div>
         `
         chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%;"> 
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-8">
-                        <div class="row">
-                            <div class="col-md-12" >
-                                <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                    <div class="panel-heading" style="border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+            <div class="container" id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%"> 
+                <div style="width:100%">
+                    <div style="width:30%;margin-left:70%">
+                        <div style="width:100%">
+                            <div style="width:100%">
+                                <div style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                    <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <h6 class="panel-title" style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6>
                                     </div>
-                                    <div class="panel-body" style="height: 350px; overflow-y: scroll;">
-                                        <div class="row">
-                                            <div class="col-sm-12" id="scollDiv"; >
+                                    <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
+                                        <div style="width:100%">
+                                            <div style="width:100% id="scollDiv"; >
                                                 <table class="table" id="messageContainer">
                                                     <tr></tr>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel-footer">
+                                    <div style="background-color:#fff">
                                         <form id="sendMessage">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
@@ -413,13 +427,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         facebook = ''
     } else {
         fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
-        facebook = '<button class="adstech-btn" id="at-open-fb" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" class="leadhub-adstech-fb" alt="Facebook" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" id="at-open-zl" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" class="leadhub-adstech-zl" alt="Zalo" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
@@ -441,7 +455,6 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 ${chatWithAdmin}
                 ${form1}
                 ${css}
-
                 `
     } else {
         html = `
