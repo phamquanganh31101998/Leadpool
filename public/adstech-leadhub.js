@@ -76,7 +76,6 @@ function f() {
             'Content-Type': 'application/json'
         })
     }, 4).then(result => {
-        console.log(result.response.listButton)
         var style = result.response.style
         var vertical = result.response.vertical
         var styleBtnCall = null
@@ -414,13 +413,13 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         facebook = ''
     } else {
         fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" alt="Facebook" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" id="at-open-fb" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" alt="Zalo" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" id="at-open-zl" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
@@ -544,11 +543,15 @@ function closeAlert() {
 
 function openFacebook() {
     sendTracing('FACEBOOK')
+    var element = document.getElementById("at-open-fb");
+    element.classList.add("at-onclick-fb");
     window.open(fb)
 }
 
 function openZalo() {
     sendTracing('ZALO')
+    var element = document.getElementById("at-open-zl");
+    element.classList.add("at-onclick-zl");
     window.open(zl)
 }
 
@@ -754,6 +757,7 @@ function createLead(body) {
         body: JSON.stringify(body)
     }, 4).then(result => {
         if (result.status == "200") {
+            localStorage.removeItem('lead'.JSON.stringify(body))
             openAlert()
             setTimeout(function () {
                 closeAlert()
