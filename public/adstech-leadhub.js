@@ -480,7 +480,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     // var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
         send(acId)
-    } else if (styleBtnChat != null && styleBtnChat != '') {
+    }
+    if (styleBtnChat != null && styleBtnChat != '') {
         connectToFirebase()
     }
 }
