@@ -1,106 +1,110 @@
-window.onload = f
-var acId = '';
-var topic = '';
-var fb = '';
-var zl = '';
-var url = window.location.href;
-var utm_source = null;
-var utm_medium = null;
-var utm_campaign = null;
-var utm_term = null;
-var utm_content = null;
-var gclid = null;
-var arrTrack = []
-var styleBtnChat = '';
-function f() {
-    var tag = document.createElement("script");
-    tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
-    document.getElementsByTagName("head")[0].appendChild(tag);
-    var tag2 = document.createElement("script");
-    tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js";
-    document.getElementsByTagName("head")[0].appendChild(tag2);
-    // var acId = ''
-    var btnId = ''
-    var chatminiCRM = null;
-    var scripts = document.getElementsByTagName("script");
-    let a = localStorage.getItem('lead')
-    if (a != null && a != undefined && a != '') {
-        createLead(a)
+window.onload = adstechLeadhubOnload
+var atLh_acId = '';
+var atLh_topic = '';
+var atLh_fb = '';
+var atLh_zl = '';
+var atLh_url = window.location.href;
+var atLh_utm_source = null;
+var atLh_utm_medium = null;
+var atLh_utm_campaign = null;
+var atLh_utm_term = null;
+var atLh_utm_content = null;
+var atLh_gclid = null;
+var atLh_arrTrack = []
+var atLh_styleBtnChat = '';
+var atLh_chatminiCRM = null;
+function adstechLeadhubOnload() {
+    var atLh_tag = document.createElement("script");
+    atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
+    document.getElementsByTagName("head")[0].appendChild(atLh_tag);
+    var atLh_checkJquery = null
+    var atLh_btnId = ''
+    var atLh_scripts = document.getElementsByTagName("script");
+    let atLh_lead_out = localStorage.getItem('lead')
+    if (atLh_lead_out != null && atLh_lead_out != undefined && atLh_lead_out != '') {
+        createLead(atLh_lead_out)
     }
-    for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.indexOf('&gBtnId=') > 0) {
-            var src = scripts[i].src.split('?')[1]
+    for (let i = 0; i < atLh_scripts.length; i++) {
+        if (atLh_scripts[i].src.indexOf('&gBtnId=') > 0) {
+            var src = atLh_scripts[i].src.split('?')[1]
             var accid = src.split('&')[0]
-            acId = accid.split('=')[1]
+            atLh_acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
-            btnId = GbtnId.split('=')[1]
+            atLh_btnId = GbtnId.split('=')[1]
+        }else if(atLh_scripts[i].src.indexOf('jquery') > 0){
+            atLh_checkJquery = atLh_scripts[i].src
         }
     }
-    var track = ''
-    if (url.indexOf('?') > 0) {
-        track = url.split('?')[1]
-        arrTrack = track.split('&')
-    } else {
-        track = null
+    if(atLh_checkJquery === null || atLh_checkJquery === ''){
+        var atLh_tag2 = document.createElement("script");
+        atLh_tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js";
+        document.getElementsByTagName("head")[0].appendChild(atLh_tag2);
     }
-    if (track == '' || track == null) {
-        utm_source = null
-        utm_medium = null
-        utm_campaign = null
-        utm_term = null
-        utm_content = null
-        gclid = null
+    var atLh_track = ''
+    if (atLh_url.indexOf('?') > 0) {
+        atLh_track = atLh_url.split('?')[1]
+        atLh_arrTrack = atLh_track.split('&')
+    } else {
+        atLh_track = null
+    }
+    if (atLh_track == '' || atLh_track == null) {
+        atLh_utm_source = null
+        atLh_utm_medium = null
+        atLh_utm_campaign = null
+        atLh_utm_term = null
+        atLh_utm_content = null
+        atLh_gclid = null
     }else{
-        for(let index = 0; index < arrTrack.length; index++){
-            if(arrTrack[index].indexOf('utm_source') == 0){
-                utm_source = arrTrack[index].split('=')[1]
-            }else if(arrTrack[index].indexOf('utm_medium') == 0){
-                utm_medium = arrTrack[index].split('=')[1]
-            }else if(arrTrack[index].indexOf('utm_campaign') == 0){
-                utm_campaign = arrTrack[index].split('=')[1]
-            }else if(arrTrack[index].indexOf('utm_term') == 0){
-                utm_term = arrTrack[index].split('=')[1]
-            }else if(arrTrack[index].indexOf('utm_content') == 0){
-                utm_content = arrTrack[index].split('=')[1]
-            }else if(arrTrack[index].indexOf('gclid') == 0){
-                gclid = arrTrack[index].split('=')[1]
+        for(let index = 0; index < atLh_arrTrack.length; index++){
+            if(atLh_arrTrack[index].indexOf('utm_source') == 0){
+                atLh_utm_source = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_medium') == 0){
+                atLh_utm_medium = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_campaign') == 0){
+                atLh_utm_campaign = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_term') == 0){
+                atLh_utm_term = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_content') == 0){
+                atLh_utm_content = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('gclid') == 0){
+                atLh_gclid = atLh_arrTrack[index].split('=')[1]
             }
         }
     }
-    //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}
-    //test: http://dev.adstech.vn:9000/leadhub/account/${acId}/group-buttons/${btnId} (note: on HTTP)
-    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${acId}/group-buttons/${btnId}`, {
+    //product: https://services.adstech.vn/leadpool/v1/leadhub/account/${atLh_acId}/group-buttons/${atLh_btnId}
+    //test: http://dev.adstech.vn:9000/leadhub/account/${atLh_acId}/group-buttons/${atLh_btnId} (note: on HTTP)
+    fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/account/${atLh_acId}/group-buttons/${atLh_btnId}`, {
         method: 'GET',
         headers: new Headers({
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         })
     }, 4).then(result => {
-        var style = result.response.style
-        var vertical = result.response.vertical
-        var styleBtnCall = null
-        var styleBtnForm = null
-        var styleBtnFacebook = null
-        var styleBtnZalo = null
+        var atLh_style = result.response.style
+        var atLh_vertical = result.response.vertical
+        var atLh_styleBtnCall = null
+        var atLh_styleBtnForm = null
+        var atLh_styleBtnFacebook = null
+        var atLh_styleBtnZalo = null
         for (let i = 0; i < result.response.listButton.length; i++) {
             if (result.response.listButton[i].type == "CALL") {
-                styleBtnCall = result.response.listButton[i]
+                atLh_styleBtnCall = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FORM") {
-                styleBtnForm = result.response.listButton[i]
+                atLh_styleBtnForm = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "CHAT") {
-                styleBtnChat = result.response.listButton[i]
+                atLh_styleBtnChat = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FACEBOOK") {
-                styleBtnFacebook = result.response.listButton[i]
+                atLh_styleBtnFacebook = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "ZALO") {
-                styleBtnZalo = result.response.listButton[i]
+                atLh_styleBtnZalo = result.response.listButton[i]
             }
         }
-        writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId, styleBtnFacebook, styleBtnZalo)
+        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo)
         let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo');
         if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != '') {
             let chatInfo = JSON.parse(leadhub_chatInfo);
             document.getElementById('txtName').innerText = chatInfo.name;
-            topic = chatInfo.topic;
+            atLh_topic = chatInfo.topic;
         }
     })
 }
@@ -129,22 +133,22 @@ function handle(response) {
     });
 }
 
-function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, acId, styleBtnFacebook, styleBtnZalo) {
-    var html = ''
-    var call = ''
-    var form = ''
-    var chat = ''
-    var facebook = ''
-    var zalo = ''
-    var chatInputInfoDialog = ''
-    var chatWithAdmin = ''
-    var form1 = ''
-    var phone = ''
-    var email = ''
-    var name = ''
-    var city = ''
-    var bussiness = ''
-    var position = ''
+function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo) {
+    let atLh_html = ''
+    let atLh_call = ''
+    let atLh_form = ''
+    let atLh_chat = ''
+    let facebook = ''
+    let zalo = ''
+    let atLh_chatInputInfoDialog = ''
+    let atLh_chatWithAdmin = ''
+    let atLh_form1 = ''
+    let phone = ''
+    let email = ''
+    let name = ''
+    let city = ''
+    let bussiness = ''
+    let position = ''
     let brCall = ''
     let brForm = ''
     let brChat = ''
@@ -168,7 +172,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             z-index: 99999999;
         }`
     }
-    var css = `<style>
+    let css = `<style>
                     ${position}
 
                     .adstech-btn {
@@ -278,17 +282,17 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                       }
                 </style>`
     if (styleBtnCall == null || styleBtnCall == '') {
-        call = ''
+        atLh_call = ''
     } else {
         if (style.color == "#fff") {
-            call = `<button class="adstech-btn" onclick="openCall()" style="background-color:${styleBtnCall.buttonColor}">
+            atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
                         <a href="tel:${styleBtnCall.phoneNumber}">
                             <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
                     </button>`
             brCall = '<br />'
         } else if (style.color == "#000") {
-            call = `<button class="adstech-btn" onclick="openCall()" style="background-color:${styleBtnCall.buttonColor}">
+            atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
                         <a href="tel:${styleBtnCall.phoneNumber}">
                             <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 2}" height="${style.size / 2}">
                         </a>
@@ -297,20 +301,20 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         }
     }
     if (styleBtnChat == null || styleBtnChat == '') {
-        chat = ''
+        atLh_chat = ''
     } else {
         if (style.color == "#fff") {
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brChat = '<br />'
         } else if (style.color == "#000") {
-            chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brChat = '<br />'
         }
-        chatInputInfoDialog = `
+        atLh_chatInputInfoDialog = `
             <div class="container" id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px">
                 <div style="width:100%">
                     <div style="width:30%;margin-left:70%">
@@ -321,7 +325,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
                                     <div class="panel-footer" style="padding:15px; background-color:#fff"> 
-                                        <form id="sendInfo" method="POST">
+                                        <form id="atLhSendInfo" method="POST">
                                             <div class="input-group input-group-sm" style="width: 100%">
                                                 <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
                                                 <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
@@ -339,7 +343,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                 </div>
             </div>
         `
-        chatWithAdmin = `
+        atLh_chatWithAdmin = `
             <div class="container" id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%"> 
                 <div style="width:100%">
                     <div style="width:30%;margin-left:70%">
@@ -359,7 +363,7 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
                                         </div>
                                     </div>
                                     <div style="background-color:#fff">
-                                        <form id="sendMessage" method="POST">
+                                        <form id="atLhSendessage" method="POST">
                                             <div class="input-group input-group-sm">
                                                 <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
                                                 <span class="input-group-btn">
@@ -377,8 +381,8 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
         `
     }
     if (styleBtnForm == null || styleBtnForm == '') {
-        form = ''
-        form1 = ''
+        atLh_form = ''
+        atLh_form1 = ''
     } else {
         for (let i = 0; i < styleBtnForm.properties.length; i++) {
             if (styleBtnForm.properties[i] == 'email') {
@@ -394,17 +398,17 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
             }
         }
         if (style.color == "#fff") {
-            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brForm = '<br />'
         } else if (style.color == "#000") {
-            form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="openForm()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 2}" height="${style.size / 2}">
                 </button>`
             brForm = '<br />'
         }
-        form1 = `<div class="adstech-form" id="adstech-form">
+        atLh_form1 = `<div class="adstech-form" id="adstech-form">
                     <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px">&times;</button></div>
                     <form class="adstech-form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
@@ -426,63 +430,59 @@ function writeHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, ac
     if (styleBtnFacebook == null || styleBtnFacebook == '') {
         facebook = ''
     } else {
-        fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="openFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
+        atLh_fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
-        zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="openZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
+        atLh_zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
-        html = `
-                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        atLh_html = `
                 <div class="adstech-group-btn">
                     ${facebook}
                     ${brZalo}
                     ${zalo}
                     ${brForm}
-                    ${form}
+                    ${atLh_form}
                     ${brCall}
-                    ${call}
+                    ${atLh_call}
                     ${brChat}
-                    ${chat}
+                    ${atLh_chat}
                 </div>
-                ${chatInputInfoDialog}
-                ${chatWithAdmin}
-                ${form1}
+                ${atLh_chatInputInfoDialog}
+                ${atLh_chatWithAdmin}
+                ${atLh_form1}
                 ${css}
                 `
     } else {
-        html = `
-                <script defer src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        atLh_html = `
                 <div class="adstech-group-btn">
-                    ${call}
-                    ${form}
-                    ${chat}
+                    ${atLh_call}
+                    ${atLh_form}
+                    ${atLh_chat}
                     ${facebook}
                     ${zalo}
                 </div>
-                ${chatInputInfoDialog}
-                ${chatWithAdmin}
-                ${form1}
+                ${atLh_chatInputInfoDialog}
+                ${atLh_chatWithAdmin}
+                ${atLh_form1}
                 ${css}`
     }
 
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.id = "adstech-group-btn";
     document.body.appendChild(div);
-    document.getElementById("adstech-group-btn").innerHTML = html;
-    // var chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    document.getElementById("adstech-group-btn").innerHTML = atLh_html;
+    // var atLh_chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
-        send(acId)
+        atLhSend(atLh_acId)
     }
-    if (styleBtnChat != null && styleBtnChat != '') {
-        connectToFirebase()
+    if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
+        atLhConnectToFirebase()
     }
 }
 
@@ -496,7 +496,7 @@ function openChat() {
         let hasInfo = window.localStorage.getItem('leadhub_chatInfo');
         if (hasInfo != undefined && hasInfo != null && hasInfo != '') {
             let customerInfo = JSON.parse(hasInfo)
-            chatminiCRM.child(topic).on('child_added', function (snapshot) {
+            atLh_chatminiCRM.child(atLh_topic).on('child_added', function (snapshot) {
                 var message = snapshot.val();
                 let isCustomer = '';
                 if (message.isCustomer == true || message.isCustomer == null) {
@@ -505,29 +505,29 @@ function openChat() {
                 if (message.isCustomer == false) {
                     isCustomer = ' (Admin)'
                 }
-                // + getHour(message.time)
-                // let html =
+                // + atLhGetHour(message.time)
+                // let atLh_html =
                 //     '<tr>' +
                 //     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
                 //     '<td>' + message.message + '</td>' +
                 //     '</tr>';
-                let html = ''
+                let atLh_html = ''
                 if(message.name == customerInfo.name){
-                    html = `<tr style="padding-top: 5%;">
-                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    atLh_html = `<tr style="padding-top: 5%;">
+                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
                     </tr>`
                 }
                 else {
-                    html = `<tr style="padding-top: 5%;">
+                    atLh_html = `<tr style="padding-top: 5%;">
                         <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
                     </tr>`
                 }
-                $('#messageContainer tr:last').after(html);
+                $('#messageContainer tr:last').after(atLh_html);
                 $('#scollDiv').animate({
                     scrollTop: $('#scollDiv')[0].scrollHeight
                 }, 0);
             })
-            startChatting()
+            atLhStartChatting()
         } else {
             chatInputInfo.style.display = 'block';
         }
@@ -535,64 +535,69 @@ function openChat() {
 
 }
 
-function openForm() {
-    document.getElementById("adstech-form").style.display = "block";
+function atLhOpenFrom() {
+    let atLh_checkForm = document.getElementById("adstech-form")
+    if(atLh_checkForm.style.display == 'block'){
+        document.getElementById("adstech-form").style.display = 'none'
+    }else{
+        document.getElementById("adstech-form").style.display = 'block'
+    }
 }
 
-function openCall(){
-    sendTracing('CALL')
+function atLhOpenCall(){
+    atLhSendTracing('CALL')
 }
 
-function closeForm() {
+function atLhCloseForm() {
     document.getElementById("adstech-form").style.display = "none";
 }
 
-function openAlert() {
+function atLhOpenAlert() {
     document.getElementById("adstech-alert").style.display = "block";
 }
 
-function closeAlert() {
+function atLhCloseAlert() {
     document.getElementById("adstech-alert").style.display = "none";
 }
 
-function openFacebook() {
-    sendTracing('FACEBOOK')
-    var element = document.getElementById("adstech-open-fb");
+function atLhOpenFacebook() {
+    atLhSendTracing('FACEBOOK')
+    let element = document.getElementById("adstech-open-fb");
     element.classList.add("at-onclick-fb");
-    window.open(fb)
+    window.open(atLh_fb)
 }
 
-function openZalo() {
-    sendTracing('ZALO')
-    var element = document.getElementById("adstech-open-zl");
+function atLhOpenZalo() {
+    atLhSendTracing('ZALO')
+    let element = document.getElementById("adstech-open-zl");
     element.classList.add("at-onclick-zl");
-    window.open(zl)
+    window.open(atLh_zl)
 }
 
-function getHour(time) {
+function atLhGetHour(time) {
     let result = ''
     let timeArr = time.split(' ');
     result = timeArr[3];
     return result;
 }
 
-function connectToFirebase() {
+function atLhConnectToFirebase() {
     try {
-        chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
+        atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
     } catch (error) {
         console.log(error)
     }
-    let form = document.getElementById("sendInfo")
-    var newItems = false;
+    let form = document.getElementById("atLhSendInfo")
+    let newItems = false;
 
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
-        var name = formData.get('name');
-        topic = formData.get('topic');
+        let name = formData.get('name');
+        atLh_topic = formData.get('topic');
         let body = [
             {
                 property: 'accountId',
-                value: acId
+                value: atLh_acId
             },
             {
                 property: 'lastName',
@@ -600,7 +605,7 @@ function connectToFirebase() {
             },
             {
                 property: 'email',
-                value: topic
+                value: atLh_topic
             },
         ]
         // console.log(body)
@@ -619,14 +624,14 @@ function connectToFirebase() {
             console.log(error)
         })
         document.getElementById('txtName').innerText = name;
-        topic = acId + '-' + topic.replace(/\./g, '-dot-');
+        atLh_topic = atLh_acId + '-' + atLh_topic.replace(/\./g, '-dot-');
         let obj = {
             name: name,
-            topic: topic
+            topic: atLh_topic
         }
         window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
-        chatminiCRM.child(topic).on('child_added', function (snapshot) {
-            var message = snapshot.val();
+        atLh_chatminiCRM.child(atLh_topic).on('child_added', function (snapshot) {
+            let message = snapshot.val();
             let isCustomer = '';
             if (message.isCustomer == true || message.isCustomer == null) {
                 isCustomer = '';
@@ -634,56 +639,56 @@ function connectToFirebase() {
             if (message.isCustomer == false) {
                 isCustomer = ' (Admin)'
             }
-            // let html =
+            // let atLh_html =
             //     '<tr>' +
             //     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomerText + ': </td>' +
             //     '<td>' + message.message + '</td>' + 
             //     '</tr>';
-            let html = '';
+            let atLh_html = '';
             if(message.name == obj.name){
-                html = `
+                atLh_html = `
                 <tr style="padding-top: 5%;">
-                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
+                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
                         ${message.name}${isCustomer}: ${message.message}
                     </td>
                 </tr>`
             }
             else {
-                html = `
+                atLh_html = `
                 <tr style="padding-top: 5%;">
                     <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">
                         ${message.name}${isCustomer}: ${message.message}
                     </td>
                 </tr>`
             }
-            $('#messageContainer tr:last').after(html);
+            $('#messageContainer tr:last').after(atLh_html);
             $('#scollDiv').animate({
                 scrollTop: $('#scollDiv')[0].scrollHeight
             }, 0);
         })
-        var newItems = false;
-        sendTracing('CHAT')
+        let newItems = false;
+        atLhSendTracing('CHAT')
         e.preventDefault()
-        startChatting();
+        atLhStartChatting();
     })
 }
 
-function startChatting() {
+function atLhStartChatting() {
     document.getElementById("chatInputInfo").style.display = "none";
     document.getElementById("chatAdmin").style.display = "block";
-    let form = document.getElementById("sendMessage")
+    let form = document.getElementById("atLhSendessage")
     form.addEventListener('submit', e => {
-        var text = $('#txtText').val();
+        let text = $('#txtText').val();
         if (text != '') {
             try {
                 var body = {
-                    topic: topic,
+                    topic: atLh_topic,
                     name: document.getElementById('txtName').innerText,
                     message: text,
-                    accountId: acId,
+                    accountId: atLh_acId,
                     isCustomer: true
                 }
-                sendMessage(body)
+                atLhSendessage(body)
                 document.getElementById('txtText').value = ''
             } catch (error) {
                 alert(error)
@@ -693,7 +698,7 @@ function startChatting() {
     })
 }
 
-function sendMessage(body) {
+function atLhSendessage(body) {
     //product: https://services.adstech.vn/leadpool/v1/leadhub/chats
     //test: http://dev.adstech.vn:9000/leadhub/chats
     fetchRetry('https://services.adstech.vn/leadpool/v1/leadhub/chats', {
@@ -710,18 +715,18 @@ function sendMessage(body) {
     })
 }
 
-function send(acId) {
+function atLhSend(atLh_acId) {
     const form = document.getElementById("form-adstech")
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
-        var email = formData.get('email')
-        var name = formData.get('name')
-        var phone = formData.get('phone')
-        var city = formData.get('city')
-        var bussiness = formData.get('bussiness')
-        var body = [{
+        let email = formData.get('email')
+        let name = formData.get('name')
+        let phone = formData.get('phone')
+        let city = formData.get('city')
+        let bussiness = formData.get('bussiness')
+        let body = [{
             property: 'accountId',
-            value: acId
+            value: atLh_acId
         }, {
             property: 'email',
             value: email
@@ -755,9 +760,9 @@ function send(acId) {
             body.push(a)
         }
         createLead(body)
-        sendTracing('FORM')
+        atLhSendTracing('FORM')
         e.preventDefault()
-        closeForm()
+        atLhCloseForm()
     })
 }
 
@@ -772,32 +777,32 @@ function createLead(body) {
     }, 4).then(result => {
         if (result.status == "200") {
             localStorage.removeItem('lead'.JSON.stringify(body))
-            openAlert()
+            atLhOpenAlert()
             setTimeout(function () {
-                closeAlert()
+                atLhCloseAlert()
             }, 3000)
         } else {
             localStorage.setItem('lead'.JSON.stringify(body))
-            openAlert()
+            atLhOpenAlert()
             setTimeout(function () {
-                closeAlert()
+                atLhCloseAlert()
             }, 3000)
         }
     })
 }
 
-function sendTracing(type) {
+function atLhSendTracing(type) {
     let body = {
         type: type,
-        accountId: acId,
-        link: url
+        accountId: atLh_acId,
+        link: atLh_url
     }
-    if(utm_source != null){body.utm_source = utm_source}
-    if(utm_medium != null){body.utm_medium = utm_medium}
-    if(utm_campaign != null){body.utm_campaign = utm_campaign}
-    if(utm_term != null){body.utm_term = utm_term}
-    if(utm_content != null){body.utm_content = utm_content}
-    if(gclid != null){body.gclid = gclid}
+    if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
+    if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
+    if(atLh_utm_campaign != null){body.utm_campaign = atLh_utm_campaign}
+    if(atLh_utm_term != null){body.utm_term = atLh_utm_term}
+    if(atLh_utm_content != null){body.utm_content = atLh_utm_content}
+    if(atLh_gclid != null){body.gclid = atLh_gclid}
     //product: https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm
     //test: http://dev.adstech.vn:9000/leadhub/tracking-source-utm
     fetchRetry(`https://services.adstech.vn/leadpool/v1/leadhub/tracking-source-utm`, {
