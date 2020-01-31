@@ -345,7 +345,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             <input type="text" placeholder="Họ và tên" name="nameCall" required>
                             <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
                             <div style="padding:0px 14px 0px 14px">
-                                <button type="submit" class="btn" style="background-color:${styleBtnCall.buttonColor};">${styleBtnForm.description}</button>
+                                <button type="submit" class="btn" style="background-color:${styleBtnCall.buttonColor};">Gửi liên hệ</button>
                             </div>
                         </form></div>`
             brCall = '<br />'
