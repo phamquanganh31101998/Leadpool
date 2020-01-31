@@ -324,6 +324,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         </button>`
             }
             atlh_check_devide = false
+            brCall = '<br />'
         }
         else{
             if (style.color == "#fff") {
