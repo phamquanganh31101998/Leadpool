@@ -624,10 +624,14 @@ function atLhOpenCall(){
             }, {
                 property: 'phone',
                 value: phone
+            }, {
+                property: 'email',
+                value: `${phone}@gmail.com`
             }]
             e.preventDefault()
             adstechCreateLead(body,'CALL')
             atLhSendTracing('CALL')
+            document.getElementById("adstech-call").style.display = "none"
         })
     }
 }
