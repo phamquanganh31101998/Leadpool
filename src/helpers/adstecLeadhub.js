@@ -340,7 +340,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             </a>
                         </button>`
             }
-            formCall = `<div class="adstech-form" id="adstech-call"><form class="adstech-form-container" id="call-adstech" method="POST">
+            formCall = `<div class="adstech-form" id="adstech-call">
+            <div style="float:right;margin-top:5px; margin-right:10px; color:red">
+                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
+            <form class="adstech-form-container" id="call-adstech" method="POST">
                             <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
                             <input type="text" placeholder="Họ và tên" name="nameCall" required>
                             <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
@@ -372,6 +376,9 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                <div style="float:right;margin-top:2px; margin-right:10px; color:red">
+                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
                                     <div class="panel-heading" style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
@@ -401,8 +408,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                    <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 class="panel-title" style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6>
+                                <div style="float:right;margin-top:5px; margin-right:10px; color:red">
+                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
+                                    <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
                                     </div>
                                     <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
                                         <div style="width:100%">
@@ -458,7 +468,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                 </button>`
         }
         atLh_form1 = `<div class="adstech-form" id="adstech-form">
-                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px">&times;</button></div>
+                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</button></div>
                     <form class="adstech-form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
                         ${name}
@@ -631,7 +641,8 @@ function atLhOpenCall(){
             e.preventDefault()
             adstechCreateLead(body,'CALL')
             atLhSendTracing('CALL')
-            document.getElementById("adstech-call").style.display = "none"
+            document.getElementById("adstech-call").setAttribute("id", "atLh-send-call")
+            document.getElementById("atLh-send-call").style.display = "none"
         })
     }
 }
@@ -661,31 +672,31 @@ function atLhCloseAlert() {
 
 function atLhOpenFacebook() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
-        atLhSendTracing('FACEBOOK')
         let element = document.getElementById("adstech-open-fb")
         element.classList.add("at-onclick-fb")
         window.location = atLh_fb
+        atLhSendTracing('FACEBOOK')
     }
     else {
-        atLhSendTracing('FACEBOOK')
         let element = document.getElementById("adstech-open-fb")
         element.classList.add("at-onclick-fb")
         window.open(atLh_fb)
+        atLhSendTracing('FACEBOOK')
     }
 }
 
 function atLhOpenZalo() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
-        atLhSendTracing('ZALO')
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.location = atLh_zl
+        atLhSendTracing('ZALO')
     }
     else {
-        atLhSendTracing('ZALO')
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.open(atLh_zl)
+        atLhSendTracing('ZALO')
     }
 }
 
