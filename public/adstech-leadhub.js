@@ -36,7 +36,7 @@ function adstechLeadhubOnload() {
             atLh_acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
             atLh_btnId = GbtnId.split('=')[1]
-        }else if(atLh_scripts[i].src.indexOf('jquery') > 0){
+        }else if(atLh_scripts[i].src.indexOf('jquery/2.2.0/jquery.min.js') > 0){
             atLh_checkJquery = atLh_scripts[i].src
         }
     }
@@ -178,7 +178,9 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     }
     let css = `<style>
                     ${position}
-
+                    #adstech-group-btn{
+                        all: unset;
+                    }
                     .adstech-btn {
                         border: none;
                         color: white;
@@ -192,9 +194,6 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
                     }
                     
-                    #chatAdmin .input-group-sm>.form-control:not(textarea) {
-                        height: calc(1.5em + 1rem + 2px) !important;
-                    }
                     .adstech-form {
                         display: none;
                         position: fixed;
@@ -388,13 +387,10 @@ px                            <input type="tel" placeholder="Số điện thoạ
                                     </div> 
                                     <div style="padding:15px; background-color:#fff"> 
                                         <form class='adstech-form-container' id="atLhSendInfo" method="POST">
-                                            <div class="input-group input-group-sm" style="width: 100%">
                                                 <input type="text" required name="name" placeholder="Tên">
                                                 <input type="text" required name="topic" placeholder="Email/Số điện thoại">
-                                            </div>
-                                            <br>
-                                            <div class="">
-                                                <button style="margin-top:-20px;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
+                                            <div style="padding:0px 14px 0px 14px">>
+                                                <button style="background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
                                             </div>
                                         </form>
                                     </div>
@@ -429,11 +425,9 @@ px                            <input type="tel" placeholder="Số điện thoạ
                                     </div>
                                     <div style="background-color:#fff">
                                         <form id="atLhSendessage" method="POST">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
-                                                <span class="input-group-btn">
-                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Gửi</button>
-                                                </span>
+                                            <div style="position:relative">
+                                                <input style="position:absolute; width:80%;left:0" type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
+                                                <button style="position:absolute; width:20%;height:38px;right:0;color: white; background-color: ${styleBtnChat.buttonColor};border: none;" type="submit" id="btnSend">Gửi</button>
                                             </div>
                                         </form>
                                     </div>
