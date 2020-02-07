@@ -177,135 +177,129 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }`
     }
     let css = `<style>
-                    #adstech-group-btn {
-                        all: initial;
-                        * {
-                          all: unset;
-                        }
-                      }
                     ${position}
                     .adstech-btn {
-                        border: none;
-                        color: white;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        margin: 4px 2px;
-                        border-radius: 50%;
-                        width: ${style.size}px;
-                        height:${style.size}px;
-                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+                        border: none !important;
+                        color: white !important;
+                        text-align: center !important;
+                        text-decoration: none !important;
+                        display: inline-block !important;
+                        margin: 4px 2px !important;
+                        border-radius: 50% !important;
+                        width: ${style.size}px !important;
+                        height:${style.size}px !important;
+                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5) !important;
                     }
                     
                     .adstech-form {
-                        display: none;
-                        position: fixed;
-                        text-align:center;
-                        left: 50%;
-                        top: 50%;
-                        transform: translate(-50%,-50%);
-                        border: 3px solid #f1f1f1;
-                        z-index: 99999999;
-                        background-color:#fff;
+                        display: none !important;
+                        position: fixed !important;
+                        text-align:center !important;
+                        left: 50% !important;
+                        top: 50% !important;
+                        transform: translate(-50%,-50%) !important;
+                        border: 3px solid #f1f1f1 !important;
+                        z-index: 99999999 !important;
+                        background-color:#fff !important;
                     }
                     #adstech-form{
-                        padding-bottom:20px
+                        padding-bottom:20px !important
                     }
                     #adstech-form ::-webkit-scrollbar {
-                        width: 8px;
-                        height: 10px;
-                        z-index: 999;
+                        width: 8px !important;
+                        height: 10px !important;
+                        z-index: 999 !important;
                     }
                 
                     /* Handle */
                     #adstech-form ::-webkit-scrollbar-thumb {
-                        -webkit-border-radius: 15px;
-                        border-radius: 15px;
-                        background: #eff2f9;
+                        -webkit-border-radius: 15px !important;
+                        border-radius: 15px !important;
+                        background: #eff2f9 !important;
                     }
                     /* Add styles to the form container */
                     .adstech-form-container {
-                        width: 400px;
-                        padding: 10px;
-                        background-color: #fff;
+                        width: 400px !important;
+                        padding: 10px !important;
+                        background-color: #fff !important;
                     }
 
                     /* Full-width input fields */
                     .adstech-form-container input[type=text],
                     .adstech-form-container input[type=email], 
                     .adstech-form-container input[type=tel]{
-                        width: 90%;
-                        padding: 15px;
-                        margin: 5px 0 22px 0;
-                        border: none;
-                        background: #f1f1f1;
+                        width: 90% !important;
+                        padding: 15px !important;
+                        margin: 5px 0 22px 0 !important;
+                        border: none !important;
+                        background: #f1f1f1 !important;
                     }
 
                     /* When the inputs get focus, do something */
                     .adstech-form-container input[type=text]:focus,
                     .adstech-form-container input[type=email]:focus,
                     .adstech-form-container input[type=tel]:focus {
-                        background-color: #ddd;
-                        outline: none;
+                        background-color: #ddd !important;
+                        outline: none !important;
                     }
 
                     /* Set a style for the submit/login button */
                     .adstech-form-container .btn-adstech {
-                        color: white;
-                        border: none;
-                        cursor: pointer;
-                        width: 90% !important;
-                        margin-bottom: 10px;
-                        opacity: 0.8;
-                        float: left;
-                        z-index: 9999999;
-                        height:40px;
+                        color: white !important;
+                        border: none !important;
+                        cursor: pointer !important;
+                        width: 100% !important;
+                        margin-bottom: 10px !important;
+                        opacity: 0.8 !important;
+                        float: left !important;
+                        z-index: 9999999 !important;
+                        height:40px !important;
                     }
 
                     /* Add a red background color to the cancel button */
                     .adstech-form-container .cancel-adstech {
-                        background-color: #999;
+                        background-color: #999 !important;
                     }
 
                     /* Add some hover effects to buttons */
                     .adstech-form-container .btn-adstech:hover,
                     .open-button:hover {
-                        opacity: 1;
+                        opacity: 1 !important;
                     }
                     .adstech-alert {
-                        padding: 20px;
-                        background-color:#d4edda;
-                        color: #155724;
-                        margin-bottom: 15px;
-                        display: none;
-                        max-width:400px;
-                        position: fixed;
-                        text-align:center;
-                        left: 50%;
-                        top: 50%;
-                        z-index: 9999999;
-                        transform: translate(-50%,-50%);
+                        padding: 20px !important;
+                        background-color:#d4edda !important;
+                        color: #155724 !important;
+                        margin-bottom: 15px !important;
+                        display: none !important;
+                        max-width:400px !important;
+                        position: fixed !important;
+                        text-align:center !important;
+                        left: 50% !important;
+                        top: 50% !important;
+                        z-index: 9999999 !important;
+                        transform: translate(-50%,-50%) !important;
                     }
                     .adstech-chat-form{
-                        width:100%;
-                        margin-left:20%;
+                        width:100% !important;
+                        margin-left:20% !important;
                     }
                     @media only screen and (max-width: 420px) {
                         .adstech-form-container {
-                            width: 300px;
-                            padding: 10px;
-                            z-index: 99999999;
-                            background-color: #fff;
+                            width: 300px !important;
+                            padding: 10px !important;
+                            z-index: 99999999 !important;
+                            background-color: #fff !important;
                         }
                         .adstech-chat-form{
-                            width:100%;
-                            margin-left:5%
+                            width:100% !important;
+                            margin-left:5% !important
                         }
                     }
                     @media screen and (max-width: 1024px) and (min-width: 450px) {
                         .adstech-chat-form{
-                            width:100%;
-                            margin-left:10%
+                            width:100% !important;
+                            margin-left:10% !important
                         }
                     }
                 </style>`
@@ -314,13 +308,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     } else {
         if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}; padding:none">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}" alt="Gọi điện thoại" width="${style.size - 18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}; padding:none">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -331,13 +325,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }
         else{
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}; padding:none">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}; padding:none">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -366,11 +360,11 @@ px                            <input type="tel" placeholder="Số điện thoạ
         atLh_chat = ''
     } else {
         if (style.color == "#fff") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat(); padding:none">
                     <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat(); padding:none">
                     <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         }
@@ -382,11 +376,11 @@ px                            <input type="tel" placeholder="Số điện thoạ
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                <div style="float:right;margin-top:2px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
-                                </div>
+                                    <div style="float:right;margin-top:2px; margin-right:10px; color:red">
+                                        <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:transparent; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                    </div>
                                     <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
+                                        <h6 style="color: white; margin:auto" class="">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
                                     <div style="padding:15px; background-color:#fff"> 
                                         <form class='adstech-form-container' id="atLhSendInfo" method="POST">
@@ -411,14 +405,14 @@ px                            <input type="tel" placeholder="Số điện thoạ
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                <div style="float:right;margin-top:5px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
-                                </div>
+                                    <div style="float:right;margin-top:5px; margin-right:10px; color:red">
+                                        <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:transparent; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                    </div>
                                     <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
                                     </div>
-                                    <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
-                                        <div style="width:100%">
+                                    <div style="height: 350px;background-color:#fff;width:100%; overflow-y: scroll;">
+                                        <div style="width:100%;height:100%;margin=top:0 !important">
                                             <div style="width:100% id="scollDiv"; >
                                                 <table class="table" id="messageContainer">
                                                     <tr></tr>
@@ -426,7 +420,7 @@ px                            <input type="tel" placeholder="Số điện thoạ
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="background-color:#fff">
+                                    <div style="background-color:#fff;border: 1px solid ${styleBtnChat.buttonColor}">
                                         <form id="atLhSendessage" method="POST">
                                             <div style="position:relative">
                                                 <input style="position:absolute; width:80%;left:0" type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
@@ -580,12 +574,12 @@ function openChat() {
                 //     '</tr>';
                 let atLh_html = ''
                 if(message.name == customerInfo.name){
-                    atLh_html = `<tr style="padding-top: 5%;">
+                    atLh_html = `<tr style="padding-top: 5%;" class="message-adstech">
                         <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
                     </tr>`
                 }
                 else {
-                    atLh_html = `<tr style="padding-top: 5%;">
+                    atLh_html = `<tr style="padding-top: 5%;" class="message-adstech">
                         <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
                     </tr>`
                 }
