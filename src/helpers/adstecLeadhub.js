@@ -387,14 +387,14 @@ px                            <input type="tel" placeholder="Số điện thoạ
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
                                     <div style="padding:15px; background-color:#fff"> 
-                                        <form id="atLhSendInfo" method="POST">
+                                        <form class='adstech-form-container' id="atLhSendInfo" method="POST">
                                             <div class="input-group input-group-sm" style="width: 100%">
                                                 <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
                                                 <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
                                             </div>
                                             <br>
                                             <div class="input-group-btn">
-                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
+                                                <button style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
                                             </div>
                                         </form>
                                     </div>
