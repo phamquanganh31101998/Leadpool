@@ -177,10 +177,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }`
     }
     let css = `<style>
+                    #adstech-group-btn {
+                        all: initial;
+                        * {
+                          all: unset;
+                        }
+                      }
                     ${position}
-                    #adstech-group-btn{
-                        all: unset;
-                    }
                     .adstech-btn {
                         border: none;
                         color: white;
