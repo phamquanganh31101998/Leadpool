@@ -285,8 +285,8 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         transform: translate(-50%,-50%);
                     }
                     .adstech-chat-form{
-                        width:30%;
-                        margin-left:70%;
+                        width:100%;
+                        margin-left:20%;
                     }
                     @media only screen and (max-width: 420px) {
                         .adstech-form-container {
@@ -296,14 +296,14 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             background-color: #fff;
                         }
                         .adstech-chat-form{
-                            width:80%;
-                            margin-left:10%
+                            width:100%;
+                            margin-left:5%
                         }
                     }
                     @media screen and (max-width: 1024px) and (min-width: 450px) {
                         .adstech-chat-form{
-                            width:40%;
-                            margin-left:60%
+                            width:100%;
+                            margin-left:10%
                         }
                     }
                 </style>`
@@ -365,28 +365,28 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     } else {
         if (style.color == "#fff") {
             atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
             atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         }
         brChat = '<br />'
         atLh_chatInputInfoDialog = `
-            <div class="container" id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px">
+            <div id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px; max-width:400px">
                 <div style="width:100%">
                     <div class="adstech-chat-form">
                         <div style="width:100%">
                             <div style="width:100%">
-                                <div class="panel" style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                <div style="border: 1px solid ${styleBtnChat.buttonColor}">
                                 <div style="float:right;margin-top:2px; margin-right:10px; color:red">
                                 <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
                                 </div>
-                                    <div class="panel-heading" style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                    <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
                                     </div> 
-                                    <div class="panel-footer" style="padding:15px; background-color:#fff"> 
+                                    <div style="padding:15px; background-color:#fff"> 
                                         <form id="atLhSendInfo" method="POST">
                                             <div class="input-group input-group-sm" style="width: 100%">
                                                 <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
@@ -406,7 +406,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
             </div>
         `
         atLh_chatWithAdmin = `
-            <div class="container" id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%"> 
+            <div id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%; max-width:400px"> 
                 <div style="width:100%">
                     <div class="adstech-chat-form">
                         <div style="width:100%">
