@@ -248,11 +248,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                     }
 
                     /* Set a style for the submit/login button */
-                    .adstech-form-container .btn {
+                    .adstech-form-container .btn-adstech {
                         color: white;
                         border: none;
                         cursor: pointer;
-                        width: 100%;
+                        width: 100% !important;
                         margin-bottom: 10px;
                         opacity: 0.8;
                         float: left;
@@ -261,12 +261,12 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                     }
 
                     /* Add a red background color to the cancel button */
-                    .adstech-form-container .cancel {
+                    .adstech-form-container .cancel-adstech {
                         background-color: #999;
                     }
 
                     /* Add some hover effects to buttons */
-                    .adstech-form-container .btn:hover,
+                    .adstech-form-container .btn-adstech:hover,
                     .open-button:hover {
                         opacity: 1;
                     }
@@ -314,13 +314,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
             if (style.color == "#fff") {
                 atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
-                                <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}" alt="Gọi điện thoại" width="${style.size - 18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
                 atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
-                                <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             }
@@ -331,26 +331,26 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
             if (style.color == "#fff") {
                 atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
                             <a style="width:100%;height:100%">
-                                <img src="https://leadpool.adstech.vn/call-white.png" alt="Gọi điện thoại" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
                 atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
                             <a style="width:100%;height:100%">
-                                <img src="https://leadpool.adstech.vn/call-black.png" alt="Gọi điện thoại" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             }
             formCall = `<div class="adstech-form" id="adstech-call">
             <div style="float:right;margin-top:2px; margin-right:5px; color:red">
-                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
                                 </div>
             <form class="adstech-form-container" id="call-adstech" method="POST">
                             <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
-                            <input type="text" placeholder="Họ và tên" name="nameCall" required>
-                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
+                            <input type="text" placeholder="Họ và tên" name="nameCall" requ-18
+px                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
                             <div style="padding:0px 14px 0px 14px">
-                                <button type="submit" class="btn" style="background-color:${styleBtnCall.buttonColor};">Gửi liên hệ</button>
+                                <button type="submit" class="btn-adstech" style="background-color:${styleBtnCall.buttonColor};">Gửi liên hệ</button>
                             </div>
                         </form></div>
                         <div class="adstech-alert" id="adstech-alert-call">
@@ -365,11 +365,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     } else {
         if (style.color == "#fff") {
             atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" width="${style.size - 18}px" height="${style.size -18}px">
+                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
             atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
-                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" width="${style.size - 18}px" height="${style.size -18}px">
+                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         }
         brChat = '<br />'
@@ -381,7 +381,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
                                 <div style="float:right;margin-top:2px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
                                 </div>
                                     <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
@@ -394,7 +394,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                             </div>
                                             <br>
                                             <div class="input-group-btn">
-                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn btn-block" type="submit" id="btnSend">Chat</button>
+                                                <button style="color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
                                             </div>
                                         </form>
                                     </div>
@@ -413,7 +413,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
                                 <div style="float:right;margin-top:5px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
                                 </div>
                                     <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
@@ -464,11 +464,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }
         if (style.color == "#fff") {
             atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
-                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
             atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
-                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" width="${style.size / 1.5}" height="${style.size / 1.5}">
+                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         }
         atLh_form1 = `<div class="adstech-form" id="adstech-form">
