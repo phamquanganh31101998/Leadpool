@@ -312,13 +312,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     } else {
         if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}" alt="Gọi điện thoại" width="${style.size - 18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -329,13 +329,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }
         else{
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -343,14 +343,14 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
             }
             formCall = `<div class="adstech-form" id="adstech-call">
             <div style="float:right;margin-top:2px; margin-right:5px; color:red">
-                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <a href="javascript:void(0);" onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                                 </div>
             <form class="adstech-form-container" id="call-adstech" method="POST">
                             <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
-                            <input type="text" placeholder="Họ và tên" name="nameCall" requ-18
-px                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
+                            <input type="text" placeholder="Họ và tên" name="nameCall" required>
+                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
                             <div style="padding:0px 14px 0px 14px">
-                                <button type="submit" class="btn-adstech" style="background-color:${styleBtnCall.buttonColor};">Gửi liên hệ</button>
+                                <input type="submit" class="btn-adstech" value="Gui lien he" style="background-color:${styleBtnCall.buttonColor};"/>
                             </div>
                         </form></div>
                         <div class="adstech-alert" id="adstech-alert-call">
@@ -364,11 +364,11 @@ px                            <input type="tel" placeholder="Số điện thoạ
         atLh_chat = ''
     } else {
         if (style.color == "#fff") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         }
@@ -381,7 +381,7 @@ px                            <input type="tel" placeholder="Số điện thoạ
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
                                 <div style="float:right;margin-top:2px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <a href="javascript:void(0);" onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                                 </div>
                                     <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
@@ -413,7 +413,7 @@ px                            <input type="tel" placeholder="Số điện thoạ
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
                                 <div style="float:right;margin-top:5px; margin-right:10px; color:red">
-                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                                 </div>
                                     <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
                                         <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
@@ -463,16 +463,16 @@ px                            <input type="tel" placeholder="Số điện thoạ
             }
         }
         if (style.color == "#fff") {
-            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
-            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         }
         atLh_form1 = `<div class="adstech-form" id="adstech-form">
-                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</button></div>
+                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><a href="javascript:void(0);" onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</a></div>
                     <form class="adstech-form-container" id="form-adstech" method="POST">
                         <h3>${styleBtnForm.title}</h3>
                         ${name}
@@ -481,7 +481,7 @@ px                            <input type="tel" placeholder="Số điện thoạ
                         ${city}
                         ${bussiness}
                         <div style="padding:0px 14px 0px 14px">
-                            <button type="submit" class="btn" style="background-color:${styleBtnForm.buttonColor};">${styleBtnForm.description}</button>
+                            <button type="submit" class="btn-adstech" style="background-color:${styleBtnForm.buttonColor};color:white">${styleBtnForm.description}</button>
                         </div>
                     </form>
                 </div>
@@ -601,8 +601,6 @@ function openChat() {
         } else {
             chatInputInfo.style.display = 'block'
         }
-        document.getElementById("adstech-form").style.display = 'none'
-        document.getElementById("adstech-call").style.display = "none"
     }
 
 }
@@ -613,9 +611,6 @@ function atLhOpenFrom() {
         document.getElementById("adstech-form").style.display = 'none'
     }else{
         document.getElementById("adstech-form").style.display = 'block'
-        document.getElementById("adstech-call").style.display = "none"
-        document.getElementById("chatInputInfo").style.display = "none"
-        document.getElementById("chatAdmin").style.display = "none"
     }
 }
 
@@ -660,9 +655,6 @@ function atLhOpenFormCall(){
         document.getElementById("adstech-call").style.display = "none"
     }else{
         document.getElementById("adstech-call").style.display = 'block'
-        document.getElementById("adstech-form").style.display = 'none'
-        document.getElementById("chatInputInfo").style.display = "none"
-        document.getElementById("chatAdmin").style.display = "none"
     }
 }
 
