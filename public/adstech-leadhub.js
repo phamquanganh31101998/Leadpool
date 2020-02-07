@@ -1,1 +1,929 @@
-window.onload=adstechLeadhubOnload;var atLh_acId="",atLh_topic="",atLh_fb="",atLh_zl="",atLh_url=window.location.href,atLh_utm_source=null,atLh_utm_medium=null,atLh_utm_campaign=null,atLh_utm_term=null,atLh_utm_content=null,atLh_gclid=null,atLh_arrTrack=[],atLh_styleBtnChat="",atLh_chatminiCRM=null,atlh_check_devide=!1,atlh_form_return="",atLh_rqApi="https://services.adstech.vn/leadpool/v1/leadhub";function adstechLeadhubOnload(){var t=document.createElement("script");t.src="https://cdn.firebase.com/js/client/2.2.1/firebase.js",document.getElementsByTagName("head")[0].appendChild(t);var e=null,n="",a=document.getElementsByTagName("script");let o=localStorage.getItem("lead");null!=o&&null!=o&&""!=o&&adstechCreateLead(JSON.parse(o),"FORM");for(let t=0;t<a.length;t++)if(a[t].src.indexOf("&gBtnId=")>0){var l=a[t].src.split("?")[1],i=l.split("&")[0];atLh_acId=i.split("=")[1],n=l.split("&")[1].split("=")[1]}else a[t].src.indexOf("jquery")>0&&(e=a[t].src);if(null===e||""===e){var d=document.createElement("script");d.src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js",document.getElementsByTagName("head")[0].appendChild(d)}var r="";if(atLh_url.indexOf("?")>0?(r=atLh_url.split("?")[1],atLh_arrTrack=r.split("&")):r=null,""==r||null==r)atLh_utm_source=null,atLh_utm_medium=null,atLh_utm_campaign=null,atLh_utm_term=null,atLh_utm_content=null,atLh_gclid=null;else for(let t=0;t<atLh_arrTrack.length;t++)0==atLh_arrTrack[t].indexOf("utm_source")?atLh_utm_source=atLh_arrTrack[t].split("=")[1]:0==atLh_arrTrack[t].indexOf("utm_medium")?atLh_utm_medium=atLh_arrTrack[t].split("=")[1]:0==atLh_arrTrack[t].indexOf("utm_campaign")?atLh_utm_campaign=atLh_arrTrack[t].split("=")[1]:0==atLh_arrTrack[t].indexOf("utm_term")?atLh_utm_term=atLh_arrTrack[t].split("=")[1]:0==atLh_arrTrack[t].indexOf("utm_content")?atLh_utm_content=atLh_arrTrack[t].split("=")[1]:0==atLh_arrTrack[t].indexOf("gclid")&&(atLh_gclid=atLh_arrTrack[t].split("=")[1]);fetchRetry(`${atLh_rqApi}/account/${atLh_acId}/group-buttons/${n}`,{method:"GET",headers:new Headers({Accept:"application/json","Content-Type":"application/json"})},4).then(t=>{var e=t.response.style,n=t.response.vertical,a=null,o=null,l=null,i=null;for(let e=0;e<t.response.listButton.length;e++)"CALL"==t.response.listButton[e].type?a=t.response.listButton[e]:"FORM"==t.response.listButton[e].type?o=t.response.listButton[e]:"CHAT"==t.response.listButton[e].type?atLh_styleBtnChat=t.response.listButton[e]:"FACEBOOK"==t.response.listButton[e].type?l=t.response.listButton[e]:"ZALO"==t.response.listButton[e].type&&(i=t.response.listButton[e]);adstechLeadhubWriteHtml(e,n,o,a,atLh_styleBtnChat,atLh_acId,l,i);let d=window.localStorage.getItem("leadhub_chatInfo");if(null!=d&&null!=d&&""!=d){let t=JSON.parse(d);document.getElementById("txtName").innerText=t.name,atLh_topic=t.topic}})}async function fetchRetry(t,e,n){for(let a=0;a<n;a++)try{return await fetch(t,e).then(handle).then(t=>t)}catch(t){if(a+1===n)throw t}}function handle(t){return t.text().then(e=>{const n=e&&JSON.parse(e);if(t.ok)return n;const a=n&&n.error||t.statusText;return Promise.reject(a)})}function adstechLeadhubWriteHtml(t,e,n,a,o,l,i,d){let r="",s="",c="",h="",p="",u="",m="",g="",y="",b="",f="",x="",v="",L="",_="",$="",w="",k="",C="",I="",B=`<style>\n                    ${_="45"==t.left?`.adstech-group-btn {\n            position:fixed;\n            bottom: ${t.bottom-3}%;\n            left: ${parseInt(t.left)+2}%;\n            right: ${t.right}%;\n            top:${t.top}%;\n            z-index: 99999999;\n        }`:`.adstech-group-btn {\n            position:fixed;\n            bottom: ${t.bottom-3}%;\n            left: ${parseInt(t.left)-1}%;\n            right: ${parseInt(t.right)-1}%;\n            top:${t.top}%;\n            z-index: 99999999;\n        }`}\n\n                    .adstech-btn {\n                        border: none;\n                        color: white;\n                        text-align: center;\n                        text-decoration: none;\n                        display: inline-block;\n                        margin: 4px 2px;\n                        border-radius: 50%;\n                        width: ${t.size}px;\n                        height:${t.size}px;\n                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);\n                    }\n                    \n                    #chatAdmin .input-group-sm>.form-control:not(textarea) {\n                        height: calc(1.5em + 1rem + 2px) !important;\n                    }\n                    .adstech-form {\n                        display: none;\n                        position: fixed;\n                        text-align:center;\n                        left: 50%;\n                        top: 50%;\n                        transform: translate(-50%,-50%);\n                        border: 3px solid #f1f1f1;\n                        z-index: 99999999;\n                        background-color:#fff;\n                    }\n                    #adstech-form{\n                        padding-bottom:20px\n                    }\n                    #adstech-form ::-webkit-scrollbar {\n                        width: 8px;\n                        height: 10px;\n                        z-index: 999;\n                    }\n                \n                    /* Handle */\n                    #adstech-form ::-webkit-scrollbar-thumb {\n                        -webkit-border-radius: 15px;\n                        border-radius: 15px;\n                        background: #eff2f9;\n                    }\n                    /* Add styles to the form container */\n                    .adstech-form-container {\n                        width: 400px;\n                        padding: 10px;\n                        background-color: #fff;\n                    }\n\n                    /* Full-width input fields */\n                    .adstech-form-container input[type=text],\n                    .adstech-form-container input[type=email], \n                    .adstech-form-container input[type=tel]{\n                        width: 90%;\n                        padding: 15px;\n                        margin: 5px 0 22px 0;\n                        border: none;\n                        background: #f1f1f1;\n                    }\n\n                    /* When the inputs get focus, do something */\n                    .adstech-form-container input[type=text]:focus,\n                    .adstech-form-container input[type=email]:focus,\n                    .adstech-form-container input[type=tel]:focus {\n                        background-color: #ddd;\n                        outline: none;\n                    }\n\n                    /* Set a style for the submit/login button */\n                    .adstech-form-container .btn-adstech {\n                        color: white;\n                        border: none;\n                        cursor: pointer;\n                        width: 100% !important;\n                        margin-bottom: 10px;\n                        opacity: 0.8;\n                        float: left;\n                        z-index: 9999999;\n                        height:40px;\n                    }\n\n                    /* Add a red background color to the cancel button */\n                    .adstech-form-container .cancel-adstech {\n                        background-color: #999;\n                    }\n\n                    /* Add some hover effects to buttons */\n                    .adstech-form-container .btn-adstech:hover,\n                    .open-button:hover {\n                        opacity: 1;\n                    }\n                    .adstech-alert {\n                        padding: 20px;\n                        background-color:#d4edda;\n                        color: #155724;\n                        margin-bottom: 15px;\n                        display: none;\n                        max-width:400px;\n                        position: fixed;\n                        text-align:center;\n                        left: 50%;\n                        top: 50%;\n                        z-index: 9999999;\n                        transform: translate(-50%,-50%);\n                    }\n                    .adstech-chat-form{\n                        width:100%;\n                        margin-left:20%;\n                    }\n                    @media only screen and (max-width: 420px) {\n                        .adstech-form-container {\n                            width: 300px;\n                            padding: 10px;\n                            z-index: 99999999;\n                            background-color: #fff;\n                        }\n                        .adstech-chat-form{\n                            width:100%;\n                            margin-left:5%\n                        }\n                    }\n                    @media screen and (max-width: 1024px) and (min-width: 450px) {\n                        .adstech-chat-form{\n                            width:100%;\n                            margin-left:10%\n                        }\n                    }\n                </style>`;if(null==a||""==a?s="":navigator.userAgent.match(/Android/i)||navigator.userAgent.match(/webOS/i)||navigator.userAgent.match(/iPhone/i)||navigator.userAgent.match(/iPad/i)||navigator.userAgent.match(/iPod/i)||navigator.userAgent.match(/BlackBerry/i)||navigator.userAgent.match(/Windows Phone/i)?("#fff"==t.color?s=`<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${a.buttonColor}">\n                            <a href="tel:${a.phoneNumber}" style="width:100%;height:100%">\n                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${t.size-18}px;height:${t.size-18}" alt="Gọi điện thoại" width="${t.size-18}px" height="${t.size-18}px">\n                            </a>\n                        </button>`:"#000"==t.color&&(s=`<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${a.buttonColor}">\n                            <a href="tel:${a.phoneNumber}" style="width:100%;height:100%">\n                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${t.size-18}px;height:${t.size-18}"  alt="Gọi điện thoại" width="${t.size-18}px" height="${t.size-18}px">\n                            </a>\n                        </button>`),atlh_check_devide=!1,$="<br />"):("#fff"==t.color?s=`<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${a.buttonColor}">\n                            <a style="width:100%;height:100%">\n                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${t.size-18}px;height:${t.size-18}"  alt="Gọi điện thoại" width="${t.size-18}px" height="${t.size-18}px">\n                            </a>\n                        </button>`:"#000"==t.color&&(s=`<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${a.buttonColor}">\n                            <a style="width:100%;height:100%">\n                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${t.size-18}px;height:${t.size-18}"  alt="Gọi điện thoại" width="${t.size-18}px" height="${t.size-18}px">\n                            </a>\n                        </button>`),I=`<div class="adstech-form" id="adstech-call">\n            <div style="float:right;margin-top:2px; margin-right:5px; color:red">\n                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>\n                                </div>\n            <form class="adstech-form-container" id="call-adstech" method="POST">\n                            <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>\n                            <input type="text" placeholder="Họ và tên" name="nameCall" requ-18\npx                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>\n                            <div style="padding:0px 14px 0px 14px">\n                                <button type="submit" class="btn-adstech" style="background-color:${a.buttonColor};">Gửi liên hệ</button>\n                            </div>\n                        </form></div>\n                        <div class="adstech-alert" id="adstech-alert-call">\n                    \n                </div>`,$="<br />",atlh_check_devide=!0),null==o||""==o?h="":("#fff"==t.color?h=`<button class="adstech-btn" style="background-color:${o.buttonColor}" onclick="openChat()">\n                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${t.size-18}px;height:${t.size-18}"  width="${t.size-18}px" height="${t.size-18}px">\n                </button>`:"#000"==t.color&&(h=`<button class="adstech-btn" style="background-color:${o.buttonColor}" onclick="openChat()">\n                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${t.size-18}px;height:${t.size-18}"  width="${t.size-18}px" height="${t.size-18}px">\n                </button>`),k="<br />",m=`\n            <div id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px; max-width:400px">\n                <div style="width:100%">\n                    <div class="adstech-chat-form">\n                        <div style="width:100%">\n                            <div style="width:100%">\n                                <div style="border: 1px solid ${o.buttonColor}">\n                                <div style="float:right;margin-top:2px; margin-right:10px; color:red">\n                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${o.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>\n                                </div>\n                                    <div style="padding:10px;border: 1px solid ${o.buttonColor}; background-color: ${o.buttonColor};">\n                                        <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>\n                                    </div> \n                                    <div style="padding:15px; background-color:#fff"> \n                                        <form id="atLhSendInfo" method="POST">\n                                            <div class="input-group input-group-sm" style="width: 100%">\n                                                <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">\n                                                <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">\n                                            </div>\n                                            <br>\n                                            <div class="input-group-btn">\n                                                <button style="color: white; background-color: ${o.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>\n                                            </div>\n                                        </form>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        `,g=`\n            <div id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%; max-width:400px"> \n                <div style="width:100%">\n                    <div class="adstech-chat-form">\n                        <div style="width:100%">\n                            <div style="width:100%">\n                                <div style="border: 1px solid ${o.buttonColor}">\n                                <div style="float:right;margin-top:5px; margin-right:10px; color:red">\n                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${o.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>\n                                </div>\n                                    <div style="width:100%;padding:10px;border: 1px solid ${o.buttonColor}; background-color: ${o.buttonColor};">\n                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>\n                                    </div>\n                                    <div style="height: 350px;background-color:#fff; overflow-y: scroll;">\n                                        <div style="width:100%">\n                                            <div style="width:100% id="scollDiv"; >\n                                                <table class="table" id="messageContainer">\n                                                    <tr></tr>\n                                                </table>\n                                            </div>\n                                        </div>\n                                    </div>\n                                    <div style="background-color:#fff">\n                                        <form id="atLhSendessage" method="POST">\n                                            <div class="input-group input-group-sm">\n                                                <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">\n                                                <span class="input-group-btn">\n                                                    <button class="btn" style="color: white; background-color: ${o.buttonColor};" type="submit" id="btnSend">Gửi</button>\n                                                </span>\n                                            </div>\n                                        </form>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        `),null==n||""==n)c="",y="";else{for(let t=0;t<n.properties.length;t++)"email"==n.properties[t]?f='<input type="email" placeholder="Địa chỉ email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$" title="Nhập đúng email của bạn" required>':"lastName"==n.properties[t]?x='<input type="text" placeholder="Họ và tên" name="name" required>':"phone"==n.properties[t]?b='<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phone" required>':"city"==n.properties[t]?v='<input type="text" placeholder="Địa chỉ" name="city" required>':"bussiness"==n.properties[t]&&(L='<input type="text" placeholder="Nghề nghiệp" name="bussiness" required>');"#fff"==t.color?c=`<button class="adstech-btn" style="background-color:${n.buttonColor}" onclick="atLhOpenFrom()">\n                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" style="max-width:${t.size-18}px;height:${t.size-18}"  width="${t.size-18}px" height="${t.size-18}px">\n                </button>`:"#000"==t.color&&(c=`<button class="adstech-btn" style="background-color:${n.buttonColor}" onclick="atLhOpenFrom()">\n                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" style="max-width:${t.size-18}px;height:${t.size-18}"  width="${t.size-18}px" height="${t.size-18}px">\n                </button>`),y=`<div class="adstech-form" id="adstech-form">\n                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</button></div>\n                    <form class="adstech-form-container" id="form-adstech" method="POST">\n                        <h3>${n.title}</h3>\n                        ${x}\n                        ${b}\n                        ${f}\n                        ${v}\n                        ${L}\n                        <div style="padding:0px 14px 0px 14px">\n                            <button type="submit" class="btn" style="background-color:${n.buttonColor};">${n.description}</button>\n                        </div>\n                    </form>\n                </div>\n                \n                <div class="adstech-alert" id="adstech-alert-form">\n                </div>`,w="<br />",atlh_form_return=n.formMessageReturn}null==i||""==i?p="":(atLh_fb=`https://m.me/${i.phoneNumber}`,p='<button class="adstech-btn" style="padding:0px" onclick="atLhOpenFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'),null==d||""==d?u="":(atLh_zl=`https://zalo.me/${d.phoneNumber}`,u='<button class="adstech-btn" style="padding:0px" onclick="atLhOpenZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>',C="<br />"),r=0==e?`\n                <div class="adstech-group-btn">\n                    ${p}\n                    ${C}\n                    ${u}\n                    ${w}\n                    ${c}\n                    ${$}\n                    ${s}\n                    ${k}\n                    ${h}\n                </div>\n                ${m}\n                ${g}\n                ${y}\n                ${B}\n                ${I}\n                `:`\n                <div class="adstech-group-btn">\n                    ${s}\n                    ${c}\n                    ${h}\n                    ${p}\n                    ${u}\n                </div>\n                ${m}\n                ${g}\n                ${y}\n                ${B}\n                ${I}`;let A=document.createElement("div");A.id="adstech-group-btn",document.body.appendChild(A),document.getElementById("adstech-group-btn").innerHTML=r,null!=n&&""!=n&&atLhSend(l),null!=atLh_styleBtnChat&&""!=atLh_styleBtnChat&&(atLh_chatminiCRM=new Firebase("https://leadpoolproduct.firebaseio.com/"),atLhConnectToFirebase()),1==atlh_check_devide&&null!=a&&""!=a&&atLhOpenCall()}function openChat(){let t=document.getElementById("chatInputInfo"),e=document.getElementById("chatAdmin");if("block"==t.style.display||"block"==e.style.display)t.style.display="none",e.style.display="none";else{let e=window.localStorage.getItem("leadhub_chatInfo");if(null!=e&&null!=e&&""!=e){let t=JSON.parse(e);atLh_chatminiCRM.child(atLh_topic).on("child_added",function(e){var n=e.val();let a="";1!=n.isCustomer&&null!=n.isCustomer||(a=""),0==n.isCustomer&&(a=" (Admin)");let o="";o=n.name==t.name?`<tr style="padding-top: 5%;">\n                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${n.name}${a}: ${n.message}</td>\n                    </tr>`:`<tr style="padding-top: 5%;">\n                        <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${n.name}${a}: ${n.message}</td>\n                    </tr>`,$("#messageContainer tr:last").after(o),$("#scollDiv").animate({scrollTop:$("#scollDiv")[0].scrollHeight},0)}),atLhStartChatting()}else t.style.display="block";document.getElementById("adstech-form").style.display="none",document.getElementById("adstech-call").style.display="none"}}function atLhOpenFrom(){"block"==document.getElementById("adstech-form").style.display?document.getElementById("adstech-form").style.display="none":(document.getElementById("adstech-form").style.display="block",document.getElementById("adstech-call").style.display="none",document.getElementById("chatInputInfo").style.display="none",document.getElementById("chatAdmin").style.display="none")}function atLhOpenCall(){if(navigator.userAgent.match(/Android/i)||navigator.userAgent.match(/webOS/i)||navigator.userAgent.match(/iPhone/i)||navigator.userAgent.match(/iPad/i)||navigator.userAgent.match(/iPod/i)||navigator.userAgent.match(/BlackBerry/i)||navigator.userAgent.match(/Windows Phone/i))atLhSendTracing("CALL");else{let t='<div class="adstech-leadhub-alert-call" id="adstech-leadhub-alert-call">\n                        <h6>Cảm ơn bạn đã để lại số điện thoại, chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất</h6>\n                    </div>';document.getElementById("call-adstech").addEventListener("submit",e=>{const n=new FormData(e.target);let a=n.get("nameCall"),o=n.get("phoneCall"),l=[{property:"accountId",value:atLh_acId},{property:"lastName",value:a},{property:"phone",value:o},{property:"email",value:`${o}@gmail.com`}];e.preventDefault(),adstechCreateLead(l,"CALL"),atLhSendTracing("CALL"),document.getElementById("adstech-call").style.display="none",document.getElementById("adstech-alert-call").innerHTML=t,document.getElementById("adstech-alert-call").style.display="block"})}}function atLhOpenFormCall(){"block"==document.getElementById("adstech-call").style.display?document.getElementById("adstech-call").style.display="none":(document.getElementById("adstech-call").style.display="block",document.getElementById("adstech-form").style.display="none",document.getElementById("chatInputInfo").style.display="none",document.getElementById("chatAdmin").style.display="none")}function atLhCloseForm(){document.getElementById("adstech-form").style.display="none"}function atLhCloseAlert(){null!=document.getElementById("adstech-alert-form")&&null!=document.getElementById("adstech-alert-form")&&""!=document.getElementById("adstech-alert-form")&&(document.getElementById("adstech-alert-form").style.display="none"),null!=document.getElementById("adstech-alert-call")&&null!=document.getElementById("adstech-alert-call")&&""!=document.getElementById("adstech-alert-call")&&(document.getElementById("adstech-alert-call").style.display="none")}function atLhOpenFacebook(){if(navigator.userAgent.match(/Android/i)||navigator.userAgent.match(/webOS/i)||navigator.userAgent.match(/iPhone/i)||navigator.userAgent.match(/iPad/i)||navigator.userAgent.match(/iPod/i)||navigator.userAgent.match(/BlackBerry/i)||navigator.userAgent.match(/Windows Phone/i)){document.getElementById("adstech-open-fb").classList.add("at-onclick-fb"),window.location=atLh_fb,atLhSendTracing("FACEBOOK")}else{document.getElementById("adstech-open-fb").classList.add("at-onclick-fb"),window.open(atLh_fb),atLhSendTracing("FACEBOOK")}}function atLhOpenZalo(){if(navigator.userAgent.match(/Android/i)||navigator.userAgent.match(/webOS/i)||navigator.userAgent.match(/iPhone/i)||navigator.userAgent.match(/iPad/i)||navigator.userAgent.match(/iPod/i)||navigator.userAgent.match(/BlackBerry/i)||navigator.userAgent.match(/Windows Phone/i)){document.getElementById("adstech-open-zl").classList.add("at-onclick-zl"),window.location=atLh_zl,atLhSendTracing("ZALO")}else{document.getElementById("adstech-open-zl").classList.add("at-onclick-zl"),window.open(atLh_zl),atLhSendTracing("ZALO")}}function atLhGetHour(t){let e="";return e=t.split(" ")[3]}function atLhConnectToFirebase(){document.getElementById("atLhSendInfo").addEventListener("submit",t=>{const e=new FormData(t.target);let n=e.get("name");atLh_topic=e.get("topic"),adstechCreateLead([{property:"accountId",value:atLh_acId},{property:"lastName",value:n},{property:"email",value:atLh_topic}],"CHAT"),document.getElementById("txtName").innerText=n;let a={name:n,topic:atLh_topic=atLh_acId+"-"+atLh_topic.replace(/\./g,"-dot-")};window.localStorage.setItem("leadhub_chatInfo",JSON.stringify(a)),atLh_chatminiCRM.child(atLh_topic).on("child_added",function(t){let e=t.val(),n="";1!=e.isCustomer&&null!=e.isCustomer||(n=""),0==e.isCustomer&&(n=" (Admin)");let o="";o=e.name==a.name?`\n                <tr style="padding-top: 5%;">\n                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">\n                        ${e.name}${n}: ${e.message}\n                    </td>\n                </tr>`:`\n                <tr style="padding-top: 5%;">\n                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">\n                        ${e.name}${n}: ${e.message}\n                    </td>\n                </tr>`,$("#messageContainer tr:last").after(o),$("#scollDiv").animate({scrollTop:$("#scollDiv")[0].scrollHeight},0)}),t.preventDefault(),atLhStartChatting()})}function atLhStartChatting(){document.getElementById("chatInputInfo").style.display="none",document.getElementById("chatAdmin").style.display="block",document.getElementById("atLhSendessage").addEventListener("submit",t=>{let e=$("#txtText").val();if(""!=e)try{atLhSendessage({topic:atLh_topic,name:document.getElementById("txtName").innerText,message:e,accountId:atLh_acId,isCustomer:!0}),document.getElementById("txtText").value=""}catch(t){alert(t)}t.preventDefault()})}function atLhSendessage(t){fetchRetry(`${atLh_rqApi}/chats`,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify(t)},5).then(t=>{console.log(t)}).catch(t=>{console.log(t)})}function atLhSend(t){let e=`<div class="adstech-leadhub-alert-form" id="adstech-leadhub-alert-form">\n                        <h6>${atlh_form_return}</h6>\n                    </div>`;document.getElementById("form-adstech").addEventListener("submit",n=>{const a=new FormData(n.target);let o=a.get("email"),l=a.get("name"),i=a.get("phone"),d=a.get("city"),r=a.get("bussiness"),s=[{property:"accountId",value:t},{property:"email",value:o}];if(null!=l&&""!=l&&null!=l){let t={property:"lastName",value:l};s.push(t)}if(null!=i&&""!=i&&null!=i){let t={property:"phone",value:i};s.push(t)}if(null!=d&&""!=d&&null!=d){let t={property:"city",value:d};s.push(t)}if(null!=r&&""!=r&&null!=r){let t={property:"bussiness",value:r};s.push(t)}adstechCreateLead(s,"FORM"),atLhSendTracing("FORM"),n.preventDefault(),atLhCloseForm(),document.getElementById("adstech-alert-form").innerHTML=e,document.getElementById("adstech-alert-form").style.display="block"})}function adstechCreateLead(t,e){fetchRetry(`${atLh_rqApi}/contacts?source_from_mar=${e}`,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify(t)},4).then(e=>{"SUCCESS"==e.code||"SPAM SERVER"==e.message?(localStorage.removeItem("lead"),setTimeout(function(){atLhCloseAlert()},2e3)):(localStorage.setItem("lead",JSON.stringify(t)),setTimeout(function(){atLhCloseAlert()},2e3))}).catch(e=>{localStorage.setItem("lead",JSON.stringify(t)),setTimeout(function(){atLhCloseAlert()},2e3)})}function atLhSendTracing(t){let e={type:t,accountId:atLh_acId,link:atLh_url};null!=atLh_utm_source&&(e.utm_source=atLh_utm_source),null!=atLh_utm_medium&&(e.utm_medium=atLh_utm_medium),null!=atLh_utm_campaign&&(e.utm_campaign=atLh_utm_campaign),null!=atLh_utm_term&&(e.utm_term=atLh_utm_term),null!=atLh_utm_content&&(e.utm_content=atLh_utm_content),null!=atLh_gclid&&(e.gclid=atLh_gclid),fetchRetry(`${atLh_rqApi}/tracking-source-utm`,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify(e)},4).then(t=>{console.log(t)})}
+window.onload = adstechLeadhubOnload
+var atLh_acId = ''
+var atLh_topic = ''
+var atLh_fb = ''
+var atLh_zl = ''
+var atLh_url = window.location.href
+var atLh_utm_source = null
+var atLh_utm_medium = null
+var atLh_utm_campaign = null
+var atLh_utm_term = null
+var atLh_utm_content = null
+var atLh_gclid = null
+var atLh_arrTrack = []
+var atLh_styleBtnChat = ''
+var atLh_chatminiCRM = null
+var atlh_check_devide = false
+var atlh_form_return = ''
+var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
+//product: https://services.adstech.vn/leadpool/v1/leadhub
+//test: http://dev.adstech.vn:9000/leadhub
+function adstechLeadhubOnload() {
+    var atLh_tag = document.createElement("script")
+    atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js"
+    document.getElementsByTagName("head")[0].appendChild(atLh_tag)
+    var atLh_checkJquery = null
+    var atLh_btnId = ''
+    var atLh_scripts = document.getElementsByTagName("script")
+    let atLh_lead_out = localStorage.getItem('lead')
+    if (atLh_lead_out != null && atLh_lead_out != undefined && atLh_lead_out != '') {
+        adstechCreateLead(JSON.parse(atLh_lead_out),'FORM')
+    }
+    for (let i = 0; i < atLh_scripts.length; i++) {
+        if (atLh_scripts[i].src.indexOf('&gBtnId=') > 0) {
+            var src = atLh_scripts[i].src.split('?')[1]
+            var accid = src.split('&')[0]
+            atLh_acId = accid.split('=')[1]
+            var GbtnId = src.split('&')[1]
+            atLh_btnId = GbtnId.split('=')[1]
+        }else if(atLh_scripts[i].src.indexOf('jquery') > 0){
+            atLh_checkJquery = atLh_scripts[i].src
+        }
+    }
+    if(atLh_checkJquery === null || atLh_checkJquery === ''){
+        var atLh_tag2 = document.createElement("script")
+        atLh_tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"
+        document.getElementsByTagName("head")[0].appendChild(atLh_tag2)
+    }
+    var atLh_track = ''
+    if (atLh_url.indexOf('?') > 0) {
+        atLh_track = atLh_url.split('?')[1]
+        atLh_arrTrack = atLh_track.split('&')
+    } else {
+        atLh_track = null
+    }
+    if (atLh_track == '' || atLh_track == null) {
+        atLh_utm_source = null
+        atLh_utm_medium = null
+        atLh_utm_campaign = null
+        atLh_utm_term = null
+        atLh_utm_content = null
+        atLh_gclid = null
+    }else{
+        for(let index = 0; index < atLh_arrTrack.length; index++){
+            if(atLh_arrTrack[index].indexOf('utm_source') == 0){
+                atLh_utm_source = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_medium') == 0){
+                atLh_utm_medium = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_campaign') == 0){
+                atLh_utm_campaign = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_term') == 0){
+                atLh_utm_term = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('utm_content') == 0){
+                atLh_utm_content = atLh_arrTrack[index].split('=')[1]
+            }else if(atLh_arrTrack[index].indexOf('gclid') == 0){
+                atLh_gclid = atLh_arrTrack[index].split('=')[1]
+            }
+        }
+    }
+    fetchRetry(`${atLh_rqApi}/account/${atLh_acId}/group-buttons/${atLh_btnId}`, {
+        method: 'GET',
+        headers: new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        })
+    }, 4).then(result => {
+        var atLh_style = result.response.style
+        var atLh_vertical = result.response.vertical
+        var atLh_styleBtnCall = null
+        var atLh_styleBtnForm = null
+        var atLh_styleBtnFacebook = null
+        var atLh_styleBtnZalo = null
+        for (let i = 0; i < result.response.listButton.length; i++) {
+            if (result.response.listButton[i].type == "CALL") {
+                atLh_styleBtnCall = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "FORM") {
+                atLh_styleBtnForm = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "CHAT") {
+                atLh_styleBtnChat = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "FACEBOOK") {
+                atLh_styleBtnFacebook = result.response.listButton[i]
+            } else if (result.response.listButton[i].type == "ZALO") {
+                atLh_styleBtnZalo = result.response.listButton[i]
+            }
+        }
+        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo)
+        let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo')
+        if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != '') {
+            let chatInfo = JSON.parse(leadhub_chatInfo)
+            document.getElementById('txtName').innerText = chatInfo.name;
+            atLh_topic = chatInfo.topic;
+        }
+    })
+}
+async function fetchRetry(url, options, n) {
+    for (let i = 0; i < n; i++) {
+
+        try {
+            return await fetch(url, options).then(handle).then(result => {
+                return result
+            })
+        } catch (err) {
+            const isLastAttempt = i + 1 === n;
+            if (isLastAttempt) throw err;
+        }
+    }
+}
+
+function handle(response) {
+    return response.text().then(text => {
+        const data = text && JSON.parse(text);
+
+        if (response.ok) return data;
+
+        const error = (data && data.error) || response.statusText;
+        return Promise.reject(error);
+    });
+}
+
+function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo) {
+    let atLh_html = ''
+    let atLh_call = ''
+    let atLh_form = ''
+    let atLh_chat = ''
+    let facebook = ''
+    let zalo = ''
+    let atLh_chatInputInfoDialog = ''
+    let atLh_chatWithAdmin = ''
+    let atLh_form1 = ''
+    let phone = ''
+    let email = ''
+    let name = ''
+    let city = ''
+    let bussiness = ''
+    let position = ''
+    let brCall = ''
+    let brForm = ''
+    let brChat = ''
+    let brZalo = ''
+    let formCall = ''
+    if (style.left == '45') {
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom -3}%;
+            left: ${parseInt(style.left)+2}%;
+            right: ${style.right}%;
+            top:${style.top}%;
+            z-index: 99999999;
+        }`
+    } else {
+        position = `.adstech-group-btn {
+            position:fixed;
+            bottom: ${style.bottom - 3}%;
+            left: ${parseInt(style.left) -1}%;
+            right: ${parseInt(style.right) -1}%;
+            top:${style.top}%;
+            z-index: 99999999;
+        }`
+    }
+    let css = `<style>
+                    ${position}
+
+                    .adstech-btn {
+                        border: none;
+                        color: white;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        margin: 4px 2px;
+                        border-radius: 50%;
+                        width: ${style.size}px;
+                        height:${style.size}px;
+                        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+                    }
+                    
+                    #chatAdmin .input-group-sm>.form-control:not(textarea) {
+                        height: calc(1.5em + 1rem + 2px) !important;
+                    }
+                    .adstech-form {
+                        display: none;
+                        position: fixed;
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%,-50%);
+                        border: 3px solid #f1f1f1;
+                        z-index: 99999999;
+                        background-color:#fff;
+                    }
+                    #adstech-form{
+                        padding-bottom:20px
+                    }
+                    #adstech-form ::-webkit-scrollbar {
+                        width: 8px;
+                        height: 10px;
+                        z-index: 999;
+                    }
+                
+                    /* Handle */
+                    #adstech-form ::-webkit-scrollbar-thumb {
+                        -webkit-border-radius: 15px;
+                        border-radius: 15px;
+                        background: #eff2f9;
+                    }
+                    /* Add styles to the form container */
+                    .adstech-form-container {
+                        width: 400px;
+                        padding: 10px;
+                        background-color: #fff;
+                    }
+
+                    /* Full-width input fields */
+                    .adstech-form-container input[type=text],
+                    .adstech-form-container input[type=email], 
+                    .adstech-form-container input[type=tel]{
+                        width: 90%;
+                        padding: 15px;
+                        margin: 5px 0 22px 0;
+                        border: none;
+                        background: #f1f1f1;
+                    }
+
+                    /* When the inputs get focus, do something */
+                    .adstech-form-container input[type=text]:focus,
+                    .adstech-form-container input[type=email]:focus,
+                    .adstech-form-container input[type=tel]:focus {
+                        background-color: #ddd;
+                        outline: none;
+                    }
+
+                    /* Set a style for the submit/login button */
+                    .adstech-form-container .btn-adstech {
+                        color: white;
+                        border: none;
+                        cursor: pointer;
+                        width: 90% !important;
+                        margin-bottom: 10px;
+                        opacity: 0.8;
+                        float: left;
+                        z-index: 9999999;
+                        height:40px;
+                    }
+
+                    /* Add a red background color to the cancel button */
+                    .adstech-form-container .cancel-adstech {
+                        background-color: #999;
+                    }
+
+                    /* Add some hover effects to buttons */
+                    .adstech-form-container .btn-adstech:hover,
+                    .open-button:hover {
+                        opacity: 1;
+                    }
+                    .adstech-alert {
+                        padding: 20px;
+                        background-color:#d4edda;
+                        color: #155724;
+                        margin-bottom: 15px;
+                        display: none;
+                        max-width:400px;
+                        position: fixed;
+                        text-align:center;
+                        left: 50%;
+                        top: 50%;
+                        z-index: 9999999;
+                        transform: translate(-50%,-50%);
+                    }
+                    .adstech-chat-form{
+                        width:100%;
+                        margin-left:20%;
+                    }
+                    @media only screen and (max-width: 420px) {
+                        .adstech-form-container {
+                            width: 300px;
+                            padding: 10px;
+                            z-index: 99999999;
+                            background-color: #fff;
+                        }
+                        .adstech-chat-form{
+                            width:100%;
+                            margin-left:5%
+                        }
+                    }
+                    @media screen and (max-width: 1024px) and (min-width: 450px) {
+                        .adstech-chat-form{
+                            width:100%;
+                            margin-left:10%
+                        }
+                    }
+                </style>`
+    if (styleBtnCall == null || styleBtnCall == '') {
+        atLh_call = ''
+    } else {
+        if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
+            if (style.color == "#fff") {
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                            <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
+                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}" alt="Gọi điện thoại" width="${style.size - 18}px" height="${style.size -18}px">
+                            </a>
+                        </button>`
+            } else if (style.color == "#000") {
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor}">
+                            <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
+                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
+                            </a>
+                        </button>`
+            }
+            atlh_check_devide = false
+            brCall = '<br />'
+        }
+        else{
+            if (style.color == "#fff") {
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                            <a style="width:100%;height:100%">
+                                <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
+                            </a>
+                        </button>`
+            } else if (style.color == "#000") {
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor}">
+                            <a style="width:100%;height:100%">
+                                <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
+                            </a>
+                        </button>`
+            }
+            formCall = `<div class="adstech-form" id="adstech-call">
+            <div style="float:right;margin-top:2px; margin-right:5px; color:red">
+                                <button onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
+            <form class="adstech-form-container" id="call-adstech" method="POST">
+                            <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
+                            <input type="text" placeholder="Họ và tên" name="nameCall" requ-18
+px                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
+                            <div style="padding:0px 14px 0px 14px">
+                                <button type="submit" class="btn-adstech" style="background-color:${styleBtnCall.buttonColor};">Gửi liên hệ</button>
+                            </div>
+                        </form></div>
+                        <div class="adstech-alert" id="adstech-alert-call">
+                    
+                </div>`
+            brCall = '<br />'
+            atlh_check_devide = true
+        }
+    }
+    if (styleBtnChat == null || styleBtnChat == '') {
+        atLh_chat = ''
+    } else {
+        if (style.color == "#fff") {
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
+                </button>`
+        } else if (style.color == "#000") {
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor}" onclick="openChat()">
+                    <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
+                </button>`
+        }
+        brChat = '<br />'
+        atLh_chatInputInfoDialog = `
+            <div id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px; max-width:400px">
+                <div style="width:100%">
+                    <div class="adstech-chat-form">
+                        <div style="width:100%">
+                            <div style="width:100%">
+                                <div style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                <div style="float:right;margin-top:2px; margin-right:10px; color:red">
+                                <button onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
+                                    <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
+                                    </div> 
+                                    <div style="padding:15px; background-color:#fff"> 
+                                        <form class='adstech-form-container' id="atLhSendInfo" method="POST">
+                                            <div class="input-group input-group-sm" style="width: 100%">
+                                                <input type="text" required name="name" placeholder="Tên">
+                                                <input type="text" required name="topic" placeholder="Email/Số điện thoại">
+                                            </div>
+                                            <br>
+                                            <div class="">
+                                                <button style="margin-top:-20px;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+        atLh_chatWithAdmin = `
+            <div id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%; max-width:400px"> 
+                <div style="width:100%">
+                    <div class="adstech-chat-form">
+                        <div style="width:100%">
+                            <div style="width:100%">
+                                <div style="border: 1px solid ${styleBtnChat.buttonColor}">
+                                <div style="float:right;margin-top:5px; margin-right:10px; color:red">
+                                <button onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</button>
+                                </div>
+                                    <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
+                                    </div>
+                                    <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
+                                        <div style="width:100%">
+                                            <div style="width:100% id="scollDiv"; >
+                                                <table class="table" id="messageContainer">
+                                                    <tr></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="background-color:#fff">
+                                        <form id="atLhSendessage" method="POST">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
+                                                <span class="input-group-btn">
+                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Gửi</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    }
+    if (styleBtnForm == null || styleBtnForm == '') {
+        atLh_form = ''
+        atLh_form1 = ''
+    } else {
+        for (let i = 0; i < styleBtnForm.properties.length; i++) {
+            if (styleBtnForm.properties[i] == 'email') {
+                email = `<input type="email" placeholder="Địa chỉ email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$" title="Nhập đúng email của bạn" required>`
+            } else if (styleBtnForm.properties[i] == "lastName") {
+                name = `<input type="text" placeholder="Họ và tên" name="name" required>`
+            } else if (styleBtnForm.properties[i] == 'phone') {
+                phone = `<input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phone" required>`
+            } else if (styleBtnForm.properties[i] == 'city') {
+                city = `<input type="text" placeholder="Địa chỉ" name="city" required>`
+            } else if (styleBtnForm.properties[i] == 'bussiness') {
+                bussiness = `<input type="text" placeholder="Nghề nghiệp" name="bussiness" required>`
+            }
+        }
+        if (style.color == "#fff") {
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
+                    <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
+                </button>`
+        } else if (style.color == "#000") {
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor}" onclick="atLhOpenFrom()">
+                    <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
+                </button>`
+        }
+        atLh_form1 = `<div class="adstech-form" id="adstech-form">
+                    <div style="float:right;margin-top:5px; margin-right:10px; color:red"><button onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</button></div>
+                    <form class="adstech-form-container" id="form-adstech" method="POST">
+                        <h3>${styleBtnForm.title}</h3>
+                        ${name}
+                        ${phone}
+                        ${email}
+                        ${city}
+                        ${bussiness}
+                        <div style="padding:0px 14px 0px 14px">
+                            <button type="submit" class="btn" style="background-color:${styleBtnForm.buttonColor};">${styleBtnForm.description}</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="adstech-alert" id="adstech-alert-form">
+                </div>`
+        brForm = '<br />'
+        atlh_form_return = styleBtnForm.formMessageReturn
+    }
+    if (styleBtnFacebook == null || styleBtnFacebook == '') {
+        facebook = ''
+    } else {
+        atLh_fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
+        facebook = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
+    }
+    if (styleBtnZalo == null || styleBtnZalo == '') {
+        zalo = ''
+    } else {
+        atLh_zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
+        zalo = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
+        brZalo = '<br />'
+    }
+    if (vertical == false) {
+        atLh_html = `
+                <div class="adstech-group-btn">
+                    ${facebook}
+                    ${brZalo}
+                    ${zalo}
+                    ${brForm}
+                    ${atLh_form}
+                    ${brCall}
+                    ${atLh_call}
+                    ${brChat}
+                    ${atLh_chat}
+                </div>
+                ${atLh_chatInputInfoDialog}
+                ${atLh_chatWithAdmin}
+                ${atLh_form1}
+                ${css}
+                ${formCall}
+                `
+    } else {
+        atLh_html = `
+                <div class="adstech-group-btn">
+                    ${atLh_call}
+                    ${atLh_form}
+                    ${atLh_chat}
+                    ${facebook}
+                    ${zalo}
+                </div>
+                ${atLh_chatInputInfoDialog}
+                ${atLh_chatWithAdmin}
+                ${atLh_form1}
+                ${css}
+                ${formCall}`
+    }
+
+    let div = document.createElement("div");
+    div.id = "adstech-group-btn";
+    document.body.appendChild(div);
+    document.getElementById("adstech-group-btn").innerHTML = atLh_html;
+    // var atLh_chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
+    if (styleBtnForm != null && styleBtnForm != '') {
+        atLhSend(atLh_acId)
+    }
+    if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
+        atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
+        atLhConnectToFirebase()
+    }
+    if(atlh_check_devide == true && styleBtnCall != null && styleBtnCall != ''){
+        atLhOpenCall()
+    }
+}
+
+function openChat() {
+    let chatInputInfo = document.getElementById("chatInputInfo")
+    let chatAdmin = document.getElementById("chatAdmin")
+    if (chatInputInfo.style.display == 'block' || chatAdmin.style.display == 'block') {
+        chatInputInfo.style.display = 'none'
+        chatAdmin.style.display = 'none'
+    } else {
+        let hasInfo = window.localStorage.getItem('leadhub_chatInfo')
+        if (hasInfo != undefined && hasInfo != null && hasInfo != '') {
+            let customerInfo = JSON.parse(hasInfo)
+            atLh_chatminiCRM.child(atLh_topic).on('child_added', function (snapshot) {
+                var message = snapshot.val();
+                let isCustomer = ''
+                if (message.isCustomer == true || message.isCustomer == null) {
+                    isCustomer = ''
+                }
+                if (message.isCustomer == false) {
+                    isCustomer = ' (Admin)'
+                }
+                // + atLhGetHour(message.time)
+                // let atLh_html =
+                //     '<tr>' +
+                //     '<td><i class="glyphicon glyphicon-user"></i> ' + message.name + isCustomer + ': </td>' +
+                //     '<td>' + message.message + '</td>' +
+                //     '</tr>';
+                let atLh_html = ''
+                if(message.name == customerInfo.name){
+                    atLh_html = `<tr style="padding-top: 5%;">
+                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    </tr>`
+                }
+                else {
+                    atLh_html = `<tr style="padding-top: 5%;">
+                        <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
+                    </tr>`
+                }
+                $('#messageContainer tr:last').after(atLh_html)
+                $('#scollDiv').animate({
+                    scrollTop: $('#scollDiv')[0].scrollHeight
+                }, 0);
+            })
+            atLhStartChatting()
+        } else {
+            chatInputInfo.style.display = 'block'
+        }
+        document.getElementById("adstech-form").style.display = 'none'
+        document.getElementById("adstech-call").style.display = "none"
+    }
+
+}
+
+function atLhOpenFrom() {
+    let atLh_checkForm = document.getElementById("adstech-form")
+    if(atLh_checkForm.style.display == 'block'){
+        document.getElementById("adstech-form").style.display = 'none'
+    }else{
+        document.getElementById("adstech-form").style.display = 'block'
+        document.getElementById("adstech-call").style.display = "none"
+        document.getElementById("chatInputInfo").style.display = "none"
+        document.getElementById("chatAdmin").style.display = "none"
+    }
+}
+
+function atLhOpenCall(){
+    if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
+        atLhSendTracing('CALL')
+    }
+    else {
+        let alert = `<div class="adstech-leadhub-alert-call" id="adstech-leadhub-alert-call">
+                        <h6>Cảm ơn bạn đã để lại số điện thoại, chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất</h6>
+                    </div>`
+        const form = document.getElementById("call-adstech")
+        form.addEventListener('submit', e => {
+            const formData = new FormData(e.target)
+            let name = formData.get('nameCall')
+            let phone = formData.get('phoneCall')
+            let body = [{
+                property: 'accountId',
+                value: atLh_acId
+            }, {
+                property: 'lastName',
+                value: name
+            }, {
+                property: 'phone',
+                value: phone
+            }, {
+                property: 'email',
+                value: `${phone}@gmail.com`
+            }]
+            e.preventDefault()
+            adstechCreateLead(body,'CALL')
+            atLhSendTracing('CALL')
+            document.getElementById("adstech-call").style.display = "none"
+            document.getElementById("adstech-alert-call").innerHTML = alert
+            document.getElementById("adstech-alert-call").style.display = "block";
+        })
+    }
+}
+function atLhOpenFormCall(){
+    let atLh_checkForm = document.getElementById("adstech-call")
+    if(atLh_checkForm.style.display == 'block'){
+        document.getElementById("adstech-call").style.display = "none"
+    }else{
+        document.getElementById("adstech-call").style.display = 'block'
+        document.getElementById("adstech-form").style.display = 'none'
+        document.getElementById("chatInputInfo").style.display = "none"
+        document.getElementById("chatAdmin").style.display = "none"
+    }
+}
+
+function atLhCloseForm() {
+    document.getElementById("adstech-form").style.display = "none";
+}
+
+function atLhCloseAlert() {
+    if(document.getElementById("adstech-alert-form") != null && document.getElementById("adstech-alert-form") != undefined && document.getElementById("adstech-alert-form") != ''){
+        document.getElementById("adstech-alert-form").style.display = "none";
+    }
+    if(document.getElementById("adstech-alert-call") != null && document.getElementById("adstech-alert-call") != undefined && document.getElementById("adstech-alert-call") != ''){
+        document.getElementById("adstech-alert-call").style.display = "none";
+    }
+}
+
+function atLhOpenFacebook() {
+    if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
+        let element = document.getElementById("adstech-open-fb")
+        element.classList.add("at-onclick-fb")
+        window.location = atLh_fb
+        atLhSendTracing('FACEBOOK')
+    }
+    else {
+        let element = document.getElementById("adstech-open-fb")
+        element.classList.add("at-onclick-fb")
+        window.open(atLh_fb)
+        atLhSendTracing('FACEBOOK')
+    }
+}
+
+function atLhOpenZalo() {
+    if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
+        let element = document.getElementById("adstech-open-zl")
+        element.classList.add("at-onclick-zl")
+        window.location = atLh_zl
+        atLhSendTracing('ZALO')
+    }
+    else {
+        let element = document.getElementById("adstech-open-zl")
+        element.classList.add("at-onclick-zl")
+        window.open(atLh_zl)
+        atLhSendTracing('ZALO')
+    }
+}
+
+function atLhGetHour(time) {
+    let result = ''
+    let timeArr = time.split(' ')
+    result = timeArr[3]
+    return result
+}
+
+function atLhConnectToFirebase() {
+    let form = document.getElementById("atLhSendInfo")
+    form.addEventListener('submit', e => {
+        const formData = new FormData(e.target)
+        let name = formData.get('name')
+        atLh_topic = formData.get('topic')
+        let body = [
+            {
+                property: 'accountId',
+                value: atLh_acId
+            },
+            {
+                property: 'lastName',
+                value: name
+            },
+            {
+                property: 'email',
+                value: atLh_topic
+            },
+        ]
+        adstechCreateLead(body,'CHAT')
+        document.getElementById('txtName').innerText = name
+        atLh_topic = atLh_acId + '-' + atLh_topic.replace(/\./g, '-dot-')
+        let obj = {
+            name: name,
+            topic: atLh_topic
+        }
+        window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
+        atLh_chatminiCRM.child(atLh_topic).on('child_added', function (snapshot) {
+            let message = snapshot.val()
+            let isCustomer = ''
+            if (message.isCustomer == true || message.isCustomer == null) {
+                isCustomer = ''
+            }
+            if (message.isCustomer == false) {
+                isCustomer = ' (Admin)'
+            }
+            let atLh_html = ''
+            if(message.name == obj.name){
+                atLh_html = `
+                <tr style="padding-top: 5%;">
+                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
+                        ${message.name}${isCustomer}: ${message.message}
+                    </td>
+                </tr>`
+            }
+            else {
+                atLh_html = `
+                <tr style="padding-top: 5%;">
+                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">
+                        ${message.name}${isCustomer}: ${message.message}
+                    </td>
+                </tr>`
+            }
+            $('#messageContainer tr:last').after(atLh_html)
+            $('#scollDiv').animate({
+                scrollTop: $('#scollDiv')[0].scrollHeight
+            }, 0);
+        })
+        e.preventDefault()
+        atLhStartChatting()
+    })
+}
+
+function atLhStartChatting() {
+    document.getElementById("chatInputInfo").style.display = "none"
+    document.getElementById("chatAdmin").style.display = "block"
+    let form = document.getElementById("atLhSendessage")
+    form.addEventListener('submit', e => {
+        let text = $('#txtText').val()
+        if (text != '') {
+            try {
+                var body = {
+                    topic: atLh_topic,
+                    name: document.getElementById('txtName').innerText,
+                    message: text,
+                    accountId: atLh_acId,
+                    isCustomer: true
+                }
+                atLhSendessage(body)
+                document.getElementById('txtText').value = ''
+            } catch (error) {
+                alert(error)
+            }
+        }
+        e.preventDefault()
+    })
+}
+
+function atLhSendessage(body) {
+    fetchRetry(`${atLh_rqApi}/chats`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }, 5).then(result => {
+        console.log(result)
+    }).catch(error => {
+        console.log(error)
+    })
+}
+
+function atLhSend(atLh_acId) {
+    let alert = `<div class="adstech-leadhub-alert-form" id="adstech-leadhub-alert-form">
+                        <h6>${atlh_form_return}</h6>
+                    </div>`
+    const form = document.getElementById("form-adstech")
+    form.addEventListener('submit', e => {
+        const formData = new FormData(e.target)
+        let email = formData.get('email')
+        let name = formData.get('name')
+        let phone = formData.get('phone')
+        let city = formData.get('city')
+        let bussiness = formData.get('bussiness')
+        let body = [{
+            property: 'accountId',
+            value: atLh_acId
+        }, {
+            property: 'email',
+            value: email
+        }]
+        if (name != undefined && name != '' && name != null) {
+            let a = {
+                property: 'lastName',
+                value: name
+            }
+            body.push(a)
+        }
+        if (phone != undefined && phone != '' && phone != null) {
+            let a = {
+                property: 'phone',
+                value: phone
+            }
+            body.push(a)
+        }
+        if (city != undefined && city != '' && city != null) {
+            let a = {
+                property: 'city',
+                value: city
+            }
+            body.push(a)
+        }
+        if (bussiness != undefined && bussiness != '' && bussiness != null) {
+            let a = {
+                property: 'bussiness',
+                value: bussiness
+            }
+            body.push(a)
+        }
+        adstechCreateLead(body,'FORM')
+        atLhSendTracing('FORM')
+        e.preventDefault()
+        atLhCloseForm()
+        document.getElementById("adstech-alert-form").innerHTML = alert
+        document.getElementById("adstech-alert-form").style.display = "block";
+    })
+}
+
+function adstechCreateLead(body,btn) {
+    fetchRetry(`${atLh_rqApi}/contacts?source_from_mar=${btn}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }, 4).then(result => {
+        if (result.code == "SUCCESS" || result.message == "SPAM SERVER") {
+            localStorage.removeItem('lead')
+            setTimeout(function () {
+                atLhCloseAlert()
+            }, 2000)
+        } else {
+            localStorage.setItem('lead',JSON.stringify(body))
+            setTimeout(function () {
+                atLhCloseAlert()
+            }, 2000)
+        }
+    }).catch(err =>{
+        localStorage.setItem('lead',JSON.stringify(body))
+            setTimeout(function () {
+                atLhCloseAlert()
+        }, 2000)
+    })
+}
+
+function atLhSendTracing(type) {
+    let body = {
+        type: type,
+        accountId: atLh_acId,
+        link: atLh_url
+    }
+    if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
+    if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
+    if(atLh_utm_campaign != null){body.utm_campaign = atLh_utm_campaign}
+    if(atLh_utm_term != null){body.utm_term = atLh_utm_term}
+    if(atLh_utm_content != null){body.utm_content = atLh_utm_content}
+    if(atLh_gclid != null){body.gclid = atLh_gclid}
+    fetchRetry(`${atLh_rqApi}/tracking-source-utm`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }, 4).then(result => {
+        console.log(result)
+    })
+}
