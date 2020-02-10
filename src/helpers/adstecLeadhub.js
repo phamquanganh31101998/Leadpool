@@ -22,7 +22,6 @@ function adstechLeadhubOnload() {
     var atLh_tag = document.createElement("script")
     atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js"
     document.getElementsByTagName("head")[0].appendChild(atLh_tag)
-    var atLh_checkJquery = null
     var atLh_btnId = ''
     var atLh_scripts = document.getElementsByTagName("script")
     let atLh_lead_out = localStorage.getItem('lead')
@@ -36,14 +35,7 @@ function adstechLeadhubOnload() {
             atLh_acId = accid.split('=')[1]
             var GbtnId = src.split('&')[1]
             atLh_btnId = GbtnId.split('=')[1]
-        }else if(atLh_scripts[i].src.indexOf('jquery') > 0){
-            atLh_checkJquery = atLh_scripts[i].src
         }
-    }
-    if(atLh_checkJquery === null || atLh_checkJquery === ''){
-        var atLh_tag2 = document.createElement("script")
-        atLh_tag2.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"
-        document.getElementsByTagName("head")[0].appendChild(atLh_tag2)
     }
     var atLh_track = ''
     if (atLh_url.indexOf('?') > 0) {
@@ -106,7 +98,7 @@ function adstechLeadhubOnload() {
         let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo')
         if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != '') {
             let chatInfo = JSON.parse(leadhub_chatInfo)
-            document.getElementById('txtName').innerText = chatInfo.name;
+            document.getElementById('atLhTxtName').innerText = chatInfo.name;
             atLh_topic = chatInfo.topic;
         }
     })
@@ -286,7 +278,6 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                     }
                     .adstech-chat-form{
                         width:100%;
-                        margin-left:20%;
                     }
                     @media only screen and (max-width: 420px) {
                         .adstech-form-container {
@@ -380,7 +371,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                <div style="float:right;margin-top:2px; margin-right:10px; color:red">
+                                <div style="float:right;margin-top:2px; margin-right:5px; color:red">
                                 <a href="javascript:void(0);" onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                                 </div>
                                     <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
@@ -416,12 +407,12 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                 <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                                 </div>
                                     <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="txtName"></span>. Hãy chat với chúng tôi</h6></div>
+                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="atLhTxtName"></span>. Hãy chat với chúng tôi</h6></div>
                                     </div>
                                     <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
                                         <div style="width:100%">
                                             <div style="width:100% id="scollDiv"; >
-                                                <table class="table" id="messageContainer">
+                                                <table class="table" id="atLhMessageContainer">
                                                     <tr></tr>
                                                 </table>
                                             </div>
@@ -430,7 +421,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                     <div style="background-color:#fff" style="clear:both">
                                         <form id="atLhSendessage" method="POST" style="background-color:#fff">
                                                 <span style="width:100%">
-                                                    <div style="width:80%;float:left"><input type="text" required class="form-control" id="txtText" placeholder="nói gì đó .."></div>
+                                                    <div style="width:80%;float:left"><input type="text" required class="form-control" id="atLhTxtText" placeholder="nói gì đó .."></div>
                                                     <div style="width:20%;float:left"><input class="btn" style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend" value="Gửi"></div>
                                                 </span>
                                             </div>
@@ -591,10 +582,10 @@ function openChat() {
                         <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
                     </tr>`
                 }
-                $('#messageContainer tr:last').after(atLh_html)
-                $('#scollDiv').animate({
-                    scrollTop: $('#scollDiv')[0].scrollHeight
-                }, 0);
+                var tableAdstech = document.getElementById("atLhMessageContainer");
+                var rowAdstech = tableAdstech.insertRow(tableAdstech.rows.length - 1)
+                rowAdstech.innerHTML = atLh_html
+                rowAdstech.scrollIntoView()
             })
             atLhStartChatting()
         } else {
@@ -728,7 +719,7 @@ function atLhConnectToFirebase() {
             },
         ]
         adstechCreateLead(body,'CHAT')
-        document.getElementById('txtName').innerText = name
+        document.getElementById('atLhTxtName').innerText = name
         atLh_topic = atLh_acId + '-' + atLh_topic.replace(/\./g, '-dot-')
         let obj = {
             name: name,
@@ -761,10 +752,10 @@ function atLhConnectToFirebase() {
                     </td>
                 </tr>`
             }
-            $('#messageContainer tr:last').after(atLh_html)
-            $('#scollDiv').animate({
-                scrollTop: $('#scollDiv')[0].scrollHeight
-            }, 0);
+            var tableAdstech = document.getElementById("atLhMessageContainer");
+            var rowAdstech = tableAdstech.insertRow(tableAdstech.rows.length - 1)
+            rowAdstech.innerHTML = atLh_html
+            rowAdstech.scrollIntoView()
         })
         e.preventDefault()
         atLhStartChatting()
@@ -776,18 +767,18 @@ function atLhStartChatting() {
     document.getElementById("chatAdmin").style.display = "block"
     let form = document.getElementById("atLhSendessage")
     form.addEventListener('submit', e => {
-        let text = $('#txtText').val()
+        let text = document.getElementById('atLhTxtText').value
         if (text != '') {
             try {
                 var body = {
                     topic: atLh_topic,
-                    name: document.getElementById('txtName').innerText,
+                    name: document.getElementById('atLhTxtName').innerText,
                     message: text,
                     accountId: atLh_acId,
                     isCustomer: true
                 }
                 atLhSendessage(body)
-                document.getElementById('txtText').value = ''
+                document.getElementById('atLhTxtText').value = ''
             } catch (error) {
                 alert(error)
             }
