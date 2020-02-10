@@ -394,7 +394,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                             </div>
                                             <br>
                                             <div class="input-group-btn">
-                                                <button style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend">Chat</button>
+                                                <input style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend" value="Gửi thông tin">
                                             </div>
                                         </form>
                                     </div>
@@ -427,12 +427,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="background-color:#fff">
-                                        <form id="atLhSendessage" method="POST">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" required class="form-control" id="txtText" placeholder="nói gì đó ..">
-                                                <span class="input-group-btn">
-                                                    <button class="btn" style="color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend">Gửi</button>
+                                    <div style="background-color:#fff" style="clear:both">
+                                        <form id="atLhSendessage" method="POST" style="background-color:#fff">
+                                                <span style="width:100%">
+                                                    <div style="width:80%;float:left"><input type="text" required class="form-control" id="txtText" placeholder="nói gì đó .."></div>
+                                                    <div style="width:20%;float:left"><input class="btn" style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" type="submit" id="btnSend" value="Gửi"></div>
                                                 </span>
                                             </div>
                                         </form>
