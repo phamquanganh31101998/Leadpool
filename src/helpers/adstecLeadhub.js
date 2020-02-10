@@ -19,10 +19,12 @@ var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
 //product: https://services.adstech.vn/leadpool/v1/leadhub
 //test: http://dev.adstech.vn:9000/leadhub
 function adstechLeadhubOnload() {
-    var atLh_tag = document.createElement("script")
+    var atLh_tag = document.createElement('script');
+    atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
     atLh_tag.type = "text/javascript";
-    atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js"
-    document.getElementsByTagName("head")[0].appendChild(atLh_tag)
+    atLh_tag.setAttribute('defer','');
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(atLh_tag, firstScriptTag);
     var atLh_btnId = ''
     var atLh_scripts = document.getElementsByTagName("script")
     let atLh_lead_out = localStorage.getItem('lead')
@@ -349,8 +351,8 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                     <input type="submit" class="btn-adstech" value="Gui lien he" style="background-color:${styleBtnCall.buttonColor};"/>
                                 </div>
                             </form>
-                        <div class="adstech-alert" id="adstech-alert-call">
-                    </div>`
+                        </div>
+                        <div class="adstech-alert" id="adstech-alert-call"></div>`
             brCall = '<br />'
             atlh_check_devide = true
         }
@@ -442,22 +444,21 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                 </button>`
         }
         atLh_form1 = `<div class="adstech-form" id="adstech-form">
-                    <div style="float:right;margin-top:5px; margin-right:10px; color:red;text-align:center"><a href="javascript:void(0);" onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</a></div>
-                    <form class="adstech-form-container" id="form-adstech" method="POST">
-                        <h3>${styleBtnForm.title}</h3>
-                        ${name}
-                        ${phone}
-                        ${email}
-                        ${city}
-                        ${bussiness}
-                        <div style="padding:0px 14px 0px 14px">
-                            <input type="submit" class="btn-adstech" style="background-color:${styleBtnForm.buttonColor};color:white" value="${styleBtnForm.description}">
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="adstech-alert" id="adstech-alert-form">
-                </div>`
+                        <div style="float:right;margin-top:5px; margin-right:10px; color:red;text-align:center"><a href="javascript:void(0);" onclick="document.getElementById('adstech-form').style.display='none'" style="border-radius:50%; background-color:#fff; box-shadow:none;border: none; width:20px;height:20px;font-size:25px;color:red">&times;</a></div>
+                        <form class="adstech-form-container" id="form-adstech" method="POST">
+                            <h3>${styleBtnForm.title}</h3>
+                            ${name}
+                            ${phone}
+                            ${email}
+                            ${city}
+                            ${bussiness}
+                            <div style="padding:0px 14px 0px 14px">
+                                <input type="submit" class="btn-adstech" style="background-color:${styleBtnForm.buttonColor};color:white" value="${styleBtnForm.description}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="adstech-alert" id="adstech-alert-form">
+                    </div>`
         brForm = '<br />'
         atlh_form_return = styleBtnForm.formMessageReturn
     }
