@@ -215,7 +215,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                     }
                     /* Add styles to the form container */
                     .adstech-form-container {
-                        width: 400px;
+                        max-width: 400px;
                         padding: 10px;
                         background-color: #fff;
                     }
@@ -277,7 +277,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         transform: translate(-50%,-50%);
                     }
                     .adstech-chat-form{
+                        width:400px;
+                    }
+                    .adstech-row-mesaage{
                         width:100%;
+                        padding-top: 5%;
                     }
                     @media only screen and (max-width: 420px) {
                         .adstech-form-container {
@@ -333,20 +337,19 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         </button>`
             }
             formCall = `<div class="adstech-form" id="adstech-call">
-            <div style="float:right;margin-top:2px; margin-right:5px; color:red">
+                            <div style="float:right;margin-top:2px; margin-right:5px; color:red">
                                 <a href="javascript:void(0);" onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
-                                </div>
-            <form class="adstech-form-container" id="call-adstech" method="POST">
-                            <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
-                            <input type="text" placeholder="Họ và tên" name="nameCall" required>
-                            <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
-                            <div style="padding:0px 14px 0px 14px">
-                                <input type="submit" class="btn-adstech" value="Gui lien he" style="background-color:${styleBtnCall.buttonColor};"/>
                             </div>
-                        </form></div>
+                            <form class="adstech-form-container" id="call-adstech" method="POST">
+                                <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
+                                <input type="text" placeholder="Họ và tên" name="nameCall" required>
+                                <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
+                                <div style="padding:0px 14px 0px 14px">
+                                    <input type="submit" class="btn-adstech" value="Gui lien he" style="background-color:${styleBtnCall.buttonColor};"/>
+                                </div>
+                            </form>
                         <div class="adstech-alert" id="adstech-alert-call">
-                    
-                </div>`
+                    </div>`
             brCall = '<br />'
             atlh_check_devide = true
         }
@@ -366,32 +369,20 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         brChat = '<br />'
         atLh_chatInputInfoDialog = `
             <div id="chatInputInfo" style="z-index: 99999999; display: none;  position: fixed; bottom: 5%; right: 5%; padding:10px; max-width:400px">
-                <div style="width:100%">
-                    <div class="adstech-chat-form">
-                        <div style="width:100%">
-                            <div style="width:100%">
-                                <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                <div style="float:right;margin-top:2px; margin-right:5px; color:red">
-                                <a href="javascript:void(0);" onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
-                                </div>
-                                    <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
-                                    </div> 
-                                    <div style="padding:15px; background-color:#fff"> 
-                                        <form class='adstech-form-container' id="atLhSendInfo" method="POST">
-                                            <div class="input-group input-group-sm" style="width: 100%">
-                                                <input style="width: 100%" type="text" class="form-control" required name="name" placeholder="Tên">
-                                                <input style="width: 100%" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
-                                            </div>
-                                            <br>
-                                            <div class="input-group-btn">
-                                                <input style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};" class="btn-adstech" type="submit" id="btnSend" value="Gửi thông tin">
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="adstech-chat-form">
+                    <div style="border: 1px solid ${styleBtnChat.buttonColor}">
+                        <div style="float:right;margin-top:2px; margin-right:5px; color:red">
+                            <a href="javascript:void(0);" onclick="document.getElementById('chatInputInfo').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                         </div>
+                        <div style="padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
+                            <h6 style="color: white; margin:auto" class="panel-title">Hãy cho chúng tôi biết bạn là ai</h6>
+                        </div> 
+                    <div style="padding:15px; background-color:#fff"> 
+                        <form class='adstech-form-container' id="atLhSendInfo" method="POST">
+                            <input style="width: 100%;margin-top:-10px !important" type="text" class="form-control" required name="name" placeholder="Tên">
+                            <input style="width: 100%;margin-top:-10px !important" type="text" class="form-control" required name="topic" placeholder="Email/Số điện thoại">
+                            <input style="width:100%;color: white; background-color: ${styleBtnChat.buttonColor};margin-top:-20px" class="btn-adstech" type="submit" id="btnSend" value="Gửi thông tin">
+                        </form>
                     </div>
                 </div>
             </div>
@@ -403,19 +394,16 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         <div style="width:100%">
                             <div style="width:100%">
                                 <div style="border: 1px solid ${styleBtnChat.buttonColor}">
-                                <div style="float:right;margin-top:5px; margin-right:10px; color:red">
-                                <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:${styleBtnChat.buttonColor}; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
-                                </div>
-                                    <div style="width:100%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: ${styleBtnChat.buttonColor};">
-                                        <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="atLhTxtName"></span>. Hãy chat với chúng tôi</h6></div>
+                                    <div style="background-color: ${styleBtnChat.buttonColor};width:100%">
+                                        <div style="width:10%;float:right;margin-top:5px; margin-right:10px; color:red">
+                                            <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:transparent; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
+                                        </div>
+                                        <div style="width:90%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: transparent;">
+                                            <div style="width:100%"><h6 style="color: white; ">Xin chào, <span id="atLhTxtName"></span>. Hãy chat với chúng tôi</h6></div>
+                                        </div>
                                     </div>
                                     <div style="height: 350px;background-color:#fff; overflow-y: scroll;">
-                                        <div style="width:100%">
-                                            <div style="width:100% id="scollDiv"; >
-                                                <table class="table" id="atLhMessageContainer">
-                                                    <tr></tr>
-                                                </table>
-                                            </div>
+                                        <div id="atLhMessageContainer" style="width:100%">
                                         </div>
                                     </div>
                                     <div style="background-color:#fff" style="clear:both">
@@ -471,7 +459,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                         ${city}
                         ${bussiness}
                         <div style="padding:0px 14px 0px 14px">
-                            <button type="submit" class="btn-adstech" style="background-color:${styleBtnForm.buttonColor};color:white">${styleBtnForm.description}</button>
+                            <input type="submit" class="btn-adstech" style="background-color:${styleBtnForm.buttonColor};color:white" value="${styleBtnForm.description}">
                         </div>
                     </form>
                 </div>
@@ -573,19 +561,18 @@ function openChat() {
                 //     '</tr>';
                 let atLh_html = ''
                 if(message.name == customerInfo.name){
-                    atLh_html = `<tr style="padding-top: 5%;">
-                        <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
-                    </tr>`
+                    atLh_html = `
+                        <div style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;padding:0px 5px">${message.name}${isCustomer}: ${message.message}</div>`
                 }
                 else {
-                    atLh_html = `<tr style="padding-top: 5%;">
-                        <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">${message.name}${isCustomer}: ${message.message}</td>
-                    </tr>`
+                    atLh_html = `
+                        <div style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;padding:0px 5px">${message.name}${isCustomer}: ${message.message}</div>`
                 }
-                var tableAdstech = document.getElementById("atLhMessageContainer");
-                var rowAdstech = tableAdstech.insertRow(tableAdstech.rows.length - 1)
-                rowAdstech.innerHTML = atLh_html
-                rowAdstech.scrollIntoView()
+                let div = document.createElement("div")
+                div.class = "adstech-row-mesaage";
+                div.innerHTML = atLh_html
+                document.getElementById("atLhMessageContainer").appendChild(div);
+                div.scrollIntoView()
             })
             atLhStartChatting()
         } else {
@@ -738,24 +725,21 @@ function atLhConnectToFirebase() {
             let atLh_html = ''
             if(message.name == obj.name){
                 atLh_html = `
-                <tr style="padding-top: 5%;">
-                    <td style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;">
+                    <div style="border-radius: 10px; max-width: 80%; float: right; background-color: ${atLh_styleBtnChat.buttonColor}; color: white; margin-right: 2%; margin-top: 2%;padding:0px 5px">
                         ${message.name}${isCustomer}: ${message.message}
-                    </td>
-                </tr>`
+                    </div>`
             }
             else {
                 atLh_html = `
-                <tr style="padding-top: 5%;">
-                    <td style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;">
+                    <div style="border-radius: 10px; max-width: 80%; float: left; background-color: #e5e5e5; margin-left: 2%; margin-top: 2%;padding:0px 5px">
                         ${message.name}${isCustomer}: ${message.message}
-                    </td>
-                </tr>`
+                    </div>`
             }
-            var tableAdstech = document.getElementById("atLhMessageContainer");
-            var rowAdstech = tableAdstech.insertRow(tableAdstech.rows.length - 1)
-            rowAdstech.innerHTML = atLh_html
-            rowAdstech.scrollIntoView()
+            let div = document.createElement("div")
+            div.class = "adstech-row-mesaage";
+            div.innerHTML = atLh_html
+            document.getElementById("atLhMessageContainer").appendChild(div);
+            div.scrollIntoView()
         })
         e.preventDefault()
         atLhStartChatting()
