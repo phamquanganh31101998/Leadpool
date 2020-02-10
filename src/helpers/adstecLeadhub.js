@@ -20,6 +20,7 @@ var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
 //test: http://dev.adstech.vn:9000/leadhub
 function adstechLeadhubOnload() {
     var atLh_tag = document.createElement("script")
+    atLh_tag.type = "text/javascript";
     atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js"
     document.getElementsByTagName("head")[0].appendChild(atLh_tag)
     var atLh_btnId = ''
@@ -387,16 +388,16 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                     </div>
                 </div>
             </div>
+            <div class="adstech-alert" id="adstech-alert-chat"></div>
         `
         atLh_chatWithAdmin = `
-            <div id="chatAdmin" style="z-index: 99999999; display: none; position: fixed; bottom: 5%; right: 5%; max-width:400px">
-                    <div style="background-color: ${styleBtnChat.buttonColor};width:100%">
-                        <div style="width:10%;float:right;margin-top:5px; margin-right:10px; color:red;text-align:center">
-                            <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25pxheight:25px;border-radius:50%; background-color:transparent; box-shadow:none;border: none;font-size:25px;color:red">x</a>
-                        </div>
-                        <div style="width:90%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: transparent;">
-                            <h6 style="color: white; ">Xin chào, <span id="atLhTxtName"></span>. Hãy chat với chúng tôi</h6>
-                        </div>
+            <div id="chatAdmin" style="z-index: 99999999;background-color:#fff !important; display: none; position: fixed; bottom: 5%; right: 5%; max-width:400px">
+                <div style="background-color: ${styleBtnChat.buttonColor};width:100%">
+                    <div style="width:10%;float:right;margin-top:5px; margin-right:10px; color:red;text-align:center">
+                        <a href="javascript:void(0);" onclick="document.getElementById('chatAdmin').style.display='none'" style="width:25pxheight:25px;border-radius:50%; background-color:transparent; box-shadow:none;border: none;font-size:25px;color:red">x</a>
+                    </div>
+                    <div style="width:90%;padding:10px;border: 1px solid ${styleBtnChat.buttonColor}; background-color: transparent;">
+                        <h6 style="color: white; ">Xin chào, <span id="atLhTxtName"></span>. Hãy chat với chúng tôi</h6>
                     </div>
                     <div style="height: 350px;background-color:#fff; overflow-y: scroll; width:100%">
                         <div id="atLhMessageContainer" style="width:100%">
@@ -410,6 +411,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                             </span>
                         </form>
                     </div>
+                </div>
             </div>
         `
     }
@@ -516,8 +518,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         atLhSend(atLh_acId)
     }
     if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
-        atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
-        atLhConnectToFirebase()
+        let atLh_scripts = document.getElementsByTagName("script")
+        for (let index = 0; index < atLh_scripts.length; index++) {
+            if (atLh_scripts[index].src.indexOf('cdn.firebase.com/js/client/2.2.1/firebase.js') > 0) {
+                atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
+                atLhConnectToFirebase()
+            }
+        }
     }
     if(atlh_check_devide == true && styleBtnCall != null && styleBtnCall != ''){
         atLhOpenCall()
@@ -533,7 +540,6 @@ function openChat() {
     } else {
         let hasInfo = window.localStorage.getItem('leadhub_chatInfo')
         if (hasInfo != undefined && hasInfo != null && hasInfo != '') {
-            let customerInfo = JSON.parse(hasInfo)
             atlhChatting()
             atLhStartChatting()
         } else {
@@ -607,6 +613,9 @@ function atLhCloseAlert() {
     if(document.getElementById("adstech-alert-call") != null && document.getElementById("adstech-alert-call") != undefined && document.getElementById("adstech-alert-call") != ''){
         document.getElementById("adstech-alert-call").style.display = "none";
     }
+    if(document.getElementById("adstech-alert-chat") != null && document.getElementById("adstech-alert-chat") != undefined && document.getElementById("adstech-alert-chat") != ''){
+        document.getElementById("adstech-alert-chat").style.display = "none";
+    }
 }
 
 function atLhOpenFacebook() {
@@ -676,6 +685,11 @@ function atLhConnectToFirebase() {
         window.localStorage.setItem('leadhub_chatInfo', JSON.stringify(obj))
         atlhChatting()
         e.preventDefault()
+        let alert = `<div class="adstech-leadhub-alert-chat" id="adstech-leadhub-alert-chat">
+                        <h6>Cảm ơn bạn đã để lại đăng ký</h6>
+                    </div>`
+        document.getElementById("adstech-alert-chat").innerHTML = alert
+        document.getElementById("adstech-alert-chat").style.display = "block";
         atLhStartChatting()
     })
 }
