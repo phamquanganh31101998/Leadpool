@@ -1,3 +1,9 @@
+var atLh_tag = document.createElement('script');
+atLh_tag.src = "https://leadpool.adstech.vn/firebase.js";
+atLh_tag.type = "text/javascript";
+atLh_tag.setAttribute('defer','');
+var atLh_scripts = document.getElementsByTagName("script")[0]
+atLh_scripts.parentNode.insertBefore(atLh_tag, atLh_scripts);
 window.onload = adstechLeadhubOnload
 var atLh_acId = ''
 var atLh_topic = ''
@@ -19,12 +25,6 @@ var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
 //product: https://services.adstech.vn/leadpool/v1/leadhub
 //test: http://dev.adstech.vn:9000/leadhub
 function adstechLeadhubOnload() {
-    var atLh_tag = document.createElement('script');
-    atLh_tag.src = "https://cdn.firebase.com/js/client/2.2.1/firebase.js";
-    atLh_tag.type = "text/javascript";
-    atLh_tag.setAttribute('defer','');
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(atLh_tag, firstScriptTag);
     var atLh_btnId = ''
     var atLh_scripts = document.getElementsByTagName("script")
     let atLh_lead_out = localStorage.getItem('lead')
@@ -521,7 +521,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
         let atLh_scripts = document.getElementsByTagName("script")
         for (let index = 0; index < atLh_scripts.length; index++) {
-            if (atLh_scripts[index].src.indexOf('cdn.firebase.com/js/client/2.2.1/firebase.js') > 0) {
+            if (atLh_scripts[index].src.indexOf('leadpool.adstech.vn/firebase.js') > 0) {
                 atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
                 atLhConnectToFirebase()
             }
