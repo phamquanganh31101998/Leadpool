@@ -49,21 +49,24 @@
                 </v-card>
             </v-flex>
             <v-flex lg8>
-                <v-layout row class="mb=2" v-if="selected.leadHubButtonGroupId && selected.googleCustomerId == null">
+                <v-layout row class="mb-2" v-if="selected.leadHubButtonGroupId && selected.googleCustomerId == null">
                     <!-- <v-alert :value="true" color="warning" icon="priority_high" outline >
                         Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi trên trang web của bạn
                     </v-alert> -->
-                    <div style="border:1px solid #fb8c00; color: #fb8c00; text-align:center; padding:1%">
-                        <span>Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi
-                            trên trang web của bạn</span>
-                    </div>
-                    <v-btn v-if="checkDataGgAds" class=" ml-2" large tile outlined color="primary"
-                        @click="connectGoogleAds()">
-                        Liên kết tài khoản
-                    </v-btn>
-                    <v-btn v-else class=" ml-2" large tile outlined color="primary" @click="accountAds = true">
-                        Liên kết tài khoản
-                    </v-btn>
+                    <v-flex lg9 class="pt-2">
+                        <div style="border:1px solid #fb8c00; color: #fb8c00; text-align:center; padding:1%">
+                            <span>Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi
+                                trên trang web của bạn</span>
+                        </div>
+                    </v-flex>
+                    <v-flex lg3>
+                        <v-btn v-if="checkDataGgAds" class=" ml-2" large tile outlined color="primary" @click="connectGoogleAds()">
+                            Liên kết tài khoản
+                        </v-btn>
+                        <v-btn v-else class=" ml-2" large tile outlined color="primary" @click="accountAds = true">
+                            Liên kết tài khoản
+                        </v-btn>
+                    </v-flex>
                 </v-layout>
                 <v-layout row class="mb-2"
                     v-if="showCall === true || showForm == true || showChat == true || showFb == true || showZalo == true">
@@ -460,7 +463,7 @@
             takeListGgAdsInSerrve() {
                 this.showLoading = true
                 ggAds.getListCid(this.idAccount).then(result => {
-                    if (result.response == null || result.response == "" || result.response == undefined) {
+                    if (result.response == null || result.response == "" || result.response == undefined || result.code == "FAIL") {
                         this.checkDataGgAds = true
                         this.showLoading = false
                     } else {
