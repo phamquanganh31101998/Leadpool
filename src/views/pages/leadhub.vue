@@ -483,11 +483,16 @@
                 const {
                     dispatch
                 } = this.$store;
+                this.showLoading = true
                 ggAds.convertGbtnToCid(this.idAccount, this.selected.leadHubButtonGroupId, cId).then(result => {
                     if (result.code == "SUCCESS") {
+                        this.showLoading = false
+                        this.accountAds = false
                         dispatch('alert/success', `Gán tài khoản ${cId} thành công`)
                     } else {
                         dispatch('alert/error', result.message)
+                        this.showLoading = false
+                        this.accountAds = true
                     }
                 })
             },
