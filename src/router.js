@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
@@ -253,10 +254,11 @@ const router = new Router({
             path: '/contacts/:idAccount/leadhub',
             name: 'leadhub',
             component: leadhub,
-            props(route) {
+            props(route){
                 const props = {
-                    ...route.params
+                    ...route.params,
                 }
+                props.code = route.query.code
                 props.idAccount
                 return props
             },
