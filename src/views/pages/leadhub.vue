@@ -237,7 +237,7 @@
             <v-card>
                 <v-card-text class="pl-4">
                     <v-layout row>
-                        <v-list two-line style="width:100%">
+                        <v-list two-line style="width:100% !imnportant;max-height:400px !imnportant;overflow-y:auto !imnportant">
                             <v-subheader>
                                 <h3 style="color:#1875ef">Chọn tài khoản Google Ads</h3>
                             </v-subheader>
@@ -463,10 +463,7 @@
             takeListGgAdsInSerrve() {
                 this.showLoading = true
                 ggAds.getListCid(this.idAccount).then(result => {
-                    if (result.response == null || result.response == "" || result.response == undefined || result.code == "FAIL") {
-                        this.checkDataGgAds = true
-                        this.showLoading = false
-                    } else {
+                    if (result.code == "SUCCESS" && result.response.length > 0) {
                         this.checkDataGgAds = false
                         this.showLoading = false
                         for (let i = 0; i < result.response.length; i++) {
@@ -476,6 +473,9 @@
                             }
                             this.listCidAds.push(a)
                         }
+                    } else {
+                        this.checkDataGgAds = true
+                        this.showLoading = false
                     }
                 })
             },
