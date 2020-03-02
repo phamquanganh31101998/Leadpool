@@ -3,7 +3,7 @@
         <v-layout row>
             <v-card style="width:100%">
                 <v-card-text>
-                    <v-layout row class="pl-5">
+                    <v-layout row class="pl-2">
                         <v-flex lg4 xl4>
                             <v-layout row wrap class="">
                                 <v-flex xs12>
@@ -102,7 +102,7 @@
                                         </v-btn>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout row v-else>
+                                <v-layout row wrap v-else>
                                     <v-flex xs6>
                                         <v-btn @click="styleForBtn('top:45%','left:0')" class="pa-1 py-2">Mid-Left
                                         </v-btn>
@@ -201,7 +201,8 @@
                                         </v-card-text>
                                     </v-card>
                                 </v-menu> -->
-                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large"
+                                    :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
@@ -209,186 +210,358 @@
                                 <v-btn fab :small="small" :large="large" v-if="facebook.showBtn">
                                     <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
-                                <br v-if="zalo.showBtn"/>
+                                <br v-if="zalo.showBtn" />
                                 <v-btn fab :small="small" :large="large" v-if="zalo.showBtn">
                                     <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
                                 </v-btn>
-                                <br v-if="form"/>
+                                <br v-if="form" />
                                 <v-btn v-if="form" @click="showForDialog = true" fab :dark="dark" :small="small"
                                     :large="large" :color="colorForm">
                                     <v-icon>email</v-icon>
                                 </v-btn>
-                                <br v-if="call"/>
+                                <br v-if="call" />
                                 <v-btn v-if="call" fab :dark="dark" :small="small" :large="large" :color="color">
                                     <v-icon>phone_in_talk</v-icon>
                                 </v-btn>
-                                <br v-if="chatObj.showChat"/>
-                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large" :color="chatObj.colorChat">
+                                <br v-if="chatObj.showChat" />
+                                <v-btn v-if="chatObj.showChat" fab :dark="dark" :small="small" :large="large"
+                                    :color="chatObj.colorChat">
                                     <v-icon>message</v-icon>
                                 </v-btn>
                             </div>
                         </v-flex>
-                        <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
-                            <v-card>
-                                <v-card-title>
-                                    <h2>Cài đặt nút gọi</h2>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap class="pl-5 pr-3">
-                                        <v-flex xs12>
-                                            <h4>Số điện thoại</h4>
-                                            <v-text-field v-model="text" :rules="rule" placeholder="Nhập số điện thoại"
-                                                outlined dense>
-                                            </v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12 class="mt-3">
-                                            <h4>Thông điệp nút</h4>
-                                            <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút" outlined
-                                                dense>
-                                            </v-text-field>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <h4>Màu nền</h4>
-                                            <v-btn class="mt-2" :color="color" @click="dialog = true" dark>Chọn màu sắc
-                                            </v-btn>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="gray darken-1" text @click="dialogCall = false">
-                                        Đóng
-                                    </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" dark text @click="checkCall()">
-                                        Lưu
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-flex>
-                        <v-flex lg6 xl7 offset-lg1 v-if="dialogForm">
-                            <v-card>
-                                <v-card-title>
-                                    <h2>Cài đặt nút nhập form</h2>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap class="pl-5 pr-3">
-                                        <v-flex xs12>
-                                            <h3>Tiêu đề</h3>
-                                            <v-text-field v-model="nameForm" outlined dense></v-text-field>
-                                            <h3>Thông điệp nút</h3>
-                                            <v-text-field v-model="formDescription" outlined dense></v-text-field>
-                                            <h3>Thông báo</h3>
-                                            <v-text-field v-model="alertFinish" outlined dense></v-text-field>
-                                            <h3 class="mb-3">Custom input</h3>
-                                            <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
-                                                <v-select v-model="properti.value" disabled :items="input"
-                                                    v-if="key == 0 || key ==1 || key ==2" item-text="label"
-                                                    item-value="value" label="Trường bắt buộc" outline></v-select>
-                                                <v-select v-model="properti.value" :items="input1"
-                                                    v-if="key == 3 || key == 4" item-text="label" item-value="value"
-                                                    label="Chọn trường nhập" outline></v-select>
-                                                <v-btn class="mt-2 ml-3" color="error"
-                                                    v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
-                                                    flat icon @click="removeInput(key)">
-                                                    <v-icon>clear</v-icon>
+                        <template v-if="$vuetify.breakpoint.mdAndUp">
+                            <v-flex lg6 xl7 offset-lg1 v-if="dialogCall">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút gọi</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-5 pr-3">
+                                            <v-flex xs12>
+                                                <h4>Số điện thoại</h4>
+                                                <v-text-field v-model="text" :rules="rule"
+                                                    placeholder="Nhập số điện thoại" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 class="mt-3">
+                                                <h4>Thông điệp nút</h4>
+                                                <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút"
+                                                    outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <h4>Màu nền</h4>
+                                                <v-btn class="mt-2" :color="color" @click="dialog = true" dark>Chọn màu
+                                                    sắc
                                                 </v-btn>
-                                            </v-layout>
-                                        </v-flex>
-                                        <v-flex xs12>
-                                            <v-btn class="mt-2 mr-5" color="primary" @click="addInput()">Thêm trường
-                                                nhập
-                                            </v-btn>
-                                            <v-btn class="mt-2 ml-5" :color="colorForm" @click="dialog1 = true" dark>
-                                                Chọn màu
-                                                sắc
-                                                nút</v-btn>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="gray darken-1" text @click="dialogForm = false">
-                                        Đóng
-                                    </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-flex>
-                        <v-flex lg6 xl7 offset-lg1 v-if="chatObj.dialogChat">
-                            <v-card>
-                                <v-card-title>
-                                    <h2>Cài đặt nút Chat</h2>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap class="pl-5 pr-3">
-                                        <v-flex xs12>
-                                            <v-btn class="mt-2 ml-5" :color="chatObj.colorChat"
-                                                @click="chatObj.colorDialog = true" dark>
-                                                Chọn màu sắc nút</v-btn>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
-                                        Đóng
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-flex>
-                        <v-flex lg6 xl7 offset-lg1 v-if="facebook.show">
-                            <v-card>
-                                <v-card-title>
-                                    <h2>Cài đặt Facebook</h2>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap class="pl-5 pr-3">
-                                        <v-flex xs12>
-                                            <h4>Link facebook của bạn</h4>
-                                            <v-text-field v-model="facebook.url" :rules="rule"
-                                                placeholder="Nhập link facebook" outlined dense>
-                                            </v-text-field>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="gray darken-1" text @click="facebook.show = false">
-                                        Đóng
-                                    </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" dark text
-                                        @click="alertSuccess('Lưu nút thành công'),facebook.show = false">
-                                        Lưu
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-flex>
-                        <v-flex lg6 xl7 offset-lg1 v-if="zalo.show">
-                            <v-card>
-                                <v-card-title>
-                                    <h2>Cài đặt zalo</h2>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap class="pl-5 pr-3">
-                                        <v-flex xs12>
-                                            <h4>Số điện thoại zalo của bạn</h4>
-                                            <v-text-field v-model="zalo.url" :rules="rule"
-                                                placeholder="Nhập số điện thoại" outlined dense>
-                                            </v-text-field>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn color="gray darken-1" text @click="zalo.show = false">
-                                        Đóng
-                                    </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" dark text
-                                        @click="alertSuccess('Lưu nút thành công'),zalo.show = false">
-                                        Lưu
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-flex>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="dialogCall = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text @click="checkCall()">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                            <v-flex lg6 xl7 offset-lg1 v-if="dialogForm">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút nhập form</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-5 pr-3">
+                                            <v-flex xs12>
+                                                <h3>Tiêu đề</h3>
+                                                <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                                <h3>Thông điệp nút</h3>
+                                                <v-text-field v-model="formDescription" outlined dense></v-text-field>
+                                                <h3>Thông báo</h3>
+                                                <v-text-field v-model="alertFinish" outlined dense></v-text-field>
+                                                <h3 class="mb-3">Custom input</h3>
+                                                <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
+                                                    <v-select v-model="properti.value" disabled :items="input"
+                                                        v-if="key == 0 || key ==1 || key ==2" item-text="label"
+                                                        item-value="value" label="Trường bắt buộc" outline></v-select>
+                                                    <v-select v-model="properti.value" :items="input1"
+                                                        v-if="key == 3 || key == 4" item-text="label" item-value="value"
+                                                        label="Chọn trường nhập" outline></v-select>
+                                                    <v-btn class="mt-2 ml-3" color="error"
+                                                        v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
+                                                        flat icon @click="removeInput(key)">
+                                                        <v-icon>clear</v-icon>
+                                                    </v-btn>
+                                                </v-layout>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-btn class="mt-2 mr-5" color="primary" @click="addInput()">Thêm trường
+                                                    nhập
+                                                </v-btn>
+                                                <v-btn class="mt-2 ml-5" :color="colorForm" @click="dialog1 = true"
+                                                    dark>
+                                                    Chọn màu
+                                                    sắc
+                                                    nút</v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="dialogForm = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                            <v-flex lg6 xl7 offset-lg1 v-if="chatObj.dialogChat">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút Chat</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-5 pr-3">
+                                            <v-flex xs12>
+                                                <v-btn class="mt-2 ml-5" :color="chatObj.colorChat"
+                                                    @click="chatObj.colorDialog = true" dark>
+                                                    Chọn màu sắc nút</v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
+                                            Đóng
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                            <v-flex lg6 xl7 offset-lg1 v-if="facebook.show">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt Facebook</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-5 pr-3">
+                                            <v-flex xs12>
+                                                <h4>Link facebook của bạn</h4>
+                                                <v-text-field v-model="facebook.url" :rules="rule"
+                                                    placeholder="Nhập link facebook" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="facebook.show = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text
+                                            @click="alertSuccess('Lưu nút thành công'),facebook.show = false">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                            <v-flex lg6 xl7 offset-lg1 v-if="zalo.show">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt zalo</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-5 pr-3">
+                                            <v-flex xs12>
+                                                <h4>Số điện thoại zalo của bạn</h4>
+                                                <v-text-field v-model="zalo.url" :rules="rule"
+                                                    placeholder="Nhập số điện thoại" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="zalo.show = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text
+                                            @click="alertSuccess('Lưu nút thành công'),zalo.show = false">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-flex>
+                        </template>
+                        <template v-else>
+                            <v-dialog max-width="400" v-model="dialogCall">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút gọi</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-2 pr-2">
+                                            <v-flex xs12>
+                                                <h4>Số điện thoại</h4>
+                                                <v-text-field v-model="text" :rules="rule"
+                                                    placeholder="Nhập số điện thoại" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12 class="mt-3">
+                                                <h4>Thông điệp nút</h4>
+                                                <v-text-field v-model="textCall" placeholder="Nhập thông điệp nút"
+                                                    outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <h4>Màu nền</h4>
+                                                <v-btn class="mt-2" :color="color" @click="dialog = true" dark>Chọn màu
+                                                    sắc
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="dialogCall = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text @click="checkCall()">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-dialog max-width="400" v-model="dialogForm">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút nhập form</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-2 pr-2">
+                                            <v-flex xs12>
+                                                <h3>Tiêu đề</h3>
+                                                <v-text-field v-model="nameForm" outlined dense></v-text-field>
+                                                <h3>Thông điệp nút</h3>
+                                                <v-text-field v-model="formDescription" outlined dense></v-text-field>
+                                                <h3>Thông báo</h3>
+                                                <v-text-field v-model="alertFinish" outlined dense></v-text-field>
+                                                <h3 class="mb-3">Custom input</h3>
+                                                <v-layout v-for="(properti,key) in numberProperties" :key="key" xs12>
+                                                    <v-select v-model="properti.value" disabled :items="input"
+                                                        v-if="key == 0 || key ==1 || key ==2" item-text="label"
+                                                        item-value="value" label="Trường bắt buộc" outline></v-select>
+                                                    <v-select v-model="properti.value" :items="input1"
+                                                        v-if="key == 3 || key == 4" item-text="label" item-value="value"
+                                                        label="Chọn trường nhập" outline></v-select>
+                                                    <v-btn class="mt-2 ml-3" color="error"
+                                                        v-if="properti.value != 'lastName' && properti.value != 'email' && properti.value != 'phone'"
+                                                        flat icon @click="removeInput(key)">
+                                                        <v-icon>clear</v-icon>
+                                                    </v-btn>
+                                                </v-layout>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-btn class="mt-2 mr-5" color="primary" @click="addInput()">Thêm trường
+                                                    nhập
+                                                </v-btn>
+                                                <v-btn class="mt-2 ml-5" :color="colorForm" @click="dialog1 = true"
+                                                    dark>
+                                                    Chọn màu
+                                                    sắc
+                                                    nút</v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="dialogForm = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" text dark @click="form = true,checkForm()">Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-dialog max-width="400" v-model="chatObj.dialogChat">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt nút Chat</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-2 pr-2">
+                                            <v-flex xs12>
+                                                <v-btn class="mt-2 ml-5" :color="chatObj.colorChat"
+                                                    @click="chatObj.colorDialog = true" dark>
+                                                    Chọn màu sắc nút</v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="chatObj.dialogChat = false">
+                                            Đóng
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-dialog max-width="400" v-model="facebook.show">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt Facebook</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-2 pr-2">
+                                            <v-flex xs12>
+                                                <h4>Link facebook của bạn</h4>
+                                                <v-text-field v-model="facebook.url" :rules="rule"
+                                                    placeholder="Nhập link facebook" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="facebook.show = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text
+                                            @click="alertSuccess('Lưu nút thành công'),facebook.show = false">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-dialog max-width="400" v-model="zalo.show">
+                                <v-card>
+                                    <v-card-title>
+                                        <h2>Cài đặt zalo</h2>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-layout row wrap class="pl-2 pr-2">
+                                            <v-flex xs12>
+                                                <h4>Số điện thoại zalo của bạn</h4>
+                                                <v-text-field v-model="zalo.url" :rules="rule"
+                                                    placeholder="Nhập số điện thoại" outlined dense>
+                                                </v-text-field>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="gray darken-1" text @click="zalo.show = false">
+                                            Đóng
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="green darken-1" dark text
+                                            @click="alertSuccess('Lưu nút thành công'),zalo.show = false">
+                                            Lưu
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </template>
                     </v-layout>
                     <v-divider class="mt-5"></v-divider>
                 </v-card-text>
@@ -878,18 +1051,18 @@
                     listButton: [],
                     style: style
                 }
-                if(this.bottom == null && this.top == null && this.left == null && this.right == null){
+                if (this.bottom == null && this.top == null && this.left == null && this.right == null) {
                     style.bottom = 5,
-                    style.top = null,
-                    style.right = 2,
-                    style.left = null
-                }else {
+                        style.top = null,
+                        style.right = 2,
+                        style.left = null
+                } else {
                     style.bottom = this.bottom,
-                    style.top = this.top,
-                    style.right = this.right,
-                    style.left = this.left
+                        style.top = this.top,
+                        style.right = this.right,
+                        style.left = this.left
                 }
-                if (this.chatObj.showChat == true){
+                if (this.chatObj.showChat == true) {
                     btn.listButton.push(chat)
                 }
                 if (this.call == true) {
@@ -899,13 +1072,13 @@
                     btn.listButton.push(form)
                 }
                 if (this.facebook.showBtn == true) {
-                    if(this.facebook.url.indexOf('https://www.facebook.com/') == 0){
-                        facebook.phoneNumber = this.facebook.url.replace("https://www.facebook.com/","")
+                    if (this.facebook.url.indexOf('https://www.facebook.com/') == 0) {
+                        facebook.phoneNumber = this.facebook.url.replace("https://www.facebook.com/", "")
                         btn.listButton.push(facebook)
-                    }else if(this.facebook.url.indexOf('https://www.facebook.com/')){
-                        facebook.phoneNumber = this.facebook.url.replace("http://www.facebook.com/","")
+                    } else if (this.facebook.url.indexOf('https://www.facebook.com/')) {
+                        facebook.phoneNumber = this.facebook.url.replace("http://www.facebook.com/", "")
                         btn.listButton.push(facebook)
-                    }else{
+                    } else {
                         facebook.phoneNumber = this.facebook.url
                         btn.listButton.push(facebook)
                     }

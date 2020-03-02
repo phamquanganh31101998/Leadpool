@@ -4,7 +4,7 @@
             <h2>Cài đặt</h2>
         </v-layout>
         <v-layout row wrap class="pl-3 pr-3">
-            <v-flex lg4 class="pr-2">
+            <v-flex xs12 sm12 md4 lg4 xl4 class="pr-2">
                 <v-card>
                     <v-card-text>
                         <v-layout row class="pl-3">
@@ -48,19 +48,21 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex lg8>
+            <v-flex xs12 sm12 md8 lg8 xl8 v-if="$vuetify.breakpoint.mdAndUp">
                 <v-layout row class="mb-2" v-if="selected.leadHubButtonGroupId && selected.googleCustomerId == null">
                     <!-- <v-alert :value="true" color="warning" icon="priority_high" outline >
                         Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi trên trang web của bạn
                     </v-alert> -->
                     <v-flex lg9 class="pt-2">
                         <div style="border:1px solid #fb8c00; color: #fb8c00; text-align:center; padding:1%">
-                            <span>Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi
+                            <span>Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển
+                                đổi
                                 trên trang web của bạn</span>
                         </div>
                     </v-flex>
                     <v-flex lg3>
-                        <v-btn v-if="checkDataGgAds" class=" ml-2" large tile outlined color="primary" @click="connectGoogleAds()">
+                        <v-btn v-if="checkDataGgAds" class=" ml-2" large tile outlined color="primary"
+                            @click="connectGoogleAds()">
                             Liên kết tài khoản
                         </v-btn>
                         <v-btn v-else class=" ml-2" large tile outlined color="primary" @click="accountAds = true">
@@ -217,6 +219,46 @@
                     </v-flex>
                 </v-layout>
             </v-flex>
+            <template v-else>
+                <div :style="styleBtnMobi" v-if="show && selected.vertical == false">
+                <v-btn fab small v-if="showFb">
+                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                </v-btn>
+                <br v-if="showZalo" />
+                <v-btn fab small v-if="showZalo">
+                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                </v-btn>
+                <br v-if="showForm" />
+                <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                    <v-icon>email</v-icon>
+                </v-btn>
+                <br v-if="showCall" />
+                <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                    <v-icon>phone_in_talk</v-icon>
+                </v-btn>
+                <br v-if="showChat" />
+                <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                    <v-icon>message</v-icon>
+                </v-btn>
+            </div>
+            <div :style="styleBtnMobi" v-if="show && selected.vertical == true">
+                <v-btn fab :dark="dark" small :color="styleBtnCall.buttonColor" v-if="showCall">
+                    <v-icon>phone_in_talk</v-icon>
+                </v-btn>
+                <v-btn fab :dark="dark" small :color="styleBtnForm.buttonColor" v-if="showForm">
+                    <v-icon>email</v-icon>
+                </v-btn>
+                <v-btn fab :dark="dark" small :color="styleBtnChat.buttonColor" v-if="showChat">
+                    <v-icon>message</v-icon>
+                </v-btn>
+                <v-btn fab small v-if="showFb">
+                    <v-img src="/mess.png" alt="facebook" style="width:100%" aspect-ratio="1"></v-img>
+                </v-btn>
+                <v-btn fab small v-if="showZalo">
+                    <v-img src="/zalo.png" alt="zalo" style="width:100%" aspect-ratio="1"></v-img>
+                </v-btn>
+            </div>
+            </template>
         </v-layout>
         <v-dialog v-model="deleteConfirm" max-width="500">
             <v-card>
@@ -237,7 +279,8 @@
             <v-card>
                 <v-card-text class="pl-4">
                     <v-layout row>
-                        <v-list two-line style="width:100% !imnportant;max-height:400px !imnportant;overflow-y:auto !imnportant">
+                        <v-list two-line
+                            style="width:100% !imnportant;max-height:400px !imnportant;overflow-y:auto !imnportant">
                             <v-subheader>
                                 <h3 style="color:#1875ef">Chọn tài khoản Google Ads</h3>
                             </v-subheader>
@@ -432,6 +475,7 @@
             },
             styleGroupBtn(tOb, lOr) {
                 this.styleBtn = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
+                this.styleBtnMobi = `position: fixed; ${tOb}; ${lOr};z-index: 999999`
             },
             styleGroupBtnDesk(tOb, lOr) {
                 this.styleBtnDesktop = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
