@@ -344,6 +344,7 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                 <a href="javascript:void(0);" onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                             </div>
                             <form class="adstech-form-container" id="call-adstech" method="POST">
+                                <h3>Gọi ngay cho chúng tôi theo số : ${styleBtnCall.phoneNumber} hoặc</h3>
                                 <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
                                 <input type="text" placeholder="Họ và tên" name="nameCall" required>
                                 <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
