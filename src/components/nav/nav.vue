@@ -8,7 +8,45 @@
         class="grey lighten-2"
       > -->
     </v-toolbar-title>
-    <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
+    <v-menu :nudge-width="200" v-if="$vuetify.breakpoint.xsOnly">
+        <template v-slot:activator="{ on }">
+          <v-toolbar-title v-on="on">
+            <span>Menu</span>
+            <v-icon dark>arrow_drop_down</v-icon>
+          </v-toolbar-title>
+        </template>
+
+        <v-list>
+          <v-list-tile @click="goToContactsPage()">
+            <v-list-tile-title>Leads</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToListsPage()">
+            <v-list-tile-title>Danh sách</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToMyTaskPage()">
+            <v-list-tile-title>Công việc</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToSMSServicePage()">
+            <v-list-tile-title>SMS</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToEmailServicePage()">
+            <v-list-tile-title>Email</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToDealServicePage()">
+            <v-list-tile-title>Thỏa thuận</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="gotoLeadHubPage()">
+            <v-list-tile-title>Lead Hub</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToChatPage()">
+            <v-list-tile-title>Chat</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToReportPage()">
+            <v-list-tile-title>Báo cáo</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;" v-else>
       <img style="height: 33px; margin-top: 8px;" src="/favicon.ico" alt="logo"/>
       <v-btn class="ml-3" depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
         LEADS 

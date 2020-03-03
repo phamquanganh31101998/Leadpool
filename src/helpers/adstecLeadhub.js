@@ -21,6 +21,7 @@ var atLh_styleBtnChat = ''
 var atLh_chatminiCRM = null
 var atlh_check_devide = false
 var atlh_form_return = ''
+var email = null
 var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
 //product: https://services.adstech.vn/leadpool/v1/leadhub
 //test: http://dev.adstech.vn:9000/leadhub
@@ -104,6 +105,7 @@ function adstechLeadhubOnload() {
             document.getElementById('atLhTxtName').innerText = chatInfo.name;
             atLh_topic = chatInfo.topic;
         }
+        if(result.response.createdBy != null){email = result.response.createdBy}
     })
 }
 async function fetchRetry(url, options, n) {
@@ -310,13 +312,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     } else {
         if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px;border-radius:50% !important">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}" alt="Gọi điện thoại" width="${style.size - 18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px;border-radius:50% !important">
                             <a href="tel:${styleBtnCall.phoneNumber}" style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -327,13 +329,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         }
         else{
             if (style.color == "#fff") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px;border-radius:50% !important">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-white.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
                         </button>`
             } else if (style.color == "#000") {
-                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px">
+                atLh_call = `<button class="adstech-btn" onclick="atLhOpenFormCall()" style="background-color:${styleBtnCall.buttonColor};padding:0px;border-radius:50% !important">
                             <a style="width:100%;height:100%">
                                 <img src="https://leadpool.adstech.vn/call-black.png" style="max-width:${style.size - 18}px;height:${style.size -18}"  alt="Gọi điện thoại" width="${style.size -18}px" height="${style.size -18}px">
                             </a>
@@ -344,11 +346,12 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
                                 <a href="javascript:void(0);" onclick="document.getElementById('adstech-call').style.display='none'" style="width:25px;height:25px;border-radius:50%; background-color:#fff; box-shadow:none;border: none;font-size:25px;color:red">&times;</a>
                             </div>
                             <form class="adstech-form-container" id="call-adstech" method="POST">
+                                <h3>Gọi ngay cho chúng tôi theo số : ${styleBtnCall.phoneNumber} hoặc</h3>
                                 <h3>Để lại thông tin để chúng tôi liên hệ với bạn</h3>
                                 <input type="text" placeholder="Họ và tên" name="nameCall" required>
                                 <input type="tel" placeholder="Số điện thoại" pattern="[0]{1}[0-9]{9}" title="Nhập đúng số điện thoại của bạn" name="phoneCall" required>
                                 <div style="padding:0px 14px 0px 14px">
-                                    <input type="submit" class="btn-adstech" value="Gui lien he" style="background-color:${styleBtnCall.buttonColor};"/>
+                                    <input type="submit" class="btn-adstech" value="Yêu cầu gọi lại" style="background-color:${styleBtnCall.buttonColor};"/>
                                 </div>
                             </form>
                         </div>
@@ -361,11 +364,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         atLh_chat = ''
     } else {
         if (style.color == "#fff") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px;border-radius:50% !important" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-white.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
-            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px" onclick="openChat()">
+            atLh_chat = `<button class="adstech-btn" style="background-color:${styleBtnChat.buttonColor};padding:0px;border-radius:50% !important" onclick="openChat()">
                     <img src="https://leadpool.adstech.vn/question_answer-black.png" alt="Chat" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size - 18}px" height="${style.size -18}px">
                 </button>`
         }
@@ -435,11 +438,11 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
             }
         }
         if (style.color == "#fff") {
-            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px" onclick="atLhOpenFrom()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px;border-radius:50% !important" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-white.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         } else if (style.color == "#000") {
-            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px" onclick="atLhOpenFrom()">
+            atLh_form = `<button class="adstech-btn" style="background-color:${styleBtnForm.buttonColor};padding:0px;border-radius:50% !important" onclick="atLhOpenFrom()">
                     <img src="https://leadpool.adstech.vn/mail-black.png" alt="Đăng ký ngay" style="max-width:${style.size - 18}px;height:${style.size -18}"  width="${style.size -18}px" height="${style.size -18}px">
                 </button>`
         }
@@ -466,13 +469,13 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         facebook = ''
     } else {
         atLh_fb = `https://m.me/${styleBtnFacebook.phoneNumber}`
-        facebook = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
+        facebook = '<button class="adstech-btn" style="padding:0px;border-radius:50% !important" onclick="atLhOpenFacebook()"><a><img src="https://leadpool.adstech.vn/mess.png" id="adstech-open-fb" alt="Facebook" width="100%" height="100%"></a></button>'
     }
     if (styleBtnZalo == null || styleBtnZalo == '') {
         zalo = ''
     } else {
         atLh_zl = `https://zalo.me/${styleBtnZalo.phoneNumber}`
-        zalo = '<button class="adstech-btn" style="padding:0px" onclick="atLhOpenZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
+        zalo = '<button class="adstech-btn" style="padding:0px;border-radius:50% !important" onclick="atLhOpenZalo()"><a><img src="https://leadpool.adstech.vn/zalo.png" id="adstech-open-zl" alt="Zalo" width="100%" height="100%"></a></button>'
         brZalo = '<br />'
     }
     if (vertical == false) {
@@ -576,7 +579,7 @@ function atLhOpenCall(){
                 property: 'accountId',
                 value: atLh_acId
             }, {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             }, {
                 property: 'phone',
@@ -668,7 +671,7 @@ function atLhConnectToFirebase() {
                 value: atLh_acId
             },
             {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             },
             {
@@ -790,7 +793,7 @@ function atLhSend(atLh_acId) {
         }]
         if (name != undefined && name != '' && name != null) {
             let a = {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             }
             body.push(a)
@@ -826,7 +829,13 @@ function atLhSend(atLh_acId) {
 }
 
 function adstechCreateLead(body,btn) {
-    fetchRetry(`${atLh_rqApi}/contacts?source_from_mar=${btn}`, {
+    let url = null
+    if (email == null){
+        url = `${atLh_rqApi}/contacts?source_from_mar=${btn}`
+    }else{
+        url = `${atLh_rqApi}/contacts?source_from_mar=${btn}&email_noti=${email}`
+    }
+    fetchRetry(url, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

@@ -52,10 +52,10 @@
             </v-flex>
             <v-flex xs12 sm12 md7 lg6 xl6 v-if="access">
                 <v-layout row>
-                    <v-flex xs5 sm5 md5 lg5 xl5 offset-xs5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
+                    <v-flex xs8 sm5 md5 lg5 xl5 offset-sm5 offset-md5 offset-lg5 offset-xl5>
                         <v-text-field append-icon="search" v-model="search" label="Tìm kiếm danh sách..." single-line hide-details></v-text-field>
                     </v-flex>
-                    <v-flex xs2 md2 lg2 xl2>
+                    <v-flex xs4 md2 lg2 xl2>
                         <v-btn round block dark color="#3E82F7" class="mt-2" @click="goToNewListPage()"> <v-icon>add</v-icon> Tạo mới</v-btn>
                     </v-flex>
                 </v-layout>
@@ -131,8 +131,8 @@
         </v-layout>
         <v-layout v-else>
             <v-flex xs12 sm12 md12 lg12 xl12>
-                <v-layout style="height: 350px;">
-                    <v-flex xs3 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
+                <v-layout row wrap style="height: 350px;">
+                    <v-flex xs12 sm3 md3 lg3 xl3 offset-xs1 offset-sm1 offset-md1 offset-lg1 offset-xl1>
                         <v-card flat style="height: 350px; margin-top: 100px;" >
                             <v-card-text style="height: 350px; background-color: #FDEDEE; border: 1px solid red;">
                                 <v-card flat style="background-color: #FDEDEE; vertical-align: middle">
@@ -148,7 +148,7 @@
                             </v-card-text>
                         </v-card>
                     </v-flex>
-                    <v-flex xs8 sm8 md8 lg8 xl8>
+                    <v-flex xs12 sm8 md8 lg8 xl8>
                         <v-card flat style="height: 500px; margin-top: 100px;">
                             <v-img alt="ảnh ở đây" width="100%" src="../../../../list.png"></v-img>
                         </v-card>
