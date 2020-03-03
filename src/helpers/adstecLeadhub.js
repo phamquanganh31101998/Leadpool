@@ -21,6 +21,7 @@ var atLh_styleBtnChat = ''
 var atLh_chatminiCRM = null
 var atlh_check_devide = false
 var atlh_form_return = ''
+var email = null
 var atLh_rqApi = 'https://services.adstech.vn/leadpool/v1/leadhub'
 //product: https://services.adstech.vn/leadpool/v1/leadhub
 //test: http://dev.adstech.vn:9000/leadhub
@@ -104,6 +105,7 @@ function adstechLeadhubOnload() {
             document.getElementById('atLhTxtName').innerText = chatInfo.name;
             atLh_topic = chatInfo.topic;
         }
+        if(result.response.createdBy != null){email = result.response.createdBy}
     })
 }
 async function fetchRetry(url, options, n) {
@@ -577,7 +579,7 @@ function atLhOpenCall(){
                 property: 'accountId',
                 value: atLh_acId
             }, {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             }, {
                 property: 'phone',
@@ -669,7 +671,7 @@ function atLhConnectToFirebase() {
                 value: atLh_acId
             },
             {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             },
             {
@@ -791,7 +793,7 @@ function atLhSend(atLh_acId) {
         }]
         if (name != undefined && name != '' && name != null) {
             let a = {
-                property: 'lastName',
+                property: 'firstName',
                 value: name
             }
             body.push(a)
@@ -827,7 +829,13 @@ function atLhSend(atLh_acId) {
 }
 
 function adstechCreateLead(body,btn) {
-    fetchRetry(`${atLh_rqApi}/contacts?source_from_mar=${btn}`, {
+    let url = null
+    if (email == null){
+        url = `${atLh_rqApi}/contacts?source_from_mar=${btn}`
+    }else{
+        url = `${atLh_rqApi}/contacts?source_from_mar=${btn}&email_noti=${email}`
+    }
+    fetchRetry(url, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
