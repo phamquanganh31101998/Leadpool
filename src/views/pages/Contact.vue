@@ -31,8 +31,8 @@
       </v-flex>
     </v-layout>
     <v-divider class="mt-3" :divider="divider"></v-divider>
-    <v-layout row>
-      <v-flex xs6 sm4 md2 lg2 xl2>
+    <v-layout row wrap>
+      <v-flex xs12 sm4 md2 lg2 xl2>
         <v-list>
           <v-list-tile v-if="viewRole == 'ROLE_CONTACT_VIEW_EVERYTHING'  || isSysAdmin == true"
             @click="section = 'allContact', page = 1, getAllContact(), search=''">
@@ -672,7 +672,7 @@
           </v-menu>
         </template>
       </v-flex>
-      <v-flex xs6 sm8 md10 lg10 xl10>
+      <v-flex xs12 sm8 md10 lg10 xl10>
         <v-data-table v-if="section == 'allContact' || section == 'myContact'" :custom-sort="customSort"
           :loading="loadingTable" style="width: 100%" :headers="headers" :items="contacts" hide-actions
           class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
@@ -776,7 +776,10 @@
             </tr>
           </template>
         </v-data-table>
-        <div class="text-xs-center pt-2">
+        <div class="text-xs-center pt-2" v-if="$vuetify.breakpoint.mdAndDown">
+          <v-pagination :total-visible="1" v-model="page" :length="pages"></v-pagination>
+        </div>
+        <div class="text-xs-center pt-2" v-else>
           <v-pagination :total-visible="7" v-model="page" :length="pages"></v-pagination>
         </div>
         <br>
@@ -877,7 +880,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="uploadFileDialog.dialog" width="400">
+    <v-dialog v-model="uploadFileDialog.dialog" width="400"> 
       <v-card>
         <v-card-title style="background-color:#1E88E5;color:#fff">
           <span class="headline">Thêm Lead từ file excel</span>

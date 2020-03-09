@@ -8,7 +8,7 @@
         class="grey lighten-2"
       > -->
     </v-toolbar-title>
-    <v-menu :nudge-width="200" v-if="$vuetify.breakpoint.xsOnly">
+    <v-menu :nudge-width="200" v-if="$vuetify.breakpoint.smAndDown">
         <template v-slot:activator="{ on }">
           <v-toolbar-title v-on="on">
             <span>Menu</span>

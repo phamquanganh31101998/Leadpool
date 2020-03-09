@@ -91,7 +91,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart2.loading">
                     <v-card-title>
                         <h2>Số lượng Lead của mỗi tài khoản</h2>
@@ -118,7 +118,7 @@
             </v-flex>
         </v-layout>
         <v-layout row wrap>
-            <v-flex xs12 sm12 md6 lg6 xl6 class="mt-3 md-3">
+            <v-flex xs12 sm12 md6 lg6 xl6 class="mt-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart4.loading">
                     <v-card-title>
                         <h2>Số lượng Lead theo Trạng thái của các tài khoản</h2>
@@ -143,7 +143,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 ml-3 md-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart3.loading">
                     <v-card-title>
                         <h2>Số lượng Lead theo Trạng thái của các tài khoản</h2>
@@ -190,7 +190,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" >
                     <v-card-title>
                         <h2>Thống kê thỏa thuận theo các giai đoạn</h2>
@@ -236,7 +236,7 @@
                     </div>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart6.loading6a">
                     <v-card-title>
                         <h2>Tỉ lệ theo số thỏa thuận - tính theo từng giai đoạn (%)</h2>
@@ -285,7 +285,7 @@
                     </div>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart6.loading6b">
                     <v-card-title>
                         <h2>Tỉ lệ theo giá trị thỏa thuận - tính theo từng giai đoạn (%)</h2>
