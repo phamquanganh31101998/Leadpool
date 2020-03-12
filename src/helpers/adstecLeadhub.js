@@ -98,7 +98,7 @@ function adstechLeadhubOnload() {
                 atLh_styleBtnZalo = result.response.listButton[i]
             }
         }
-        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo)
+        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo, atLh_btnId)
         let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo')
         if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != '') {
             let chatInfo = JSON.parse(leadhub_chatInfo)
@@ -133,7 +133,7 @@ function handle(response) {
     });
 }
 
-function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo) {
+function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo, gBtnId) {
     let atLh_html = ''
     let atLh_call = ''
     let atLh_form = ''
@@ -519,19 +519,19 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     document.getElementById("adstech-group-btn").innerHTML = atLh_html;
     // var atLh_chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
-        atLhSend(atLh_acId)
+        atLhSend(atLh_acId,styleBtnForm,gBtnId)
     }
     if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
         let atLh_scripts = document.getElementsByTagName("script")
         for (let index = 0; index < atLh_scripts.length; index++) {
             if (atLh_scripts[index].src.indexOf('leadpool.adstech.vn/firebase.js') > 0) {
                 atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
-                atLhConnectToFirebase()
+                atLhConnectToFirebase(atLh_acId,styleBtnChat,gBtnId)
             }
         }
     }
     if(atlh_check_devide == true && styleBtnCall != null && styleBtnCall != ''){
-        atLhOpenCall()
+        atLhOpenCall(atLh_acId,styleBtnCall,gBtnId)
     }
 }
 
@@ -562,7 +562,7 @@ function atLhOpenFrom() {
     }
 }
 
-function atLhOpenCall(){
+function atLhOpenCall(atLh_acId,styCall,gBtnId){
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
         atLhSendTracing('CALL')
     }
@@ -587,7 +587,17 @@ function atLhOpenCall(){
             }, {
                 property: 'email',
                 value: `${phone}@gmail.com`
+            }, {
+                property: 'buttonGroupId',
+                value: gBtnId
             }]
+            if(styCall.resourceName != undefined && styCall.resourceName != '' && styCall.resourceName != null){
+                let a = {
+                    property: 'resourceName',
+                    value: styCall.resourceName
+                }
+                body.push(a)
+            }
             e.preventDefault()
             adstechCreateLead(body,'CALL')
             atLhSendTracing('CALL')
@@ -659,7 +669,7 @@ function atLhGetHour(time) {
     return result
 }
 
-function atLhConnectToFirebase() {
+function atLhConnectToFirebase(atLh_acId,styChat,gBtnId) {
     let form = document.getElementById("atLhSendInfo")
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
@@ -678,7 +688,22 @@ function atLhConnectToFirebase() {
                 property: 'email',
                 value: atLh_topic
             },
+            { 
+                property: 'buttonGroupId',
+                value: gBtnId
+            }, 
+            {
+                property: 'resourceName',
+                value: ''
+            }
         ]
+        if(styChat.resourceName != undefined && styChat.resourceName != '' && styChat.resourceName != null){
+            let a = {
+                property: 'resourceName',
+                value: styChat.resourceName
+            }
+            body.push(a)
+        }
         adstechCreateLead(body,'CHAT')
         document.getElementById('atLhTxtName').innerText = name
         atLh_topic = atLh_acId + '-' + atLh_topic.replace(/\./g, '-dot-')
@@ -772,7 +797,7 @@ function atLhSendessage(body) {
     })
 }
 
-function atLhSend(atLh_acId) {
+function atLhSend(atLh_acId,styForm,gBtnId) {
     let alert = `<div class="adstech-leadhub-alert-form" id="adstech-leadhub-alert-form">
                         <h6>${atlh_form_return}</h6>
                     </div>`
@@ -790,6 +815,9 @@ function atLhSend(atLh_acId) {
         }, {
             property: 'email',
             value: email
+        },{
+            property: 'buttonGroupId',
+            value: gBtnId
         }]
         if (name != undefined && name != '' && name != null) {
             let a = {
@@ -816,6 +844,13 @@ function atLhSend(atLh_acId) {
             let a = {
                 property: 'bussiness',
                 value: bussiness
+            }
+            body.push(a)
+        }
+        if(styForm.resourceName != undefined && styForm.resourceName != '' && styForm.resourceName != null){
+            let a = {
+                property: 'resourceName',
+                value: styForm.resourceName
             }
             body.push(a)
         }
