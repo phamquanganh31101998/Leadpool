@@ -9,6 +9,8 @@ var atLh_acId = ''
 var atLh_topic = ''
 var atLh_fb = ''
 var atLh_zl = ''
+var atlh_re_fb = ''
+var atlh_rs_zl = ''
 var atLh_url = window.location.href
 var atLh_utm_source = null
 var atLh_utm_medium = null
@@ -94,8 +96,10 @@ function adstechLeadhubOnload() {
                 atLh_styleBtnChat = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FACEBOOK") {
                 atLh_styleBtnFacebook = result.response.listButton[i]
+                atlh_re_fb = result.response.listButton[i].resourceName
             } else if (result.response.listButton[i].type == "ZALO") {
                 atLh_styleBtnZalo = result.response.listButton[i]
+                atlh_rs_zl = result.response.listButton[i].resourceName
             }
         }
         adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo, atLh_btnId)
@@ -534,7 +538,6 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
         atLhOpenCall(atLh_acId,styleBtnCall,gBtnId)
     }
 }
-
 function openChat() {
     let chatInputInfo = document.getElementById("chatInputInfo")
     let chatAdmin = document.getElementById("chatAdmin")
@@ -552,7 +555,6 @@ function openChat() {
     }
 
 }
-
 function atLhOpenFrom() {
     let atLh_checkForm = document.getElementById("adstech-form")
     if(atLh_checkForm.style.display == 'block'){
@@ -561,10 +563,9 @@ function atLhOpenFrom() {
         document.getElementById("adstech-form").style.display = 'block'
     }
 }
-
 function atLhOpenCall(atLh_acId,styCall,gBtnId){
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
-        atLhSendTracing('CALL')
+        atLhSendTracing('CALL',styCall.resourceName)
     }
     else {
         let alert = `<div class="adstech-leadhub-alert-call" id="adstech-leadhub-alert-call">
@@ -607,7 +608,7 @@ function atLhOpenCall(atLh_acId,styCall,gBtnId){
             }
             e.preventDefault()
             adstechCreateLead(body,'CALL')
-            atLhSendTracing('CALL')
+            atLhSendTracing('CALL',styCall.resourceName)
             document.getElementById("adstech-call").style.display = "none"
             document.getElementById("adstech-alert-call").innerHTML = alert
             document.getElementById("adstech-alert-call").style.display = "block";
@@ -622,11 +623,9 @@ function atLhOpenFormCall(){
         document.getElementById("adstech-call").style.display = 'block'
     }
 }
-
 function atLhCloseForm() {
     document.getElementById("adstech-form").style.display = "none";
 }
-
 function atLhCloseAlert() {
     if(document.getElementById("adstech-alert-form") != null && document.getElementById("adstech-alert-form") != undefined && document.getElementById("adstech-alert-form") != ''){
         document.getElementById("adstech-alert-form").style.display = "none";
@@ -638,44 +637,40 @@ function atLhCloseAlert() {
         document.getElementById("adstech-alert-chat").style.display = "none";
     }
 }
-
 function atLhOpenFacebook() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
         let element = document.getElementById("adstech-open-fb")
-        element.classList.add("at-onclick-fb")
+        element.classList.add("at-onclick-fb",)
         window.location = atLh_fb
-        atLhSendTracing('FACEBOOK')
+        atLhSendTracing('FACEBOOK',atlh_re_fb)
     }
     else {
         let element = document.getElementById("adstech-open-fb")
         element.classList.add("at-onclick-fb")
         window.open(atLh_fb)
-        atLhSendTracing('FACEBOOK')
+        atLhSendTracing('FACEBOOK',atlh_re_fb)
     }
 }
-
 function atLhOpenZalo() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.location = atLh_zl
-        atLhSendTracing('ZALO')
+        atLhSendTracing('ZALO',atlh_re_zl)
     }
     else {
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.open(atLh_zl)
-        atLhSendTracing('ZALO')
+        atLhSendTracing('ZALO',atlh_re_zl)
     }
 }
-
 function atLhGetHour(time) {
     let result = ''
     let timeArr = time.split(' ')
     result = timeArr[3]
     return result
 }
-
 function atLhConnectToFirebase(atLh_acId,styChat,gBtnId) {
     let form = document.getElementById("atLhSendInfo")
     form.addEventListener('submit', e => {
@@ -795,7 +790,6 @@ function atLhStartChatting() {
         e.preventDefault()
     })
 }
-
 function atLhSendessage(body) {
     fetchRetry(`${atLh_rqApi}/chats`, {
         method: 'POST',
@@ -810,7 +804,6 @@ function atLhSendessage(body) {
         console.log(error)
     })
 }
-
 function atLhSend(atLh_acId,styForm,gBtnId) {
     let alert = `<div class="adstech-leadhub-alert-form" id="adstech-leadhub-alert-form">
                         <h6>${atlh_form_return}</h6>
@@ -876,14 +869,13 @@ function atLhSend(atLh_acId,styForm,gBtnId) {
             body.push(a)
         }
         adstechCreateLead(body,'FORM')
-        atLhSendTracing('FORM')
+        atLhSendTracing('FORM',styForm.resourceName)
         e.preventDefault()
         atLhCloseForm()
         document.getElementById("adstech-alert-form").innerHTML = alert
         document.getElementById("adstech-alert-form").style.display = "block";
     })
 }
-
 function adstechCreateLead(body,btn) {
     let url = null
     if (email == null){
@@ -917,12 +909,15 @@ function adstechCreateLead(body,btn) {
         }, 2000)
     })
 }
-
-function atLhSendTracing(type) {
+function atLhSendTracing(type,rsName) {
+    let day = new Date()
     let body = {
         type: type,
         accountId: atLh_acId,
-        link: atLh_url
+        link: atLh_url,
+        conversionValue: 0.0,
+        resourceName: rsName,
+        time: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDay()} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
     }
     if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
     if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
