@@ -9,6 +9,8 @@ var atLh_acId = ''
 var atLh_topic = ''
 var atLh_fb = ''
 var atLh_zl = ''
+var atlh_re_fb = ''
+var atlh_rs_zl = ''
 var atLh_url = window.location.href
 var atLh_utm_source = null
 var atLh_utm_medium = null
@@ -94,11 +96,13 @@ function adstechLeadhubOnload() {
                 atLh_styleBtnChat = result.response.listButton[i]
             } else if (result.response.listButton[i].type == "FACEBOOK") {
                 atLh_styleBtnFacebook = result.response.listButton[i]
+                atlh_re_fb = result.response.listButton[i].resourceName
             } else if (result.response.listButton[i].type == "ZALO") {
                 atLh_styleBtnZalo = result.response.listButton[i]
+                atlh_rs_zl = result.response.listButton[i].resourceName
             }
         }
-        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo)
+        adstechLeadhubWriteHtml(atLh_style, atLh_vertical, atLh_styleBtnForm, atLh_styleBtnCall, atLh_styleBtnChat, atLh_acId, atLh_styleBtnFacebook, atLh_styleBtnZalo, atLh_btnId)
         let leadhub_chatInfo = window.localStorage.getItem('leadhub_chatInfo')
         if (leadhub_chatInfo != null && leadhub_chatInfo != undefined && leadhub_chatInfo != '') {
             let chatInfo = JSON.parse(leadhub_chatInfo)
@@ -133,7 +137,7 @@ function handle(response) {
     });
 }
 
-function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo) {
+function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo, gBtnId) {
     let atLh_html = ''
     let atLh_call = ''
     let atLh_form = ''
@@ -519,22 +523,21 @@ function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, st
     document.getElementById("adstech-group-btn").innerHTML = atLh_html;
     // var atLh_chatminiCRM = new Firebase('https://minicrm-245403.firebaseio.com/');
     if (styleBtnForm != null && styleBtnForm != '') {
-        atLhSend(atLh_acId)
+        atLhSend(atLh_acId,styleBtnForm,gBtnId)
     }
     if (atLh_styleBtnChat != null && atLh_styleBtnChat != '') {
         let atLh_scripts = document.getElementsByTagName("script")
         for (let index = 0; index < atLh_scripts.length; index++) {
             if (atLh_scripts[index].src.indexOf('leadpool.adstech.vn/firebase.js') > 0) {
                 atLh_chatminiCRM = new Firebase('https://leadpoolproduct.firebaseio.com/');
-                atLhConnectToFirebase()
+                atLhConnectToFirebase(atLh_acId,styleBtnChat,gBtnId)
             }
         }
     }
     if(atlh_check_devide == true && styleBtnCall != null && styleBtnCall != ''){
-        atLhOpenCall()
+        atLhOpenCall(atLh_acId,styleBtnCall,gBtnId)
     }
 }
-
 function openChat() {
     let chatInputInfo = document.getElementById("chatInputInfo")
     let chatAdmin = document.getElementById("chatAdmin")
@@ -552,7 +555,6 @@ function openChat() {
     }
 
 }
-
 function atLhOpenFrom() {
     let atLh_checkForm = document.getElementById("adstech-form")
     if(atLh_checkForm.style.display == 'block'){
@@ -561,10 +563,9 @@ function atLhOpenFrom() {
         document.getElementById("adstech-form").style.display = 'block'
     }
 }
-
-function atLhOpenCall(){
+function atLhOpenCall(atLh_acId,styCall,gBtnId){
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
-        atLhSendTracing('CALL')
+        atLhSendTracing('CALL',styCall.resourceName)
     }
     else {
         let alert = `<div class="adstech-leadhub-alert-call" id="adstech-leadhub-alert-call">
@@ -587,10 +588,27 @@ function atLhOpenCall(){
             }, {
                 property: 'email',
                 value: `${phone}@gmail.com`
+            }, {
+                property: 'buttonGroupId',
+                value: gBtnId
             }]
+            if(styCall.resourceName != undefined && styCall.resourceName != '' && styCall.resourceName != null){
+                let a = {
+                    property: 'resourceName',
+                    value: styCall.resourceName
+                }
+                body.push(a)
+            }
+            if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+                let a = {
+                    property: 'gclid',
+                    value: atLh_gclid
+                }
+                body.push(a)
+            }
             e.preventDefault()
             adstechCreateLead(body,'CALL')
-            atLhSendTracing('CALL')
+            atLhSendTracing('CALL',styCall.resourceName)
             document.getElementById("adstech-call").style.display = "none"
             document.getElementById("adstech-alert-call").innerHTML = alert
             document.getElementById("adstech-alert-call").style.display = "block";
@@ -605,11 +623,9 @@ function atLhOpenFormCall(){
         document.getElementById("adstech-call").style.display = 'block'
     }
 }
-
 function atLhCloseForm() {
     document.getElementById("adstech-form").style.display = "none";
 }
-
 function atLhCloseAlert() {
     if(document.getElementById("adstech-alert-form") != null && document.getElementById("adstech-alert-form") != undefined && document.getElementById("adstech-alert-form") != ''){
         document.getElementById("adstech-alert-form").style.display = "none";
@@ -621,45 +637,41 @@ function atLhCloseAlert() {
         document.getElementById("adstech-alert-chat").style.display = "none";
     }
 }
-
 function atLhOpenFacebook() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
         let element = document.getElementById("adstech-open-fb")
-        element.classList.add("at-onclick-fb")
+        element.classList.add("at-onclick-fb",)
         window.location = atLh_fb
-        atLhSendTracing('FACEBOOK')
+        atLhSendTracing('FACEBOOK',atlh_re_fb)
     }
     else {
         let element = document.getElementById("adstech-open-fb")
         element.classList.add("at-onclick-fb")
         window.open(atLh_fb)
-        atLhSendTracing('FACEBOOK')
+        atLhSendTracing('FACEBOOK',atlh_re_fb)
     }
 }
-
 function atLhOpenZalo() {
     if(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)){
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.location = atLh_zl
-        atLhSendTracing('ZALO')
+        atLhSendTracing('ZALO',atlh_re_zl)
     }
     else {
         let element = document.getElementById("adstech-open-zl")
         element.classList.add("at-onclick-zl")
         window.open(atLh_zl)
-        atLhSendTracing('ZALO')
+        atLhSendTracing('ZALO',atlh_re_zl)
     }
 }
-
 function atLhGetHour(time) {
     let result = ''
     let timeArr = time.split(' ')
     result = timeArr[3]
     return result
 }
-
-function atLhConnectToFirebase() {
+function atLhConnectToFirebase(atLh_acId,styChat,gBtnId) {
     let form = document.getElementById("atLhSendInfo")
     form.addEventListener('submit', e => {
         const formData = new FormData(e.target)
@@ -678,7 +690,29 @@ function atLhConnectToFirebase() {
                 property: 'email',
                 value: atLh_topic
             },
+            { 
+                property: 'buttonGroupId',
+                value: gBtnId
+            }, 
+            {
+                property: 'resourceName',
+                value: ''
+            }
         ]
+        if(styChat.resourceName != undefined && styChat.resourceName != '' && styChat.resourceName != null){
+            let a = {
+                property: 'resourceName',
+                value: styChat.resourceName
+            }
+            body.push(a)
+        }
+        if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+            let a = {
+                property: 'gclid',
+                value: atLh_gclid
+            }
+            body.push(a)
+        }
         adstechCreateLead(body,'CHAT')
         document.getElementById('atLhTxtName').innerText = name
         atLh_topic = atLh_acId + '-' + atLh_topic.replace(/\./g, '-dot-')
@@ -756,7 +790,6 @@ function atLhStartChatting() {
         e.preventDefault()
     })
 }
-
 function atLhSendessage(body) {
     fetchRetry(`${atLh_rqApi}/chats`, {
         method: 'POST',
@@ -771,8 +804,7 @@ function atLhSendessage(body) {
         console.log(error)
     })
 }
-
-function atLhSend(atLh_acId) {
+function atLhSend(atLh_acId,styForm,gBtnId) {
     let alert = `<div class="adstech-leadhub-alert-form" id="adstech-leadhub-alert-form">
                         <h6>${atlh_form_return}</h6>
                     </div>`
@@ -790,6 +822,9 @@ function atLhSend(atLh_acId) {
         }, {
             property: 'email',
             value: email
+        },{
+            property: 'buttonGroupId',
+            value: gBtnId
         }]
         if (name != undefined && name != '' && name != null) {
             let a = {
@@ -819,15 +854,28 @@ function atLhSend(atLh_acId) {
             }
             body.push(a)
         }
+        if(styForm.resourceName != undefined && styForm.resourceName != '' && styForm.resourceName != null){
+            let a = {
+                property: 'resourceName',
+                value: styForm.resourceName
+            }
+            body.push(a)
+        }
+        if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+            let a = {
+                property: 'gclid',
+                value: atLh_gclid
+            }
+            body.push(a)
+        }
         adstechCreateLead(body,'FORM')
-        atLhSendTracing('FORM')
+        atLhSendTracing('FORM',styForm.resourceName)
         e.preventDefault()
         atLhCloseForm()
         document.getElementById("adstech-alert-form").innerHTML = alert
         document.getElementById("adstech-alert-form").style.display = "block";
     })
 }
-
 function adstechCreateLead(body,btn) {
     let url = null
     if (email == null){
@@ -861,12 +909,15 @@ function adstechCreateLead(body,btn) {
         }, 2000)
     })
 }
-
-function atLhSendTracing(type) {
+function atLhSendTracing(type,rsName) {
+    let day = new Date()
     let body = {
         type: type,
         accountId: atLh_acId,
-        link: atLh_url
+        link: atLh_url,
+        conversionValue: 0.0,
+        resourceName: rsName,
+        time: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDay()} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
     }
     if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
     if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
