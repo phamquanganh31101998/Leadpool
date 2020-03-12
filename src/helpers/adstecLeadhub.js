@@ -598,6 +598,13 @@ function atLhOpenCall(atLh_acId,styCall,gBtnId){
                 }
                 body.push(a)
             }
+            if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+                let a = {
+                    property: 'gclid',
+                    value: atLh_gclid
+                }
+                body.push(a)
+            }
             e.preventDefault()
             adstechCreateLead(body,'CALL')
             atLhSendTracing('CALL')
@@ -701,6 +708,13 @@ function atLhConnectToFirebase(atLh_acId,styChat,gBtnId) {
             let a = {
                 property: 'resourceName',
                 value: styChat.resourceName
+            }
+            body.push(a)
+        }
+        if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+            let a = {
+                property: 'gclid',
+                value: atLh_gclid
             }
             body.push(a)
         }
@@ -851,6 +865,13 @@ function atLhSend(atLh_acId,styForm,gBtnId) {
             let a = {
                 property: 'resourceName',
                 value: styForm.resourceName
+            }
+            body.push(a)
+        }
+        if(atLh_gclid != undefined && atLh_gclid != '' && atLh_gclid!= null){
+            let a = {
+                property: 'gclid',
+                value: atLh_gclid
             }
             body.push(a)
         }
