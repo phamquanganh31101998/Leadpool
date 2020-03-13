@@ -693,10 +693,6 @@ function atLhConnectToFirebase(atLh_acId,styChat,gBtnId) {
             { 
                 property: 'buttonGroupId',
                 value: gBtnId
-            }, 
-            {
-                property: 'resourceName',
-                value: ''
             }
         ]
         if(styChat.resourceName != undefined && styChat.resourceName != '' && styChat.resourceName != null){
