@@ -1,8 +1,52 @@
 <template>
   <v-toolbar dark color="#3E82F7" style="height: 50px; padding: 0px 0px;">
     <v-toolbar-title>
+      <!-- <v-img
+        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+        aspect-ratio="1"
+        class="grey lighten-2"
+      > -->
     </v-toolbar-title>
-    <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
+    <v-menu :nudge-width="200" v-if="$vuetify.breakpoint.smAndDown">
+        <template v-slot:activator="{ on }">
+          <v-toolbar-title v-on="on">
+            <span>Menu</span>
+            <v-icon dark>arrow_drop_down</v-icon>
+          </v-toolbar-title>
+        </template>
+
+        <v-list>
+          <v-list-tile @click="goToContactsPage()">
+            <v-list-tile-title>Leads</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToListsPage()">
+            <v-list-tile-title>Danh sách</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToMyTaskPage()">
+            <v-list-tile-title>Công việc</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToSMSServicePage()">
+            <v-list-tile-title>SMS</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToEmailServicePage()">
+            <v-list-tile-title>Email</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToDealServicePage()">
+            <v-list-tile-title>Thỏa thuận</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="gotoLeadHubPage()">
+            <v-list-tile-title>Lead Hub</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToChatPage()">
+            <v-list-tile-title>Chat</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="goToReportPage()">
+            <v-list-tile-title>Báo cáo</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;" v-else>
       <img style="height: 33px; margin-top: 8px;" src="/favicon.ico" alt="logo"/>
       <v-btn class="ml-3" depressed :color="background[0]" @click="goToContactsPage()" style="height: 50px; margin-bottom: 15px;">
         LEADS 
@@ -105,9 +149,16 @@
               dispatch
           } = this.$store;
         this.chatminiCRM.child(this.newTopic).on('child_added', function(snapshot){
+            // console.log('Có tin nhắn mới')
             dispatch('newNotification')
           })
       }
+      // notification(){
+      //   console.log(this.notification)
+      //   if(this.notification == true){
+      //     // this.$store.dispatch('noNewNotification')
+      //   }
+      // }
     },
     methods:{
       getTopic(){
@@ -120,6 +171,7 @@
                   let res = result.response.results;
                   for (let i = 0; i < res.length; i++){
                       this.chatminiCRM.child(res[i].topic).on('child_added', function(snapshot){
+                        // console.log('Có tin nhắn mới')
                         dispatch('newNotification')
                       })
                   }
@@ -138,10 +190,29 @@
               dispatch
           } = this.$store;
           this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
+                // console.log('Có chủ đề mới')
                 var message = message.val();
+                // console.log(message.topic)
                 dispatch('newNotification')
                 dispatch('addNewTopic', message.topic)
             });
+          // if(this.newItem == true){
+          //   this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
+          //       // console.log('Có chủ đề mới')
+          //       var message = message.val();
+          //       // console.log(message.topic)
+          //       dispatch('newNotification')
+          //       dispatch('addNewTopic', message.topic)
+          //   });
+          // }
+          // this.newItem = true;
+          // if(this.newItem == true){
+            
+          // }
+          // else {
+          //   this.newItem = true;
+          // }
+          // this.newItem = true
       },
       checkNavColor(number){
         this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];

@@ -7,7 +7,7 @@
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
         <v-layout row wrap class="mt-4 pl-2 pr-5">
-            <v-flex xs2 sm2 md2 lg2 xl2>
+            <v-flex xs12 sm4 md2 lg2 xl2>
                 <v-list>
                     <!-- <v-list-tile>
                         <v-list-tile-content>
@@ -37,7 +37,7 @@
                     </v-list-tile>
                 </v-list>
             </v-flex>
-            <v-flex xs10 sm10 md10 lg10 xl10>
+            <v-flex xs12 sm8 md10 lg10 xl10>
                 <h1>Thông tin tài khoản của tôi </h1>
                 <br>
                 <v-layout row wrap>
@@ -45,8 +45,8 @@
                         <v-card-text>
                             <v-card>
                                 <v-card-text>
-                                    <v-layout>
-                                        <v-flex xs2 offset-xs1 sm2 offset-sm1 md2  offset-md1 lg2  offset-lg1 xl2 offset-xl1>
+                                    <v-layout row wrap>
+                                        <v-flex xs12 sm12 md4  offset-md1 lg2  offset-lg1 xl2 offset-xl1>
                                             <v-avatar
                                                 size="100"
                                                 color="grey lighten-4"
@@ -54,8 +54,8 @@
                                                 <img :src="info.userAvatar" alt="avatar">
                                             </v-avatar>
                                         </v-flex>
-                                        <v-flex xs5 sm5 md5 lg5 xl5>
-                                            <v-layout wrap>
+                                        <v-flex xs12 sm12 md7 lg5 xl5 class="pt-3">
+                                            <v-layout row wrap>
                                                 <v-flex xs12 sm12 md12 lg12 xl12>
                                                     <span><h3>Tên</h3></span>
                                                     <v-text-field solo readonly v-model="info.displayName"></v-text-field>
@@ -108,12 +108,8 @@
                             </v-card>
                         </v-card-text>
                     </v-card>
-                    
-                    
                 </v-layout>
-                
             </v-flex>
-            
         </v-layout>
     </v-content>
 </template>

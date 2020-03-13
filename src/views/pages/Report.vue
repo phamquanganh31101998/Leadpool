@@ -1,13 +1,13 @@
 <template>
     <v-content class="mt-4 pl-2 pr-3">
         <v-layout row wrap>
-            <v-flex xs6 sm6 md6 lg6 xl6>
+            <v-flex xs12 sm6 md6 lg6 xl6>
                 <h1 class="ml-3">Báo cáo tổng quan</h1>
             </v-flex>
-            <v-flex xs2 sm2 md2 lg2 xl2>
-                <h3 class="mt-4 ml-5">Chọn thời điểm tính: </h3>
+            <v-flex xs12 sm2 md2 lg2 xl2 class="pl-4">
+                <h3 class="mt-4">Chọn thời điểm tính: </h3>
             </v-flex>
-            <v-flex xs2 sm2 md2 lg2 xl2>
+            <v-flex xs6 sm2 md2 lg2 xl2>
                 <v-menu
                     ref="fromMenu"
                     v-model="fromMenu"
@@ -33,7 +33,7 @@
                     </v-date-picker>
                 </v-menu>
             </v-flex>
-            <v-flex xs2 sm2 md2 lg2 xl2>
+            <v-flex xs6 sm2 md2 lg2 xl2>
                 <v-menu
                     ref="toMenu"
                     v-model="toMenu"
@@ -65,7 +65,7 @@
             
         </v-layout>
         <v-divider class="mt-5" :divider="divider"></v-divider>
-        <v-layout>
+        <v-layout row wrap>
             <v-flex xs12 sm12 md6 lg6 xl6>
                 <v-card style="height: 100%;" class="text-center" v-show="chart1.loading">
                     <v-card-title>
@@ -91,7 +91,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart2.loading">
                     <v-card-title>
                         <h2>Số lượng Lead của mỗi tài khoản</h2>
@@ -117,8 +117,8 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout>
-            <v-flex xs12 sm12 md6 lg6 xl6 class="mt-3 md-3">
+        <v-layout row wrap>
+            <v-flex xs12 sm12 md6 lg6 xl6 class="mt-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart4.loading">
                     <v-card-title>
                         <h2>Số lượng Lead theo Trạng thái của các tài khoản</h2>
@@ -143,7 +143,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 ml-3 md-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="mt-3 pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart3.loading">
                     <v-card-title>
                         <h2>Số lượng Lead theo Trạng thái của các tài khoản</h2>
@@ -169,7 +169,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout class="mt-3">
+        <v-layout row wrap class="mt-3">
             <v-flex xs12 sm12 md12 lg6 xl6>
                 <v-card style="height: 100%;" >
                     <v-card-title>
@@ -190,7 +190,7 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" >
                     <v-card-title>
                         <h2>Thống kê thỏa thuận theo các giai đoạn</h2>
@@ -211,7 +211,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout class="mt-3">
+        <v-layout row wrap class="mt-3">
             <v-flex xs12 sm12 md12 lg6 xl6>
                 <v-card style="height: 100%;" class="text-center" v-show="chart5.loading5a">
                     <v-card-title>
@@ -236,7 +236,7 @@
                     </div>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart6.loading6a">
                     <v-card-title>
                         <h2>Tỉ lệ theo số thỏa thuận - tính theo từng giai đoạn (%)</h2>
@@ -260,7 +260,7 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout class="mt-3">
+        <v-layout row wrap class="mt-3">
             <v-flex xs12 sm12 md12 lg6 xl6>
                 <v-card style="height: 100%;" class="text-center" v-show="chart5.loading5b">
                     <v-card-title>
@@ -285,7 +285,7 @@
                     </div>
                 </v-card>
             </v-flex>
-            <v-flex xs12 sm12 md12 lg6 xl6 class="ml-3">
+            <v-flex xs12 sm12 md12 lg6 xl6 class="pl-3">
                 <v-card style="height: 100%;" class="text-center" v-show="chart6.loading6b">
                     <v-card-title>
                         <h2>Tỉ lệ theo giá trị thỏa thuận - tính theo từng giai đoạn (%)</h2>
@@ -330,9 +330,6 @@ export default {
             default: null,
         },
         
-    },
-    watch: {
-
     },
     data: vm => ({
         fromDate: '',
@@ -889,7 +886,6 @@ export default {
             reportAPI.getDealAmountStaff(this.idAccount).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
-                    let tempRes = [];
                     for (let i = 0; i < res.length; i++ ){
                         let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
                         let obj = {
@@ -936,7 +932,6 @@ export default {
             reportAPI.getDealAmountStaff(this.idAccount, from, to).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
-                    let tempRes = [];
                     for (let i = 0; i < res.length; i++ ){
                         let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
                         let obj = {
@@ -1013,7 +1008,6 @@ export default {
             reportAPI.getDealAmountStage(this.idAccount).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
-                    let tempRes = [];
                     for (let i = 0; i < res.length; i++ ){
                         let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
                         let obj = {
@@ -1061,7 +1055,6 @@ export default {
             reportAPI.getDealAmountStage(this.idAccount, from, to).then(result => {
                 if(result.code == 'SUCCESS'){
                     let res = result.response;
-                    let tempRes = [];
                     for (let i = 0; i < res.length; i++ ){
                         let date = this.checkString(res[i].month) + '-' + this.checkString(res[i].year)
                         let obj = {

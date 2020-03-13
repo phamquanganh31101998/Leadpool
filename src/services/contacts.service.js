@@ -32,7 +32,7 @@ function getAllContact(id, page, property, order) {
     if (order != ''){
         a.orderBy = order
     }
-    let request = {
+    let request ={
         method: 'GET',
         headers: authHeader()
     }
