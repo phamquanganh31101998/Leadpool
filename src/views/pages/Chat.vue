@@ -596,39 +596,6 @@ export default {
                     dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
                 }
             })
-            // chatAPI.getTopic(this.idAccount, 1).then(result => {
-            //     const {
-            //         dispatch
-            //     } = this.$store;
-            //     let time = moment();
-            //     if(result.code == 'SUCCESS'){
-            //         let res = result.response.results[0];
-            //         this.allTopicPage = result.response.totalPage;
-            //         let obj = {
-            //             text: this.decodeStr(res.topic),
-            //             value: res.topic,
-            //             status: res.status,
-            //             lastTime: this.coverTimeDisplayForChat(res.nearTime),
-            //             chatTopicId: res.chatTopicId
-            //         }
-            //         this.allTopics.unshift(obj)
-            //         this.chatminiCRM.child(res.topic).on('child_added', function(snapshot){
-            //             var message = snapshot.val();
-            //             dispatch('newMessage', message);
-            //             dispatch('topicChange', res.topic);
-            //             dispatch('hasNewMessage');
-            //         })
-            //         dispatch('alert/success', `Bạn có 1 cuộc trò chuyện mới (${this.coverTimeDetail(time)})`)
-            //     }
-            //     else {
-            //         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
-            //     }
-            // }).catch(error => {
-            //     console.log(error)
-            // }).finally(() => {
-            //     this.dialog = false;
-            //     // this.getAvatar()
-            // })
         }
     },
     created(){

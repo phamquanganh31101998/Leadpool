@@ -1,9 +1,16 @@
 <template>
     <v-content>
         <v-layout row wrap class="px-3 my-3">
-            <h2>Cài đặt</h2>
+            
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <h1>{{title}}</h1>
+                <br>
+                <!-- <v-select :items="selectSection" v-model="section"></v-select> -->
+                <v-btn :color="sectionColor[0]" @click="section='setting', sectionColor[0] = 'primary', sectionColor[1] = ''">Cài đặt bộ nút</v-btn>
+                <v-btn :color="sectionColor[1]" @click="section='tracking', sectionColor[0] = '', sectionColor[1] = 'primary'">Thống kê</v-btn>
+            </v-flex>
         </v-layout>
-        <v-layout row wrap class="pl-3 pr-3">
+        <v-layout row wrap class="pl-3 pr-3" v-show="section == 'setting'">
             <v-flex lg4 class="pr-2">
                 <v-card>
                     <v-card-text>
@@ -199,6 +206,42 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-layout row wrap class="pl-3 pr-3" v-show="section == 'tracking'">
+            <v-flex xs12 sm12 md12 lg12 xl12>
+                <v-data-table :custom-sort="customSort" densed style="width: 100%" :headers="trackingObj.headers" :items="trackingObj.data" hide-actions class="elevation-1" no-data-text="Không có kết quả nào phù hợp">
+                    <template v-slot:items="props">
+                        <tr>
+                        <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
+                            <td class="text-xs-left">{{ props.item.type }}</td>
+                            <td class="text-xs-left">{{ props.item.utm_source }}</td>
+                            <td class="text-xs-left">{{ props.item.utm_medium }}</td>
+                            <td class="text-xs-left">{{ props.item.utm_campaign }}</td>
+                            <td class="text-xs-left">{{ props.item.utm_term }}</td>
+                            <td class="text-xs-left">{{ props.item.utm_content }}</td>
+                            <!-- <td class="text-xs-left">{{ props.item.gclid }}</td> -->
+                            <td class="text-xs-left">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <a @click="openPage(props.item.link)" v-on="on">{{ cutLongString(props.item.link) }}</a>
+                                    </template>
+                                    <span>{{ props.item.link }}</span>
+                                </v-tooltip>
+                            </td>
+                            <td class="text-xs-left">{{ props.item.time }}</td>
+                            <td class="text-xs-left">{{ props.item.conversionValue }}</td>
+                            <!-- <td class="text-xs-left">{{ props.item.resourceName }}</td> -->
+                            <td class="text-xs-left">{{ props.item.status }}</td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-flex>
+            <v-flex xs12 sm12 md5 lg5 xl5 offset-md5 offset-lg5 offset-xl5>
+                <br>
+                <v-pagination v-model="trackingObj.page" :total-visible="7" :length="trackingObj.totalPage"></v-pagination>
+                <br>
+            </v-flex>
+            <br>
+        </v-layout>
         <v-dialog v-model="deleteConfirm" max-width="500">
             <v-card>
                 <v-card-title></v-card-title>
@@ -232,6 +275,98 @@
         },
         data() {
             return {
+                selectSection: [
+                    {
+                        text: 'Cài đặt',
+                        value: 'setting'
+                    },
+                    {
+                        text: 'Thống kê',
+                        value: 'tracking'
+                    }
+                ],
+                section: 'setting',
+                sectionColor: ['primary', ''],
+                trackingObj: {
+                    sortBy: '',
+                    orderBy: 'ASC',
+                    page: 1,
+                    totalPage: 1,
+                    data: [],
+                    headers: [{
+                            text: 'TYPE',
+                            align: 'left',
+                            value: 'type',
+                            // sortable: false
+                        },
+                        {
+                            text: 'UTM_SOURCE',
+                            align: 'left',
+                            value: 'utm_source',
+                            // sortable: false
+                        },
+                        {
+                            text: 'UTM_MEDIUM',
+                            align: 'left',
+                            value: 'utm_medium',
+                            // sortable: false
+                        },
+                        {
+                            text: 'UTM_CAMPAIGN',
+                            align: 'left',
+                            value: 'utm_campaign',
+                            // sortable: false
+                        },
+                        {
+                            text: 'UTM_TERM',
+                            align: 'left',
+                            value: 'utm_term',
+                            // sortable: false
+                        },
+                        {
+                            text: 'UTM_CONTENT',
+                            align: 'left',
+                            value: 'utm_content',
+                            // sortable: false
+                        },
+                        // {
+                        //     text: 'GCLID',
+                        //     align: 'left',
+                        //     value: 'gclid',
+                        //     // sortable: false
+                        // },
+                        {
+                            text: 'LINK',
+                            align: 'left',
+                            value: 'link',
+                            // sortable: false
+                        },
+                        {
+                            text: 'TIME',
+                            align: 'left',
+                            value: 'time',
+                            // sortable: false
+                        },
+                        {
+                            text: 'CONVERSION VALUE',
+                            align: 'left',
+                            value: 'conversionValue',
+                            // sortable: false
+                        },
+                        // {
+                        //     text: 'RESOURCE NAME',
+                        //     align: 'left',
+                        //     value: 'resourceName',
+                        //     // sortable: false
+                        // },
+                        {
+                            text: 'STATUS',
+                            align: 'left',
+                            value: 'status',
+                            // sortable: false
+                        },
+                    ],
+                },
                 selected: {},
                 items: [],
                 tabs: [{
@@ -285,14 +420,61 @@
                     this.styleGroupBtn("bottom:5%", "right:10%")
                     this.styleGroupBtnDesk("bottom:10%", "right:4%")
                 }
+            },
+            'trackingObj.page'(){
+                this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
+            },
+            'trackingObj.sortBy'(){
+                this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
+            },
+            'trackingObj.orderBy'(){
+                this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
             }
         },
         computed: {
             scrpitText() {
                 return `<script src="${process.env.VUE_APP_BASE_URL}adstech-leadhub.js?accId=${this.selected.accountId}&gBtnId=${this.selected.leadHubButtonGroupId}" type="text/javascript" async><\/script>`
+            },
+            title(){
+                if(this.section == 'tracking'){
+                    return 'Thống kê'
+                }
+                else {
+                    return 'Cài đặt bộ nút'
+                }
             }
         },
         methods: {
+            openPage(link){
+                window.open('https://www.google.com/', '_blank')
+            },
+            customSort(items, index, isDescending) {
+                // The following is informations as far as I researched.
+                // items:  items to be sorted
+                // index: Enabled sort headers value. (black arrow status).
+                // isDescending: Whether enabled sort headers is desc
+                // console.log(items)
+                this.trackingObj.sortBy = index;
+                this.trackingObj.orderBy = (isDescending) ? 'DESC' : 'ASC';
+                return items;
+            },
+            cutLongString(str){
+                if(str.length <= 20){
+                    return str
+                }
+                else {
+                    let res = str.substring(0, 20) + '...'
+                    return res
+                }
+            },
+            checkString(str){
+                if (str == null || str == undefined){
+                    return '_'
+                }
+                else {
+                    return str;
+                }
+            },
             returnTime(data) {
                 return moment(data).lang('vi').format('llll')
             },
@@ -369,11 +551,42 @@
             },
             styleGroupBtnDesk(tOb, lOr) {
                 this.styleBtnDesktop = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
+            },
+            getTracking(accId, sortBy, orderBy, page){
+                this.trackingObj.data = []
+                let trackingRes = {}
+                leadhubService.getTracking(accId, sortBy, orderBy, page).then(result => {
+                    if(result.code == 'SUCCESS'){
+                        trackingRes = result.response.results;
+                        this.trackingObj.totalPage = result.response.totalPage;
+                    }
+                    this.addToTrackingData(trackingRes)
+                })
+            },
+            addToTrackingData(trackingRes){
+                for (let i = 0; i < trackingRes.length; i++){
+                    let obj = {
+                        type: this.checkString(trackingRes[i].type),
+                        utm_source: this.checkString(trackingRes[i].utm_source),
+                        utm_medium: this.checkString(trackingRes[i].utm_medium),
+                        utm_campaign: this.checkString(trackingRes[i].utm_campaign),
+                        utm_term: this.checkString(trackingRes[i].utm_term),
+                        utm_content: this.checkString(trackingRes[i].utm_content),
+                        gclid: this.checkString(trackingRes[i].gclid),
+                        link: this.checkString(trackingRes[i].link),
+                        time: this.checkString(trackingRes[i].time),
+                        conversionValue: this.checkString(trackingRes[i].conversionValue),
+                        resourceName: this.checkString(trackingRes[i].resourceName),
+                        status: this.checkString(trackingRes[i].status)
+                    }
+                    this.trackingObj.data.push(obj)
+                }
             }
         },
         created() {
             this.$store.state.colorNumber = 6;
             this.getAllGroupBtn()
+            this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
         },
         components: {
             alert

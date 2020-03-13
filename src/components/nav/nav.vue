@@ -1,12 +1,6 @@
 <template>
   <v-toolbar dark color="#3E82F7" style="height: 50px; padding: 0px 0px;">
     <v-toolbar-title>
-      <!-- <v-img
-        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-        aspect-ratio="1"
-        class="grey lighten-2"
-      > -->
     </v-toolbar-title>
     <v-toolbar-items color="#3E82F7" style="padding: 0px 0px;">
       <img style="height: 33px; margin-top: 8px;" src="/favicon.ico" alt="logo"/>
@@ -111,16 +105,9 @@
               dispatch
           } = this.$store;
         this.chatminiCRM.child(this.newTopic).on('child_added', function(snapshot){
-            // console.log('Có tin nhắn mới')
             dispatch('newNotification')
           })
       }
-      // notification(){
-      //   console.log(this.notification)
-      //   if(this.notification == true){
-      //     // this.$store.dispatch('noNewNotification')
-      //   }
-      // }
     },
     methods:{
       getTopic(){
@@ -133,7 +120,6 @@
                   let res = result.response.results;
                   for (let i = 0; i < res.length; i++){
                       this.chatminiCRM.child(res[i].topic).on('child_added', function(snapshot){
-                        // console.log('Có tin nhắn mới')
                         dispatch('newNotification')
                       })
                   }
@@ -152,29 +138,10 @@
               dispatch
           } = this.$store;
           this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
-                // console.log('Có chủ đề mới')
                 var message = message.val();
-                // console.log(message.topic)
                 dispatch('newNotification')
                 dispatch('addNewTopic', message.topic)
             });
-          // if(this.newItem == true){
-          //   this.chatminiCRM.child("topic").child(this.currentUser.accountId).on('child_added', function(message) {
-          //       // console.log('Có chủ đề mới')
-          //       var message = message.val();
-          //       // console.log(message.topic)
-          //       dispatch('newNotification')
-          //       dispatch('addNewTopic', message.topic)
-          //   });
-          // }
-          // this.newItem = true;
-          // if(this.newItem == true){
-            
-          // }
-          // else {
-          //   this.newItem = true;
-          // }
-          // this.newItem = true
       },
       checkNavColor(number){
         this.background = ['#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7', '#3E82F7'];
