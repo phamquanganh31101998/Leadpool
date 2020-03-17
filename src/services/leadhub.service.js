@@ -1,9 +1,10 @@
 import config from '../config'
 import { authHeader } from '../helpers'
 import { responseService } from './response.service'
+const qs = require('qs');
 
 export default {
-    getListGbtn,createGbtn,updateGbtn,deleteGbtn,getInfoBtn,getInfoBtnForOrderWeb
+    getListGbtn,createGbtn,updateGbtn,deleteGbtn,getInfoBtn,getInfoBtnForOrderWeb, getTracking
 }
 
 function getListGbtn(accountId) {
@@ -58,5 +59,24 @@ function getInfoBtnForOrderWeb(accountId,gBtnId) {
         headers: header
     }
     let endpoint = `${process.env.VUE_APP_API_URL}/leadhub/account/${accountId}/group-buttons${gBtnId}`
+    return responseService.fetchRetry(endpoint, request, 1)
+}
+
+function getTracking(accId, sortBy, orderBy, page){
+    let a = {
+        page: page
+    }
+    if (sortBy != '' && sortBy != null && sortBy != undefined){
+        a.sortBy = sortBy
+    }
+    if (orderBy != '' && orderBy != null && orderBy != undefined){
+        a.orderBy = orderBy
+    }
+    let request = {
+        method: 'GET',
+        headers: authHeader()
+    }
+    let _qs = qs.stringify(a);
+    let endpoint = `${config.apiContact}/${accId}/leadhub/get-tracking?${_qs}` 
     return responseService.fetchRetry(endpoint, request, 1)
 }
