@@ -125,7 +125,6 @@ async function fetchRetry(url, options, n) {
         }
     }
 }
-
 function handle(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
@@ -136,7 +135,6 @@ function handle(response) {
         return Promise.reject(error);
     });
 }
-
 function adstechLeadhubWriteHtml(style, vertical, styleBtnForm, styleBtnCall, styleBtnChat, atLh_acId, styleBtnFacebook, styleBtnZalo, gBtnId) {
     let atLh_html = ''
     let atLh_call = ''
@@ -913,7 +911,7 @@ function atLhSendTracing(type,rsName) {
         link: atLh_url,
         conversionValue: 0.0,
         resourceName: rsName,
-        time: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDay()} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
+        time: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
     }
     if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
     if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
