@@ -11,7 +11,7 @@
             </v-flex>
         </v-layout>
         <v-layout row wrap class="pl-3 pr-3" v-show="section == 'setting'">
-            <v-flex lg4 class="pr-2">
+            <v-flex xs12 sm12 md4 lg4 xl4 class="pr-2">
                 <v-card>
                     <v-card-text>
                         <v-layout row class="pl-3">
@@ -55,10 +55,31 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <v-flex lg8>
+            <v-flex xs12 sm12 md8 lg8 xl8 v-if="$vuetify.breakpoint.mdAndUp">
                 <v-layout row class="mb-2"
                     v-if="showCall === true || showForm == true || showChat == true || showFb == true || showZalo == true">
                     <v-flex xs12>
+                        <v-layout row class="mb-2" v-if="selected.leadHubButtonGroupId && selected.googleCustomerId == null">
+                            <!-- <v-alert :value="true" color="warning" icon="priority_high" outline >
+                                Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi trên trang web của bạn
+                            </v-alert> -->
+                            <v-flex lg9 class="pt-2">
+                                <div style="border:1px solid #fb8c00; color: #fb8c00; text-align:center; padding:1%">
+                                    <span>Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển
+                                        đổi
+                                        trên trang web của bạn</span>
+                                </div>
+                            </v-flex>
+                            <v-flex lg3>
+                                <v-btn v-if="checkDataGgAds" class=" ml-2" large tile outlined color="primary"
+                                    @click="connectGoogleAds()">
+                                    Liên kết tài khoản
+                                </v-btn>
+                                <v-btn v-else class=" ml-2" large tile outlined color="primary" @click="accountAds = true">
+                                    Liên kết tài khoản
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
                         <v-card style="width:100%">
                             <v-card-text>
                                 <v-layout row>
@@ -258,6 +279,42 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="accountAds" max-width='300'>
+            <v-card>
+                <v-card-text class="pl-4">
+                    <v-layout row>
+                        <v-list two-line
+                            style="width:100% !imnportant;max-height:400px !imnportant;overflow-y:auto !imnportant">
+                            <v-subheader>
+                                <h3 style="color:#1875ef">Chọn tài khoản Google Ads</h3>
+                            </v-subheader>
+                            <template v-for="(cid, key) in listCidAds">
+                                <v-list-tile :key="key" avatar ripple @click="addCoversionToGbtn(cid.cId)">
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>{{cid.descriptiveName}} </v-list-tile-title>
+                                        <v-list-tile-sub-title v-if="cid.cId != '' && cid.cId != null">({{cid.cId}})
+                                        </v-list-tile-sub-title>
+                                        <v-list-tile-sub-title v-else>( Không có tên )</v-list-tile-sub-title>
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </template>
+                        </v-list>
+                    </v-layout>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="gray darken-1" flat @click="accountAds = false">Đóng</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="showLoading" hide-overlay persistent width="300">
+            <v-card color="primary" dark>
+                <v-card-text>
+                    Xin đợi 1 chút. Chúng tôi đang liên kết tài khoản cho bạn
+                    <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <alert />
     </v-content>
 </template>
@@ -266,12 +323,18 @@
     import alert from '@/components/alert'
     import leadhubService from '@/services/leadhub.service.js'
     import moment from 'moment'
+    import config from '@/config'
+    import ggAds from '@/services/ggAds.service.js'
     export default {
         props: {
             idAccount: {
                 type: String,
                 default: null,
             },
+            code: {
+                type: String,
+                default: null
+            }
         },
         data() {
             return {
@@ -388,7 +451,11 @@
                 dark: true,
                 deleteConfirm: false,
                 showFb: false,
-                showZalo: false
+                showZalo: false,
+                listCidAds: [],
+                showLoading: false,
+                checkDataGgAds: true,
+                accountAds: false
             }
         },
         watch: {
@@ -442,11 +509,14 @@
                 else {
                     return 'Cài đặt bộ nút'
                 }
-            }
+            },
+            mounted() {
+                this.connectGG()
+            },
         },
         methods: {
             openPage(link){
-                window.open('https://www.google.com/', '_blank')
+                window.open(link, '_blank')
             },
             customSort(items, index, isDescending) {
                 // The following is informations as far as I researched.
@@ -552,6 +622,66 @@
             styleGroupBtnDesk(tOb, lOr) {
                 this.styleBtnDesktop = `position: absolute; ${tOb}; ${lOr};z-index: 999999`
             },
+            connectGoogleAds() {
+                window.location.href = `${config.connectUrl}${window.location.href}`
+            },
+            connectGG() {
+                if (this.code == '' || this.code == null) return;
+                else this.takeListGgAdsConnect();
+            },
+            takeListGgAdsConnect() {
+                const {
+                    dispatch
+                } = this.$store;
+                this.showLoading = true
+                ggAds.takeInfoCid(this.idAccount, this.code).then(result => {
+                    if (result.code == "SUCCESS") {
+                        dispatch('alert/success', 'Liên kết tài khoản thành công')
+                        let path = `/contacts/${this.idAccount}/leadhub`
+                        this.$router.replace(path)
+                        this.showLoading = false
+                    } else {
+                        dispatch('alert/error', result.message)
+                        this.showLoading = false
+                    }
+                })
+            },
+            takeListGgAdsInSerrve() {
+                this.showLoading = true
+                ggAds.getListCid(this.idAccount).then(result => {
+                    if (result.code == "SUCCESS" && result.response.length > 0) {
+                        this.checkDataGgAds = false
+                        this.showLoading = false
+                        for (let i = 0; i < result.response.length; i++) {
+                            let a = {
+                                cId: result.response[i].resourceName.split('/')[1],
+                                descriptiveName: result.response[i].descriptiveName
+                            }
+                            this.listCidAds.push(a)
+                        }
+                    } else {
+                        this.checkDataGgAds = true
+                        this.showLoading = false
+                    }
+                })
+            },
+            addCoversionToGbtn(cId) {
+                const {
+                    dispatch
+                } = this.$store;
+                this.showLoading = true
+                ggAds.convertGbtnToCid(this.idAccount, this.selected.leadHubButtonGroupId, cId).then(result => {
+                    if (result.code == "SUCCESS") {
+                        this.showLoading = false
+                        this.accountAds = false
+                        dispatch('alert/success', `Gán tài khoản ${cId} thành công`)
+                    } else {
+                        dispatch('alert/error', result.message)
+                        this.showLoading = false
+                        this.accountAds = true
+                    }
+                })
+            },
             getTracking(accId, sortBy, orderBy, page){
                 this.trackingObj.data = []
                 let trackingRes = {}
@@ -586,6 +716,7 @@
         created() {
             this.$store.state.colorNumber = 6;
             this.getAllGroupBtn()
+            this.takeListGgAdsInSerrve()
             this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
         },
         components: {
