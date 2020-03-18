@@ -18,7 +18,7 @@
                                 Danh sách các cuộc trò chuyện
                             </v-subheader>
                             <template v-for="(item, index) in allTopics">
-                                <v-list-tile avatar
+                                <v-list-tile :key="index" avatar
                                     @click="markReadTopic(item.value, index), getNewChatHistory(item.value)">
                                     <v-list-tile-avatar>
                                         <v-btn class="disable-events" small fab dark color="blue-grey">
