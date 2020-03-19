@@ -233,25 +233,26 @@
                     <template v-slot:items="props">
                         <tr>
                         <!-- <td><router-link :to="takeLink(props.item.contactId)">{{ props.item.lastName }} {{ props.item.firstName }}</router-link></td> -->
-                            <td class="text-xs-left">{{ props.item.type }}</td>
-                            <td class="text-xs-left">{{ props.item.utm_source }}</td>
-                            <td class="text-xs-left">{{ props.item.utm_medium }}</td>
-                            <td class="text-xs-left">{{ props.item.utm_campaign }}</td>
-                            <td class="text-xs-left">{{ props.item.utm_term }}</td>
-                            <td class="text-xs-left">{{ props.item.utm_content }}</td>
-                            <!-- <td class="text-xs-left">{{ props.item.gclid }}</td> -->
+                            <td class="text-xs-left">{{ checkString(props.item.type) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.utm_source) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.utm_medium) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.utm_campaign) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.utm_term) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.utm_content) }}</td>
+                            <!-- <td class="text-xs-left">{{ checkString(props.item.gclid) }}</td> -->
                             <td class="text-xs-left">
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on }">
                                         <a @click="openPage(props.item.link)" v-on="on">{{ cutLongString(props.item.link) }}</a>
                                     </template>
-                                    <span>{{ props.item.link }}</span>
+                                    <span>{{ checkString(props.item.link) }}</span>
                                 </v-tooltip>
                             </td>
-                            <td class="text-xs-left">{{ props.item.time }}</td>
-                            <td class="text-xs-left">{{ props.item.conversionValue }}</td>
-                            <!-- <td class="text-xs-left">{{ props.item.resourceName }}</td> -->
-                            <td class="text-xs-left">{{ props.item.status }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.time) }}</td>
+                            <td class="text-xs-left">{{ checkString(props.item.conversionValue) }}</td>
+                            <!-- <td class="text-xs-left">{{ checkString(props.item.resourceName) }}</td> -->
+                            <td class="text-xs-left">{{ checkString(props.item.status) }}</td>
+                            <td class="text-xs-left">{{ returnTime(props.item.createdAt) }}</td>
                         </tr>
                     </template>
                 </v-data-table>
@@ -428,6 +429,12 @@
                             value: 'status',
                             // sortable: false
                         },
+                        {
+                            text: 'Thời gian tạo',
+                            align: 'left',
+                            value: 'createdAt',
+                            // sortable: false
+                        }
                     ],
                 },
                 selected: {},
@@ -515,6 +522,9 @@
             },
         },
         methods: {
+            returnTime(data) {
+                return moment(data).locale('vi').format('LLLL')
+            },
             openPage(link){
                 window.open(link, '_blank')
             },
@@ -684,40 +694,42 @@
             },
             getTracking(accId, sortBy, orderBy, page){
                 this.trackingObj.data = []
-                let trackingRes = {}
                 leadhubService.getTracking(accId, sortBy, orderBy, page).then(result => {
                     if(result.code == 'SUCCESS'){
-                        trackingRes = result.response.results;
                         this.trackingObj.totalPage = result.response.totalPage;
+                        this.trackingObj.data = result.response.results
+                        //this.addToTrackingData(result.response.results)
+                        console.log(this.trackingObj.data)
                     }
-                    this.addToTrackingData(trackingRes)
                 })
             },
-            addToTrackingData(trackingRes){
-                for (let i = 0; i < trackingRes.length; i++){
-                    let obj = {
-                        type: this.checkString(trackingRes[i].type),
-                        utm_source: this.checkString(trackingRes[i].utm_source),
-                        utm_medium: this.checkString(trackingRes[i].utm_medium),
-                        utm_campaign: this.checkString(trackingRes[i].utm_campaign),
-                        utm_term: this.checkString(trackingRes[i].utm_term),
-                        utm_content: this.checkString(trackingRes[i].utm_content),
-                        gclid: this.checkString(trackingRes[i].gclid),
-                        link: this.checkString(trackingRes[i].link),
-                        time: this.checkString(trackingRes[i].time),
-                        conversionValue: this.checkString(trackingRes[i].conversionValue),
-                        resourceName: this.checkString(trackingRes[i].resourceName),
-                        status: this.checkString(trackingRes[i].status)
-                    }
-                    this.trackingObj.data.push(obj)
-                }
-            }
+            // addToTrackingData(trackingRes){
+            //     for (let i = 0; i < trackingRes.length; i++){
+            //         let obj = {
+            //             type: this.checkString(trackingRes[i].type),
+            //             utm_source: this.checkString(trackingRes[i].utm_source),
+            //             utm_medium: this.checkString(trackingRes[i].utm_medium),
+            //             utm_campaign: this.checkString(trackingRes[i].utm_campaign),
+            //             utm_term: this.checkString(trackingRes[i].utm_term),
+            //             utm_content: this.checkString(trackingRes[i].utm_content),
+            //             gclid: this.checkString(trackingRes[i].gclid),
+            //             link: this.checkString(trackingRes[i].link),
+            //             time: this.checkString(trackingRes[i].time),
+            //             conversionValue: this.checkString(trackingRes[i].conversionValue),
+            //             resourceName: this.checkString(trackingRes[i].resourceName),
+            //             status: this.checkString(trackingRes[i].status),
+            //             createdAt: this.checkString(trackingRes[i].createdAt)
+            //         }
+            //         this.trackingObj.data.push(obj)
+            //     }
+            // }
         },
         created() {
             this.$store.state.colorNumber = 6;
             this.getAllGroupBtn()
             this.takeListGgAdsInSerrve()
             this.getTracking(this.idAccount, this.trackingObj.sortBy, this.trackingObj.orderBy, this.trackingObj.page)
+            console.log(this.trackingObj)
         },
         components: {
             alert

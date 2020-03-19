@@ -919,7 +919,7 @@ function atLhSendTracing(type,rsName) {
         link: atLh_url,
         conversionValue: 0.0,
         resourceName: rsName,
-        time: `${day.getFullYear()}-${monthCover + 1}-${dayCover} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
+        time: `${day.getFullYear()}-${monthCover}-${dayCover} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
     }
     if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
     if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
