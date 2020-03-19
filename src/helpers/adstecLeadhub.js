@@ -905,21 +905,28 @@ function adstechCreateLead(body,btn) {
 }
 function atLhSendTracing(type,rsName) {
     let day = new Date()
-    let monthAds = day.getMonth()
-    let dayAds = day.getDate()
     let monthCover = ''
     let dayCover = ''
-    if((monthAds + 1) < 10) {monthCover = `0${monthAds + 1}`}
-    else{monthCover = monthAds + 1}
-    if(dayAds < 10) {dayCover = `0${dayAds}`}
-    else{dayCover = dayAds}
+    let hoursCover = ''
+    let minusCover = ''
+    let seconCover = ''
+    if((day.getMonth() + 1) < 10) {monthCover = `0${day.getMonth() + 1}`}
+    else{monthCover = day.getMonth() + 1}
+    if(day.getDate() < 10) {dayCover = `0${day.getDate()}`}
+    else{dayCover = day.getDate()}
+    if(day.getHours() < 10) {hoursCover = `0${day.getHours()}`}
+    else{hoursCover = day.getHours()}
+    if(day.getMinutes() < 10) {minusCover = `0${day.getMinutes()}`}
+    else{minusCover = day.getMinutes()}
+    if(day.getSeconds() < 10) {seconCover = `0${day.getSeconds()}`}
+    else{seconCover = day.getSeconds()}
     let body = {
         type: type,
         accountId: atLh_acId,
         link: atLh_url,
         conversionValue: 0.0,
         resourceName: rsName,
-        time: `${day.getFullYear()}-${monthCover}-${dayCover} ${day.getHours()}:${day.getMinutes()}:${day.getSeconds()}+07:00`
+        time: `${day.getFullYear()}-${monthCover}-${dayCover} ${hoursCover}:${minusCover}:${seconCover}+07:00`
     }
     if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
     if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
