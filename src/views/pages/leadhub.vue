@@ -280,7 +280,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="accountAds" max-width='300'>
+        <v-dialog v-model="accountAds" max-width='500'>
             <v-card>
                 <v-card-text class="pl-4">
                     <v-layout row>
@@ -308,7 +308,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="showLoading" hide-overlay persistent width="300">
+        <v-dialog v-model="showLoading" persistent width="300">
             <v-card color="primary" dark>
                 <v-card-text>
                     Xin đợi 1 chút. Chúng tôi đang liên kết tài khoản cho bạn
@@ -468,7 +468,6 @@
         watch: {
             selected() {
                 this.show = true
-                console.log(this.selected)
                 if (this.selected.style.bottom == "5" && this.selected.style.left == "2" && this.selected.style
                     .top == null && this.selected.style.right == null) {
                     this.styleGroupBtn("bottom:5%", "left:4%")
@@ -663,8 +662,10 @@
                         this.checkDataGgAds = false
                         this.showLoading = false
                         for (let i = 0; i < result.response.length; i++) {
+                            let coverCid = result.response[i].resourceName.split('/')
+                            let position = coverCid.length - 1
                             let a = {
-                                cId: result.response[i].resourceName.split('/')[1],
+                                cId: coverCid[position],
                                 descriptiveName: result.response[i].descriptiveName
                             }
                             this.listCidAds.push(a)
@@ -691,6 +692,8 @@
                         this.accountAds = true
                     }
                 })
+                this.getAllGroupBtn()
+                this.selected.googleCustomerId = cId
             },
             getTracking(accId, sortBy, orderBy, page){
                 this.trackingObj.data = []
@@ -699,7 +702,6 @@
                         this.trackingObj.totalPage = result.response.totalPage;
                         this.trackingObj.data = result.response.results
                         //this.addToTrackingData(result.response.results)
-                        console.log(this.trackingObj.data)
                     }
                 })
             },
