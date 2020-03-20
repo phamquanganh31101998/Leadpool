@@ -1086,7 +1086,15 @@
                 if (this.zalo.showBtn == true) {
                     btn.listButton.push(zalo)
                 }
-                this.callApiCreate(btn)
+                if (this.call == true && this.text == '') {
+                    this.alertError('Bạn chưa điền số điện thoại ở nút gọi')
+                } else if (this.facebook.showBtn == true && this.facebook.url == '') {
+                    this.alertError('Bạn chưa điền link facebook')
+                } else if (this.zalo.showBtn == true && this.zalo.url == '') {
+                    this.alertError('Bạn chưa điền số điện thoại zalo')
+                } else {
+                    this.callApiCreate(btn)
+                }
             },
             callApiCreate(btn) {
                 if (this.requestApi == true) {
