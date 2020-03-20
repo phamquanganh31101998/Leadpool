@@ -1022,7 +1022,10 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.updateGbtn(btn)
+                        if(this.call == true && this.text == ''){this.alertError('Bạn chưa điền số điện thoại ở nút gọi')}
+                        else if(this.facebook.showBtn == true && this.facebook.url == ''){this.alertError('Bạn chưa điền link ở nút facebook')}
+                        else if(this.zalo.showBtn == true && this.zalo.url == ''){this.alertError('Bạn chưa điền số điện thoại ở nút zalo')}
+                        else{this.updateGbtn(btn)}
                     } else {
                         let btn = {
                             name: this.nameBtn,
@@ -1039,7 +1042,10 @@
                                 size: `${this.sizeButton}`,
                             }
                         }
-                        this.updateGbtn(btn)
+                        if(this.call == true && this.text == ''){this.alertError('Bạn chưa điền số điện thoại ở nút gọi')}
+                        else if(this.facebook.showBtn == true && this.facebook.url == ''){this.alertError('Bạn chưa điền link ở nút facebook')}
+                        else if(this.zalo.showBtn == true && this.zalo.url == ''){this.alertError('Bạn chưa điền số điện thoại ở nút zalo')}
+                        else{this.updateGbtn(btn)}
                     }
                 }
             },
