@@ -12,12 +12,6 @@ var atLh_zl = ''
 var atlh_re_fb = ''
 var atlh_rs_zl = ''
 var atLh_url = window.location.href
-var atLh_utm_source = null
-var atLh_utm_medium = null
-var atLh_utm_campaign = null
-var atLh_utm_term = null
-var atLh_utm_content = null
-var atLh_gclid = null
 var atLh_arrTrack = []
 var atLh_styleBtnChat = ''
 var atLh_chatminiCRM = null
@@ -60,17 +54,17 @@ function adstechLeadhubOnload() {
     }else{
         for(let index = 0; index < atLh_arrTrack.length; index++){
             if(atLh_arrTrack[index].indexOf('utm_source') == 0){
-                atLh_utm_source = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_utm_source', atLh_arrTrack[index].split('=')[1])
             }else if(atLh_arrTrack[index].indexOf('utm_medium') == 0){
-                atLh_utm_medium = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_utm_medium',atLh_arrTrack[index].split('=')[1])
             }else if(atLh_arrTrack[index].indexOf('utm_campaign') == 0){
-                atLh_utm_campaign = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_utm_campaign',atLh_arrTrack[index].split('=')[1])
             }else if(atLh_arrTrack[index].indexOf('utm_term') == 0){
-                atLh_utm_term = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_utm_term',atLh_arrTrack[index].split('=')[1])
             }else if(atLh_arrTrack[index].indexOf('utm_content') == 0){
-                atLh_utm_content = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_utm_content',atLh_arrTrack[index].split('=')[1])
             }else if(atLh_arrTrack[index].indexOf('gclid') == 0){
-                atLh_gclid = atLh_arrTrack[index].split('=')[1]
+                localStorage.setItem('atLh_gclid',atLh_arrTrack[index].split('=')[1])
             }
         }
     }
@@ -910,6 +904,12 @@ function atLhSendTracing(type,rsName) {
     let hoursCover = ''
     let minusCover = ''
     let seconCover = ''
+    let atLh_utm_source = localStorage.getItem('atLh_utm_source')
+    let atLh_utm_medium = localStorage.getItem('atLh_utm_medium')
+    let atLh_utm_campaign = localStorage.getItem('atLh_utm_campaign')
+    let atLh_utm_term = localStorage.getItem('atLh_utm_term')
+    let atLh_utm_content = localStorage.getItem('atLh_utm_content')
+    let atLh_gclid = localStorage.getItem('atLh_gclid')
     if((day.getMonth() + 1) < 10) {monthCover = `0${day.getMonth() + 1}`}
     else{monthCover = day.getMonth() + 1}
     if(day.getDate() < 10) {dayCover = `0${day.getDate()}`}
@@ -928,12 +928,12 @@ function atLhSendTracing(type,rsName) {
         resourceName: rsName,
         time: `${day.getFullYear()}-${monthCover}-${dayCover} ${hoursCover}:${minusCover}:${seconCover}+07:00`
     }
-    if(atLh_utm_source != null){body.utm_source = atLh_utm_source}
-    if(atLh_utm_medium != null){body.utm_medium = atLh_utm_medium}
-    if(atLh_utm_campaign != null){body.utm_campaign = atLh_utm_campaign}
-    if(atLh_utm_term != null){body.utm_term = atLh_utm_term}
-    if(atLh_utm_content != null){body.utm_content = atLh_utm_content}
-    if(atLh_gclid != null){body.gclid = atLh_gclid}
+    if(atLh_utm_source != null && atLh_utm_source != undefined && atLh_utm_source != ''){body.utm_source = atLh_utm_source}
+    if(atLh_utm_medium != null && atLh_utm_medium != undefined && atLh_utm_medium != ''){body.utm_medium = atLh_utm_medium}
+    if(atLh_utm_campaign != null && atLh_utm_campaign != undefined && atLh_utm_campaign != ''){body.utm_campaign = atLh_utm_campaign}
+    if(atLh_utm_term != null && atLh_utm_term != undefined && atLh_utm_term != ''){body.utm_term = atLh_utm_term}
+    if(atLh_utm_content != null && atLh_utm_content != undefined && atLh_utm_content != ''){body.utm_content = atLh_utm_content}
+    if(atLh_gclid != null && atLh_gclid != undefined && atLh_gclid != ''){body.gclid = atLh_gclid}
     fetchRetry(`${atLh_rqApi}/tracking-source-utm`, {
         method: 'POST',
         headers: {
