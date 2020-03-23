@@ -59,7 +59,7 @@
                 <v-layout row class="mb-2"
                     v-if="showCall === true || showForm == true || showChat == true || showFb == true || showZalo == true">
                     <v-flex xs12>
-                        <v-layout row class="mb-2" v-if="selected.leadHubButtonGroupId && selected.googleCustomerId == null">
+                        <v-layout row class="mb-2" v-if="selected.leadHubButtonGroupId && selected.googleManagerId == null">
                             <!-- <v-alert :value="true" color="warning" icon="priority_high" outline >
                                 Bạn chưa gán bộ nút này vào tài khoản quảng cáo nào. Hãy gán ngay để theo dõi chuyển đổi trên trang web của bạn
                             </v-alert> -->
@@ -290,7 +290,7 @@
                                 <h3 style="color:#1875ef">Chọn tài khoản Google Ads</h3>
                             </v-subheader>
                             <template v-for="(cid, key) in listCidAds">
-                                <v-list-tile :key="key" avatar ripple @click="addCoversionToGbtn(cid.cId)">
+                                <v-list-tile :key="key" avatar ripple @click="addCoversionToGbtn(cid.cId,cid.managerId)">
                                     <v-list-tile-content>
                                         <v-list-tile-title>{{cid.descriptiveName}} </v-list-tile-title>
                                         <v-list-tile-sub-title v-if="cid.cId != '' && cid.cId != null">({{cid.cId}})
@@ -666,6 +666,7 @@
                             let position = coverCid.length - 1
                             let a = {
                                 cId: coverCid[position],
+                                managerId: coverCid[1],
                                 descriptiveName: result.response[i].descriptiveName
                             }
                             this.listCidAds.push(a)
@@ -676,12 +677,12 @@
                     }
                 })
             },
-            addCoversionToGbtn(cId) {
+            addCoversionToGbtn(cId,mId) {
                 const {
                     dispatch
                 } = this.$store;
                 this.showLoading = true
-                ggAds.convertGbtnToCid(this.idAccount, this.selected.leadHubButtonGroupId, cId).then(result => {
+                ggAds.convertGbtnToCid(this.idAccount, this.selected.leadHubButtonGroupId, cId, mId).then(result => {
                     if (result.code == "SUCCESS") {
                         this.showLoading = false
                         this.accountAds = false
@@ -693,7 +694,7 @@
                     }
                 })
                 this.getAllGroupBtn()
-                this.selected.googleCustomerId = cId
+                this.selected.googleManagerId = cId
             },
             getTracking(accId, sortBy, orderBy, page){
                 this.trackingObj.data = []
