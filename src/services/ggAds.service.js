@@ -29,9 +29,10 @@ function takeInfoCid(accountId,code) {
     return responseService.fetchRetry(endpoint, request, 1)
 }
 
-function convertGbtnToCid(accountId,Gbtn,Cid) {
+function convertGbtnToCid(accountId,Gbtn,Cid,Mid) {
     let a = {
-        customerId: Cid
+        customerId: Cid,
+        managerId: Mid
     }
     let request = {
         method: 'PUT',
