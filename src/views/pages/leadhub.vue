@@ -516,9 +516,9 @@
                     return 'Cài đặt bộ nút'
                 }
             },
-            mounted() {
-                this.connectGG()
-            },
+        },
+        mounted:function(){
+            this.connectGG()
         },
         methods: {
             returnTime(data) {
