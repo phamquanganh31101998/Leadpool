@@ -352,7 +352,7 @@
                                         <template v-slot:header>
                                             <div><h3>Thông tin Lead</h3></div>
                                         </template>
-                                        <v-layout row v-for="(item,i) in items" :key="i">
+                                        <v-layout row v-for="(item,i) in leadDeatail.items" :key="i">
                                             <v-flex xs12 sm12 md12 lg12 xl12 class="pl-4">
                                                 <v-hover>
                                                     <v-layout row slot-scope="{ hover }">
@@ -434,7 +434,6 @@
                                                                 <v-text-field solo :label="item.title" v-model="item.value" readonly>
                                                                 </v-text-field>
                                                             </template> -->
-                                                            
                                                         </v-flex>
                                                         <v-flex xs5 sm5 md5 lg4 xl4>
                                                             <v-expand-transition>
@@ -489,6 +488,15 @@
                                                         </v-flex>
                                                     </v-layout>
                                                 </v-hover>
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-divider></v-divider>
+                                        <v-layout row wrap class="mt-3">
+                                            <v-flex xs12 class="pl-4">
+                                                <p>Tạo ngày: <span>{{leadDeatail.createdAt}}</span></p>
+                                            </v-flex>
+                                            <v-flex xs12 class="pl-4">
+                                                <p>Update ngày: <span>{{leadDeatail.updateAt}}</span></p>
                                             </v-flex>
                                         </v-layout>
                                     </v-expansion-panel-content>
@@ -839,7 +847,8 @@
             createLogMeet: false,
             createSMS: false,
             createDeal: false,
-            items: [{
+            leadDeatail:{
+                items: [{
                     title: 'Lifecycle stage',
                     description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
                     value: '',
@@ -929,7 +938,10 @@
                     value: '',
                     dialog: false,
                 }
-            ],
+                ],
+                createdAt: null,
+                updateAt: null
+            },
             basicInfo: {
                 firstName: '',
                 lastName: '',
@@ -1114,7 +1126,7 @@
                         this.basicInfo.lastName = result.response.lastName;
                         this.basicInfo.email = result.response.email;
                         this.detail = result.response
-                        this.items = [
+                        this.leadDeatail.items = [
                             {
                                 title: 'Vòng đời',
                                 description: 'The qualification of contacts to sales readiness. It can be set through imports, forms, workflows, and manually on a per contact basis.',
@@ -1193,9 +1205,10 @@
                                 dialog: false,
                                 property: 'sourceFromMar'
                             },
-                        ]
-                        this.city = this.items[7].value;
-                        
+                        ],
+                        this.leadDeatail.createdAt = this.returnTime(result.response.createdAt)
+                        this.leadDeatail.updateAt = this.returnTime(result.response.updateAt)
+                        this.city = this.leadDeatail.items[7].value
                     }
                     else {
                         dispatch('alert/error', `${result.message} (${this.coverTimeDetail(time)})`)
@@ -1472,7 +1485,15 @@
                 if (this.access == false){
                     this.cannotEdit = true;
                 }
-            }
+            },
+            returnTime(data) {
+                if (data == null || data == '') {
+                    return "Chưa xác định"
+                }else{
+                    return moment(data).locale('vi').format('LLLL')
+                }
+            },
+
         },
         created(){
             this.getDetail();
