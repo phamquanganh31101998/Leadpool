@@ -13,7 +13,7 @@
                                     <h1>Email chưa được mời vào tổ chức</h1>
                                 </v-card-title>
                                 <v-card-text>
-                                    Bạn không thuộc tổ chức nào, hãy liên hệ với admin để được thêm vào tổ chức.
+                                    Bạn không thuộc tổ chức nào, hãy liên hệ với admin để được thêm vào tổ chức. :( )
                                 </v-card-text>
                             </v-card>
                         </v-card-text>
